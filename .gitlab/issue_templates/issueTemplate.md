@@ -3,5 +3,8 @@
 - [ ] UI
 - [ ] REST
 - [ ] Service
-- [ ] Persistence
-- [ ] Tests 
+- [ ] Persistenz
+- [ ] Tests
+- [ ] Eingabe Validierung & Authentifizierung
+- [ ] Ausnahmebehandlung
+- [ ] Logging
