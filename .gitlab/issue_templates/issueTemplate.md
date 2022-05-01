@@ -9,4 +9,3 @@
 - [ ] Ausnahmebehandlung
 - [ ] Logging
 - [ ] Dokumentation
-  - [ ] Quellcode
