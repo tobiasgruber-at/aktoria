@@ -1,9 +1,16 @@
-import {ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild, ViewChildren} from '@angular/core';
-import {MessageService} from '../../services/message.service';
-import {Message} from '../../dtos/message';
-import {NgbModal, NgbPaginationConfig} from '@ng-bootstrap/ng-bootstrap';
-import {FormBuilder, NgForm} from '@angular/forms';
-import {AuthService} from '../../services/auth.service';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  TemplateRef,
+  ViewChild,
+  ViewChildren
+} from '@angular/core';
+import { MessageService } from '../../services/message.service';
+import { Message } from '../../dtos/message';
+import { NgbModal, NgbPaginationConfig } from '@ng-bootstrap/ng-bootstrap';
+import { FormBuilder, NgForm } from '@angular/forms';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-message',
@@ -11,7 +18,6 @@ import {AuthService} from '../../services/auth.service';
   styleUrls: ['./message.component.scss']
 })
 export class MessageComponent implements OnInit {
-
   error = false;
   errorMessage = '';
   // After first submission attempt, form validation will start
@@ -21,13 +27,14 @@ export class MessageComponent implements OnInit {
 
   private message: Message[];
 
-  constructor(private messageService: MessageService,
-              private ngbPaginationConfig: NgbPaginationConfig,
-              private formBuilder: FormBuilder,
-              private cd: ChangeDetectorRef,
-              private authService: AuthService,
-              private modalService: NgbModal) {
-  }
+  constructor(
+    private messageService: MessageService,
+    private ngbPaginationConfig: NgbPaginationConfig,
+    private formBuilder: FormBuilder,
+    private cd: ChangeDetectorRef,
+    private authService: AuthService,
+    private modalService: NgbModal
+  ) {}
 
   ngOnInit() {
     this.loadMessage();
@@ -42,16 +49,20 @@ export class MessageComponent implements OnInit {
 
   openAddModal(messageAddModal: TemplateRef<any>) {
     this.currentMessage = new Message();
-    this.modalService.open(messageAddModal, {ariaLabelledBy: 'modal-basic-title'});
+    this.modalService.open(messageAddModal, {
+      ariaLabelledBy: 'modal-basic-title'
+    });
   }
 
   openExistingMessageModal(id: number, messageAddModal: TemplateRef<any>) {
     this.messageService.getMessageById(id).subscribe({
-      next: res => {
+      next: (res) => {
         this.currentMessage = res;
-        this.modalService.open(messageAddModal, {ariaLabelledBy: 'modal-basic-title'});
+        this.modalService.open(messageAddModal, {
+          ariaLabelledBy: 'modal-basic-title'
+        });
       },
-      error: err => {
+      error: (err) => {
         this.defaultServiceErrorHandling(err);
       }
     });
@@ -63,7 +74,6 @@ export class MessageComponent implements OnInit {
    */
   addMessage(form) {
     this.submitted = true;
-
 
     if (form.valid) {
       this.currentMessage.publishedAt = new Date().toISOString();
@@ -90,14 +100,13 @@ export class MessageComponent implements OnInit {
    */
   private createMessage(message: Message) {
     this.messageService.createMessage(message).subscribe({
-        next: () => {
-          this.loadMessage();
-        },
-        error: error => {
-          this.defaultServiceErrorHandling(error);
-        }
+      next: () => {
+        this.loadMessage();
+      },
+      error: (error) => {
+        this.defaultServiceErrorHandling(error);
       }
-    );
+    });
   }
 
   /**
@@ -108,12 +117,11 @@ export class MessageComponent implements OnInit {
       next: (message: Message[]) => {
         this.message = message;
       },
-      error: error => {
+      error: (error) => {
         this.defaultServiceErrorHandling(error);
       }
     });
   }
-
 
   private defaultServiceErrorHandling(error: any) {
     console.log(error);
@@ -129,5 +137,4 @@ export class MessageComponent implements OnInit {
     this.currentMessage = new Message();
     this.submitted = false;
   }
-
 }

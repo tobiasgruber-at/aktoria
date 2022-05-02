@@ -1,9 +1,8 @@
-import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {Router} from '@angular/router';
-import {AuthService} from '../../services/auth.service';
-import {AuthRequest} from '../../dtos/auth-request';
-
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
+import { AuthRequest } from '../../dtos/auth-request';
 
 @Component({
   selector: 'app-login',
@@ -11,7 +10,6 @@ import {AuthRequest} from '../../dtos/auth-request';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-
   loginForm: FormGroup;
   // After first submission attempt, form validation will start
   submitted = false;
@@ -19,7 +17,11 @@ export class LoginComponent implements OnInit {
   error = false;
   errorMessage = '';
 
-  constructor(private formBuilder: FormBuilder, private authService: AuthService, private router: Router) {
+  constructor(
+    private formBuilder: FormBuilder,
+    private authService: AuthService,
+    private router: Router
+  ) {
     this.loginForm = this.formBuilder.group({
       username: ['', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(8)]]
@@ -32,7 +34,10 @@ export class LoginComponent implements OnInit {
   loginUser() {
     this.submitted = true;
     if (this.loginForm.valid) {
-      const authRequest: AuthRequest = new AuthRequest(this.loginForm.controls.username.value, this.loginForm.controls.password.value);
+      const authRequest: AuthRequest = new AuthRequest(
+        this.loginForm.controls.username.value,
+        this.loginForm.controls.password.value
+      );
       this.authenticateUser(authRequest);
     } else {
       console.log('Invalid input');
@@ -51,7 +56,7 @@ export class LoginComponent implements OnInit {
         console.log('Successfully logged in user: ' + authRequest.email);
         this.router.navigate(['/message']);
       },
-      error: error => {
+      error: (error) => {
         console.log('Could not log in due to:');
         console.log(error);
         this.error = true;
@@ -71,7 +76,5 @@ export class LoginComponent implements OnInit {
     this.error = false;
   }
 
-  ngOnInit() {
-  }
-
+  ngOnInit() {}
 }
