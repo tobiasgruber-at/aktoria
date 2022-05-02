@@ -13,6 +13,7 @@ import { Globals } from '../global/globals';
 export class AuthInterceptor implements HttpInterceptor {
   constructor(private authService: AuthService, private globals: Globals) {}
 
+  /** Intercepts outgoing http requests and adds authorizations headers if necessary */
   intercept(
     req: HttpRequest<any>,
     next: HttpHandler

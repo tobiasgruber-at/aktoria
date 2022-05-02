@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Message } from '../dtos/message';
+import { Message } from '../../shared/dtos/message';
 import { Observable } from 'rxjs';
 import { Globals } from '../global/globals';
 
