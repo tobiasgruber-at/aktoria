@@ -1,26 +1,25 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { AuthRequest } from '../../shared/dtos/auth-request';
+import { ToastService } from '../../core/services/toast.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
   loginForm: FormGroup;
   // After first submission attempt, form validation will start
   submitted = false;
-  // Error flag
-  error = false;
-  errorMessage = '';
 
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private toastService: ToastService
   ) {
     this.loginForm = this.formBuilder.group({
       username: ['', [Validators.required]],
@@ -59,22 +58,17 @@ export class LoginComponent implements OnInit {
       error: (error) => {
         console.log('Could not log in due to:');
         console.log(error);
-        this.error = true;
+        let errorMessage = '';
         if (typeof error.error === 'object') {
-          this.errorMessage = error.error.error;
+          errorMessage = error.error.error;
         } else {
-          this.errorMessage = error.error;
+          errorMessage = error.error;
         }
+        this.toastService.show({
+          message: `Fehler! ${errorMessage || ''}`,
+          type: 'danger'
+        });
       }
     });
   }
-
-  /**
-   * Error flag will be deactivated, which clears the error message
-   */
-  vanishError() {
-    this.error = false;
-  }
-
-  ngOnInit() {}
 }

@@ -1,0 +1,4 @@
+:host {
+  display: block;
+  position: relative; // so that z-index is applied (in toast.component.html)
+}

@@ -1,6 +1,6 @@
 <div class="d-flex flex-column min-vh-100">
   <header *ngIf="showHeader">
-    <nav class="p-3 navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="px-5 py-3 navbar navbar-expand-lg navbar-dark bg-dark">
       <a class="navbar-brand" href="">Aktoria</a>
       <button
         class="navbar-toggler ml-5"
@@ -13,8 +13,11 @@
       >
         <span class="navbar-toggler-icon"></span>
       </button>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
+      <div
+        class="collapse navbar-collapse d-flex justify-content-between"
+        id="navbarSupportedContent"
+      >
+        <ul class="navbar-nav">
           <li class="nav-item">
             <a
               class="nav-link"
@@ -52,5 +55,5 @@
   <main class="p-5 flex-grow-1">
     <ng-content></ng-content>
   </main>
-  <footer *ngIf="showFooter" class="p-3 bg-light">Impressum</footer>
+  <footer *ngIf="showFooter" class="px-5 py-3 bg-light">Impressum</footer>
 </div>

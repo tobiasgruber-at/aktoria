@@ -9,7 +9,7 @@ import {
 
 const voidStyles: { [property: string]: string | number } = {
   opacity: 0,
-  transform: 'scale(0)',
+  transform: 'scale(.85)',
   margin: 0,
   height: 0
 };
