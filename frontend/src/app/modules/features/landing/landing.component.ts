@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../core/services/auth.service';
 
+/** @author Tobias Gruber */
 @Component({
   selector: 'app-landing',
   templateUrl: './landing.component.html',

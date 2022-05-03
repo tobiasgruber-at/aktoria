@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { AuthService } from '../../../core/services/auth.service';
 import { Router } from '@angular/router';
 
+/** @author Tobias Gruber */
 @Component({
   selector: 'app-page-layout',
   templateUrl: './page-layout.component.html',

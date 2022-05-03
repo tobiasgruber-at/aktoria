@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Toast } from '../../../../shared/interfaces/toast.interface';
 import { ToastService } from '../../../services/toast.service';
 
+/** @author Tobias Gruber */
 @Component({
   selector: 'app-toasts-item',
   templateUrl: './toasts-item.component.html',
