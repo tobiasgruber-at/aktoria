@@ -1,13 +1,13 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
-import { FooterComponent } from './footer.component';
+import { AlertComponent } from './alert.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 
-describe('FooterComponent', () => {
-  let component: FooterComponent;
-  let fixture: ComponentFixture<FooterComponent>;
+describe('AlertComponent', () => {
+  let component: AlertComponent;
+  let fixture: ComponentFixture<AlertComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -16,12 +16,12 @@ describe('FooterComponent', () => {
         RouterTestingModule,
         ReactiveFormsModule
       ],
-      declarations: [FooterComponent]
+      declarations: [AlertComponent]
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FooterComponent);
+    fixture = TestBed.createComponent(AlertComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
