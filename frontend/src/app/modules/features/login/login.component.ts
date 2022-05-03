@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
@@ -10,9 +10,8 @@ import { ToastService } from '../../core/services/toast.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   loginForm: FormGroup;
-  // After first submission attempt, form validation will start
   submitted = false;
 
   constructor(
@@ -20,7 +19,9 @@ export class LoginComponent {
     private authService: AuthService,
     private router: Router,
     private toastService: ToastService
-  ) {
+  ) {}
+
+  ngOnInit(): void {
     this.loginForm = this.formBuilder.group({
       username: ['', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(8)]]
