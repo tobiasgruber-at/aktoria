@@ -1,21 +1,8 @@
-<div
-  *ngIf="error"
-  class="alert alert-warning alert-dismissible fade show"
-  role="alert"
->
-  <strong>Authentication problems!</strong> {{ errorMessage }}
-  <button
-    type="button"
-    (click)="vanishError()"
-    class="close"
-    data-dismiss="alert"
-    aria-label="Close"
-  >
-    <span aria-hidden="true">&times;</span>
-  </button>
-</div>
+<app-page-layout>
+  <app-alert [show]="error" type="danger" (closeAlert)="vanishError()">
+    <strong>Authentication problems!</strong> {{ errorMessage }}
+  </app-alert>
 
-<div class="pt-5">
   <div class="row">
     <div class="col-md-6 mx-auto">
       <span class="anchor" id="formLogin"></span>
@@ -89,4 +76,4 @@
       </div>
     </div>
   </div>
-</div>
+</app-page-layout>

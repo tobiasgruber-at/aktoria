@@ -1,12 +1,10 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-
-
+import { ScriptsComponent } from './scripts.component';
+import { SharedModule } from '../../shared/shared.module';
+import { ScriptsRoutingModule } from './scripts-routing.module';
 
 @NgModule({
-  declarations: [],
-  imports: [
-    CommonModule
-  ]
+  declarations: [ScriptsComponent],
+  imports: [SharedModule, ScriptsRoutingModule]
 })
-export class ScriptsModule { }
+export class ScriptsModule {}
