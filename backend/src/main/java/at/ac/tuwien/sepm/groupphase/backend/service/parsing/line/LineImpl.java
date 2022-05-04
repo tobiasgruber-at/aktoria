@@ -32,7 +32,6 @@ public class LineImpl implements Line {
     private void clean() {
         raw = raw.replace("\n", " ");
         collapseWhitespaces();
-        raw = raw.replaceAll("\\t+", "");
 
         if (!raw.equals("\f")) raw = raw.trim();
     }
@@ -55,6 +54,7 @@ public class LineImpl implements Line {
     }
 
     private void collapseWhitespaces() {
+        raw = raw.replaceAll("\\t+", " ");
         raw = raw.replaceAll(" +", " ");
     }
 

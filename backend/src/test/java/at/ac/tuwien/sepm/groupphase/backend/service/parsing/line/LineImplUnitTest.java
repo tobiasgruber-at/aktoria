@@ -49,6 +49,21 @@ class LineImplUnitTest {
         return temp.stream();
     }
 
+    private static Stream<ParameterizedTupleGetRaw> parameterizedTupleGetRawProvider() {
+        List<ParameterizedTupleGetRaw> temp = new LinkedList<>();
+        temp.add(new ParameterizedTupleGetRaw("ROLE This is my text.", "ROLE This is my text."));
+        temp.add(new ParameterizedTupleGetRaw("ROLE This is my text.", "ROLE       This is my text."));
+        temp.add(new ParameterizedTupleGetRaw("ROLE This is my text.", "ROLE This is my text. "));
+        temp.add(new ParameterizedTupleGetRaw("ROLE This is my text.", " ROLE This is my text."));
+        temp.add(new ParameterizedTupleGetRaw("ROLE This is my text.", "ROLE This is my \ntext."));
+        temp.add(new ParameterizedTupleGetRaw("ROLE This is my text.", "ROLE This is my text.\n"));
+        temp.add(new ParameterizedTupleGetRaw("ROLE This is my text.", "ROLE\t\tThis is my text."));
+        temp.add(new ParameterizedTupleGetRaw("", "\n"));
+        temp.add(new ParameterizedTupleGetRaw("\f", "\f"));
+
+        return temp.stream();
+    }
+
     @ParameterizedTest
     @DisplayName("getRoles() returns the correct roles")
     @MethodSource("parameterizedTupleGetRolesProvider")
@@ -65,11 +80,21 @@ class LineImplUnitTest {
         assertEquals(input.expected, l.getContent());
     }
 
+    @ParameterizedTest
+    @DisplayName("getRaw() returns the correct value")
+    @MethodSource("parameterizedTupleGetRawProvider")
+    void getRaw(ParameterizedTupleGetRaw input) {
+        LineImpl l = new LineImpl(input.input);
+        assertEquals(input.expected, l.getRaw());
+    }
 
     private record ParameterizedTupleGetRoles(List<String> expected, String input) {
     }
 
     private record ParameterizedTupleGetContent(String expected, String input) {
+    }
+
+    private record ParameterizedTupleGetRaw(String expected, String input) {
     }
 
     @Nested
