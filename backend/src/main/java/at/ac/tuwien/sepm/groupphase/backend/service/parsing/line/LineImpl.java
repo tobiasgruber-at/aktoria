@@ -6,11 +6,11 @@ import java.util.regex.Pattern;
 
 public class LineImpl implements Line {
     private static final String[] SENTENCE_DELIMITERS = { ".", "!", "?", "\"", "”", "/", ")", "…" };
-    private static final String[] MULTI_ROLES_DELIMITERS = { " UND ", "/" };
+    private static final String[] MULTI_ROLES_DELIMITERS = { " UND ", "/", " / " };
     private Line.ConflictType conflictType;
     private boolean isDecomposed;
     private String raw;
-    private List<String> characters;
+    private List<String> roles;
     private String content;
     private int page;
 
@@ -22,7 +22,7 @@ public class LineImpl implements Line {
         clean();
         removePageNumber();
         collapseWhitespaces();
-        decomposePhrase();
+        decomposeLine();
     }
 
     public static Line join(Line a, Line b) {
@@ -58,34 +58,34 @@ public class LineImpl implements Line {
         raw = raw.replaceAll(" +", " ");
     }
 
-    private void decomposePhrase() {
-        Pattern pattern = Pattern.compile("^[A-Z\\s\\.-]+(?=\\s)");
+    private void decomposeLine() {
+        Pattern pattern = Pattern.compile("^[A-Z\\s\\.\\-/]+(?=\\s)");
         Matcher matcher = pattern.matcher(raw);
 
         if (matcher.find()) {
-            String charactersDeclaration = matcher.group().trim();
+            String rolesDeclaration = matcher.group().trim();
 
             // TODO: check if the content starts with an uppercase letter
-            // if not, check if the character declaration snatched the starting letter
-            // e.g. for phrases like "BOB   O nein!"
+            // if not, check if the role declaration snatched the starting letter
+            // e.g. for lines like "BOB   O nein!"
 
-            characters = getCharactersFromDeclaration(charactersDeclaration);
+            roles = getRolesFromDeclaration(rolesDeclaration);
             content = raw.substring(matcher.end()).trim();
         } else {
-            characters = null;
+            roles = null;
             content = raw.trim();
         }
 
         isDecomposed = true;
     }
 
-    private String compilePhrase() {
+    private String compileLine() {
         if (hasRoles()) {
             String temp;
-            if (characters.size() > 1) {
-                temp = String.join("/", characters);
+            if (roles.size() > 1) {
+                temp = String.join("/", roles);
             } else {
-                temp = characters.get(0);
+                temp = roles.get(0);
             }
 
             return String.format("[%s] %s", temp, content);
@@ -94,23 +94,23 @@ public class LineImpl implements Line {
         }
     }
 
-    private List<String> getCharactersFromDeclaration(String charactersDeclaration) {
+    private List<String> getRolesFromDeclaration(String rolesDeclaration) {
         List<String> temp;
 
-        String delimiter = getCharacterDelimiter(charactersDeclaration);
+        String delimiter = getRoleDelimiter(rolesDeclaration);
         if (delimiter != null) {
-            temp = getMultipleCharacters(delimiter, charactersDeclaration);
+            temp = getMultipleRoles(delimiter, rolesDeclaration);
         } else {
             temp = new LinkedList<>();
-            temp.add(charactersDeclaration.trim().toUpperCase(Locale.GERMAN));
+            temp.add(rolesDeclaration.trim().toUpperCase(Locale.GERMAN));
         }
 
         return temp;
     }
 
-    private String getCharacterDelimiter(String charactersDeclaration) {
+    private String getRoleDelimiter(String rolesDeclaration) {
         for (String delimiter : MULTI_ROLES_DELIMITERS) {
-            if (charactersDeclaration.contains(delimiter)) {
+            if (rolesDeclaration.contains(delimiter)) {
                 return delimiter;
             }
         }
@@ -118,8 +118,8 @@ public class LineImpl implements Line {
         return null;
     }
 
-    private List<String> getMultipleCharacters(String delimiter, String charactersDeclaration) {
-        String[] temp = charactersDeclaration.split(delimiter);
+    private List<String> getMultipleRoles(String delimiter, String rolesDeclaration) {
+        String[] temp = rolesDeclaration.split(delimiter);
         return (Arrays.stream(temp).map(value -> value.trim().toUpperCase(Locale.GERMAN))).toList();
     }
 
@@ -150,7 +150,7 @@ public class LineImpl implements Line {
 
     @Override
     public List<String> getRoles() {
-        return characters;
+        return roles;
     }
 
     @Override
@@ -163,8 +163,8 @@ public class LineImpl implements Line {
         Pattern pattern = Pattern.compile("\\b(?<=\\.|\\s|^)[A-Z\\s\\.]+(?=\\s|\\.|$)\\b");
         Matcher matcher = pattern.matcher(raw);
 
-        List<Line> newPhrases = new LinkedList<>();
-        Stack<Line> newPhrasesCollapsed = new Stack<>();
+        List<Line> newLines = new LinkedList<>();
+        Stack<Line> newLinesCollapsed = new Stack<>();
 
         int offset = 0;
         while (matcher.find()) {
@@ -172,36 +172,36 @@ public class LineImpl implements Line {
 
             if (sub.isEmpty()) continue;
 
-            LineImpl newPhrase = new LineImpl(sub);
-            newPhrase.setConflictType(ConflictType.VERIFICATION_REQUIRED);
-            newPhrases.add(newPhrase);
+            LineImpl newLine = new LineImpl(sub);
+            newLine.setConflictType(ConflictType.VERIFICATION_REQUIRED);
+            newLines.add(newLine);
 
             offset += sub.length();
         }
 
         // add the rest
         String sub = raw.substring(offset);
-        LineImpl newPhrase = new LineImpl(sub);
-        newPhrases.add(newPhrase);
+        LineImpl newLine = new LineImpl(sub);
+        newLines.add(newLine);
 
-        newPhrasesCollapsed.push(newPhrases.get(0));
+        newLinesCollapsed.push(newLines.get(0));
 
-        for (int i = 1; i < newPhrases.size(); i++) {
-            Line previousPhrase = newPhrasesCollapsed.peek();
-            Line currentPhrase = newPhrases.get(i);
+        for (int i = 1; i < newLines.size(); i++) {
+            Line previousLine = newLinesCollapsed.peek();
+            Line currentLine = newLines.get(i);
 
-            if (!previousPhrase.isCompletedLine()) {
-                newPhrasesCollapsed.pop();
+            if (!previousLine.isCompletedLine()) {
+                newLinesCollapsed.pop();
 
-                Line temp = LineImpl.join(previousPhrase, currentPhrase);
+                Line temp = LineImpl.join(previousLine, currentLine);
                 temp.setConflictType(ConflictType.VERIFICATION_REQUIRED);
-                newPhrasesCollapsed.push(temp);
+                newLinesCollapsed.push(temp);
             } else {
-                newPhrasesCollapsed.push(currentPhrase);
+                newLinesCollapsed.push(currentLine);
             }
         }
 
-        return newPhrasesCollapsed;
+        return newLinesCollapsed;
     }
 
     /**
@@ -225,10 +225,10 @@ public class LineImpl implements Line {
     @Override
     public boolean hasRoles() throws IllegalStateException {
         if (isDecomposed) {
-            if (characters == null) {
+            if (roles == null) {
                 return false;
             } else {
-                return characters.size() > 0;
+                return roles.size() > 0;
             }
         } else throw new IllegalStateException();
     }
@@ -256,7 +256,7 @@ public class LineImpl implements Line {
     @Override
     public String toString() {
         if (isDecomposed) {
-            return compilePhrase();
+            return compileLine();
         } else {
             return raw;
         }
