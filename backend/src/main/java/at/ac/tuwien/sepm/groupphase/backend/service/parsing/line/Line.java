@@ -4,11 +4,11 @@ import java.util.List;
 
 /**
  * Describes a line in a theater play script.
- * <p>
- * A line is a section of the script
+ *
+ * <p>A line is a section of the script
  * that a specific role or multiple specific roles say.
- * <p>
- * The content of the line does not contain any new lines.
+ *
+ * <p>The content of the line does not contain any new lines.
  */
 public interface Line extends CharSequence {
 
@@ -66,8 +66,8 @@ public interface Line extends CharSequence {
     /**
      * Looks for possible other lines that are mistakenly in this
      * line.
-     * <p>
-     * It returns a list of all lines that where found. If no other lines where found
+     *
+     * <p>It returns a list of all lines that where found. If no other lines where found
      * the only item is this line.
      *
      * @return a list of found lines in side of this line

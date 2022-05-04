@@ -8,7 +8,6 @@ import at.ac.tuwien.sepm.groupphase.backend.service.parsing.script.ParsedScript;
 public interface ScriptParser {
     /**
      * Parses the script.
-     * <p>
      * TODO: add documentation
      *
      * @return a new instance of ParsedScript
