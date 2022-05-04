@@ -37,6 +37,10 @@ export class AuthService {
     );
   }
 
+  isVerifiedEmail() {
+    return false;
+  }
+
   logoutUser() {
     console.log('Logout');
     localStorage.removeItem('authToken');
@@ -62,7 +66,7 @@ export class AuthService {
     return 'UNDEFINED';
   }
 
-  private setToken(authResponse: string) {
+  setToken(authResponse: string) {
     localStorage.setItem('authToken', authResponse);
   }
 

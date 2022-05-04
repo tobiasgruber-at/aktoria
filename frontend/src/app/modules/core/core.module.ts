@@ -3,6 +3,8 @@ import { httpInterceptorProviders } from './interceptors';
 import { SharedModule } from '../shared/shared.module';
 import { ToastsComponent } from './components/toasts/toasts.component';
 import { ToastsItemComponent } from './components/toasts/toasts-item/toasts-item.component';
+import { UserMockService } from './services/user/user-mock.service';
+import { UserService } from './services/user/user-service';
 
 const sharedDeclarations = [ToastsComponent];
 
@@ -10,6 +12,12 @@ const sharedDeclarations = [ToastsComponent];
   declarations: [...sharedDeclarations, ToastsItemComponent],
   imports: [SharedModule],
   exports: [...sharedDeclarations],
-  providers: [httpInterceptorProviders]
+  providers: [
+    httpInterceptorProviders,
+    {
+      provide: UserService,
+      useClass: UserMockService
+    }
+  ]
 })
 export class CoreModule {}
