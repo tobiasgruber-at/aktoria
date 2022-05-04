@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @ActiveProfiles("test")
 class LineImplUnitTest {
 
-    private static Stream<ParameterizedTupleGetRoles> tupleProvider() {
+    private static Stream<ParameterizedTupleGetRoles> parameterizedTupleGetRolesProvider() {
         List<ParameterizedTupleGetRoles> temp = new LinkedList<>();
         temp.add(new ParameterizedTupleGetRoles(List.of(new String[]{ "ROLE" }), "ROLE This is my text."));
         temp.add(new ParameterizedTupleGetRoles(List.of(new String[]{ "NAME SURENAME" }), "NAME SURENAME This is my text."));
@@ -32,15 +32,44 @@ class LineImplUnitTest {
         return temp.stream();
     }
 
+    private static Stream<ParameterizedTupleGetContent> parameterizedTupleGetContentProvider() {
+        List<ParameterizedTupleGetContent> temp = new LinkedList<>();
+        temp.add(new ParameterizedTupleGetContent("This is my text.", "ROLE This is my text."));
+        temp.add(new ParameterizedTupleGetContent("This is my text", "ROLE This is my text"));
+        temp.add(new ParameterizedTupleGetContent("This is my text.", "ROLE This is my text. "));
+        temp.add(new ParameterizedTupleGetContent("This is my text.", "ROLE       This is my text."));
+        temp.add(new ParameterizedTupleGetContent("This is my text.", "ROLE This is       my text."));
+        temp.add(new ParameterizedTupleGetContent("This is my text.", "123 This is my text."));
+        temp.add(new ParameterizedTupleGetContent("This is my text.", " 123 This is my text."));
+        temp.add(new ParameterizedTupleGetContent("This is my text.", "123 This is my text. "));
+        temp.add(new ParameterizedTupleGetContent("This is my text.", "123 This is     my text."));
+        temp.add(new ParameterizedTupleGetContent("", "123"));
+        temp.add(new ParameterizedTupleGetContent("123.", "123."));
+
+        return temp.stream();
+    }
+
     @ParameterizedTest
     @DisplayName("getRoles() returns the correct roles")
-    @MethodSource("tupleProvider")
+    @MethodSource("parameterizedTupleGetRolesProvider")
     void getRoles(ParameterizedTupleGetRoles input) {
         LineImpl l = new LineImpl(input.input);
         assertEquals(input.expected, l.getRoles());
     }
 
+    @ParameterizedTest
+    @DisplayName("getContent() returns the correct content")
+    @MethodSource("parameterizedTupleGetContentProvider")
+    void getContent(ParameterizedTupleGetContent input) {
+        LineImpl l = new LineImpl(input.input);
+        assertEquals(input.expected, l.getContent());
+    }
+
+
     private record ParameterizedTupleGetRoles(List<String> expected, String input) {
+    }
+
+    private record ParameterizedTupleGetContent(String expected, String input) {
     }
 
     @Nested
