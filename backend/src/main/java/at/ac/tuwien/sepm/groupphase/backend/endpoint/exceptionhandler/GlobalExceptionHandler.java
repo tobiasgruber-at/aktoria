@@ -48,10 +48,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         Map<String, Object> body = new LinkedHashMap<>();
         //Get all errors
         List<String> errors = ex.getBindingResult()
-                .getFieldErrors()
-                .stream()
-                .map(err -> err.getField() + " " + err.getDefaultMessage())
-                .collect(Collectors.toList());
+            .getFieldErrors()
+            .stream()
+            .map(err -> err.getField() + " " + err.getDefaultMessage())
+            .collect(Collectors.toList());
         body.put("Validation errors", errors);
 
         return new ResponseEntity<>(body.toString(), headers, status);

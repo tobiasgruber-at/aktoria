@@ -55,9 +55,9 @@ public class SimpleMessageDto {
             return false;
         }
         return Objects.equals(id, that.id)
-                && Objects.equals(publishedAt, that.publishedAt)
-                && Objects.equals(title, that.title)
-                && Objects.equals(summary, that.summary);
+            && Objects.equals(publishedAt, that.publishedAt)
+            && Objects.equals(title, that.title)
+            && Objects.equals(summary, that.summary);
     }
 
     @Override
@@ -68,11 +68,11 @@ public class SimpleMessageDto {
     @Override
     public String toString() {
         return "SimpleMessageDto{"
-                + "id=" + id
-                + ", publishedAt=" + publishedAt
-                + ", title='" + title + '\''
-                + ", summary='" + summary + '\''
-                + '}';
+            + "id=" + id
+            + ", publishedAt=" + publishedAt
+            + ", title='" + title + '\''
+            + ", summary='" + summary + '\''
+            + '}';
     }
 
 

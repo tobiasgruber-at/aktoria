@@ -2,7 +2,12 @@ package at.ac.tuwien.sepm.groupphase.backend.service.parsing.line.impl;
 
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.line.Line;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,7 +41,9 @@ public class LineImpl implements Line {
         raw = raw.replace("\n", " ");
         collapseWhitespaces();
 
-        if (!raw.equals("\f")) raw = raw.trim();
+        if (!raw.equals("\f")) {
+            raw = raw.trim();
+        }
     }
 
     private void removePageNumber() {
@@ -53,7 +60,9 @@ public class LineImpl implements Line {
             }
         }
 
-        if (!raw.equals("\f")) raw = raw.trim();
+        if (!raw.equals("\f")) {
+            raw = raw.trim();
+        }
     }
 
     private void collapseWhitespaces() {
@@ -173,7 +182,9 @@ public class LineImpl implements Line {
         while (matcher.find()) {
             String sub = raw.substring(offset, matcher.start());
 
-            if (sub.isEmpty()) continue;
+            if (sub.isEmpty()) {
+                continue;
+            }
 
             LineImpl newLine = new LineImpl(sub, page);
             newLine.setConflictType(ConflictType.VERIFICATION_REQUIRED);
@@ -214,12 +225,16 @@ public class LineImpl implements Line {
      */
     @Override
     public boolean isCompletedLine() {
-        if (raw.isEmpty()) return false;
+        if (raw.isEmpty()) {
+            return false;
+        }
 
         String lastChar = raw.substring(raw.length() - 1);
 
         for (String delimiter : SENTENCE_DELIMITERS) {
-            if (lastChar.equals(delimiter)) return true;
+            if (lastChar.equals(delimiter)) {
+                return true;
+            }
         }
 
         return false;
@@ -233,7 +248,9 @@ public class LineImpl implements Line {
             } else {
                 return roles.size() > 0;
             }
-        } else throw new IllegalStateException();
+        } else {
+            throw new IllegalStateException();
+        }
     }
 
     @Override
@@ -267,8 +284,12 @@ public class LineImpl implements Line {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         LineImpl line = (LineImpl) o;
         return isDecomposed == line.isDecomposed && page == line.page && conflictType == line.conflictType && Objects.equals(raw, line.raw) && Objects.equals(roles, line.roles) && Objects.equals(content, line.content);
     }

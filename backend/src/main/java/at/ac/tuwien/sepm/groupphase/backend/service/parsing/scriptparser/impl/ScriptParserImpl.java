@@ -11,7 +11,7 @@ import java.util.Stack;
 
 public class ScriptParserImpl implements ScriptParser {
 
-    private static final String[] CHARACTER_LIST_KEYWORDS = new String[]{ "characters", "personen", "personenverzeichnis", "rollen" };
+    private static final String[] CHARACTER_LIST_KEYWORDS = new String[] { "characters", "personen", "personenverzeichnis", "rollen" };
     private final List<String> allRoles = new LinkedList<>();
     private String raw;
     private int curRowIndex;
@@ -62,7 +62,9 @@ public class ScriptParserImpl implements ScriptParser {
 
             if (!(previousLine.hasRoles() && curLine.hasRoles())) {
                 handledLines.add(previousLine);
-                if (i == stagedLines.size() - 1) handledLines.add(curLine);
+                if (i == stagedLines.size() - 1) {
+                    handledLines.add(curLine);
+                }
                 continue;
             }
 
@@ -71,7 +73,9 @@ public class ScriptParserImpl implements ScriptParser {
 
             if (previousCharacters.size() > 1 || curCharacters.size() > 1) {
                 handledLines.add(previousLine);
-                if (i == stagedLines.size() - 1) handledLines.add(curLine);
+                if (i == stagedLines.size() - 1) {
+                    handledLines.add(curLine);
+                }
                 continue;
             }
 
@@ -97,7 +101,9 @@ public class ScriptParserImpl implements ScriptParser {
             if (!handled) {
                 handledLines.add(previousLine);
 
-                if (i == stagedLines.size() - 1) handledLines.add(curLine);
+                if (i == stagedLines.size() - 1) {
+                    handledLines.add(curLine);
+                }
             }
         }
 
@@ -116,9 +122,13 @@ public class ScriptParserImpl implements ScriptParser {
         for (String rawLine : splitContent) {
             Line curLine = new LineImpl(rawLine, curRowIndex);
 
-            if (curLine.isEmpty()) continue;
+            if (curLine.isEmpty()) {
+                continue;
+            }
 
-            if (curLine.getRaw().equals("\f")) curRowIndex++;
+            if (curLine.getRaw().equals("\f")) {
+                curRowIndex++;
+            }
 
             List<Line> possibleInternalLines = curLine.getPossibleInternalLines();
             for (Line p : possibleInternalLines) {

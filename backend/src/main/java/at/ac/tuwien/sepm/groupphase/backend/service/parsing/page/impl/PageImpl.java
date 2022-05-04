@@ -3,7 +3,12 @@ package at.ac.tuwien.sepm.groupphase.backend.service.parsing.page.impl;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.line.Line;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.page.Page;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Objects;
 
 public class PageImpl implements Page {
 
@@ -139,8 +144,12 @@ public class PageImpl implements Page {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         PageImpl lines1 = (PageImpl) o;
         return Objects.equals(lines, lines1.lines);
     }

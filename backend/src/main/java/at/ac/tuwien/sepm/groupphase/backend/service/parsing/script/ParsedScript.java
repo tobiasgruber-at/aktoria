@@ -67,8 +67,12 @@ public class ParsedScript {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         ParsedScript that = (ParsedScript) o;
         return Objects.equals(lines, that.lines) && Objects.equals(roles, that.roles) && Objects.equals(pages, that.pages);
     }
