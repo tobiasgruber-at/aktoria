@@ -1,4 +1,6 @@
-package at.ac.tuwien.sepm.groupphase.backend.service.parsing.line;
+package at.ac.tuwien.sepm.groupphase.backend.service.parsing.line.impl;
+
+import at.ac.tuwien.sepm.groupphase.backend.service.parsing.line.Line;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -14,8 +16,9 @@ public class LineImpl implements Line {
     private String content;
     private int page;
 
-    public LineImpl(String raw) {
+    public LineImpl(String raw, int page) {
         this.raw = raw;
+        this.page = page;
         this.isDecomposed = false;
         this.conflictType = null;
 
@@ -26,7 +29,7 @@ public class LineImpl implements Line {
     }
 
     public static Line join(Line a, Line b) {
-        return new LineImpl(String.join(" ", a.getRaw(), b.getRaw()));
+        return new LineImpl(String.join(" ", a.getRaw(), b.getRaw()), a.getPage());
     }
 
     private void clean() {
@@ -73,7 +76,7 @@ public class LineImpl implements Line {
             content = raw.substring(matcher.end()).trim();
         } else {
             roles = null;
-            content = raw.trim();
+            content = raw.equals("\f") ? raw : raw.trim();
         }
 
         isDecomposed = true;
@@ -172,7 +175,7 @@ public class LineImpl implements Line {
 
             if (sub.isEmpty()) continue;
 
-            LineImpl newLine = new LineImpl(sub);
+            LineImpl newLine = new LineImpl(sub, page);
             newLine.setConflictType(ConflictType.VERIFICATION_REQUIRED);
             newLines.add(newLine);
 
@@ -181,7 +184,7 @@ public class LineImpl implements Line {
 
         // add the rest
         String sub = raw.substring(offset);
-        LineImpl newLine = new LineImpl(sub);
+        LineImpl newLine = new LineImpl(sub, page);
         newLines.add(newLine);
 
         newLinesCollapsed.push(newLines.get(0));
@@ -260,5 +263,18 @@ public class LineImpl implements Line {
         } else {
             return raw;
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        LineImpl line = (LineImpl) o;
+        return isDecomposed == line.isDecomposed && page == line.page && conflictType == line.conflictType && Objects.equals(raw, line.raw) && Objects.equals(roles, line.roles) && Objects.equals(content, line.content);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(conflictType, isDecomposed, raw, roles, content, page);
     }
 }

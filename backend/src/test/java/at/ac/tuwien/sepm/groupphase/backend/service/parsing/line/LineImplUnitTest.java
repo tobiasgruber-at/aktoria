@@ -1,10 +1,12 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.parsing.line;
 
+import at.ac.tuwien.sepm.groupphase.backend.service.parsing.line.impl.LineImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.LinkedList;
@@ -14,6 +16,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ActiveProfiles("test")
+@SpringBootTest
 class LineImplUnitTest {
 
     private static Stream<ParameterizedTupleGetRoles> parameterizedTupleGetRolesProvider() {
@@ -68,7 +71,7 @@ class LineImplUnitTest {
     @DisplayName("getRoles() returns the correct roles")
     @MethodSource("parameterizedTupleGetRolesProvider")
     void getRoles(ParameterizedTupleGetRoles input) {
-        LineImpl l = new LineImpl(input.input);
+        LineImpl l = new LineImpl(input.input, 0);
         assertEquals(input.expected, l.getRoles());
     }
 
@@ -76,7 +79,7 @@ class LineImplUnitTest {
     @DisplayName("getContent() returns the correct content")
     @MethodSource("parameterizedTupleGetContentProvider")
     void getContent(ParameterizedTupleGetContent input) {
-        LineImpl l = new LineImpl(input.input);
+        LineImpl l = new LineImpl(input.input, 0);
         assertEquals(input.expected, l.getContent());
     }
 
@@ -84,7 +87,7 @@ class LineImplUnitTest {
     @DisplayName("getRaw() returns the correct value")
     @MethodSource("parameterizedTupleGetRawProvider")
     void getRaw(ParameterizedTupleGetRaw input) {
-        LineImpl l = new LineImpl(input.input);
+        LineImpl l = new LineImpl(input.input, 0);
         assertEquals(input.expected, l.getRaw());
     }
 
@@ -114,7 +117,7 @@ class LineImplUnitTest {
                 "PETER P. This is my text."
         })
         void hasRolesTrue(String value) {
-            LineImpl l = new LineImpl(value);
+            LineImpl l = new LineImpl(value, 0);
             assertTrue(l.hasRoles());
         }
 
@@ -129,7 +132,7 @@ class LineImplUnitTest {
                 "\f"
         })
         void hasRolesFalse(String value) {
-            LineImpl l = new LineImpl(value);
+            LineImpl l = new LineImpl(value, 0);
             assertFalse(l.hasRoles());
         }
     }
@@ -150,7 +153,7 @@ class LineImplUnitTest {
                 "This is a completed line)"
         })
         void isCompletedLineTrue(String value) {
-            LineImpl l = new LineImpl(value);
+            LineImpl l = new LineImpl(value, 0);
             assertTrue(l.isCompletedLine());
         }
 
@@ -167,7 +170,7 @@ class LineImplUnitTest {
                 "\f"
         })
         void isCompletedLineFalse(String value) {
-            LineImpl l = new LineImpl(value);
+            LineImpl l = new LineImpl(value, 0);
             assertFalse(l.isCompletedLine());
         }
     }
