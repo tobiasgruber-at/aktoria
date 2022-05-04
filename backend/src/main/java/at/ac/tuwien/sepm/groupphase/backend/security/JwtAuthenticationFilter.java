@@ -36,14 +36,14 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
-        throws AuthenticationException {
+            throws AuthenticationException {
         UserLoginDto user = null;
         try {
             user = new ObjectMapper().readValue(request.getInputStream(), UserLoginDto.class);
             //Compares the user with CustomUserDetailService#loadUserByUsername and check if the credentials are correct
             return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                user.getEmail(),
-                user.getPassword()));
+                    user.getEmail(),
+                    user.getPassword()));
         } catch (IOException e) {
             throw new BadCredentialsException("Wrong API request or JSON schema", e);
         } catch (BadCredentialsException e) {
@@ -71,9 +71,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         User user = ((User) authResult.getPrincipal());
 
         List<String> roles = user.getAuthorities()
-            .stream()
-            .map(GrantedAuthority::getAuthority)
-            .collect(Collectors.toList());
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
 
         response.getWriter().write(jwtTokenizer.getAuthToken(user.getUsername(), roles));
         LOGGER.info("Successfully authenticated user {}", user.getUsername());

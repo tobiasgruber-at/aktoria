@@ -1,12 +1,8 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 
 @Entity
 public class Message {
@@ -76,10 +72,10 @@ public class Message {
             return false;
         }
         return Objects.equals(id, message.id)
-            && Objects.equals(publishedAt, message.publishedAt)
-            && Objects.equals(title, message.title)
-            && Objects.equals(summary, message.summary)
-            && Objects.equals(text, message.text);
+                && Objects.equals(publishedAt, message.publishedAt)
+                && Objects.equals(title, message.title)
+                && Objects.equals(summary, message.summary)
+                && Objects.equals(text, message.text);
     }
 
     @Override
@@ -90,12 +86,12 @@ public class Message {
     @Override
     public String toString() {
         return "Message{"
-            + "id=" + id
-            + ", publishedAt=" + publishedAt
-            + ", title='" + title + '\''
-            + ", summary='" + summary + '\''
-            + ", text='" + text + '\''
-            + '}';
+                + "id=" + id
+                + ", publishedAt=" + publishedAt
+                + ", title='" + title + '\''
+                + ", summary='" + summary + '\''
+                + ", text='" + text + '\''
+                + '}';
     }
 
 

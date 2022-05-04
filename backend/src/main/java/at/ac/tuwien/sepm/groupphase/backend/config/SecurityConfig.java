@@ -43,9 +43,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and()
-            .csrf().disable()
-            .addFilter(new JwtAuthenticationFilter(authenticationManager(), securityProperties, jwtTokenizer))
-            .addFilter(new JwtAuthorizationFilter(authenticationManager(), securityProperties));
+                .csrf().disable()
+                .addFilter(new JwtAuthenticationFilter(authenticationManager(), securityProperties, jwtTokenizer))
+                .addFilter(new JwtAuthorizationFilter(authenticationManager(), securityProperties));
     }
 
     @Override
@@ -57,8 +57,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public CorsConfigurationSource corsConfigurationSource() {
         final List<String> permitAll = Collections.singletonList("*");
         final List<String> permitMethods = List.of(HttpMethod.GET.name(), HttpMethod.POST.name(), HttpMethod.PUT.name(),
-            HttpMethod.PATCH.name(), HttpMethod.DELETE.name(), HttpMethod.OPTIONS.name(), HttpMethod.HEAD.name(),
-            HttpMethod.TRACE.name());
+                HttpMethod.PATCH.name(), HttpMethod.DELETE.name(), HttpMethod.OPTIONS.name(), HttpMethod.HEAD.name(),
+                HttpMethod.TRACE.name());
         final CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedHeaders(permitAll);
         configuration.setAllowedOrigins(permitAll);

@@ -33,7 +33,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
-        throws IOException, ServletException {
+            throws IOException, ServletException {
         try {
             UsernamePasswordAuthenticationToken authToken = getAuthToken(request);
             if (authToken != null) {
@@ -49,7 +49,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     }
 
     private UsernamePasswordAuthenticationToken getAuthToken(HttpServletRequest request)
-        throws JwtException, IllegalArgumentException {
+            throws JwtException, IllegalArgumentException {
         String token = request.getHeader(securityProperties.getAuthHeader());
         if (token == null || token.isEmpty()) {
             return null;
@@ -65,15 +65,15 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             throw new IllegalArgumentException("Token must start with 'Bearer'");
         }
         Claims claims = Jwts.parserBuilder().setSigningKey(signingKey).build()
-            .parseClaimsJws(token.replace(securityProperties.getAuthTokenPrefix(), ""))
-            .getBody();
+                .parseClaimsJws(token.replace(securityProperties.getAuthTokenPrefix(), ""))
+                .getBody();
 
         String username = claims.getSubject();
 
         List<SimpleGrantedAuthority> authorities = ((List<?>) claims
-            .get("rol")).stream()
-            .map(authority -> new SimpleGrantedAuthority((String) authority))
-            .collect(Collectors.toList());
+                .get("rol")).stream()
+                .map(authority -> new SimpleGrantedAuthority((String) authority))
+                .collect(Collectors.toList());
 
         if (username == null || username.isEmpty()) {
             throw new IllegalArgumentException("Token contains no user");

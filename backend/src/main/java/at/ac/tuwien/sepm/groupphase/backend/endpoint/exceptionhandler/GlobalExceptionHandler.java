@@ -31,7 +31,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     /**
      * Use the @ExceptionHandler annotation to write handler for custom exceptions.
      */
-    @ExceptionHandler(value = {NotFoundException.class})
+    @ExceptionHandler(value = { NotFoundException.class })
     protected ResponseEntity<Object> handleNotFound(RuntimeException ex, WebRequest request) {
         LOGGER.warn(ex.getMessage());
         return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.NOT_FOUND, request);
@@ -48,10 +48,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         Map<String, Object> body = new LinkedHashMap<>();
         //Get all errors
         List<String> errors = ex.getBindingResult()
-            .getFieldErrors()
-            .stream()
-            .map(err -> err.getField() + " " + err.getDefaultMessage())
-            .collect(Collectors.toList());
+                .getFieldErrors()
+                .stream()
+                .map(err -> err.getField() + " " + err.getDefaultMessage())
+                .collect(Collectors.toList());
         body.put("Validation errors", errors);
 
         return new ResponseEntity<>(body.toString(), headers, status);

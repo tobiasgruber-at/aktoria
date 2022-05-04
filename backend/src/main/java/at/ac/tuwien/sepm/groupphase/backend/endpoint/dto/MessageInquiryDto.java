@@ -51,8 +51,8 @@ public class MessageInquiryDto {
             return false;
         }
         return Objects.equals(title, that.title)
-            && Objects.equals(summary, that.summary)
-            && Objects.equals(text, that.text);
+                && Objects.equals(summary, that.summary)
+                && Objects.equals(text, that.text);
     }
 
     @Override
@@ -63,10 +63,10 @@ public class MessageInquiryDto {
     @Override
     public String toString() {
         return "MessageInquiryDto{"
-            + "title='" + title + '\''
-            + ", summary='" + summary + '\''
-            + ", text='" + text + '\''
-            + '}';
+                + "title='" + title + '\''
+                + ", summary='" + summary + '\''
+                + ", text='" + text + '\''
+                + '}';
     }
 
 
