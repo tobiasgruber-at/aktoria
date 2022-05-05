@@ -1,5 +1,11 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedUserDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserRegistrationDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.exceptionhandler.ServiceException;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.exceptionhandler.UserNotFoundException;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.exceptionhandler.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
@@ -7,15 +13,12 @@ import at.ac.tuwien.sepm.groupphase.backend.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.lang.invoke.MethodHandles;
-import java.util.List;
+
 
 @Service
 public class CustomUserDetailService implements UserService {
@@ -28,7 +31,39 @@ public class CustomUserDetailService implements UserService {
         this.userRepository = userRepository;
     }
 
+
     @Override
+    public UserRegistrationDto createUser(UserRegistrationDto userRegistrationDto) throws ServiceException, ValidationException {
+        return null;
+    }
+
+    @Override
+    public DetailedUserDto changeUserData(DetailedUserDto detailedUserDto) throws ServiceException {
+        return null;
+    }
+
+
+    @Override
+    public void deleteUser(SimpleUserDto simpleUserDto) throws ServiceException {
+
+    }
+
+    @Override
+    public void forgotPassword(String email) throws UserNotFoundException {
+
+    }
+
+    @Override
+    public SimpleUserDto changeEmail(SimpleUserDto simpleUserDto) throws ServiceException {
+        return null;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return null;
+    }
+
+    /*@Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         LOGGER.debug("Load all user by email");
         try {
@@ -45,7 +80,7 @@ public class CustomUserDetailService implements UserService {
         } catch (NotFoundException e) {
             throw new UsernameNotFoundException(e.getMessage(), e);
         }
-    }
+    }*/
 
     @Override
     public ApplicationUser findApplicationUserByEmail(String email) {
@@ -56,4 +91,6 @@ public class CustomUserDetailService implements UserService {
         }
         throw new NotFoundException(String.format("Could not find the user with the email address %s", email));
     }
+
+
 }

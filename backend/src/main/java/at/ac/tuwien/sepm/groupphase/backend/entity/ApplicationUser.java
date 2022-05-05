@@ -3,17 +3,21 @@ package at.ac.tuwien.sepm.groupphase.backend.entity;
 //TODO: replace this class with a correct ApplicationUser Entity implementation
 public class ApplicationUser {
 
+    private Long id;
+    private String name;
     private String email;
     private String password;
-    private Boolean admin;
+    private Boolean verified;
 
     public ApplicationUser() {
     }
 
-    public ApplicationUser(String email, String password, Boolean admin) {
+    public ApplicationUser(Long id, String name, String email, String password, Boolean verified) {
+        this.id = id;
+        this.name = name;
         this.email = email;
         this.password = password;
-        this.admin = admin;
+        this.verified = verified;
     }
 
     public String getEmail() {
@@ -32,11 +36,27 @@ public class ApplicationUser {
         this.password = password;
     }
 
-    public Boolean getAdmin() {
-        return admin;
+    public Long getId() {
+        return id;
     }
 
-    public void setAdmin(Boolean admin) {
-        this.admin = admin;
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Boolean getVerified() {
+        return verified;
+    }
+
+    public void setVerified(Boolean verified) {
+        this.verified = verified;
     }
 }
