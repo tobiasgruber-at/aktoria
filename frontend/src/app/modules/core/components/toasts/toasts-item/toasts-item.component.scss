@@ -2,3 +2,7 @@
   display: block;
   position: relative; // so that z-index is applied (in toast.component.html)
 }
+
+.toast {
+  opacity: 0.9;
+}
