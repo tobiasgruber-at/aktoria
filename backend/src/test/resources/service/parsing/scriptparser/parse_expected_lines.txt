@@ -9,4 +9,5 @@ ROLE-C Ich bin bereits auf einer neuen Seite.
 ROLED UND ROLEE (gleichzeitig.) Ich auch!
 (Mr. Roleb schaut verachtend herüber.)
 ROLED Ich bin ja so froh, dass das alles geklappt hat. Ich habe mich schon so auf heute gefreut.
+ROLEE O ja! Ich auch!
 Ende

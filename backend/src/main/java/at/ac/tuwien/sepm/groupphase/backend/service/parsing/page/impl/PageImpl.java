@@ -58,18 +58,28 @@ public class PageImpl implements Page {
     }
 
     @Override
-    public boolean add(Line line) {
-        return lines.add(line);
-    }
-
-    @Override
     public boolean remove(Object o) {
         return lines.remove(o);
     }
 
     @Override
+    public Line remove(int index) {
+        return lines.remove(index);
+    }
+
+    @Override
     public boolean containsAll(Collection<?> c) {
         return lines.containsAll(c);
+    }
+
+    @Override
+    public boolean add(Line line) {
+        return lines.add(line);
+    }
+
+    @Override
+    public void add(int index, Line line) {
+        lines.add(index, line);
     }
 
     @Override
@@ -105,16 +115,6 @@ public class PageImpl implements Page {
     @Override
     public Line set(int index, Line line) {
         return lines.set(index, line);
-    }
-
-    @Override
-    public void add(int index, Line line) {
-        lines.add(index, line);
-    }
-
-    @Override
-    public Line remove(int index) {
-        return lines.remove(index);
     }
 
     @Override

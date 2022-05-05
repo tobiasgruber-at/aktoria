@@ -75,20 +75,39 @@ public class LineImpl implements Line {
         Matcher matcher = pattern.matcher(raw);
 
         if (matcher.find()) {
-            String rolesDeclaration = matcher.group().trim();
+            String stagedRolesDeclaration = matcher.group().trim();
+            String stagedContent = raw.substring(matcher.end()).trim();
 
-            // TODO: check if the content starts with an uppercase letter
+            // check if the content starts with an uppercase letter
             // if not, check if the role declaration snatched the starting letter
             // e.g. for lines like "BOB   O nein!"
 
-            roles = getRolesFromDeclaration(rolesDeclaration);
-            content = raw.substring(matcher.end()).trim();
+            if (checkForOversuppliedRole(stagedContent)) {
+                String[] temp = stagedRolesDeclaration.split(" ");
+                stagedContent = String.join(" ", temp[temp.length - 1], stagedContent).trim();
+                temp[temp.length - 1] = "";
+                stagedRolesDeclaration = String.join(" ", temp).trim();
+            }
+
+            roles = getRolesFromDeclaration(stagedRolesDeclaration);
+            content = stagedContent;
         } else {
             roles = null;
             content = raw.equals("\f") ? raw : raw.trim();
         }
 
         isDecomposed = true;
+    }
+
+    private boolean checkForOversuppliedRole(String content) {
+        content = content.trim();
+
+        if (content.isEmpty()) {
+            return false;
+        }
+
+        char firstChar = content.charAt(0);
+        return Character.isLowerCase(firstChar);
     }
 
     private String compileLine() {
