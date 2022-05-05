@@ -3,6 +3,8 @@ package at.ac.tuwien.sepm.groupphase.backend.service.parsing.line;
 import java.util.List;
 
 /**
+ * @author Simon Josef Kreuzpointner
+ *
  * Describes a line in a theater play script.
  *
  * <p>A line is a section of the script
