@@ -1,18 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
 import { MessageService } from './message.service';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-import { ReactiveFormsModule } from '@angular/forms';
+import { SharedTestingModule } from '../../shared/shared-testing.module';
 
 describe('MessageService', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        RouterTestingModule,
-        ReactiveFormsModule
-      ]
+      imports: [SharedTestingModule]
     })
   );
 

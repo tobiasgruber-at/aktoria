@@ -12,4 +12,3 @@ public class DetailedUserDto extends SimpleUserDto {
         return password;
     }
 }
-

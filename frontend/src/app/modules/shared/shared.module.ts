@@ -4,20 +4,34 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { AlertComponent } from './components/alert/alert.component';
 import { PageLayoutComponent } from './components/page-layout/page-layout.component';
-import { NgbToast, NgbToastModule } from '@ng-bootstrap/ng-bootstrap';
+import { CardComponent } from './components/card/card.component';
+import { ButtonComponent } from './components/button/button.component';
+import { PersonCircle } from 'ng-bootstrap-icons/icons';
+import { BootstrapIconsModule } from 'ng-bootstrap-icons';
+import { FormErrorComponent } from './components/form-errors/form-error/form-error.component';
+import { FormErrorsComponent } from './components/form-errors/form-errors.component';
 
-const sharedDeclarations = [PageLayoutComponent, AlertComponent];
+const icons = {
+  PersonCircle
+};
+const sharedDeclarations = [
+  PageLayoutComponent,
+  AlertComponent,
+  CardComponent,
+  ButtonComponent,
+  FormErrorComponent,
+  FormErrorsComponent
+];
 const sharedImports = [
   CommonModule,
   FormsModule,
-  RouterModule,
   ReactiveFormsModule,
-  NgbToastModule
+  RouterModule
 ];
 
 @NgModule({
   declarations: [...sharedDeclarations],
-  imports: [...sharedImports],
-  exports: [...sharedImports, ...sharedDeclarations]
+  imports: [...sharedImports, BootstrapIconsModule.pick(icons)],
+  exports: [...sharedImports, ...sharedDeclarations, BootstrapIconsModule]
 })
 export class SharedModule {}

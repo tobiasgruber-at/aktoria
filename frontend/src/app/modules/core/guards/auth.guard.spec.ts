@@ -1,19 +1,13 @@
 import { inject, TestBed } from '@angular/core/testing';
 
 import { AuthGuard } from './auth.guard';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-import { ReactiveFormsModule } from '@angular/forms';
+import { SharedTestingModule } from '../../shared/shared-testing.module';
 
 describe('AuthGuard', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        RouterTestingModule,
-        ReactiveFormsModule
-      ],
-      providers: [AuthGuard]
+      providers: [AuthGuard],
+      imports: [SharedTestingModule]
     });
   });
 

@@ -1,6 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AuthRequest } from '../../shared/dtos/auth-request';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, Validators} from '@angular/forms';
+import {Router} from '@angular/router';
+import {ToastService} from '../../core/services/toast/toast.service';
+import {UserService} from '../../core/services/user/user-service';
+import {UserRegistration} from '../../shared/dtos/user-dtos';
+import {FormBase} from '../../shared/classes/form-base';
+import {Theme} from '../../shared/enums/theme.enum';
+import {matchingPasswordsValidator} from '../../shared/validators/matching-passwords-validator';
 
 /** @author Tobias Gruber */
 @Component({
@@ -8,26 +14,42 @@ import { AuthRequest } from '../../shared/dtos/auth-request';
   templateUrl: './registration.component.html',
   styleUrls: ['./registration.component.scss']
 })
-export class RegistrationComponent implements OnInit {
-  registerForm: FormGroup;
-  submitted = false;
-
-  constructor(private formBuilder: FormBuilder) {}
-
-  ngOnInit(): void {
-    this.registerForm = this.formBuilder.group({
-      name: ['', [Validators.required]],
-      email: ['', [Validators.required]],
-      password: ['', [Validators.required, Validators.minLength(8)]],
-      passwordConfirm: ['', [Validators.required]]
-    });
+export class RegistrationComponent extends FormBase implements OnInit {
+  constructor(
+    private formBuilder: FormBuilder,
+    private userService: UserService,
+    private router: Router,
+    private toastService: ToastService
+  ) {
+    super(toastService);
   }
 
-  registerUser(): void {
-    this.submitted = true;
-    if (this.registerForm.valid) {
-    } else {
-      console.log('Invalid input');
-    }
+  ngOnInit(): void {
+    this.form = this.formBuilder.group(
+      {
+        name: ['', [Validators.required]],
+        email: ['', [Validators.required, Validators.email]],
+        password: ['', [Validators.required, Validators.minLength(8)]],
+        passwordConfirm: ['', [Validators.required]]
+      },
+      { validators: [matchingPasswordsValidator] }
+    );
+  }
+
+  protected sendSubmit() {
+    const { name, email, password } = this.form.value;
+    this.userService
+      .register(new UserRegistration(name, email, password))
+      .subscribe({
+        next: (res) => {
+          this.toggleLoading(false);
+          this.router.navigateByUrl('/');
+          this.toastService.show({
+            message: 'Erfolgreich registriert!',
+            theme: Theme.primary
+          });
+        },
+        error: (err) => this.handleError(err)
+      });
   }
 }
