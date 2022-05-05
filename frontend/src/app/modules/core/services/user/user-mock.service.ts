@@ -9,9 +9,7 @@ import { randomDelay } from '../../../shared/functions/random-delay';
 import { tap } from 'rxjs/operators';
 import { AuthService } from '../auth.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class UserMockService extends UserService {
   readonly mockedToken: string =
     'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJzZWN1cmUtYmFja2VuZCIsImF1ZCI6InNlY3VyZS1hcHAiLCJzdWIiOiJ1c2VyQGVtYWlsLmNvbSIsImV4cCI6MTY1MTc0NjI2NSwicm9sIjpbIlJPTEVfVVNFUiJdfQ.I_gKPDwpy5rMK3ftsEQyXcelkNww8JCC6N4QHFq2XCVGcF88dB3dZSPKLe3uqOm693BuR9xKJ89tLb5wnC9tGA';

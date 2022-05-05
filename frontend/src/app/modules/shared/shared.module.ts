@@ -21,8 +21,8 @@ const sharedDeclarations = [
 const sharedImports = [
   CommonModule,
   FormsModule,
-  RouterModule,
-  ReactiveFormsModule
+  ReactiveFormsModule,
+  RouterModule
 ];
 
 @NgModule({

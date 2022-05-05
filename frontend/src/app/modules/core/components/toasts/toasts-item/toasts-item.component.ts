@@ -10,7 +10,7 @@ import {ToastService} from '../../../services/toast.service';
 })
 export class ToastsItemComponent implements OnInit, OnInit {
   @Input() toast: Toast;
-  private autoCloseTimeout: number;
+  private autoCloseTimeout;
 
   constructor(private toastService: ToastService) {}
 

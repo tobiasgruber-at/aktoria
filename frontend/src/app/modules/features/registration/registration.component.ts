@@ -41,7 +41,7 @@ export class RegistrationComponent extends FormBase implements OnInit {
           this.toggleLoading(false);
           this.router.navigateByUrl('/');
           this.toastService.show({
-            message: 'Erfolgreich Registriert!',
+            message: 'Erfolgreich registriert!',
             theme: Theme.primary
           });
         },

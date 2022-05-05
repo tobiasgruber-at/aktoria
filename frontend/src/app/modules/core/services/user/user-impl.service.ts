@@ -5,7 +5,9 @@ import {
   UserRegistration
 } from '../../../shared/dtos/user-dtos';
 import { UserService } from './user-service';
+import { Injectable } from '@angular/core';
 
+@Injectable()
 export class UserImplService extends UserService {
   private userBaseUri: string = this.globals.backendUri + '/users';
 

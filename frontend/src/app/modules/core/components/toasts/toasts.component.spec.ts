@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ToastsComponent } from './toasts.component';
+import { SharedTestingModule } from '../../../shared/shared-testing.module';
 
 describe('ToastsComponent', () => {
   let component: ToastsComponent;
@@ -8,9 +9,9 @@ describe('ToastsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ToastsComponent ]
-    })
-    .compileComponents();
+      declarations: [ToastsComponent],
+      imports: [SharedTestingModule]
+    }).compileComponents();
   });
 
   beforeEach(() => {

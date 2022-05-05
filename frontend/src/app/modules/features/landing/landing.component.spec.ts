@@ -1,9 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { LandingComponent } from './landing.component';
-import { ReactiveFormsModule } from '@angular/forms';
-import { RouterTestingModule } from '@angular/router/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { SharedTestingModule } from '../../shared/shared-testing.module';
 
 describe('LandingComponent', () => {
   let component: LandingComponent;
@@ -11,12 +9,8 @@ describe('LandingComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        RouterTestingModule,
-        ReactiveFormsModule
-      ],
-      declarations: [LandingComponent]
+      declarations: [LandingComponent],
+      imports: [SharedTestingModule]
     }).compileComponents();
   }));
 
