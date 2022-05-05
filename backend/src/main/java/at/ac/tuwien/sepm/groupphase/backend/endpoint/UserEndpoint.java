@@ -24,7 +24,7 @@ public class UserEndpoint {
     private static final Logger LOGGER = LoggerFactory.getLogger(User.class);
 
     public UserEndpoint() {
-        //TODO: implement constructor ---
+        //TODO: implement constructor
     }
 
     @PostMapping
