@@ -1,9 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { AlertComponent } from './alert.component';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-import { ReactiveFormsModule } from '@angular/forms';
+import { SharedTestingModule } from '../../shared-testing.module';
 
 describe('AlertComponent', () => {
   let component: AlertComponent;
@@ -11,12 +9,8 @@ describe('AlertComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        RouterTestingModule,
-        ReactiveFormsModule
-      ],
-      declarations: [AlertComponent]
+      declarations: [AlertComponent],
+      imports: [SharedTestingModule]
     }).compileComponents();
   }));
 

@@ -1,0 +1,13 @@
+header nav,
+footer {
+  height: 4.5rem;
+}
+
+ul {
+  display: flex;
+  align-items: center;
+
+  a.nav-link.account {
+    height: 3rem;
+  }
+}

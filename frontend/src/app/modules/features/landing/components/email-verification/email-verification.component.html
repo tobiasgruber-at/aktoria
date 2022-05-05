@@ -1,0 +1,15 @@
+<app-card title="Email Adresse bestätigen">
+  <p>
+    Vor der Verwendung musst du erst deine Email bestätigen.<br />
+    Bitte überprüfe in deinem Postfach, ob du eine Email von uns erhalten hast.
+  </p>
+  <div class="d-flex justify-content-end"></div>
+  <form (ngSubmit)="submit()" [formGroup]="form" class="form">
+    <app-button
+      [loading]="loading"
+      class="float-end"
+      label="Erneut senden"
+      type="submit"
+    ></app-button>
+  </form>
+</app-card>
