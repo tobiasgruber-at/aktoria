@@ -7,4 +7,8 @@ public class DetailedUserDto extends SimpleUserDto {
         super(id, name, email, verified);
         this.password = password;
     }
+
+    public String getPassword() {
+        return password;
+    }
 }
