@@ -24,10 +24,24 @@ public class Script {
         this.pdfFile = pdfFile;
     }
 
+    /**
+     * Gets the file contents as plain text.
+     * <br>
+     * This method gets the file contents as plain text. It ignores images, formatting
+     * the text layout or any other decorations.
+     * <br>
+     * The page end is denoted with the form feed character \f.
+     *
+     * @return the file contents as a string
+     * @throws IOException if the pdf file is corrupted
+     */
     public String getFileContentsAsPlainText() throws IOException {
         LOGGER.trace("getFileContentsAsPlainText()");
 
         PDDocument document = PDDocument.load(pdfFile);
+
+        // TODO: throw exception on document.isEncrypted()
+
         PDFTextStripper stripper = new PDFTextStripper();
 
         stripper.setSortByPosition(true);
