@@ -8,7 +8,7 @@ import { MessageService } from '../../core/services/message.service';
 import { Message } from '../../shared/dtos/message';
 import { NgbModal, NgbPaginationConfig } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder } from '@angular/forms';
-import { AuthService } from '../../core/services/auth.service';
+import { AuthService } from '../../core/services/auth/auth-service';
 
 @Component({
   selector: 'app-message',

@@ -1,6 +1,6 @@
 import {FormGroup} from '@angular/forms';
 import {Theme} from '../enums/theme.enum';
-import {ToastService} from '../../core/services/toast.service';
+import {ToastService} from '../../core/services/toast/toast.service';
 
 /** @author Tobias Gruber */
 export abstract class FormBase {
@@ -48,7 +48,16 @@ export abstract class FormBase {
     });
   }
 
-  getFormFieldHasError(fieldName: string, errorName?: string): boolean {
+  /** @return Whether form has a specific error. */
+  hasError(errorName?: string): boolean {
+    return (
+      this.submitted &&
+      ((errorName ? this.form.errors?.[errorName] : this.form.invalid) || false)
+    );
+  }
+
+  /** @return Whether a form field has any error, or a specific one. */
+  fieldHasErrors(fieldName: string, errorName?: string): boolean {
     const field = this.form.get(fieldName);
     return (
       (this.submitted || field.touched) &&

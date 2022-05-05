@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { ToastService } from './toast.service';
-import { SharedTestingModule } from '../../shared/shared-testing.module';
+import { SharedTestingModule } from '../../../shared/shared-testing.module';
 
 describe('ToastService', () => {
   let service: ToastService;

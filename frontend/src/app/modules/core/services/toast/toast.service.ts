@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Toast} from '../../shared/interfaces/toast.interface';
+import {Toast} from '../../../shared/interfaces/toast.interface';
 import {BehaviorSubject, Observable} from 'rxjs';
 
 /** @author Tobias Gruber */

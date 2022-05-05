@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Toast} from '../../../../shared/interfaces/toast.interface';
-import {ToastService} from '../../../services/toast.service';
+import {ToastService} from '../../../services/toast/toast.service';
 
 /** @author Tobias Gruber */
 @Component({

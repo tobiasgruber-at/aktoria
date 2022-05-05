@@ -1,13 +1,13 @@
 import {Component} from '@angular/core';
-import {ToastService} from '../../services/toast.service';
-import {appearAnimations} from '../../../shared/animations/appear-animations';
+import {ToastService} from '../../services/toast/toast.service';
+import {lightAppearAnimations} from '../../../shared/animations/light-appear.animations';
 
 /** @author Tobias Gruber */
 @Component({
   selector: 'app-toasts',
   templateUrl: './toasts.component.html',
   styleUrls: ['./toasts.component.scss'],
-  animations: [appearAnimations]
+  animations: [lightAppearAnimations]
 })
 export class ToastsComponent {
   constructor(public toastService: ToastService) {}

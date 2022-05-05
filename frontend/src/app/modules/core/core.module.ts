@@ -5,6 +5,8 @@ import { ToastsComponent } from './components/toasts/toasts.component';
 import { ToastsItemComponent } from './components/toasts/toasts-item/toasts-item.component';
 import { UserMockService } from './services/user/user-mock.service';
 import { UserService } from './services/user/user-service';
+import { AuthService } from './services/auth/auth-service';
+import { AuthMockService } from './services/auth/auth-mock.service';
 
 const sharedDeclarations = [ToastsComponent];
 
@@ -17,6 +19,10 @@ const sharedDeclarations = [ToastsComponent];
     {
       provide: UserService,
       useClass: UserMockService
+    },
+    {
+      provide: AuthService,
+      useClass: AuthMockService
     }
   ]
 })

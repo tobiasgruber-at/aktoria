@@ -1,4 +1,8 @@
-<button [disabled]="loading" class="btn btn-{{ theme }}" type="submit">
+<button
+  [disabled]="loading || disabled"
+  class="btn btn-{{ theme }}"
+  type="submit"
+>
   {{ label }}
   <span
     *ngIf="loading"

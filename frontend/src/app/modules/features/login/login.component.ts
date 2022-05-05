@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthService } from '../../core/services/auth.service';
 import { AuthRequest } from '../../shared/dtos/auth-request';
-import { ToastService } from '../../core/services/toast.service';
+import { ToastService } from '../../core/services/toast/toast.service';
 import { FormBase } from '../../shared/classes/form-base';
+import { AuthService } from '../../core/services/auth/auth-service';
 
 @Component({
   selector: 'app-login',
@@ -23,7 +23,7 @@ export class LoginComponent extends FormBase implements OnInit {
 
   ngOnInit(): void {
     this.form = this.formBuilder.group({
-      email: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(8)]]
     });
   }

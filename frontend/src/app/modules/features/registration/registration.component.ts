@@ -1,11 +1,12 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
-import {ToastService} from '../../core/services/toast.service';
+import {ToastService} from '../../core/services/toast/toast.service';
 import {UserService} from '../../core/services/user/user-service';
 import {UserRegistration} from '../../shared/dtos/user-dtos';
 import {FormBase} from '../../shared/classes/form-base';
 import {Theme} from '../../shared/enums/theme.enum';
+import {matchingPasswordsValidator} from '../../shared/validators/matching-passwords-validator';
 
 /** @author Tobias Gruber */
 @Component({
@@ -24,12 +25,15 @@ export class RegistrationComponent extends FormBase implements OnInit {
   }
 
   ngOnInit(): void {
-    this.form = this.formBuilder.group({
-      name: ['', [Validators.required]],
-      email: ['', [Validators.required]],
-      password: ['', [Validators.required, Validators.minLength(8)]],
-      passwordConfirm: ['asefsefasef', [Validators.required]]
-    });
+    this.form = this.formBuilder.group(
+      {
+        name: ['', [Validators.required]],
+        email: ['', [Validators.required, Validators.email]],
+        password: ['', [Validators.required, Validators.minLength(8)]],
+        passwordConfirm: ['', [Validators.required]]
+      },
+      { validators: [matchingPasswordsValidator] }
+    );
   }
 
   protected sendSubmit() {

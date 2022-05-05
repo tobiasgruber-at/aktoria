@@ -8,6 +8,7 @@ import { Theme } from '../../enums/theme.enum';
 })
 export class ButtonComponent implements OnInit {
   @Input() loading = false;
+  @Input() disabled = false;
   @Input() label: string;
   @Input() theme: Theme = Theme.primary;
   @Input() type: 'button' | 'submit' = 'button';

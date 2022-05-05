@@ -8,6 +8,8 @@ import { CardComponent } from './components/card/card.component';
 import { ButtonComponent } from './components/button/button.component';
 import { PersonCircle } from 'ng-bootstrap-icons/icons';
 import { BootstrapIconsModule } from 'ng-bootstrap-icons';
+import { FormErrorComponent } from './components/form-errors/form-error/form-error.component';
+import { FormErrorsComponent } from './components/form-errors/form-errors.component';
 
 const icons = {
   PersonCircle
@@ -16,7 +18,9 @@ const sharedDeclarations = [
   PageLayoutComponent,
   AlertComponent,
   CardComponent,
-  ButtonComponent
+  ButtonComponent,
+  FormErrorComponent,
+  FormErrorsComponent
 ];
 const sharedImports = [
   CommonModule,
