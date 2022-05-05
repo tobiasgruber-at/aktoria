@@ -9,6 +9,11 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 
+/**
+ * An unparsed PDF script.
+ *
+ * @author Simon Josef Kreuzpointner
+ */
 public class Script {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

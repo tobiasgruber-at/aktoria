@@ -12,6 +12,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
 
+/**
+ * A parsed script.
+ *
+ * @author Simon Josef Kreuzpointner
+ */
 public class ParsedScript {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

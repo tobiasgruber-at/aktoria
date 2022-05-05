@@ -13,6 +13,11 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Objects;
 
+/**
+ * An implementation of Page.
+ *
+ * @author Simon Josef Kreuzpointner
+ */
 public class PageImpl implements Page {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

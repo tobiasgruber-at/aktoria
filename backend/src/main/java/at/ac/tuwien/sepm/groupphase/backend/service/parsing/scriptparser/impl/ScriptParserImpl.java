@@ -12,6 +12,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 
+/**
+ * An implementation of ScriptParser.
+ *
+ * @author Simon Josef Kreuzpointner
+ */
 public class ScriptParserImpl implements ScriptParser {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

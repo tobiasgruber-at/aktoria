@@ -14,6 +14,11 @@ import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * An implementation of Line.
+ *
+ * @author Simon Josef Kreuzpointner
+ */
 public class LineImpl implements Line {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
