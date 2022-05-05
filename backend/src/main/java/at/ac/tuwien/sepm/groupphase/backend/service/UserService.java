@@ -21,17 +21,17 @@ public interface UserService extends UserDetailsService {
     //TODO: email ändern, abort button?
 
     /**
+     * Creates a new User.
+     *
      * @param userRegistrationDto filled with the user input (Name, email, password)
      * @return the created User
      * @throws ServiceException    is thrown when user could not be created.
      * @throws ValidationException is thrown when user data is not valid
-     *                             <p>
-     *                             Creates a new User.
      */
     UserRegistrationDto createUser(UserRegistrationDto userRegistrationDto) throws ServiceException, ValidationException;
 
     /**
-     * Changes the password/username of a user
+     * Changes the password/username of a user.
      *
      * @param detailedUserDto filled with the new password/username
      * @return the updated user
@@ -48,7 +48,7 @@ public interface UserService extends UserDetailsService {
     void deleteUser(SimpleUserDto simpleUserDto) throws ServiceException;
 
     /**
-     * Sends an email to the user to set a new password
+     * Sends an email to the user to set a new password.
      *
      * @param email the email of the user
      * @throws UserNotFoundException is thrown if the user does not exist
@@ -56,7 +56,7 @@ public interface UserService extends UserDetailsService {
     void forgotPassword(String email) throws UserNotFoundException;
 
     /**
-     * Changes the email of a user
+     * Changes the email of a user.
      *
      * @param simpleUserDto filled with the user data, including the new email
      * @return the updated user with the new email

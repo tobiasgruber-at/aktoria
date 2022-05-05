@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 //TODO: replace this class with a correct ApplicationUser JPARepository implementation
 @Repository
 public class UserRepository {
-
+    
     private final ApplicationUser user;
     private final ApplicationUser admin;
 

@@ -18,7 +18,9 @@ public class UserMapper {
 
     public UserRegistrationDto entityToUserGenerationDto(ApplicationUser user) {
         LOGGER.trace("transform user entity into UserRegistrationDto");
-        if (user == null) return null;
+        if (user == null) {
+            return null;
+        }
         return new UserRegistrationDto(user.getName(), user.getEmail(), user.getPassword());
     }
 }
