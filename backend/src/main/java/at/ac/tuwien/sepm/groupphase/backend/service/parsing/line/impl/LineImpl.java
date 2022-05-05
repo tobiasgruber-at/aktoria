@@ -359,7 +359,7 @@ public class LineImpl implements Line {
     @Override
     public int hashCode() {
         LOGGER.trace("hashCode()");
-        
+
         return Objects.hash(conflictType, isDecomposed, raw, roles, content, page);
     }
 }

@@ -5,10 +5,10 @@ import at.ac.tuwien.sepm.groupphase.backend.service.parsing.line.Line;
 import java.util.List;
 
 /**
- * @author Simon Josef Kreuzpointner
- *
- * Discribes a page in a script. It contains all lines
+ * Describes a page in a script. It contains all lines
  * that start on this page.
+ *
+ * @author Simon Josef Kreuzpointner
  */
 public interface Page extends List<Line> {
 

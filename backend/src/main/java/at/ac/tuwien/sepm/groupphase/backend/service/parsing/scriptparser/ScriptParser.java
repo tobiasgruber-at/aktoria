@@ -3,9 +3,9 @@ package at.ac.tuwien.sepm.groupphase.backend.service.parsing.scriptparser;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.script.ParsedScript;
 
 /**
- * @author Simon Josef Kreuzpointner
- *
  * Describes a theater play script parser.
+ *
+ * @author Simon Josef Kreuzpointner
  */
 public interface ScriptParser {
     /**

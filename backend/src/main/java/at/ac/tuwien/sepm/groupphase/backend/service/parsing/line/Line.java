@@ -3,14 +3,14 @@ package at.ac.tuwien.sepm.groupphase.backend.service.parsing.line;
 import java.util.List;
 
 /**
- * @author Simon Josef Kreuzpointner
- *
  * Describes a line in a theater play script.
- *
- * <p>A line is a section of the script
+ * <br>
+ * A line is a section of the script
  * that a specific role or multiple specific roles say.
+ * <br>
+ * The content of the line does not contain any new lines.
  *
- * <p>The content of the line does not contain any new lines.
+ * @author Simon Josef Kreuzpointner
  */
 public interface Line extends CharSequence {
 

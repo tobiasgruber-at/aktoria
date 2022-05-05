@@ -31,7 +31,9 @@ class ScriptParserImplUnitTest {
         int pageIndex = 0;
         for (Line l : lines) {
             l.setPage(pageIndex);
-            if (l.getRaw().equals("\f")) pageIndex++;
+            if (l.getRaw().equals("\f")) {
+                pageIndex++;
+            }
         }
 
         ScriptParserImpl parser = new ScriptParserImpl(input);

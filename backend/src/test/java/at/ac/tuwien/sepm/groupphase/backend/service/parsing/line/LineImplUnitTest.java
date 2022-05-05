@@ -13,7 +13,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -21,16 +23,16 @@ class LineImplUnitTest {
 
     private static Stream<ParameterizedTupleGetRoles> parameterizedTupleGetRolesProvider() {
         List<ParameterizedTupleGetRoles> temp = new LinkedList<>();
-        temp.add(new ParameterizedTupleGetRoles(List.of(new String[]{ "ROLE" }), "ROLE This is my text."));
-        temp.add(new ParameterizedTupleGetRoles(List.of(new String[]{ "NAME SURENAME" }), "NAME SURENAME This is my text."));
-        temp.add(new ParameterizedTupleGetRoles(List.of(new String[]{ "ROLEA", "ROLEB" }), "ROLEA UND ROLEB This is my text."));
-        temp.add(new ParameterizedTupleGetRoles(List.of(new String[]{ "ROLEA", "ROLEB" }), "ROLEA / ROLEB This is my text."));
-        temp.add(new ParameterizedTupleGetRoles(List.of(new String[]{ "ROLEA", "ROLEB" }), "ROLEA/ROLEB This is my text."));
-        temp.add(new ParameterizedTupleGetRoles(List.of(new String[]{ "MR. NAME" }), "MR. NAME This is my text."));
-        temp.add(new ParameterizedTupleGetRoles(List.of(new String[]{ "DR. MR. NAME" }), "DR. MR. NAME This is my text."));
-        temp.add(new ParameterizedTupleGetRoles(List.of(new String[]{ "NAME-SURENAME" }), "NAME-SURENAME This is my text."));
-        temp.add(new ParameterizedTupleGetRoles(List.of(new String[]{ "PETER P." }), "PETER P. This is my text."));
-        temp.add(new ParameterizedTupleGetRoles(List.of(new String[]{ "MS. NAME-SURENAME" }), "MS. NAME-SURENAME This is my text."));
+        temp.add(new ParameterizedTupleGetRoles(List.of(new String[] { "ROLE" }), "ROLE This is my text."));
+        temp.add(new ParameterizedTupleGetRoles(List.of(new String[] { "NAME SURENAME" }), "NAME SURENAME This is my text."));
+        temp.add(new ParameterizedTupleGetRoles(List.of(new String[] { "ROLEA", "ROLEB" }), "ROLEA UND ROLEB This is my text."));
+        temp.add(new ParameterizedTupleGetRoles(List.of(new String[] { "ROLEA", "ROLEB" }), "ROLEA / ROLEB This is my text."));
+        temp.add(new ParameterizedTupleGetRoles(List.of(new String[] { "ROLEA", "ROLEB" }), "ROLEA/ROLEB This is my text."));
+        temp.add(new ParameterizedTupleGetRoles(List.of(new String[] { "MR. NAME" }), "MR. NAME This is my text."));
+        temp.add(new ParameterizedTupleGetRoles(List.of(new String[] { "DR. MR. NAME" }), "DR. MR. NAME This is my text."));
+        temp.add(new ParameterizedTupleGetRoles(List.of(new String[] { "NAME-SURENAME" }), "NAME-SURENAME This is my text."));
+        temp.add(new ParameterizedTupleGetRoles(List.of(new String[] { "PETER P." }), "PETER P. This is my text."));
+        temp.add(new ParameterizedTupleGetRoles(List.of(new String[] { "MS. NAME-SURENAME" }), "MS. NAME-SURENAME This is my text."));
 
         return temp.stream();
     }
@@ -106,15 +108,15 @@ class LineImplUnitTest {
         @ParameterizedTest(name = "[{index}] value = {0}")
         @DisplayName("returns true")
         @ValueSource(strings = {
-                "ROLE This is my text.",
-                "NAME SURENAME This is my text.",
-                "ROLEA UND ROLEB This is my text.",
-                "ROLEA / ROLEB This is my text.",
-                "ROLEA/ROLEB This is my text.",
-                "MR. NAME This is my text.",
-                "DR. MR. NAME This is my text.",
-                "NAME-SURENAME This is my text.",
-                "PETER P. This is my text."
+            "ROLE This is my text.",
+            "NAME SURENAME This is my text.",
+            "ROLEA UND ROLEB This is my text.",
+            "ROLEA / ROLEB This is my text.",
+            "ROLEA/ROLEB This is my text.",
+            "MR. NAME This is my text.",
+            "DR. MR. NAME This is my text.",
+            "NAME-SURENAME This is my text.",
+            "PETER P. This is my text."
         })
         void hasRolesTrue(String value) {
             LineImpl l = new LineImpl(value, 0);
@@ -124,12 +126,12 @@ class LineImplUnitTest {
         @ParameterizedTest(name = "[{index}] value = {0}")
         @DisplayName("returns false")
         @ValueSource(strings = {
-                "This is my text.",
-                "(This is an instruction.)",
-                " ",
-                "",
-                "\n",
-                "\f"
+            "This is my text.",
+            "(This is an instruction.)",
+            " ",
+            "",
+            "\n",
+            "\f"
         })
         void hasRolesFalse(String value) {
             LineImpl l = new LineImpl(value, 0);
@@ -143,14 +145,14 @@ class LineImplUnitTest {
         @ParameterizedTest(name = "[{index}] value = {0}")
         @DisplayName("returns true")
         @ValueSource(strings = {
-                "This is a completed line.",
-                "This is a completed line!",
-                "This is a completed line?",
-                "This is a completed line…",
-                "This is a completed line/",
-                "This is a completed line”",
-                "This is a completed line\"",
-                "This is a completed line)"
+            "This is a completed line.",
+            "This is a completed line!",
+            "This is a completed line?",
+            "This is a completed line…",
+            "This is a completed line/",
+            "This is a completed line”",
+            "This is a completed line\"",
+            "This is a completed line)"
         })
         void isCompletedLineTrue(String value) {
             LineImpl l = new LineImpl(value, 0);
@@ -160,14 +162,14 @@ class LineImplUnitTest {
         @ParameterizedTest(name = "[{index}] value = {0}")
         @DisplayName("returns false")
         @ValueSource(strings = {
-                "This is not a completed line",
-                "This is not a completed line ",
-                "This is not a completed line -",
-                " ",
-                "",
-                "\n",
-                "\t",
-                "\f"
+            "This is not a completed line",
+            "This is not a completed line ",
+            "This is not a completed line -",
+            " ",
+            "",
+            "\n",
+            "\t",
+            "\f"
         })
         void isCompletedLineFalse(String value) {
             LineImpl l = new LineImpl(value, 0);
