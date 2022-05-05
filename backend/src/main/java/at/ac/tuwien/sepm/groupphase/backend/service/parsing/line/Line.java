@@ -95,6 +95,8 @@ public interface Line extends CharSequence {
     @Override
     String toString();
 
-    enum ConflictType {VERIFICATION_REQUIRED, ASSIGNMENT_REQUIRED}
+    enum ConflictType {
+        VERIFICATION_REQUIRED, ASSIGNMENT_REQUIRED
+    }
 }
 
