@@ -1,7 +1,10 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.parsing.line.impl;
 
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.line.Line;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.lang.invoke.MethodHandles;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -12,6 +15,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class LineImpl implements Line {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private static final String[] SENTENCE_DELIMITERS = { ".", "!", "?", "\"", "”", "/", ")", "…" };
     private static final String[] MULTI_ROLES_DELIMITERS = { " UND ", "/", " / " };
     private Line.ConflictType conflictType;
@@ -34,10 +39,14 @@ public class LineImpl implements Line {
     }
 
     public static Line join(Line a, Line b) {
+        LOGGER.trace("join(a = {}, b = {})", a, b);
+
         return new LineImpl(String.join(" ", a.getRaw(), b.getRaw()), a.getPage());
     }
 
     private void clean() {
+        LOGGER.trace("clean()");
+
         raw = raw.replace("\n", " ");
         collapseWhitespaces();
 
@@ -47,6 +56,8 @@ public class LineImpl implements Line {
     }
 
     private void removePageNumber() {
+        LOGGER.trace("removePageNumber()");
+
         Pattern pattern = Pattern.compile("^\\d+\\s");
         Matcher matcher = pattern.matcher(raw);
 
@@ -66,11 +77,15 @@ public class LineImpl implements Line {
     }
 
     private void collapseWhitespaces() {
+        LOGGER.trace("collapseWhitespaces()");
+
         raw = raw.replaceAll("\\t+", " ");
         raw = raw.replaceAll(" +", " ");
     }
 
     private void decomposeLine() {
+        LOGGER.trace("decomposeLine()");
+
         Pattern pattern = Pattern.compile("^[A-Z\\s\\.\\-/]+(?=\\s)");
         Matcher matcher = pattern.matcher(raw);
 
@@ -100,6 +115,8 @@ public class LineImpl implements Line {
     }
 
     private boolean checkForOversuppliedRole(String content) {
+        LOGGER.trace("checkForOversuppliedRole()");
+
         content = content.trim();
 
         if (content.isEmpty()) {
@@ -111,6 +128,8 @@ public class LineImpl implements Line {
     }
 
     private String compileLine() {
+        LOGGER.trace("compileLine()");
+
         if (hasRoles()) {
             String temp;
             if (roles.size() > 1) {
@@ -126,6 +145,8 @@ public class LineImpl implements Line {
     }
 
     private List<String> getRolesFromDeclaration(String rolesDeclaration) {
+        LOGGER.trace("getRolesFromDeclaration(rolesDeclaration = {})", rolesDeclaration);
+
         List<String> temp;
 
         String delimiter = getRoleDelimiter(rolesDeclaration);
@@ -140,6 +161,8 @@ public class LineImpl implements Line {
     }
 
     private String getRoleDelimiter(String rolesDeclaration) {
+        LOGGER.trace("getRoleDelimiter(rolesDeclaration = {})", rolesDeclaration);
+
         for (String delimiter : MULTI_ROLES_DELIMITERS) {
             if (rolesDeclaration.contains(delimiter)) {
                 return delimiter;
@@ -150,6 +173,8 @@ public class LineImpl implements Line {
     }
 
     private List<String> getMultipleRoles(String delimiter, String rolesDeclaration) {
+        LOGGER.trace("getMultipleRoles(delimiter = {}, rolesDeclaration = {})", delimiter, rolesDeclaration);
+
         String[] temp = rolesDeclaration.split(delimiter);
         return (Arrays.stream(temp).map(value -> value.trim().toUpperCase(Locale.GERMAN))).toList();
     }
@@ -191,6 +216,8 @@ public class LineImpl implements Line {
 
     @Override
     public List<Line> getPossibleInternalLines() {
+        LOGGER.trace("getPossibleInternalLines()");
+
         Pattern pattern = Pattern.compile("\\b(?<=\\.|\\s|^)[A-Z\\s\\.]+(?=\\s|\\.|$)\\b");
         Matcher matcher = pattern.matcher(raw);
 
@@ -244,6 +271,8 @@ public class LineImpl implements Line {
      */
     @Override
     public boolean isCompletedLine() {
+        LOGGER.trace("isCompletedLine()");
+
         if (raw.isEmpty()) {
             return false;
         }
@@ -261,6 +290,8 @@ public class LineImpl implements Line {
 
     @Override
     public boolean hasRoles() throws IllegalStateException {
+        LOGGER.trace("hasRoles()");
+
         if (isDecomposed) {
             if (roles == null) {
                 return false;
@@ -274,26 +305,36 @@ public class LineImpl implements Line {
 
     @Override
     public int length() {
+        LOGGER.trace("length()");
+
         return raw.length();
     }
 
     @Override
     public char charAt(int index) {
+        LOGGER.trace("charAt(index = {})", index);
+
         return raw.charAt(index);
     }
 
     @Override
     public boolean isEmpty() {
+        LOGGER.trace("isEmpty()");
+
         return raw.isEmpty();
     }
 
     @Override
     public CharSequence subSequence(int start, int end) {
+        LOGGER.trace("subSequence(start = {}, end = {})", start, end);
+
         return raw.subSequence(start, end);
     }
 
     @Override
     public String toString() {
+        LOGGER.trace("toString()");
+
         if (isDecomposed) {
             return compileLine();
         } else {
@@ -303,6 +344,8 @@ public class LineImpl implements Line {
 
     @Override
     public boolean equals(Object o) {
+        LOGGER.trace("equals(o = {})", o);
+
         if (this == o) {
             return true;
         }
@@ -315,6 +358,8 @@ public class LineImpl implements Line {
 
     @Override
     public int hashCode() {
+        LOGGER.trace("hashCode()");
+        
         return Objects.hash(conflictType, isDecomposed, raw, roles, content, page);
     }
 }

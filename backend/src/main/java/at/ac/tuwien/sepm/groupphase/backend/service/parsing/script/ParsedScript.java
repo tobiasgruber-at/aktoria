@@ -3,13 +3,18 @@ package at.ac.tuwien.sepm.groupphase.backend.service.parsing.script;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.line.Line;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.page.Page;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.page.impl.PageImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.lang.invoke.MethodHandles;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
 
 public class ParsedScript {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     private final List<Line> lines;
     private final List<String> roles;
@@ -34,6 +39,8 @@ public class ParsedScript {
     }
 
     private void indexPages() {
+        LOGGER.trace("indexPages()");
+
         pages = new LinkedList<>();
 
         int previousPageIndex = 0;
@@ -56,6 +63,8 @@ public class ParsedScript {
 
     @Override
     public String toString() {
+        LOGGER.trace("toString()");
+
         StringJoiner stringJoiner = new StringJoiner("\n");
 
         for (Line p : lines) {
@@ -67,6 +76,8 @@ public class ParsedScript {
 
     @Override
     public boolean equals(Object o) {
+        LOGGER.trace("equals(o = {})", o);
+
         if (this == o) {
             return true;
         }
@@ -79,6 +90,8 @@ public class ParsedScript {
 
     @Override
     public int hashCode() {
+        LOGGER.trace("hashCode()");
+
         return Objects.hash(lines, roles, pages);
     }
 }

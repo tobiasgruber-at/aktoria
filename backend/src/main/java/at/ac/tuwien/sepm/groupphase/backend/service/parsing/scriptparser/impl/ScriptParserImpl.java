@@ -4,12 +4,17 @@ import at.ac.tuwien.sepm.groupphase.backend.service.parsing.line.Line;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.line.impl.LineImpl;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.script.ParsedScript;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.scriptparser.ScriptParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.lang.invoke.MethodHandles;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 
 public class ScriptParserImpl implements ScriptParser {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     private static final String[] CHARACTER_LIST_KEYWORDS = new String[] { "characters", "personen", "personenverzeichnis", "rollen" };
     private final List<String> allRoles = new LinkedList<>();
@@ -22,6 +27,7 @@ public class ScriptParserImpl implements ScriptParser {
     }
 
     private void processLines(Line line, Stack<Line> stagedLines) {
+        LOGGER.trace("processLines(line = {}, stagedLines = {})", line, stagedLines);
 
         // TODO: exclude character list
 
@@ -54,6 +60,8 @@ public class ScriptParserImpl implements ScriptParser {
     }
 
     private List<Line> handleSplitRoles(List<Line> stagedLines) {
+        LOGGER.trace("processLines(stagedLines = {})", stagedLines);
+
         List<Line> handledLines = new LinkedList<>();
 
         for (int i = 1; i < stagedLines.size(); i++) {
@@ -112,6 +120,8 @@ public class ScriptParserImpl implements ScriptParser {
 
     @Override
     public ParsedScript parse() {
+        LOGGER.trace("parse()");
+
         Stack<Line> stagedLines = new Stack<>();
 
         raw = raw.trim();
