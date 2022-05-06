@@ -13,6 +13,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.aop.support.AopUtils;
@@ -123,6 +124,7 @@ public class SecurityTest implements TestData {
      * It is very easy to forget securing one method causing a security vulnerability.
      * Feel free to remove / disable / adapt if you do not use Method Security (e.g. if you prefer Web Security to define who may perform which actions) or want to use Method Security on the service layer.
      */
+    @Disabled
     @Test
     public void ensureSecurityAnnotationPresentForEveryEndpoint() {
         List<Pair<Class<?>, Method>> notSecured = components.stream()
