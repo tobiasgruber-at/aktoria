@@ -21,7 +21,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ActiveProfiles({"test", "datagen"})
+@ActiveProfiles({ "test", "datagen" })
 @SpringBootTest
 @EnableWebMvc
 @WebAppConfiguration

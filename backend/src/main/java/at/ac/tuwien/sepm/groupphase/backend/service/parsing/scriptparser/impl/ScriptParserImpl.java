@@ -20,7 +20,6 @@ import java.util.Stack;
 public class ScriptParserImpl implements ScriptParser {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
     private static final String[] CHARACTER_LIST_KEYWORDS = new String[] { "characters", "personen", "personenverzeichnis", "rollen" };
     private final List<String> allRoles = new LinkedList<>();
     private String raw;

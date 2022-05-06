@@ -17,7 +17,6 @@ import java.lang.invoke.MethodHandles;
 public class Script {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
     private final File pdfFile;
 
     public Script(File pdfFile) {

@@ -21,7 +21,6 @@ import java.util.Objects;
 public class PageImpl implements Page {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
     private final List<Line> lines;
 
     public PageImpl(List<Line> lines) {

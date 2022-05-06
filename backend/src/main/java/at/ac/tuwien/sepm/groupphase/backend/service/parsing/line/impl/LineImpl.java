@@ -24,6 +24,8 @@ public class LineImpl implements Line {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private static final String[] SENTENCE_DELIMITERS = { ".", "!", "?", "\"", "”", "/", ")", "…" };
     private static final String[] MULTI_ROLES_DELIMITERS = { " UND ", "/", " / " };
+
+    private static final String[] ALL_ROLES_IDENTIFIERS = { "ALLE" };
     private Line.ConflictType conflictType;
     private boolean isDecomposed;
     private String raw;
@@ -43,6 +45,16 @@ public class LineImpl implements Line {
         decomposeLine();
     }
 
+    /**
+     * Joins two existing lines.
+     * <br>
+     * This function generates a new line that consists of the joined raw content
+     * of the given lines. The page index of the first line will be kept.
+     *
+     * @param a the first line
+     * @param b the second line
+     * @return a new line object that combines the two given lines
+     */
     public static Line join(Line a, Line b) {
         LOGGER.trace("join(a = {}, b = {})", a, b);
 
@@ -162,6 +174,19 @@ public class LineImpl implements Line {
             temp.add(rolesDeclaration.trim().toUpperCase(Locale.GERMAN));
         }
 
+        for (String role : temp) {
+            for (String allIdentifier : ALL_ROLES_IDENTIFIERS) {
+                if (role.equals(allIdentifier)) {
+                    conflictType = ConflictType.ASSIGNMENT_REQUIRED;
+                    break;
+                }
+            }
+
+            if (conflictType != null) {
+                break;
+            }
+        }
+
         return temp;
     }
 
@@ -269,11 +294,6 @@ public class LineImpl implements Line {
         return newLinesCollapsed;
     }
 
-    /**
-     * Has to be called after clean().
-     *
-     * @return true if the Line is considered completed
-     */
     @Override
     public boolean isCompletedLine() {
         LOGGER.trace("isCompletedLine()");

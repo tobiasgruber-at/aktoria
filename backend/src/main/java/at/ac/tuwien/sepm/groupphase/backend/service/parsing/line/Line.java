@@ -50,7 +50,9 @@ public interface Line extends CharSequence {
     String getRaw();
 
     /**
-     * Gets the roles of this line. If the line is not yet decompiled the return value
+     * Gets the roles of this line.
+     * <br>
+     * Note, if the line is not yet decompiled the return value
      * is undefined.
      *
      * @return the names of the roles of this line.
@@ -58,7 +60,9 @@ public interface Line extends CharSequence {
     List<String> getRoles();
 
     /**
-     * Gets the content of the line. f the line is not yet decompiled the return value
+     * Gets the content of the line.
+     * <br>
+     * Note, if the line is not yet decompiled the return value
      * is undefined.
      *
      * @return the content of the line.
@@ -66,11 +70,10 @@ public interface Line extends CharSequence {
     String getContent();
 
     /**
-     * Looks for possible other lines that are mistakenly in this
-     * line.
-     *
-     * <p>It returns a list of all lines that where found. If no other lines where found
-     * the only item is this line.
+     * Looks for possible other lines that are mistakenly in this line.
+     * <br>
+     * It returns a list of all lines that where found. If no other lines where found
+     * the only item contained is this line.
      *
      * @return a list of found lines in side of this line
      */
@@ -91,12 +94,27 @@ public interface Line extends CharSequence {
      */
     boolean hasRoles() throws IllegalStateException;
 
+    /**
+     * Returns true if this line is considered empty.
+     * <br>
+     * This line is considered empty if the raw content is empty.
+     *
+     * @return true if the line is empty and false otherwise
+     */
     @Override
     boolean isEmpty();
 
+    /**
+     * Returns a stringed representation of this line.
+     *
+     * @return a stringed representation of this line.
+     */
     @Override
     String toString();
 
+    /**
+     * The type of possible conflict for a line.
+     */
     enum ConflictType {
         VERIFICATION_REQUIRED, ASSIGNMENT_REQUIRED
     }

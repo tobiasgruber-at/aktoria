@@ -20,7 +20,6 @@ import java.util.StringJoiner;
 public class ParsedScript {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
     private final List<Line> lines;
     private final List<String> roles;
     private List<Page> pages;
@@ -31,14 +30,35 @@ public class ParsedScript {
         indexPages();
     }
 
+    /**
+     * Gets the lines of this parsed script.
+     * <br>
+     * Returns a list of all lines in this parsed script.
+     *
+     * @return all lines
+     */
     public List<Line> getLines() {
         return lines;
     }
 
+    /**
+     * Gets the roles of this parsed script.
+     * <br>
+     * Returns a list of all role names of this parsed script.
+     *
+     * @return all roles
+     */
     public List<String> getRoles() {
         return roles;
     }
 
+    /**
+     * Gets the pages of this parsed script.
+     * <br>
+     * Returns a list of all pages of this parsed script.
+     *
+     * @return all pages
+     */
     public List<Page> getPages() {
         return pages;
     }
