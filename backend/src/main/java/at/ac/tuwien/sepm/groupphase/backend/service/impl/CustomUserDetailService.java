@@ -1,13 +1,14 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedUserDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordChangeDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserRegistrationDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.exceptionhandler.ServiceException;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.exceptionhandler.UserNotFoundException;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.exceptionhandler.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.UserNotFoundException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.UserService;
 import org.slf4j.Logger;
@@ -38,14 +39,17 @@ public class CustomUserDetailService implements UserService {
     }
 
     @Override
-    public DetailedUserDto changeUserData(DetailedUserDto detailedUserDto) throws ServiceException {
+    public SimpleUserDto getUser(double id) throws ServiceException {
         return null;
     }
 
+    @Override
+    public SimpleUserDto changeUserData(SimpleUserDto simpleUserDto, Long id) throws ServiceException {
+        return null;
+    }
 
     @Override
-    public void deleteUser(SimpleUserDto simpleUserDto) throws ServiceException {
-
+    public void deleteUser(Long id) throws ServiceException {
     }
 
     @Override
@@ -54,7 +58,7 @@ public class CustomUserDetailService implements UserService {
     }
 
     @Override
-    public SimpleUserDto changeEmail(SimpleUserDto simpleUserDto) throws ServiceException {
+    public DetailedUserDto changePassword(PasswordChangeDto passwordChangeDto, Long id) throws ServiceException {
         return null;
     }
 
