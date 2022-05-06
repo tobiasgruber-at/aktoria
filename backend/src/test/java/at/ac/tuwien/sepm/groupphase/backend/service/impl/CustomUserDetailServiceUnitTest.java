@@ -1,9 +1,14 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordChangeDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserRegistrationDto;
+import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.UnauthorizedException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.service.UserService;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -12,6 +17,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -33,26 +39,9 @@ class CustomUserDetailServiceUnitTest {
     UserService userService;
 
     @Test
-    @DisplayName("assert that changing user data returns the changed user data")
-    void changeUserDataIsOk() {
-
-    }
-
-    @Test
-    void deleteUser() {
-    }
-
-    @Test
     void forgotPassword() {
     }
 
-    @Test
-    void getUser() {
-    }
-
-    @Test
-    void changePassword() {
-    }
 
     @Test
     void loadUserByUsername() {
@@ -62,10 +51,172 @@ class CustomUserDetailServiceUnitTest {
     void findApplicationUserByEmail() {
     }
 
+
+    @Nested
+    @DisplayName("change password tests")
+    class ChangePasswordTesting {
+
+        private static Stream<ChangePasswordRecord> parameterizedChangePasswordWorksProvider() {
+            List<ChangePasswordRecord> temp = new LinkedList<>();
+            //needed datagen for valid ids and password
+            return temp.stream();
+        }
+
+        private static Stream<ChangePasswordRecord> parameterizedChangePasswordThrowsUnauthorizedExceptionProvider() {
+            List<ChangePasswordRecord> temp = new LinkedList<>();
+            //needed datagen for invalid ids and password
+            return temp.stream();
+        }
+
+        private static Stream<ChangePasswordRecord> parameterizedChangePasswordThrowsValidationExceptionProvider() {
+            List<ChangePasswordRecord> temp = new LinkedList<>();
+            //needed datagen for invalid ids and password
+            return temp.stream();
+        }
+
+        @Disabled
+        @ParameterizedTest
+        @DisplayName("changePassword works")
+        @Transactional
+        @MethodSource("parameterizedChangePasswordWorksProvider")
+        void changePasswordWorks(ChangePasswordRecord input) {
+
+        }
+
+        @Disabled
+        @ParameterizedTest
+        @DisplayName("changePassword throws UnauthorizedException")
+        @Transactional
+        @MethodSource("parameterizedChangePasswordThrowsUnauthorizedExceptionProvider")
+        void changePasswordThrowsUnauthorizedException(ChangePasswordRecord input) {
+            //test if entered old password matches current password
+            assertThrows(UnauthorizedException.class, () -> {
+                userService.changePassword(input.passwordChangeDto, input.id);
+            });
+        }
+
+        @Disabled
+        @ParameterizedTest
+        @DisplayName("changePassword throws ValidationException")
+        @Transactional
+        @MethodSource("parameterizedChangePasswordThrowsValidationExceptionProvider")
+        void changePasswordThrowsValidationException(ChangePasswordRecord input) {
+            //test if new password is a valid password
+            assertThrows(ValidationException.class, () -> {
+                userService.changePassword(input.passwordChangeDto, input.id);
+            });
+        }
+
+        record ChangePasswordRecord(PasswordChangeDto passwordChangeDto, Long id) {
+        }
+
+    }
+
+    @Nested
+    @DisplayName("get user tests")
+    class GetUserTesting {
+        private static Stream<Long> parameterizedGetUserWorksProvider() {
+            List<Long> temp = new LinkedList<>();
+            //needed datagen for valid ids
+            return temp.stream();
+        }
+
+        private static Stream<Long> parameterizedGetUserExceptionProvider() {
+            List<Long> temp = new LinkedList<>();
+            //needed datagen to know which ids are invalid for this test
+            return temp.stream();
+        }
+
+        @Disabled
+        @ParameterizedTest
+        @Transactional
+        @MethodSource("parameterizedGetUserExceptionProvider")
+        @DisplayName("get user by his id throws exception")
+        void getUserThrowsException(Long input) throws ServiceException {
+            assertThrows(NotFoundException.class, () -> {
+                userService.getUser(input);
+            });
+        }
+
+        @Disabled
+        @ParameterizedTest
+        @Transactional
+        @MethodSource("parameterizedGetUserWorksProvider")
+        @DisplayName("get user by his id works accordingly")
+        void getUserWorks(Long input) {
+            //assertEquals(null,userService.getUser(input));
+        }
+
+    }
+
+    @Nested
+    @DisplayName("delete user tests")
+    class DeleteUserTesting {
+        private static Stream<Long> parameterizedDeleteUserProvider() {
+            List<Long> temp = new LinkedList<>();
+            //needed datagen
+            return temp.stream();
+        }
+
+        private static Stream<Long> parameterizedDeleteUserExceptionProvider() {
+            List<Long> temp = new LinkedList<>();
+            temp.add(-200L);
+            temp.add(-201L);
+            temp.add(-202L);
+            temp.add(-203L);
+            temp.add(-204L);
+            temp.add(-205L);
+            temp.add(-206L);
+            temp.add(-207L);
+            temp.add(-208L);
+            temp.add(-209L);
+            temp.add(-210L);
+            return temp.stream();
+        }
+
+        @Disabled
+        @Transactional
+        @ParameterizedTest
+        @DisplayName("delete user really deletes user")
+        @MethodSource("parameterizedDeleteUserProvider")
+        void deleteUserWorks(SimpleUserDto input) {
+            //delete users and check for no errors and void return. then check if user doesnt exist anymore
+        }
+
+        @Transactional
+        @ParameterizedTest
+        @DisplayName("delete user throws not found exception")
+        @MethodSource("parameterizedDeleteUserExceptionProvider")
+        void deleteUserThrowsException(Long input) {
+            assertThrows(NotFoundException.class, () -> {
+                userService.deleteUser(input);
+            });
+        }
+
+    }
+
+    @Nested
+    @DisplayName("assert that changeUser changes the user data accordingly")
+    class ChangeUserWorks {
+        private static Stream<SimpleUserDto> parameterizedChangeUserProvider() {
+            List<SimpleUserDto> temp = new LinkedList<>();
+            //needed datagen
+            return temp.stream();
+        }
+
+        @Disabled
+        @ParameterizedTest
+        @DisplayName("assert that changing user data returns the changed user data")
+        @Transactional
+        @MethodSource("parameterizedChangeUserProvider")
+        void changeUserDataIsOk(SimpleUserDto input) {
+        }
+    }
+
     @Nested
     @DisplayName("Creating user with invalid inputs")
     class CreateUserThrowsExceptions {
-        private static Stream<UserRegistrationDto> parameterizedCreateUserThrowsExceptionProvide() {
+        private static Stream<UserRegistrationDto> parameterizedCreateUserThrowsExceptionProvider() {
             List<UserRegistrationDto> temp = new LinkedList<>();
             temp.add(new UserRegistrationDto("", "anna.stunt@mail.com", "jdasdjiajsid"));
             temp.add(new UserRegistrationDto("  ", "anna.stunt@mail.com", "jalloo12334"));
@@ -93,9 +244,10 @@ class CustomUserDetailServiceUnitTest {
 
         @ParameterizedTest
         @DisplayName("assert that ValidationException is thrown")
-        @MethodSource("parameterizedCreateUserThrowsExceptionProvide")
+        @MethodSource("parameterizedCreateUserThrowsExceptionProvider")
+        @Transactional
         void createUserThrowsException(UserRegistrationDto input) {
-            //whitespaces, null and too long tests
+            //test for whitespaces, null and too long inputs
             assertThrows(ValidationException.class, () -> {
                 userService.createUser(input);
             });
@@ -123,9 +275,9 @@ class CustomUserDetailServiceUnitTest {
         @ParameterizedTest
         @DisplayName("assert that the user with the right user data is created")
         @MethodSource("parameterizedUserRegistrationDtoProvider")
+        @Transactional
         void createUserIsOK(UserRegistrationDto input) throws ServiceException, ValidationException {
             assertEquals(input, userService.createUser(input));
         }
     }
-
 }

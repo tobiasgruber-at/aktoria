@@ -39,17 +39,17 @@ public class CustomUserDetailService implements UserService {
     }
 
     @Override
-    public SimpleUserDto getUser(SimpleUserDto simpleUserDto) throws ServiceException {
+    public SimpleUserDto getUser(double id) throws ServiceException {
         return null;
     }
 
     @Override
-    public SimpleUserDto changeUserData(SimpleUserDto simpleUserDto) throws ServiceException {
+    public SimpleUserDto changeUserData(SimpleUserDto simpleUserDto, Long id) throws ServiceException {
         return null;
     }
 
     @Override
-    public void deleteUser(SimpleUserDto simpleUserDto) throws ServiceException {
+    public void deleteUser(Long id) throws ServiceException {
     }
 
     @Override
@@ -58,7 +58,7 @@ public class CustomUserDetailService implements UserService {
     }
 
     @Override
-    public DetailedUserDto changePassword(PasswordChangeDto passwordChangeDto) throws ServiceException {
+    public DetailedUserDto changePassword(PasswordChangeDto passwordChangeDto, Long id) throws ServiceException {
         return null;
     }
 

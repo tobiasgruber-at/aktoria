@@ -15,7 +15,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 /**
  * Service for user.
  *
- * @author luke nemeskeri
+ * @author Luke Nemeskeri
  */
 public interface UserService extends UserDetailsService {
 
@@ -33,28 +33,29 @@ public interface UserService extends UserDetailsService {
     /**
      * Returns a user.
      *
-     * @param simpleUserDto
+     * @param id the id of a user
      * @return the specified user
      * @throws ServiceException is thrown if something went wrong with getting the user
      */
-    SimpleUserDto getUser(SimpleUserDto simpleUserDto) throws ServiceException;
+    SimpleUserDto getUser(double id) throws ServiceException;
 
     /**
      * Changes the email/username of a user.
      *
      * @param simpleUserDto filled with the new email/username
+     * @param id            the id of the user to be changed
      * @return the updated user
      * @throws ServiceException is thrown when the user data could not be updated
      */
-    SimpleUserDto changeUserData(SimpleUserDto simpleUserDto) throws ServiceException;
+    SimpleUserDto changeUserData(SimpleUserDto simpleUserDto, Long id) throws ServiceException;
 
     /**
      * Deletes a user from the system.
      *
-     * @param simpleUserDto filled with the user-data, which shall be deleted
+     * @param id the id of the user to be deleted
      * @throws ServiceException is thrown when the user could not be deleted
      */
-    void deleteUser(SimpleUserDto simpleUserDto) throws ServiceException;
+    void deleteUser(Long id) throws ServiceException;
 
     /**
      * Sends an email to the user to set a new password.
@@ -68,10 +69,11 @@ public interface UserService extends UserDetailsService {
      * Changes the password of a user.
      *
      * @param passwordChangeDto filled with the old and new password
+     * @param id                the id of the user
      * @return the user with the new password
      * @throws ServiceException is thrown if the password could not be changed
      */
-    DetailedUserDto changePassword(PasswordChangeDto passwordChangeDto) throws ServiceException;
+    DetailedUserDto changePassword(PasswordChangeDto passwordChangeDto, Long id) throws ServiceException;
 
     /**
      * Find a user in the context of Spring Security based on the email address
