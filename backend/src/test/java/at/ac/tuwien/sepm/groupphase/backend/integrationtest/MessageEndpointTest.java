@@ -214,8 +214,7 @@ public class MessageEndpointTest implements TestData {
 
     private boolean isNow(LocalDateTime date) {
         LocalDateTime today = LocalDateTime.now();
-        return date.getYear() == today.getYear()
-            && date.getDayOfYear() == today.getDayOfYear()
+        return date.getYear() == today.getYear() && date.getDayOfYear() == today.getDayOfYear()
             && date.getHour() == today.getHour();
     }
 

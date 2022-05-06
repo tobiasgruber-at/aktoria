@@ -70,7 +70,7 @@ class UserEndpointIntegrationTest {
             .accept(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsBytes(new UserRegistrationDto("Name", "admin@email.com", "Pass")))
             .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(status().isUnprocessableEntity());//Unprocessable Entity due to Validation Exception (pw too short)
+        ).andExpect(status().isUnprocessableEntity()); // Unprocessable Entity due to Validation Exception (pw too short)
     }
 
     @Test
@@ -82,7 +82,7 @@ class UserEndpointIntegrationTest {
             .accept(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsBytes(new UserRegistrationDto(null, "admin@email.com", "Password")))
             .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(status().isUnprocessableEntity());//Unprocessable Entity due to Validation Exception (name is null)
+        ).andExpect(status().isUnprocessableEntity()); // Unprocessable Entity due to Validation Exception (name is null)
     }
 
     @Test
@@ -94,7 +94,7 @@ class UserEndpointIntegrationTest {
             .accept(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsBytes(new UserRegistrationDto("Name", "adminemailcom", "Password")))
             .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(status().isUnprocessableEntity());//Unprocessable Entity due to Validation Exception (email format is invalid)
+        ).andExpect(status().isUnprocessableEntity()); // Unprocessable Entity due to Validation Exception (email format is invalid)
     }
 
     @Test
@@ -107,7 +107,7 @@ class UserEndpointIntegrationTest {
             .accept(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsBytes(new UserRegistrationDto("Name", s, "Password")))
             .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(status().isUnprocessableEntity());//Unprocessable Entity due to Validation Exception (email too long)
+        ).andExpect(status().isUnprocessableEntity()); // Unprocessable Entity due to Validation Exception (email too long)
     }
 
     @Test
@@ -120,7 +120,7 @@ class UserEndpointIntegrationTest {
             .accept(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsBytes(new UserRegistrationDto(s, s, s)))
             .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(status().isUnprocessableEntity());//Unprocessable Entity due to Validation Exception (name too long, email invalid, email too long, password too long)
+        ).andExpect(status().isUnprocessableEntity()); // Unprocessable Entity due to Validation Exception (name too long, email invalid, email too long, password too long)
     }
 
 

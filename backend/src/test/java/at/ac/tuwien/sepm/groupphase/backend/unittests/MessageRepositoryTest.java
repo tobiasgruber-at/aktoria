@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+
 @ExtendWith(SpringExtension.class)
 // This test slice annotation is used instead of @SpringBootTest to load only repository beans instead of
 // the entire application context
