@@ -15,6 +15,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ActiveProfiles("test")
@@ -24,15 +25,15 @@ class LineImplUnitTest {
     private static Stream<ParameterizedTupleGetRoles> parameterizedTupleGetRolesProvider() {
         List<ParameterizedTupleGetRoles> temp = new LinkedList<>();
         temp.add(new ParameterizedTupleGetRoles(List.of(new String[] { "ROLE" }), "ROLE This is my text."));
-        temp.add(new ParameterizedTupleGetRoles(List.of(new String[] { "NAME SURENAME" }), "NAME SURENAME This is my text."));
+        temp.add(new ParameterizedTupleGetRoles(List.of(new String[] { "NAME SURNAME" }), "NAME SURNAME This is my text."));
         temp.add(new ParameterizedTupleGetRoles(List.of(new String[] { "ROLEA", "ROLEB" }), "ROLEA UND ROLEB This is my text."));
         temp.add(new ParameterizedTupleGetRoles(List.of(new String[] { "ROLEA", "ROLEB" }), "ROLEA / ROLEB This is my text."));
         temp.add(new ParameterizedTupleGetRoles(List.of(new String[] { "ROLEA", "ROLEB" }), "ROLEA/ROLEB This is my text."));
         temp.add(new ParameterizedTupleGetRoles(List.of(new String[] { "MR. NAME" }), "MR. NAME This is my text."));
         temp.add(new ParameterizedTupleGetRoles(List.of(new String[] { "DR. MR. NAME" }), "DR. MR. NAME This is my text."));
-        temp.add(new ParameterizedTupleGetRoles(List.of(new String[] { "NAME-SURENAME" }), "NAME-SURENAME This is my text."));
+        temp.add(new ParameterizedTupleGetRoles(List.of(new String[] { "NAME-SURNAME" }), "NAME-SURNAME This is my text."));
         temp.add(new ParameterizedTupleGetRoles(List.of(new String[] { "PETER P." }), "PETER P. This is my text."));
-        temp.add(new ParameterizedTupleGetRoles(List.of(new String[] { "MS. NAME-SURENAME" }), "MS. NAME-SURENAME This is my text."));
+        temp.add(new ParameterizedTupleGetRoles(List.of(new String[] { "MS. NAME-SURNAME" }), "MS. NAME-SURNAME This is my text."));
 
         return temp.stream();
     }
@@ -103,19 +104,51 @@ class LineImplUnitTest {
     }
 
     @Nested
-    @DisplayName("hasRoles()")
-    class HasRoles {
-        @ParameterizedTest(name = "[{index}] value = {0}")
-        @DisplayName("returns true")
+    @DisplayName("getConflictType()")
+    class GetConflictType {
+        @ParameterizedTest
+        @DisplayName("returns assignment required")
+        @ValueSource(strings = {
+            "ALLE This is my text."
+        })
+        void getConflictTypeAssignmentRequired(String input) {
+            LineImpl l = new LineImpl(input, 0);
+            assertEquals(Line.ConflictType.ASSIGNMENT_REQUIRED, l.getConflictType());
+        }
+
+        @ParameterizedTest
+        @DisplayName("returns null")
         @ValueSource(strings = {
             "ROLE This is my text.",
-            "NAME SURENAME This is my text.",
+            "NAME SURNAME This is my text.",
             "ROLEA UND ROLEB This is my text.",
             "ROLEA / ROLEB This is my text.",
             "ROLEA/ROLEB This is my text.",
             "MR. NAME This is my text.",
             "DR. MR. NAME This is my text.",
-            "NAME-SURENAME This is my text.",
+            "NAME-SURNAME This is my text.",
+            "PETER P. This is my text."
+        })
+        void getConflictTypeNull(String input) {
+            LineImpl l = new LineImpl(input, 0);
+            assertNull(l.getConflictType());
+        }
+    }
+
+    @Nested
+    @DisplayName("hasRoles()")
+    class HasRoles {
+        @ParameterizedTest
+        @DisplayName("returns true")
+        @ValueSource(strings = {
+            "ROLE This is my text.",
+            "NAME SURNAME This is my text.",
+            "ROLEA UND ROLEB This is my text.",
+            "ROLEA / ROLEB This is my text.",
+            "ROLEA/ROLEB This is my text.",
+            "MR. NAME This is my text.",
+            "DR. MR. NAME This is my text.",
+            "NAME-SURNAME This is my text.",
             "PETER P. This is my text."
         })
         void hasRolesTrue(String value) {
@@ -123,7 +156,7 @@ class LineImplUnitTest {
             assertTrue(l.hasRoles());
         }
 
-        @ParameterizedTest(name = "[{index}] value = {0}")
+        @ParameterizedTest
         @DisplayName("returns false")
         @ValueSource(strings = {
             "This is my text.",
@@ -142,7 +175,7 @@ class LineImplUnitTest {
     @Nested
     @DisplayName("isCompletedLine()")
     class IsCompletedLine {
-        @ParameterizedTest(name = "[{index}] value = {0}")
+        @ParameterizedTest
         @DisplayName("returns true")
         @ValueSource(strings = {
             "This is a completed line.",
@@ -159,7 +192,7 @@ class LineImplUnitTest {
             assertTrue(l.isCompletedLine());
         }
 
-        @ParameterizedTest(name = "[{index}] value = {0}")
+        @ParameterizedTest
         @DisplayName("returns false")
         @ValueSource(strings = {
             "This is not a completed line",
