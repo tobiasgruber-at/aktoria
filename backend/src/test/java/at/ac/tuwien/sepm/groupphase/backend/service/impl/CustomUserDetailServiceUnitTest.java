@@ -29,8 +29,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 /**
  * Class for testing user services
  *
- * @author luke nemeskeri
+ * @author Luke Nemeskeri
  */
+@Disabled
 @ActiveProfiles({"test", "datagen"})
 @SpringBootTest
 class CustomUserDetailServiceUnitTest {

@@ -34,7 +34,6 @@ public class UserEndpoint {
     private final UserService userService;
 
     public UserEndpoint(UserService userService) {
-        //TODO: implement constructor
         this.userService = userService;
     }
 
