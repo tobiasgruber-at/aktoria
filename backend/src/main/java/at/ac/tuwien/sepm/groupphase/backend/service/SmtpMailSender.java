@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.service;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.mail.*;
@@ -9,24 +10,33 @@ import java.util.Properties;
 
 @Component
 public class SmtpMailSender {
+
+    @Value("${spring.mail.username}")
+    private String sender;
+
+    @Value("${spring.mail.password}")
+    private String password;
+
+    @Value("${spring.mail.host}")
+    private String host;
+
+    @Value("${spring.mail.port}")
+    private String port;
+
     /**
      * Sends an email from aktoria.norepl@gmx.at
-     * @param to the email adress of the receive
+     * @param receiver the email address of the receiver
      * @param subject subject of the mail
      * @param content content of the mail
      * @throws MessagingException
      */
-    public void sendMail(String to, String subject, String content) throws MessagingException
+    public void sendMail(String receiver, String subject, String content) throws MessagingException
     {
-        String sender = "aktoria.norepl@gmx.at";
-        String password = "RMjj3XJqM5@b45Ba";
-        String receiver = to;
-
         Properties properties = new Properties();
 
         properties.put("mail.transport.protocol", "smtp");
-        properties.put("mail.smtp.host", "mail.gmx.net");
-        properties.put("mail.smtp.port", "587");
+        properties.put("mail.smtp.host", host);
+        properties.put("mail.smtp.port", port);
         properties.put("mail.smtp.auth", "true");
         properties.put("mail.smtp.user", sender);
         properties.put("mail.smtp.password", password);
@@ -37,8 +47,7 @@ public class SmtpMailSender {
             @Override
             protected PasswordAuthentication getPasswordAuthentication()
             {
-                return new PasswordAuthentication(properties.getProperty("mail.smtp.user"),
-                    properties.getProperty("mail.smtp.password"));
+                return new PasswordAuthentication(sender, password);
             }
         });
 
