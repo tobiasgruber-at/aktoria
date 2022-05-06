@@ -3,10 +3,15 @@ package at.ac.tuwien.sepm.groupphase.backend.service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import javax.mail.*;
+import javax.mail.Authenticator;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.Properties;
+import javax.mail.Message;
+import javax.mail.Transport;
 
 @Component
 public class SmtpMailSender {
@@ -25,13 +30,13 @@ public class SmtpMailSender {
 
     /**
      * Sends an email from aktoria.norepl@gmx.at
+     *
      * @param receiver the email address of the receiver
      * @param subject subject of the mail
      * @param content content of the mail
-     * @throws MessagingException
+     * @throws MessagingException if there occurred an error during transport
      */
-    public void sendMail(String receiver, String subject, String content) throws MessagingException
-    {
+    public void sendMail(String receiver, String subject, String content) throws MessagingException {
         Properties properties = new Properties();
 
         properties.put("mail.transport.protocol", "smtp");
@@ -42,14 +47,14 @@ public class SmtpMailSender {
         properties.put("mail.smtp.password", password);
         properties.put("mail.smtp.starttls.enable", "true");
 
-        Session mailSession = Session.getInstance(properties, new Authenticator()
-        {
+        Authenticator auth = new Authenticator() {
             @Override
-            protected PasswordAuthentication getPasswordAuthentication()
-            {
+            protected PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication(sender, password);
             }
-        });
+        };
+
+        Session mailSession = Session.getInstance(properties, auth);
 
         Message message = new MimeMessage(mailSession);
         InternetAddress addressTo = new InternetAddress(receiver);
