@@ -185,7 +185,12 @@ class LineImplUnitTest {
             "This is a completed line/",
             "This is a completed line”",
             "This is a completed line\"",
-            "This is a completed line)"
+            "This is a completed line)",
+            "Erster Akt",
+            "Zweiter Akt",
+            "Zwölfter Akt",
+            "Vorhang",
+            "Ende"
         })
         void isCompletedLineTrue(String value) {
             LineImpl l = new LineImpl(value, 0);

@@ -81,6 +81,22 @@ public interface Line extends CharSequence {
 
     /**
      * Returns true if the line is considered completed.
+     * <br>
+     * A line is considered deleted if one of the following characters are found
+     * as the last char:
+     * <ul>
+     *     <li>punctuations (".", "!", "?")
+     *     <li>ellipsis ("…")
+     *     <li>slash ("/")
+     *     <li>quotation marks (“””, “"”)
+     *     <li>closing round bracket (")")
+     * </ul>
+     * Or if the line is a special case:
+     * <ul>
+     *     <li>Act declarations (* Akt)
+     *     <li>Curtain declarations (Vorhang)
+     *     <li>Ending declarations (Ende)
+     * </ul>
      *
      * @return true if the line is considered completed and false otherwise
      */

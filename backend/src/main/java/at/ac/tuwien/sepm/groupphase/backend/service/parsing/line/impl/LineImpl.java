@@ -24,6 +24,7 @@ public class LineImpl implements Line {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private static final String[] SENTENCE_DELIMITERS = { ".", "!", "?", "\"", "”", "/", ")", "…" };
     private static final String[] MULTI_ROLES_DELIMITERS = { " UND ", "/", " / " };
+    private static final String[] SPECIAL_SENTENCES_PATTERNS = { "^.* Akt$", "^Vorhang$", "^Ende$" };
 
     private static final String[] ALL_ROLES_IDENTIFIERS = { "ALLE" };
     private Line.ConflictType conflictType;
@@ -306,6 +307,15 @@ public class LineImpl implements Line {
 
         for (String delimiter : SENTENCE_DELIMITERS) {
             if (lastChar.equals(delimiter)) {
+                return true;
+            }
+        }
+
+        for (String p : SPECIAL_SENTENCES_PATTERNS) {
+            Pattern pattern = Pattern.compile(p, Pattern.CASE_INSENSITIVE);
+            Matcher matcher = pattern.matcher(raw);
+
+            if (matcher.find()) {
                 return true;
             }
         }

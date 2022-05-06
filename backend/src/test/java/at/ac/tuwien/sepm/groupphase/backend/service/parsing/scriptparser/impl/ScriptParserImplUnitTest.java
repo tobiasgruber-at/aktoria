@@ -40,8 +40,6 @@ class ScriptParserImplUnitTest {
         ParsedScript expectedParsedScript = new ParsedScript(lines, roles);
         ParsedScript actualParsedScript = parser.parse();
 
-        boolean b = expectedParsedScript.equals(actualParsedScript);
-
         assertEquals(expectedParsedScript, actualParsedScript);
     }
 }

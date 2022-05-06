@@ -52,12 +52,8 @@ public class ScriptParserImpl implements ScriptParser {
                 if (previousLine.isCompletedLine()) {
                     stagedLines.add(line);
                 } else {
-                    if (!previousLine.hasRoles()) {
-                        stagedLines.add(line);
-                    } else {
-                        stagedLines.pop();
-                        stagedLines.add(LineImpl.join(previousLine, line));
-                    }
+                    stagedLines.pop();
+                    stagedLines.add(LineImpl.join(previousLine, line));
                 }
             }
         }
