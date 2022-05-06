@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
- * Class for testing user services
+ * Class for testing user services.
  *
  * @author Luke Nemeskeri
  */
@@ -221,24 +221,24 @@ class CustomUserDetailServiceUnitTest {
             List<UserRegistrationDto> temp = new LinkedList<>();
             temp.add(new UserRegistrationDto("", "anna.stunt@mail.com", "jdasdjiajsid"));
             temp.add(new UserRegistrationDto("  ", "anna.stunt@mail.com", "jalloo12334"));
-            temp.add(new UserRegistrationDto("Fjsafkaskfjaskdjkasjkdasjkdjaskdjaskldjaskdjkasdjkasjdkasjdasjdasjdjasdjaskdjkasdjkasjdkasdjkasjdk" +
-                "asjdkasdjkasjdkasjdkasjfiwjifjqwfgnwqudwinwqdwqdwqndqngqbgvuiqbuewhuhebfqnunfzvqndbqdjjeiqjwejqiwjeiqjeiwqe" +
-                "821e291u32713z1he2j12e12jw281nd1bh1vdu192hd1b2d1du12hdu12db127du12d912bd91sf891u88c31n8udc1jd8j1c8dj1jcd18" +
-                "j2c1dj1c818cdjch1c89w1cd9w1cw1hcd1whc1wndcn1wc17whdc1w7hdc17whc81hc1dhc1c81hwnc1hwc1hwd8c131", "longname@mail.at", "hellooooo"));
+            temp.add(new UserRegistrationDto("Fjsafkaskfjaskdjkasjkdasjkdjaskdjaskldjaskdjkasdjkasjdkasjdasjdasjdjasdjaskdjkasdjkasjdkasdjkasjdk"
+                + "asjdkasdjkasjdkasjdkasjfiwjifjqwfgnwqudwinwqdwqdwqndqngqbgvuiqbuewhuhebfqnunfzvqndbqdjjeiqjwejqiwjeiqjeiwqe"
+                + "821e291u32713z1he2j12e12jw281nd1bh1vdu192hd1b2d1du12hdu12db127du12d912bd91sf891u88c31n8udc1jd8j1c8dj1jcd18"
+                + "j2c1dj1c818cdjch1c89w1cd9w1cw1hcd1whc1wndcn1wc17whdc1w7hdc17whc81hc1dhc1c81hwnc1hwc1hwd8c131", "longname@mail.at", "hellooooo"));
             temp.add(new UserRegistrationDto(null, "annasum.stunt@mail.com", "jalliiioo12334"));
             temp.add(new UserRegistrationDto("hallo", "", "jdasdjiajsidjo"));
             temp.add(new UserRegistrationDto("halloeeqe", "  ", "jdasdjiajsidjoopopopop"));
-            temp.add(new UserRegistrationDto("hallo19239", "Fjsafkaskfjaskdjkasjkdasjkdjaskdjaskldjaskdjkasdjkasjdkasjdasjdasjdjasdjaskdjka" +
-                "sdjkasjdkasdjkasjdkasjdkasdjkasjdkasjdkasjfiwjifjqwfgnwqudwinwqdwqdwqndqngqbgvuiqbuewhuhebfqnunfzvqnd" +
-                "bqdjjeiqjwejqiwjeiqjeiwqe821e291u32713z1he2j12e12jw281nd1bh1vdu192hd1b2d1du12hdu12db127du12d912bd91sf891u" +
-                "88c31n8udc1jd8j1c8dj1jcd1oooc1dj1c818cdjch1c89w1cd9w1cw1hcd1whc1wndcn1wc17whdc1w7hdc17whc81hc1dhc1c1hwnc1hwc1hwd@gmx.at", "jdasdjiajsidjo231"));
+            temp.add(new UserRegistrationDto("hallo19239", "Fjsafkaskfjaskdjkasjkdasjkdjaskdjaskldjaskdjkasdjkasjdkasjdasjdasjdjasdjaskdjka"
+                + "sdjkasjdkasdjkasjdkasjdkasdjkasjdkasjdkasjfiwjifjqwfgnwqudwinwqdwqdwqndqngqbgvuiqbuewhuhebfqnunfzvqnd"
+                + "bqdjjeiqjwejqiwjeiqjeiwqe821e291u32713z1he2j12e12jw281nd1bh1vdu192hd1b2d1du12hdu12db127du12d912bd91sf891u"
+                + "88c31n8udc1jd8j1c8dj1jcd1oooc1dj1c818cdjch1c89w1cd9w1cw1hcd1whc1wndcn1wc17whdc1w7hdc17whc81hc1dhc1c1hwnc1hwc1hwd@gmx.at", "jdasdjiajsidjo231"));
             temp.add(new UserRegistrationDto("Hellomain", null, "jalapenjo123"));
             temp.add(new UserRegistrationDto("test3", "jan.stunt@mail.com", ""));
             temp.add(new UserRegistrationDto("test1", "janis.stunt@mail.com", "   "));
-            temp.add(new UserRegistrationDto("test1", "janis.stunt@mail.com", "Fjsafkaskfjaskdjkhuuuaasjkdjaskdjaskldjaskdjkasdjkasjdkasjdasjdasjdjasd" +
-                "jaskdjkasdjkasjdkasdjkasjdkasjdkasdjkasjdkasjdkasjfiwjifjqwfgnwqudwinwqdwqdwqndqngqbgvuiqbuewhuhebfqnunfzvqndbqdjjeiqjwejqiwjeiqjeiwqe821e291u32713" +
-                "z1he2j12e12jw281nd1bh1vdu192hd1b2d1du12hdu12db127du12d912bd91sf891u88c31n8udc1jd8j1c8dj1jcd1oooc1dj1c818cdjch" +
-                "1c89w1cd9w1cw1hcd1whc1wndcn1wc17whdc1w7hdc17whc81hc1dhc1c81hwnc1hwc1hwd8c131"));
+            temp.add(new UserRegistrationDto("test1", "janis.stunt@mail.com", "Fjsafkaskfjaskdjkhuuuaasjkdjaskdjaskldjaskdjkasdjkasjdkasjdasjdasjdjasd"
+                + "jaskdjkasdjkasjdkasdjkasjdkasjdkasdjkasjdkasjdkasjfiwjifjqwfgnwqudwinwqdwqdwqndqngqbgvuiqbuewhuhebfqnunfzvqndbqdjjeiqjwejqiwjeiqjeiwqe821e291u32713"
+                + "z1he2j12e12jw281nd1bh1vdu192hd1b2d1du12hdu12db127du12d912bd91sf891u88c31n8udc1jd8j1c8dj1jcd1oooc1dj1c818cdjch"
+                + "1c89w1cd9w1cw1hcd1whc1wndcn1wc17whdc1w7hdc17whc81hc1dhc1c81hwnc1hwc1hwd8c131"));
             temp.add(new UserRegistrationDto("petro12", "petrot@mail.com", null));
             return temp.stream();
         }
@@ -277,7 +277,7 @@ class CustomUserDetailServiceUnitTest {
         @DisplayName("assert that the user with the right user data is created")
         @MethodSource("parameterizedUserRegistrationDtoProvider")
         @Transactional
-        void createUserIsOK(UserRegistrationDto input) throws ServiceException, ValidationException {
+        void createUserIsOk(UserRegistrationDto input) throws ServiceException, ValidationException {
             assertEquals(input, userService.createUser(input));
         }
     }
