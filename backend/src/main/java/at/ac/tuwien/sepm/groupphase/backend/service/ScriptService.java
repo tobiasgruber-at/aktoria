@@ -1,7 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.service;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.StagedScriptDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.exceptionhandler.ServiceException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 
 import java.io.File;
 
