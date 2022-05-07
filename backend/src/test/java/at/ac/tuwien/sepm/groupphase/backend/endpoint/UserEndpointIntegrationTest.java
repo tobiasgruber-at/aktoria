@@ -123,6 +123,7 @@ class UserEndpointIntegrationTest {
 
 
     //TESTING PUT
+    //TODO: deprecated
 
     @Test
     @Transactional
@@ -146,6 +147,47 @@ class UserEndpointIntegrationTest {
 
     @Test
     @Transactional
+    @DisplayName("putUserNoID() Change an existing User with no ID")
+    void putUserNoID() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders
+            .post("/api/v1/users")
+            .accept(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsBytes(new SimpleUserDto(null, "NewName", "admin@email.com", true)))
+            .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isUnprocessableEntity());  //Unprocessable entity due to invalid ID
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("putUserInvalidEmail() Change an existing User with invalid email")
+    void putUserInvalidEmail() throws Exception {
+        String s = "a".repeat(100);
+        mockMvc.perform(MockMvcRequestBuilders
+            .post("/api/v1/users")
+            .accept(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsBytes(new SimpleUserDto((long) -1, "NewName", s, true)))
+            .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isUnprocessableEntity());
+    }
+
+
+    @Test
+    @Transactional
+    @DisplayName("putUserInvalidName() Change an existing User with invalid name")
+    void putUserInvalidName() throws Exception {
+        String s = "a".repeat(100);
+        mockMvc.perform(MockMvcRequestBuilders
+            .post("/api/v1/users")
+            .accept(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsBytes(new SimpleUserDto((long) -1, s, "admin@email.com", true)))
+            .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isUnprocessableEntity());
+    }
+
+    //TESTING DELETE
+
+    @Test
+    @Transactional
     @DisplayName("deleteUser() Delete a User correctly")
     void deleteUserSuccessful() throws Exception {
         mockMvc
@@ -155,4 +197,64 @@ class UserEndpointIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
             ).andExpect(status().isNoContent());
     }
+
+    @Test
+    @Transactional
+    @DisplayName("deleteUserInvalidId() Delete a User with invalid Id")
+    void deleteUserInvalidId() throws Exception {
+        mockMvc
+            .perform(MockMvcRequestBuilders
+                .delete("/api/v1/users?id=--")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+            ).andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("deleteUserNoId() Delete a User with no Id")
+    void deleteUserNoId() throws Exception {
+        mockMvc
+            .perform(MockMvcRequestBuilders
+                .delete("/api/v1/users?id=")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+            ).andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("deleteUserNoIdParam() Delete a User with no Id query param")
+    void deleteUserNoIdParam() throws Exception {
+        mockMvc
+            .perform(MockMvcRequestBuilders
+                .delete("/api/v1/users")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+            ).andExpect(status().isUnprocessableEntity());
+    }
+
+
+    //TESTING FORGOTTEN PASSWORD
+
+    @Test
+    @Transactional
+    @DisplayName("forgottenPasswordSuccessful() successfully change a password")
+    void forgottenPasswordSuccessful() throws Exception {
+        byte[] body = mockMvc
+            .perform(MockMvcRequestBuilders
+                .post("/api/v1/users/forgotten-password")
+                .accept(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsBytes("admin@email.com"))
+                .contentType(MediaType.APPLICATION_JSON)
+            ).andExpect(status().isCreated())
+            .andReturn().getResponse().getContentAsByteArray();
+        SimpleUserDto userResult = objectMapper.readValue(body, SimpleUserDto.class);
+
+        assertThat(userResult).isNotNull();
+        assertThat(userResult.getName()).isEqualTo("NewName");
+        assertThat(userResult.getEmail()).isEqualTo("admin@email.com");
+        assertThat(userResult.getVerified()).isEqualTo(false);
+    }
+
 }

@@ -65,16 +65,21 @@ public class UserEndpoint {
     @DeleteMapping
     @ResponseStatus(HttpStatus.NOT_IMPLEMENTED)
     public void deleteUser(@RequestParam Long id) {
+        LOGGER.info("DELETE " + UserEndpoint.path);
         //TODO: write tests and implement method
     }
 
     @PostMapping(path = "/forgotten-password")
     @ResponseStatus(HttpStatus.NOT_IMPLEMENTED)
     public void forgottenPassword(@RequestBody String email) {
+        LOGGER.info("POST " + UserEndpoint.path + " /forgotten-password");
+        //TODO: write tests and implement method
     }
 
     @PutMapping(path = "/password")
     @ResponseStatus(HttpStatus.NOT_IMPLEMENTED)
     public void putPassword(@RequestParam String key) {
+        LOGGER.info("PUT " + UserEndpoint.path + " /password");
+        //TODO: write tests and implement method
     }
 }
