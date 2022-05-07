@@ -49,14 +49,14 @@ class UserEndpointIntegrationTest {
             .perform(MockMvcRequestBuilders
                 .post("/api/v1/users")
                 .accept(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(new UserRegistrationDto("Name", "admin@email.com", "Password")))
+                .content(objectMapper.writeValueAsBytes(new UserRegistrationDto("Name", "lastName", "admin@email.com", "Password")))
                 .contentType(MediaType.APPLICATION_JSON)
             ).andExpect(status().isCreated())
             .andReturn().getResponse().getContentAsByteArray();
         SimpleUserDto userResult = objectMapper.readValue(body, SimpleUserDto.class);
 
         assertThat(userResult).isNotNull();
-        assertThat(userResult.getName()).isEqualTo("Name");
+        assertThat(userResult.getFirstName()).isEqualTo("Name");
         assertThat(userResult.getEmail()).isEqualTo("admin@email.com");
         assertThat(userResult.getVerified()).isEqualTo(false);
     }
@@ -68,7 +68,7 @@ class UserEndpointIntegrationTest {
         mockMvc.perform(MockMvcRequestBuilders
             .post("/api/v1/users")
             .accept(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsBytes(new UserRegistrationDto("Name", "admin@email.com", "Pass")))
+            .content(objectMapper.writeValueAsBytes(new UserRegistrationDto("Name", "lastName", "admin@email.com", "Pass")))
             .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isUnprocessableEntity()); // Unprocessable Entity due to Validation Exception (pw too short)
     }
@@ -80,7 +80,7 @@ class UserEndpointIntegrationTest {
         mockMvc.perform(MockMvcRequestBuilders
             .post("/api/v1/users")
             .accept(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsBytes(new UserRegistrationDto(null, "admin@email.com", "Password")))
+            .content(objectMapper.writeValueAsBytes(new UserRegistrationDto(null, "lastName", "admin@email.com", "Password")))
             .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isUnprocessableEntity()); // Unprocessable Entity due to Validation Exception (name is null)
     }
@@ -92,7 +92,7 @@ class UserEndpointIntegrationTest {
         mockMvc.perform(MockMvcRequestBuilders
             .post("/api/v1/users")
             .accept(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsBytes(new UserRegistrationDto("Name", "adminemailcom", "Password")))
+            .content(objectMapper.writeValueAsBytes(new UserRegistrationDto("Name", "lastName", "adminemailcom", "Password")))
             .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isUnprocessableEntity()); // Unprocessable Entity due to Validation Exception (email format is invalid)
     }
@@ -105,7 +105,7 @@ class UserEndpointIntegrationTest {
         mockMvc.perform(MockMvcRequestBuilders
             .post("/api/v1/users")
             .accept(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsBytes(new UserRegistrationDto("Name", s, "Password")))
+            .content(objectMapper.writeValueAsBytes(new UserRegistrationDto("Name", "lastName", s, "Password")))
             .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isUnprocessableEntity()); // Unprocessable Entity due to Validation Exception (email too long)
     }
@@ -118,7 +118,7 @@ class UserEndpointIntegrationTest {
         mockMvc.perform(MockMvcRequestBuilders
             .post("/api/v1/users")
             .accept(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsBytes(new UserRegistrationDto(s, s, s)))
+            .content(objectMapper.writeValueAsBytes(new UserRegistrationDto(s, "lastName", s, s)))
             .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isUnprocessableEntity()); // Unprocessable Entity due to Validation Exception (name too long, email invalid, email too long, password too long)
     }
@@ -134,14 +134,14 @@ class UserEndpointIntegrationTest {
             .perform(MockMvcRequestBuilders
                 .post("/api/v1/users")
                 .accept(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(new SimpleUserDto((long) -1, "NewName", "admin@email.com", true)))
+                .content(objectMapper.writeValueAsBytes(new SimpleUserDto((long) -1, "NewName", "newWow", "admin@email.com", true)))
                 .contentType(MediaType.APPLICATION_JSON)
             ).andExpect(status().isCreated())
             .andReturn().getResponse().getContentAsByteArray();
         SimpleUserDto userResult = objectMapper.readValue(body, SimpleUserDto.class);
 
         assertThat(userResult).isNotNull();
-        assertThat(userResult.getName()).isEqualTo("NewName");
+        assertThat(userResult.getFirstName()).isEqualTo("NewName");
         assertThat(userResult.getEmail()).isEqualTo("admin@email.com");
         assertThat(userResult.getVerified()).isEqualTo(false);
     }
