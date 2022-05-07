@@ -11,5 +11,5 @@ public class Line {
     private String content;
     private Blob audio;
     private boolean active;
-    private ApplicationUser recordedBy;
+    private User recordedBy;
 }

@@ -4,14 +4,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.mail.Authenticator;
+import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
+import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.Properties;
-import javax.mail.Message;
-import javax.mail.Transport;
 
 @Component
 public class SmtpMailSender {
@@ -32,8 +32,8 @@ public class SmtpMailSender {
      * Sends an email from aktoria.norepl@gmx.at
      *
      * @param receiver the email address of the receiver
-     * @param subject subject of the mail
-     * @param content content of the mail
+     * @param subject  subject of the mail
+     * @param content  content of the mail
      * @throws MessagingException if there occurred an error during transport
      */
     public void sendMail(String receiver, String subject, String content) throws MessagingException {

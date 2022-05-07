@@ -4,7 +4,7 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordChangeDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserRegistrationDto;
-import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
+import at.ac.tuwien.sepm.groupphase.backend.entity.User;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.UserNotFoundException;
@@ -71,27 +71,27 @@ public class CustomUserDetailService implements UserService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         LOGGER.debug("Load all user by email");
         try {
-            ApplicationUser applicationUser = findApplicationUserByEmail(email);
+            User user = findUserByEmail(email);
 
             List<GrantedAuthority> grantedAuthorities;
-            if (applicationUser.getAdmin()) {
+            if (user.getAdmin()) {
                 grantedAuthorities = AuthorityUtils.createAuthorityList("ROLE_ADMIN", "ROLE_USER");
             } else {
                 grantedAuthorities = AuthorityUtils.createAuthorityList("ROLE_USER");
             }
 
-            return new User(applicationUser.getEmail(), applicationUser.getPassword(), grantedAuthorities);
+            return new User(user.getEmail(), user.getPassword(), grantedAuthorities);
         } catch (NotFoundException e) {
             throw new UsernameNotFoundException(e.getMessage(), e);
         }
     }*/
 
     @Override
-    public ApplicationUser findApplicationUserByEmail(String email) {
+    public User findUserByEmail(String email) {
         LOGGER.debug("Find application user by email");
-        ApplicationUser applicationUser = userRepository.findUserByEmail(email);
-        if (applicationUser != null) {
-            return applicationUser;
+        User user = userRepository.findUserByEmail(email);
+        if (user != null) {
+            return user;
         }
         throw new NotFoundException(String.format("Could not find the user with the email address %s", email));
     }

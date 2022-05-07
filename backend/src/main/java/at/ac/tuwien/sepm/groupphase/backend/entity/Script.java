@@ -4,9 +4,9 @@ public class Script {
 
     private Long id;
     private String name;
-    private ApplicationUser owner;
+    private User owner;
 
-    public Script(Long id, String name, ApplicationUser owner) {
+    public Script(Long id, String name, User owner) {
         this.id = id;
         this.name = name;
         this.owner = owner;
@@ -28,11 +28,11 @@ public class Script {
         this.name = name;
     }
 
-    public ApplicationUser getOwner() {
+    public User getOwner() {
         return owner;
     }
 
-    public void setOwner(ApplicationUser owner) {
+    public void setOwner(User owner) {
         this.owner = owner;
     }
 }
