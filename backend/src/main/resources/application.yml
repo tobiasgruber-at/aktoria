@@ -6,10 +6,10 @@ logging:
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/db
+    url: jdbc:postgresql://db:5432/mydb
     driver-class-name: org.postgresql.Driver
-    username: aktoria-admin
-    password: aktoria-admin
+    username: postgres
+    password: password
   jpa:
     # Set this property to true if you want to see the executed queries
     show-sql: false
@@ -19,6 +19,8 @@ spring:
     # is disabled since it breaks the principle of least astonishment and leads to bad performance. The learn more,
     # follow this link: https://bit.ly/2LaX9ku
     open-in-view: false
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
   mail:
     password: RMjj3XJqM5@b45Ba
     username: aktoria.norepl@gmx.at
