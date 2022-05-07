@@ -1,15 +1,38 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "script")
 public class Script {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "name", nullable = false)
     private String name;
+
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User owner;
 
     public Script(Long id, String name, User owner) {
         this.id = id;
         this.name = name;
         this.owner = owner;
+    }
+
+    public Script() {
+
     }
 
     public Long getId() {
