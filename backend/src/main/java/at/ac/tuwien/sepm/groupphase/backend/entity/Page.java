@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.groupphase.backend.entity;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.ids.PageId;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -10,8 +11,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
+import java.util.List;
 
 @Entity
 @Table(name = "page")
@@ -23,16 +26,20 @@ public class Page {
     private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @PrimaryKeyJoinColumn(name = "script_id")
+    @PrimaryKeyJoinColumn
     private Script script;
 
     @Column(name = "index", nullable = false)
     private Long index;
 
-    public Page(Long id, Script script, Long index) {
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "page")
+    private List<Line> lines;
+
+    public Page(Long id, Script script, Long index, List<Line> lines) {
         this.id = id;
         this.script = script;
         this.index = index;
+        this.lines = lines;
     }
 
     public Page() {
@@ -61,5 +68,13 @@ public class Page {
 
     public void setIndex(Long index) {
         this.index = index;
+    }
+
+    public List<Line> getLines() {
+        return lines;
+    }
+
+    public void setLines(List<Line> lines) {
+        this.lines = lines;
     }
 }

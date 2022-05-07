@@ -31,23 +31,27 @@ public class User {
     @Column(name = "password_hash", nullable = false, length = 60)
     private String passwordHash;
 
-    @Column(name = "verified", nullable = false, columnDefinition = "boolean default true")
+    @Column(name = "verified", nullable = false, columnDefinition = "boolean default false")
     private Boolean verified;
 
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Script> scripts;
 
+    @OneToMany(mappedBy = "recordedBy", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Line> linesRecorded;
+
     public User() {
     }
 
-    public User(Long id, String firstName, String lastName, String email, String password, Boolean verified, List<Script> scripts) {
+    public User(Long id, String firstName, String lastName, String email, String passwordHash, Boolean verified, List<Script> scripts, List<Line> linesRecorded) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.passwordHash = password;
+        this.passwordHash = passwordHash;
         this.verified = verified;
         this.scripts = scripts;
+        this.linesRecorded = linesRecorded;
     }
 
     public String getEmail() {
@@ -104,5 +108,13 @@ public class User {
 
     public void setScripts(List<Script> scripts) {
         this.scripts = scripts;
+    }
+
+    public List<Line> getLinesRecorded() {
+        return linesRecorded;
+    }
+
+    public void setLinesRecorded(List<Line> linesRecorded) {
+        this.linesRecorded = linesRecorded;
     }
 }

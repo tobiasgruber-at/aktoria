@@ -25,7 +25,7 @@ public class Script {
     private String name;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "owner", nullable = false)
     private User owner;
 
     @OneToMany(mappedBy = "script", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
