@@ -31,4 +31,8 @@ public class UserRegistrationDto {
     public String getPassword() {
         return password;
     }
+
+    public String getLastName() {
+        return lastName;
+    }
 }

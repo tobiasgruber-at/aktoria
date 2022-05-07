@@ -1,7 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedUserDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserRegistrationDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -54,13 +53,12 @@ class UserEndpointIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
             ).andExpect(status().isCreated())
             .andReturn().getResponse().getContentAsByteArray();
-        SimpleUserDto userResult = objectMapper.readValue(body, SimpleUserDto.class);
+        UserRegistrationDto userResult = objectMapper.readValue(body, UserRegistrationDto.class);
 
         assertThat(userResult).isNotNull();
         assertThat(userResult.getFirstName()).isEqualTo("Name");
         assertThat(userResult.getLastName()).isEqualTo("lastName");
         assertThat(userResult.getEmail()).isEqualTo("admin@email.com");
-        assertThat(userResult.getVerified()).isEqualTo(false);
     }
 
     @Test
@@ -137,26 +135,24 @@ class UserEndpointIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
             ).andExpect(status().isCreated())
             .andReturn().getResponse().getContentAsByteArray();
-        SimpleUserDto userResult = objectMapper.readValue(body, SimpleUserDto.class);
+        UserRegistrationDto userResult = objectMapper.readValue(body, UserRegistrationDto.class);
 
         assertThat(userResult).isNotNull();
         assertThat(userResult.getFirstName()).isEqualTo(s);
         assertThat(userResult.getLastName()).isEqualTo(s);
         assertThat(userResult.getEmail()).isEqualTo("admin@email.com");
-        assertThat(userResult.getVerified()).isEqualTo(false);
     }
 
 
     //TESTING PUT
 
-    //TODO: returns method not allowed
     @Test
     @Transactional
     @DisplayName("putUserAndPassword() Change an existing User and their password correctly")
     void putUserAndPassword() throws Exception {
         byte[] body = mockMvc
             .perform(MockMvcRequestBuilders
-                .put("/api/v1/users/{id}", (long) -1)
+                .put("/api/v1/users/{id}?passwordChange=true", (long) -1)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(new DetailedUserDto((long) -1, "NewName", "newWow", "admin@email.com", "newPassword", true)))
@@ -172,45 +168,41 @@ class UserEndpointIntegrationTest {
         assertThat(userResult.getVerified()).isEqualTo(false);
     }
 
-
-    //TODO: returns method not allowed
     @Test
     @Transactional
     @DisplayName("putUserInvalidEmail() Change an existing User with invalid email")
     void putUserInvalidEmail() throws Exception {
         String s = "a".repeat(101);
         mockMvc.perform(MockMvcRequestBuilders
-            .put("/api/v1/users/{id}", (long) -1)
+            .put("/api/v1/users/{id}?passwordChange=true", (long) -1)
             .accept(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsBytes(new DetailedUserDto((long) -1, "NewName", "newLastName", s, "PASSWORD", true)))
             .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isUnprocessableEntity());
     }
 
-    //TODO: returns method not allowed
     @Test
     @Transactional
     @DisplayName("putUserInvalidName() Change an existing User with invalid name")
     void putUserInvalidName() throws Exception {
         String s = "a".repeat(101);
         mockMvc.perform(MockMvcRequestBuilders
-            .put("/api/v1/users/{id}", (long) -1)
+            .put("/api/v1/users/{id}?passwordChange=true", (long) -1)
             .accept(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsBytes(new DetailedUserDto((long) -1, s, s, "admin@email.com", "PASSWORD", true)))
             .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isUnprocessableEntity());
     }
 
-    //TODO: returns method not allowed
     @Test
     @Transactional
     @DisplayName("putUserEdgeCase() Change an existing User with values that are at the limit")
     void putUserEdgeCase() throws Exception {
         String s = "a".repeat(100);
         byte[] body = mockMvc.perform(MockMvcRequestBuilders
-                .put("/api/v1/users/{id}", (long) -1)
+                .put("/api/v1/users/{id}?passwordChange=false", (long) -1)
                 .accept(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(new DetailedUserDto((long) -1, s, s, "admin@email.com", "Password", true)))
+                .content(objectMapper.writeValueAsBytes(new DetailedUserDto((long) -1, s, s, "admin@email.com", "", true)))
                 .contentType(MediaType.APPLICATION_JSON)
             ).andExpect(status().isCreated())
             .andReturn().getResponse().getContentAsByteArray();
@@ -223,14 +215,13 @@ class UserEndpointIntegrationTest {
         assertThat(userResult.getVerified()).isEqualTo(false);
     }
 
-    //TODO: returns method not allowed?
     @Test
     @Transactional
     @DisplayName("putUserPasswordEdgeCase() Change an existing User's password that is at the limit")
     void putUserPasswordEdgeCase() throws Exception {
         String s = "a".repeat(100);
         mockMvc.perform(MockMvcRequestBuilders
-            .put("/api/v1/users/{id}", (long) -1)
+            .put("/api/v1/users/{id}?passwordChange=true", (long) -1)
             .accept(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsBytes(new DetailedUserDto((long) -1, "NewName", "newLastName", "admin@email.com", "a", true)))
             .contentType(MediaType.APPLICATION_JSON)
@@ -238,7 +229,6 @@ class UserEndpointIntegrationTest {
     }
 
     //TESTING DELETE
-
     @Test
     @Transactional
     @DisplayName("deleteUser() Delete a User correctly")
