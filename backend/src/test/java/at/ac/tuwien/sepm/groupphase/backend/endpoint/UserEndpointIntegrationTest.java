@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedUserDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.FullUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserRegistrationDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -155,7 +156,7 @@ class UserEndpointIntegrationTest {
                 .put("/api/v1/users/{id}?passwordChange=true", (long) -1)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(new DetailedUserDto((long) -1, "NewName", "newWow", "admin@email.com", "newPassword", true)))
+                .content(objectMapper.writeValueAsBytes(new FullUserDto((long) -1, "NewName", "newWow", "admin@email.com", "oldPassword", "newPassword", true)))
             ).andExpect(status().isCreated())
             .andReturn().getResponse().getContentAsByteArray();
         DetailedUserDto userResult = objectMapper.readValue(body, DetailedUserDto.class);
@@ -176,7 +177,7 @@ class UserEndpointIntegrationTest {
         mockMvc.perform(MockMvcRequestBuilders
             .put("/api/v1/users/{id}?passwordChange=true", (long) -1)
             .accept(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsBytes(new DetailedUserDto((long) -1, "NewName", "newLastName", s, "PASSWORD", true)))
+            .content(objectMapper.writeValueAsBytes(new FullUserDto((long) -1, "NewName", "newLastName", s, "PASSWORD", "PASSWORD", true)))
             .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isUnprocessableEntity());
     }
@@ -189,7 +190,7 @@ class UserEndpointIntegrationTest {
         mockMvc.perform(MockMvcRequestBuilders
             .put("/api/v1/users/{id}?passwordChange=true", (long) -1)
             .accept(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsBytes(new DetailedUserDto((long) -1, s, s, "admin@email.com", "PASSWORD", true)))
+            .content(objectMapper.writeValueAsBytes(new FullUserDto((long) -1, s, s, "admin@email.com", "PASSWORD", "", true)))
             .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isUnprocessableEntity());
     }
@@ -202,7 +203,7 @@ class UserEndpointIntegrationTest {
         byte[] body = mockMvc.perform(MockMvcRequestBuilders
                 .put("/api/v1/users/{id}?passwordChange=false", (long) -1)
                 .accept(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(new DetailedUserDto((long) -1, s, s, "admin@email.com", "", true)))
+                .content(objectMapper.writeValueAsBytes(new FullUserDto((long) -1, s, s, "admin@email.com", "", "", true)))
                 .contentType(MediaType.APPLICATION_JSON)
             ).andExpect(status().isCreated())
             .andReturn().getResponse().getContentAsByteArray();
@@ -223,7 +224,7 @@ class UserEndpointIntegrationTest {
         mockMvc.perform(MockMvcRequestBuilders
             .put("/api/v1/users/{id}?passwordChange=true", (long) -1)
             .accept(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsBytes(new DetailedUserDto((long) -1, "NewName", "newLastName", "admin@email.com", "a", true)))
+            .content(objectMapper.writeValueAsBytes(new FullUserDto((long) -1, "NewName", "newLastName", "admin@email.com", "Password", s, true)))
             .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isUnprocessableEntity());
     }

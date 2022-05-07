@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedUserDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.FullUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordChangeDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserRegistrationDto;
@@ -43,7 +44,8 @@ public class UserEndpoint {
     }
 
     @GetMapping(path = "{id}")
-    @ResponseStatus(HttpStatus.NOT_IMPLEMENTED)
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
     public SimpleUserDto getUser(@PathVariable Long id) {
         LOGGER.info("GET " + UserEndpoint.path);
         try {
@@ -56,7 +58,7 @@ public class UserEndpoint {
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.NOT_IMPLEMENTED)
+    @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public UserRegistrationDto postUser(@RequestBody UserRegistrationDto userRegistrationDto) {
         LOGGER.info("POST " + UserEndpoint.path);
@@ -74,14 +76,14 @@ public class UserEndpoint {
     }
 
     @PutMapping(path = "/{id}")
-    @ResponseStatus(HttpStatus.NOT_IMPLEMENTED)
-    public DetailedUserDto putUser(@RequestParam Boolean passwordChange, @RequestBody DetailedUserDto detailedUserDto, @PathVariable Long id) {
+    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseBody
+    public DetailedUserDto putUser(@RequestParam Boolean passwordChange, @RequestBody FullUserDto fullUserDto, @PathVariable Long id) {
         LOGGER.info("PUT " + UserEndpoint.path + "/{}", id);
         //this method calls either changeUserData or changePassword or both
         DetailedUserDto detailedUser = new DetailedUserDto();
         if (passwordChange) {
-            //TODO: either also give the old password to the endpoint or only give the new password to the service layer
-            PasswordChangeDto passwordChangeDto = new PasswordChangeDto("", detailedUserDto.getPassword());
+            PasswordChangeDto passwordChangeDto = new PasswordChangeDto(fullUserDto.getOldPassword(), fullUserDto.getNewPassword());
             try {
                 detailedUser = userService.changePassword(passwordChangeDto, id);
             } catch (ServiceException e) {
@@ -89,7 +91,7 @@ public class UserEndpoint {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error");
             }
         }
-        SimpleUserDto simpleUser = new SimpleUserDto(id, detailedUserDto.getFirstName(), detailedUserDto.getLastName(), detailedUserDto.getEmail(), detailedUserDto.getVerified());
+        SimpleUserDto simpleUser = new SimpleUserDto(id, fullUserDto.getFirstName(), fullUserDto.getLastName(), fullUserDto.getEmail(), fullUserDto.getVerified());
         try {
             simpleUser = userService.changeUserData(simpleUser, id);
         } catch (ServiceException e) {
@@ -100,7 +102,7 @@ public class UserEndpoint {
     }
 
     @DeleteMapping
-    @ResponseStatus(HttpStatus.NOT_IMPLEMENTED)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser(@RequestParam Long id) {
         LOGGER.info("DELETE " + UserEndpoint.path + " " + id);
         try {
@@ -112,7 +114,7 @@ public class UserEndpoint {
     }
 
     @PostMapping(path = "/forgotten-password")
-    @ResponseStatus(HttpStatus.NOT_IMPLEMENTED)
+    @ResponseStatus(HttpStatus.CREATED)
     public void forgottenPassword(@RequestBody String email) {
         LOGGER.info("POST " + UserEndpoint.path + "/forgotten-password");
         try {
