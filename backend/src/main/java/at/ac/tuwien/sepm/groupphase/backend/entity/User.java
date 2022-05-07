@@ -1,14 +1,18 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.List;
 
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 public class User {
 
     @Id
@@ -27,19 +31,23 @@ public class User {
     @Column(name = "password_hash", nullable = false, length = 60)
     private String passwordHash;
 
-    @Column(name = "verified", columnDefinition = "boolean defaults false", nullable = false)
+    @Column(name = "verified", nullable = false, columnDefinition = "boolean default true")
     private Boolean verified;
+
+    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Script> scripts;
 
     public User() {
     }
 
-    public User(Long id, String firstName, String lastName, String email, String password, Boolean verified) {
+    public User(Long id, String firstName, String lastName, String email, String password, Boolean verified, List<Script> scripts) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.passwordHash = password;
         this.verified = verified;
+        this.scripts = scripts;
     }
 
     public String getEmail() {
@@ -88,5 +96,13 @@ public class User {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public List<Script> getScripts() {
+        return scripts;
+    }
+
+    public void setScripts(List<Script> scripts) {
+        this.scripts = scripts;
     }
 }
