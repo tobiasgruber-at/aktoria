@@ -52,7 +52,7 @@ class ScriptServiceImplIntegrationTest {
         File f = new File("./src/test/resources/service/parsing/script/Skript_NF.pdf");
         ScriptService scriptService = new ScriptServiceImpl();
 
-        StagedScriptDto actual = scriptService.newScript(f);
+        StagedScriptDto actual = scriptService.create(f);
         StagedScriptDto expected = new StagedScriptDto(expectedPages, expectedRoles);
 
         assertEquals(expected, actual);

@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ScriptDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.StagedScriptDto;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.service.ScriptService;
@@ -16,6 +17,11 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.File;
 import java.lang.invoke.MethodHandles;
 
+/**
+ * Script endpoint.
+ *
+ * @author Simon Josef Kreuzpointner
+ */
 @RestController
 @RequestMapping(path = ScriptEndpoint.path)
 public class ScriptEndpoint {
@@ -33,7 +39,19 @@ public class ScriptEndpoint {
         LOGGER.info("POST {}/new", path);
 
         try {
-            return scriptService.newScript(file);
+            return scriptService.create(file);
+        } catch (ServiceException e) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public ScriptDto saveScript(@RequestBody ScriptDto scriptDto) {
+        LOGGER.info("POST {}", path);
+        
+        try {
+            return scriptService.save(scriptDto);
         } catch (ServiceException e) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY);
         }

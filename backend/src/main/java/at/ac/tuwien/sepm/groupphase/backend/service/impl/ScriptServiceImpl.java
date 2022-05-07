@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
 
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ScriptDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.StagedScriptDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ParsedScriptMapper;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
@@ -30,7 +31,7 @@ public class ScriptServiceImpl implements ScriptService {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     @Override
-    public StagedScriptDto newScript(File pdfScript) throws ServiceException {
+    public StagedScriptDto create(File pdfScript) throws ServiceException {
         LOGGER.trace("newScript(pdfScript = {})", pdfScript);
 
         boolean isPdfFile;
@@ -112,5 +113,10 @@ public class ScriptServiceImpl implements ScriptService {
         }
 
         return false;
+    }
+
+    @Override
+    public ScriptDto save(ScriptDto scriptDto) throws ServiceException {
+        throw new UnsupportedOperationException();
     }
 }
