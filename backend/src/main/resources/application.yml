@@ -19,6 +19,12 @@ spring:
     # is disabled since it breaks the principle of least astonishment and leads to bad performance. The learn more,
     # follow this link: https://bit.ly/2LaX9ku
     open-in-view: false
+  mail:
+    password: RMjj3XJqM5@b45Ba
+    username: aktoria.norepl@gmx.at
+    host: mail.gmx.net
+    port: 587
+    protocol: smtp
 
 security:
   auth:

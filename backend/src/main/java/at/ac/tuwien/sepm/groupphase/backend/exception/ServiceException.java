@@ -1,4 +1,4 @@
-package at.ac.tuwien.sepm.groupphase.backend.endpoint.exceptionhandler;
+package at.ac.tuwien.sepm.groupphase.backend.exception;
 
 public class ServiceException extends Exception {
     public ServiceException() {

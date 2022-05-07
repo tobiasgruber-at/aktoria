@@ -1,12 +1,13 @@
 package at.ac.tuwien.sepm.groupphase.backend.service;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedUserDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordChangeDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserRegistrationDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.exceptionhandler.ServiceException;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.exceptionhandler.UserNotFoundException;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.exceptionhandler.ValidationException;
-import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
+import at.ac.tuwien.sepm.groupphase.backend.entity.User;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.UserNotFoundException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -14,11 +15,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 /**
  * Service for user.
  *
- * @author luke nemeskeri
+ * @author Luke Nemeskeri
  */
 public interface UserService extends UserDetailsService {
 
-    //TODO: email ändern, abort button?
 
     /**
      * Creates a new User.
@@ -31,21 +31,31 @@ public interface UserService extends UserDetailsService {
     UserRegistrationDto createUser(UserRegistrationDto userRegistrationDto) throws ServiceException, ValidationException;
 
     /**
-     * Changes the password/username of a user.
+     * Returns a user.
      *
-     * @param detailedUserDto filled with the new password/username
+     * @param id the id of a user
+     * @return the specified user
+     * @throws ServiceException is thrown if something went wrong with getting the user
+     */
+    SimpleUserDto getUser(double id) throws ServiceException;
+
+    /**
+     * Changes the email/username of a user.
+     *
+     * @param simpleUserDto filled with the new email/username
+     * @param id            the id of the user to be changed
      * @return the updated user
      * @throws ServiceException is thrown when the user data could not be updated
      */
-    DetailedUserDto changeUserData(DetailedUserDto detailedUserDto) throws ServiceException;
+    SimpleUserDto changeUserData(SimpleUserDto simpleUserDto, Long id) throws ServiceException;
 
     /**
      * Deletes a user from the system.
      *
-     * @param simpleUserDto filled with the user-data, which shall be deleted
+     * @param id the id of the user to be deleted
      * @throws ServiceException is thrown when the user could not be deleted
      */
-    void deleteUser(SimpleUserDto simpleUserDto) throws ServiceException;
+    void deleteUser(Long id) throws ServiceException;
 
     /**
      * Sends an email to the user to set a new password.
@@ -56,13 +66,14 @@ public interface UserService extends UserDetailsService {
     void forgotPassword(String email) throws UserNotFoundException;
 
     /**
-     * Changes the email of a user.
+     * Changes the password of a user.
      *
-     * @param simpleUserDto filled with the user data, including the new email
-     * @return the updated user with the new email
-     * @throws ServiceException is thrown if the email could not be changed
+     * @param passwordChangeDto filled with the old and new password
+     * @param id                the id of the user
+     * @return the user with the new password
+     * @throws ServiceException is thrown if the password could not be changed
      */
-    SimpleUserDto changeEmail(SimpleUserDto simpleUserDto) throws ServiceException;
+    DetailedUserDto changePassword(PasswordChangeDto passwordChangeDto, Long id) throws ServiceException;
 
     /**
      * Find a user in the context of Spring Security based on the email address
@@ -81,7 +92,7 @@ public interface UserService extends UserDetailsService {
      * Find an application user based on the email address.
      *
      * @param email the email address
-     * @return a application user
+     * @return an application user
      */
-    ApplicationUser findApplicationUserByEmail(String email);
+    User findUserByEmail(String email);
 }
