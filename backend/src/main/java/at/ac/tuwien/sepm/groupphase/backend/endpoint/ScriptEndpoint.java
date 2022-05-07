@@ -27,10 +27,10 @@ public class ScriptEndpoint {
         this.scriptService = scriptService;
     }
 
-    @PostMapping(path = "/upload")
+    @PostMapping(path = "/new")
     @ResponseStatus(HttpStatus.OK)
     public StagedScriptDto uploadScript(@RequestBody File file) {
-        LOGGER.info("POST {}/upload", path);
+        LOGGER.info("POST {}/new", path);
 
         try {
             return scriptService.newScript(file);
