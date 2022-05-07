@@ -14,9 +14,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -75,11 +75,11 @@ public class UserEndpoint {
         return user;
     }
 
-    @PutMapping(path = "/{id}")
+    @PatchMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public DetailedUserDto putUser(@RequestParam Boolean passwordChange, @RequestBody FullUserDto fullUserDto, @PathVariable Long id) {
-        LOGGER.info("PUT " + UserEndpoint.path + "/{}", id);
+    public DetailedUserDto patchUser(@RequestParam Boolean passwordChange, @RequestBody FullUserDto fullUserDto, @PathVariable Long id) {
+        LOGGER.info("PATCH " + UserEndpoint.path + "/{}", id);
         //this method calls either changeUserData or changePassword or both
         DetailedUserDto detailedUser = new DetailedUserDto();
         if (passwordChange) {

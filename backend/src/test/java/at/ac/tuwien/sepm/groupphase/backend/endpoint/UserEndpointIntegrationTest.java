@@ -145,15 +145,15 @@ class UserEndpointIntegrationTest {
     }
 
 
-    //TESTING PUT
+    //TESTING PATCH
 
     @Test
     @Transactional
-    @DisplayName("putUserAndPassword() Change an existing User and their password correctly")
-    void putUserAndPassword() throws Exception {
+    @DisplayName("patchUserAndPassword() Change an existing User and their password correctly")
+    void patchUserAndPassword() throws Exception {
         byte[] body = mockMvc
             .perform(MockMvcRequestBuilders
-                .put("/api/v1/users/{id}?passwordChange=true", (long) -1)
+                .patch("/api/v1/users/{id}?passwordChange=true", (long) -1)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(new FullUserDto((long) -1, "NewName", "newWow", "admin@email.com", "oldPassword", "newPassword", true)))
@@ -171,11 +171,11 @@ class UserEndpointIntegrationTest {
 
     @Test
     @Transactional
-    @DisplayName("putUserInvalidEmail() Change an existing User with invalid email")
-    void putUserInvalidEmail() throws Exception {
+    @DisplayName("patchUserInvalidEmail() Change an existing User with invalid email")
+    void patchUserInvalidEmail() throws Exception {
         String s = "a".repeat(101);
         mockMvc.perform(MockMvcRequestBuilders
-            .put("/api/v1/users/{id}?passwordChange=true", (long) -1)
+            .patch("/api/v1/users/{id}?passwordChange=true", (long) -1)
             .accept(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsBytes(new FullUserDto((long) -1, "NewName", "newLastName", s, "PASSWORD", "PASSWORD", true)))
             .contentType(MediaType.APPLICATION_JSON)
@@ -184,11 +184,11 @@ class UserEndpointIntegrationTest {
 
     @Test
     @Transactional
-    @DisplayName("putUserInvalidName() Change an existing User with invalid name")
-    void putUserInvalidName() throws Exception {
+    @DisplayName("patchUserInvalidName() Change an existing User with invalid name")
+    void patchUserInvalidName() throws Exception {
         String s = "a".repeat(101);
         mockMvc.perform(MockMvcRequestBuilders
-            .put("/api/v1/users/{id}?passwordChange=true", (long) -1)
+            .patch("/api/v1/users/{id}?passwordChange=true", (long) -1)
             .accept(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsBytes(new FullUserDto((long) -1, s, s, "admin@email.com", "PASSWORD", "", true)))
             .contentType(MediaType.APPLICATION_JSON)
@@ -197,11 +197,11 @@ class UserEndpointIntegrationTest {
 
     @Test
     @Transactional
-    @DisplayName("putUserEdgeCase() Change an existing User with values that are at the limit")
-    void putUserEdgeCase() throws Exception {
+    @DisplayName("patchUserEdgeCase() Change an existing User with values that are at the limit")
+    void patchUserEdgeCase() throws Exception {
         String s = "a".repeat(100);
         byte[] body = mockMvc.perform(MockMvcRequestBuilders
-                .put("/api/v1/users/{id}?passwordChange=false", (long) -1)
+                .patch("/api/v1/users/{id}?passwordChange=false", (long) -1)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(new FullUserDto((long) -1, s, s, "admin@email.com", "", "", true)))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -218,11 +218,11 @@ class UserEndpointIntegrationTest {
 
     @Test
     @Transactional
-    @DisplayName("putUserPasswordEdgeCase() Change an existing User's password that is at the limit")
-    void putUserPasswordEdgeCase() throws Exception {
+    @DisplayName("patchUserPasswordEdgeCase() Change an existing User's password that is at the limit")
+    void patchUserPasswordEdgeCase() throws Exception {
         String s = "a".repeat(100);
         mockMvc.perform(MockMvcRequestBuilders
-            .put("/api/v1/users/{id}?passwordChange=true", (long) -1)
+            .patch("/api/v1/users/{id}?passwordChange=true", (long) -1)
             .accept(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsBytes(new FullUserDto((long) -1, "NewName", "newLastName", "admin@email.com", "Password", s, true)))
             .contentType(MediaType.APPLICATION_JSON)
