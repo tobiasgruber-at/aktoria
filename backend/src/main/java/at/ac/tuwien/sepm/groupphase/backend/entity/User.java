@@ -1,13 +1,33 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
-//TODO: replace this class with a correct User Entity implementation
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "user")
 public class User {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "first_name", nullable = false, length = 100)
     private String firstName;
+
+    @Column(name = "last_name", nullable = false, length = 100)
     private String lastName;
+
+    @Column(name = "email", nullable = false, length = 100)
     private String email;
+
+    @Column(name = "password_hash", nullable = false, length = 60)
     private String passwordHash;
+
+    @Column(name = "verified", columnDefinition = "boolean defaults false", nullable = false)
     private Boolean verified;
 
     public User() {
