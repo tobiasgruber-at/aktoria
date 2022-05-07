@@ -27,8 +27,6 @@ public class Line {
     @PrimaryKeyJoinColumn
     private Page page;
 
-    //private Script script;
-
     @Column(name = "index", nullable = false)
     private Long index;
 

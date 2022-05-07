@@ -31,11 +31,15 @@ public class Script {
     @OneToMany(mappedBy = "script", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Page> pages;
 
-    public Script(Long id, String name, User owner, List<Page> pages) {
+    @OneToMany(mappedBy = "script", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Role> roles;
+
+    public Script(Long id, String name, User owner, List<Page> pages, List<Role> roles) {
         this.id = id;
         this.name = name;
         this.owner = owner;
         this.pages = pages;
+        this.roles = roles;
     }
 
     public Script() {
@@ -72,5 +76,13 @@ public class Script {
 
     public void setPages(List<Page> pages) {
         this.pages = pages;
+    }
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
     }
 }
