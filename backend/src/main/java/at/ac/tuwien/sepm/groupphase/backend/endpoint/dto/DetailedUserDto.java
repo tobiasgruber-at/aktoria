@@ -8,6 +8,11 @@ public class DetailedUserDto extends SimpleUserDto {
         this.password = password;
     }
 
+    public DetailedUserDto() {
+        super();
+        this.password = "";
+    }
+
     public String getPassword() {
         return password;
     }

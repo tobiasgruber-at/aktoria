@@ -1,6 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordChangeDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserRegistrationDto;
 import at.ac.tuwien.sepm.groupphase.backend.service.UserService;
@@ -55,7 +55,7 @@ public class UserEndpoint {
 
     @PutMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.NOT_IMPLEMENTED)
-    public SimpleUserDto putUser(@RequestBody SimpleUserDto simpleUserDto, @RequestParam PasswordChangeDto passwordChangeDto, @PathVariable Long id) {
+    public DetailedUserDto putUser(@RequestBody DetailedUserDto detailedUserDto, @PathVariable Long id) {
         LOGGER.info("PUT " + UserEndpoint.path + "/{}", id);
         //TODO: write tests and implement method
         //this method calls either changeUserData or changePassword or both
@@ -65,11 +65,14 @@ public class UserEndpoint {
     @DeleteMapping
     @ResponseStatus(HttpStatus.NOT_IMPLEMENTED)
     public void deleteUser(@RequestParam Long id) {
+        LOGGER.info("DELETE " + UserEndpoint.path + " " + id);
         //TODO: write tests and implement method
     }
 
     @PostMapping(path = "/forgotten-password")
     @ResponseStatus(HttpStatus.NOT_IMPLEMENTED)
     public void forgottenPassword(@RequestBody String email) {
+        LOGGER.info("POST " + UserEndpoint.path + "/forgotten-password");
+        //TODO: write tests and implement method
     }
 }

@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserRegistrationDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -57,6 +58,7 @@ class UserEndpointIntegrationTest {
 
         assertThat(userResult).isNotNull();
         assertThat(userResult.getFirstName()).isEqualTo("Name");
+        assertThat(userResult.getLastName()).isEqualTo("lastName");
         assertThat(userResult.getEmail()).isEqualTo("admin@email.com");
         assertThat(userResult.getVerified()).isEqualTo(false);
     }
@@ -101,7 +103,7 @@ class UserEndpointIntegrationTest {
     @Transactional
     @DisplayName("postUserTooLongEmail() Post a new User with too long email")
     void postUserTooLongEmail() throws Exception {
-        String s = "admin@email.com" + "a".repeat(100);
+        String s = "admin@email.com" + "a".repeat(101);
         mockMvc.perform(MockMvcRequestBuilders
             .post("/api/v1/users")
             .accept(MediaType.APPLICATION_JSON)
@@ -112,76 +114,125 @@ class UserEndpointIntegrationTest {
 
     @Test
     @Transactional
-    @DisplayName("postUserTooLong() Post a new User with too long name and Invalid and Too long Email and too long password")
+    @DisplayName("postUserTooLong() Post a new User with too long first and last name and Invalid and Too long Email and too long password")
     void postUserTooLong() throws Exception {
-        String s = "a".repeat(100);
+        String s = "a".repeat(101);
         mockMvc.perform(MockMvcRequestBuilders
             .post("/api/v1/users")
             .accept(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsBytes(new UserRegistrationDto(s, "lastName", s, s)))
+            .content(objectMapper.writeValueAsBytes(new UserRegistrationDto(s, s, s, s)))
             .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(status().isUnprocessableEntity()); // Unprocessable Entity due to Validation Exception (name too long, email invalid, email too long, password too long)
+        ).andExpect(status().isUnprocessableEntity()); // Unprocessable Entity due to Validation Exception (first and last name too long, email invalid, email too long, password too long)
     }
-
-
-    //TESTING PUT
-    //TODO: deprecated
 
     @Test
     @Transactional
-    @DisplayName("putUser() Change an existing User correctly")
-    void putUserSuccessful() throws Exception {
-        byte[] body = mockMvc
-            .perform(MockMvcRequestBuilders
+    @DisplayName("postUserEdgeCase() Post a new User with values that are exactly at the limit")
+    void postUserEdgeCase() throws Exception {
+        String s = "a".repeat(100);
+        byte[] body = mockMvc.perform(MockMvcRequestBuilders
                 .post("/api/v1/users")
                 .accept(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(new SimpleUserDto((long) -1, "NewName", "newWow", "admin@email.com", true)))
+                .content(objectMapper.writeValueAsBytes(new UserRegistrationDto(s, s, "admin@email.com", s)))
                 .contentType(MediaType.APPLICATION_JSON)
             ).andExpect(status().isCreated())
             .andReturn().getResponse().getContentAsByteArray();
         SimpleUserDto userResult = objectMapper.readValue(body, SimpleUserDto.class);
 
         assertThat(userResult).isNotNull();
-        assertThat(userResult.getFirstName()).isEqualTo("NewName");
+        assertThat(userResult.getFirstName()).isEqualTo(s);
+        assertThat(userResult.getLastName()).isEqualTo(s);
         assertThat(userResult.getEmail()).isEqualTo("admin@email.com");
         assertThat(userResult.getVerified()).isEqualTo(false);
     }
 
+
+    //TESTING PUT
+
+    //TODO: returns method not allowed
     @Test
     @Transactional
-    @DisplayName("putUserNoID() Change an existing User with no ID")
-    void putUserNoID() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders
-            .post("/api/v1/users")
-            .accept(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsBytes(new SimpleUserDto(null, "NewName", "admin@email.com", true)))
-            .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(status().isUnprocessableEntity());  //Unprocessable entity due to invalid ID
+    @DisplayName("putUserAndPassword() Change an existing User and their password correctly")
+    void putUserAndPassword() throws Exception {
+        byte[] body = mockMvc
+            .perform(MockMvcRequestBuilders
+                .put("/api/v1/users/{id}", (long) -1)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsBytes(new DetailedUserDto((long) -1, "NewName", "newWow", "admin@email.com", "newPassword", true)))
+            ).andExpect(status().isCreated())
+            .andReturn().getResponse().getContentAsByteArray();
+        DetailedUserDto userResult = objectMapper.readValue(body, DetailedUserDto.class);
+
+        assertThat(userResult).isNotNull();
+        assertThat(userResult.getFirstName()).isEqualTo("NewName");
+        assertThat(userResult.getLastName()).isEqualTo("newWow");
+        assertThat(userResult.getEmail()).isEqualTo("admin@email.com");
+        assertThat(userResult.getPassword()).isEqualTo("newPassword");
+        assertThat(userResult.getVerified()).isEqualTo(false);
     }
 
+
+    //TODO: returns method not allowed
     @Test
     @Transactional
     @DisplayName("putUserInvalidEmail() Change an existing User with invalid email")
     void putUserInvalidEmail() throws Exception {
-        String s = "a".repeat(100);
+        String s = "a".repeat(101);
         mockMvc.perform(MockMvcRequestBuilders
-            .post("/api/v1/users")
+            .put("/api/v1/users/{id}", (long) -1)
             .accept(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsBytes(new SimpleUserDto((long) -1, "NewName", s, true)))
+            .content(objectMapper.writeValueAsBytes(new DetailedUserDto((long) -1, "NewName", "newLastName", s, "PASSWORD", true)))
             .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isUnprocessableEntity());
     }
 
-
+    //TODO: returns method not allowed
     @Test
     @Transactional
     @DisplayName("putUserInvalidName() Change an existing User with invalid name")
     void putUserInvalidName() throws Exception {
+        String s = "a".repeat(101);
+        mockMvc.perform(MockMvcRequestBuilders
+            .put("/api/v1/users/{id}", (long) -1)
+            .accept(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsBytes(new DetailedUserDto((long) -1, s, s, "admin@email.com", "PASSWORD", true)))
+            .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isUnprocessableEntity());
+    }
+
+    //TODO: returns method not allowed
+    @Test
+    @Transactional
+    @DisplayName("putUserEdgeCase() Change an existing User with values that are at the limit")
+    void putUserEdgeCase() throws Exception {
+        String s = "a".repeat(100);
+        byte[] body = mockMvc.perform(MockMvcRequestBuilders
+                .put("/api/v1/users/{id}", (long) -1)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsBytes(new DetailedUserDto((long) -1, s, s, "admin@email.com", "Password", true)))
+                .contentType(MediaType.APPLICATION_JSON)
+            ).andExpect(status().isCreated())
+            .andReturn().getResponse().getContentAsByteArray();
+        DetailedUserDto userResult = objectMapper.readValue(body, DetailedUserDto.class);
+
+        assertThat(userResult).isNotNull();
+        assertThat(userResult.getFirstName()).isEqualTo(s);
+        assertThat(userResult.getLastName()).isEqualTo(s);
+        assertThat(userResult.getEmail()).isEqualTo("admin@email.com");
+        assertThat(userResult.getVerified()).isEqualTo(false);
+    }
+
+    //TODO: returns method not allowed?
+    @Test
+    @Transactional
+    @DisplayName("putUserPasswordEdgeCase() Change an existing User's password that is at the limit")
+    void putUserPasswordEdgeCase() throws Exception {
         String s = "a".repeat(100);
         mockMvc.perform(MockMvcRequestBuilders
-            .post("/api/v1/users")
+            .put("/api/v1/users/{id}", (long) -1)
             .accept(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsBytes(new SimpleUserDto((long) -1, s, "admin@email.com", true)))
+            .content(objectMapper.writeValueAsBytes(new DetailedUserDto((long) -1, "NewName", "newLastName", "admin@email.com", "a", true)))
             .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isUnprocessableEntity());
     }
@@ -206,31 +257,7 @@ class UserEndpointIntegrationTest {
     void deleteUserInvalidId() throws Exception {
         mockMvc
             .perform(MockMvcRequestBuilders
-                .delete("/api/v1/users?id=--")
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-            ).andExpect(status().isUnprocessableEntity());
-    }
-
-    @Test
-    @Transactional
-    @DisplayName("deleteUserNoId() Delete a User with no Id")
-    void deleteUserNoId() throws Exception {
-        mockMvc
-            .perform(MockMvcRequestBuilders
-                .delete("/api/v1/users?id=")
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-            ).andExpect(status().isUnprocessableEntity());
-    }
-
-    @Test
-    @Transactional
-    @DisplayName("deleteUserNoIdParam() Delete a User with no Id query param")
-    void deleteUserNoIdParam() throws Exception {
-        mockMvc
-            .perform(MockMvcRequestBuilders
-                .delete("/api/v1/users")
+                .delete("/api/v1/users?id=0")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
             ).andExpect(status().isUnprocessableEntity());
@@ -243,20 +270,37 @@ class UserEndpointIntegrationTest {
     @Transactional
     @DisplayName("forgottenPasswordSuccessful() successfully change a password")
     void forgottenPasswordSuccessful() throws Exception {
-        byte[] body = mockMvc
-            .perform(MockMvcRequestBuilders
-                .post("/api/v1/users/forgotten-password")
-                .accept(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes("admin@email.com"))
-                .contentType(MediaType.APPLICATION_JSON)
-            ).andExpect(status().isCreated())
-            .andReturn().getResponse().getContentAsByteArray();
-        SimpleUserDto userResult = objectMapper.readValue(body, SimpleUserDto.class);
+        mockMvc.perform(MockMvcRequestBuilders
+            .post("/api/v1/users/forgotten-password")
+            .accept(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsBytes("admin@email.com"))
+            .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isCreated());
+    }
 
-        assertThat(userResult).isNotNull();
-        assertThat(userResult.getName()).isEqualTo("NewName");
-        assertThat(userResult.getEmail()).isEqualTo("admin@email.com");
-        assertThat(userResult.getVerified()).isEqualTo(false);
+    @Test
+    @Transactional
+    @DisplayName("forgottenPasswordInvalidEmail() try to change a password with an invalid email")
+    void forgottenPasswordInvalidEmail() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders
+            .post("/api/v1/users/forgotten-password")
+            .accept(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsBytes("invalid"))
+            .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("forgottenPasswordTooLongEmail() try to change a password with a too long email")
+    void forgottenPasswordTooLongEmail() throws Exception {
+        String s = "admin@email.com" + "s".repeat(100);
+        mockMvc.perform(MockMvcRequestBuilders
+            .post("/api/v1/users/forgotten-password")
+            .accept(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsBytes(s))
+            .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isUnprocessableEntity());
     }
 
 }
