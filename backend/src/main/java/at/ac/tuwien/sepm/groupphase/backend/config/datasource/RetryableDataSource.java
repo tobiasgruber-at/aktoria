@@ -1,10 +1,10 @@
 package at.ac.tuwien.sepm.groupphase.backend.config.datasource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.datasource.AbstractDataSource;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.lang.invoke.MethodHandles;
@@ -13,8 +13,8 @@ import java.sql.SQLException;
 
 public class RetryableDataSource extends AbstractDataSource {
 
-    private final DataSource delegate;
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+    private final DataSource delegate;
 
     public RetryableDataSource(DataSource delegate) {
         this.delegate = delegate;

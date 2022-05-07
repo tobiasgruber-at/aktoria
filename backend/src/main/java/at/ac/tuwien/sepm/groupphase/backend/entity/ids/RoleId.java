@@ -9,7 +9,8 @@ public class RoleId implements Serializable {
     private Script script;
     private Long id;
 
-    private RoleId() {}
+    private RoleId() {
+    }
 
     public Script getScript() {
         return script;

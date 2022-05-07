@@ -49,7 +49,7 @@ public class ScriptEndpoint {
     @ResponseStatus(HttpStatus.CREATED)
     public ScriptDto saveScript(@RequestBody ScriptDto scriptDto) {
         LOGGER.info("POST {}", path);
-        
+
         try {
             return scriptService.save(scriptDto);
         } catch (ServiceException e) {
