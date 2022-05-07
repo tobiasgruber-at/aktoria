@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -8,7 +9,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.List;
 
 @Entity
 @Table(name = "script")
@@ -25,10 +28,14 @@ public class Script {
     @JoinColumn(name = "user_id", nullable = false)
     private User owner;
 
-    public Script(Long id, String name, User owner) {
+    @OneToMany(mappedBy = "script", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Page> pages;
+
+    public Script(Long id, String name, User owner, List<Page> pages) {
         this.id = id;
         this.name = name;
         this.owner = owner;
+        this.pages = pages;
     }
 
     public Script() {
@@ -57,5 +64,13 @@ public class Script {
 
     public void setOwner(User owner) {
         this.owner = owner;
+    }
+
+    public List<Page> getPages() {
+        return pages;
+    }
+
+    public void setPages(List<Page> pages) {
+        this.pages = pages;
     }
 }
