@@ -1,24 +1,24 @@
 package at.ac.tuwien.sepm.groupphase.backend.repository;
 
-import at.ac.tuwien.sepm.groupphase.backend.entity.ApplicationUser;
+import at.ac.tuwien.sepm.groupphase.backend.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
-//TODO: replace this class with a correct ApplicationUser JPARepository implementation
+//TODO: replace this class with a correct User JPARepository implementation
 @Repository
 public class UserRepository {
-    
-    private final ApplicationUser user;
-    private final ApplicationUser admin;
+
+    private final User user;
+    private final User admin;
 
     @Autowired
     public UserRepository(PasswordEncoder passwordEncoder) {
-        user = new ApplicationUser();
-        admin = new ApplicationUser();
+        user = new User();
+        admin = new User();
     }
 
-    public ApplicationUser findUserByEmail(String email) {
+    public User findUserByEmail(String email) {
         if (email.equals(user.getEmail())) {
             return user;
         }
