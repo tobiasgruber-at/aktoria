@@ -13,7 +13,9 @@ import org.springframework.test.context.ActiveProfiles;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -21,7 +23,7 @@ class SmtpMailSenderTest {
 
     @RegisterExtension
     static GreenMailExtension greenMail = new GreenMailExtension(ServerSetupTest.SMTP)
-        .withConfiguration(GreenMailConfiguration.aConfig().withUser("tester","password"))
+        .withConfiguration(GreenMailConfiguration.aConfig().withUser("tester", "password"))
         .withPerMethodLifecycle(false);
 
     @Autowired
@@ -38,7 +40,7 @@ class SmtpMailSenderTest {
             MimeMessage message = receivedMessages[0];
             assertEquals("some content", GreenMailUtil.getBody(message));
             assertEquals("test@email.com", message.getAllRecipients()[0].toString());
-        } catch (MessagingException e){
+        } catch (MessagingException e) {
             fail(e);
         }
     }
