@@ -7,10 +7,13 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -39,15 +42,20 @@ public class User {
     private LocalDate created;
 
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Script> scripts;
+    private Set<Script> scripts;
 
     @OneToMany(mappedBy = "recordedBy", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Line> linesRecorded;
+    private Set<Line> linesRecorded;
+
+    @ManyToMany
+    @JoinTable(name = "participates_in", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "script_id"))
+    private Set<Script> participated;
 
     public User() {
     }
 
-    public User(Long id, String firstName, String lastName, String email, String passwordHash, Boolean verified, LocalDate created, List<Script> scripts, List<Line> linesRecorded) {
+    public User(Long id, String firstName, String lastName, String email, String passwordHash, Boolean verified, LocalDate created, Set<Script> scripts, Set<Line> linesRecorded,
+                Set<Script> participated) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -57,6 +65,7 @@ public class User {
         this.created = created;
         this.scripts = scripts;
         this.linesRecorded = linesRecorded;
+        this.participated = participated;
     }
 
     public String getEmail() {
@@ -115,19 +124,19 @@ public class User {
         this.created = created;
     }
 
-    public List<Script> getScripts() {
+    public Set<Script> getScripts() {
         return scripts;
     }
 
-    public void setScripts(List<Script> scripts) {
+    public void setScripts(Set<Script> scripts) {
         this.scripts = scripts;
     }
 
-    public List<Line> getLinesRecorded() {
+    public Set<Line> getLinesRecorded() {
         return linesRecorded;
     }
 
-    public void setLinesRecorded(List<Line> linesRecorded) {
+    public void setLinesRecorded(Set<Line> linesRecorded) {
         this.linesRecorded = linesRecorded;
     }
 }
