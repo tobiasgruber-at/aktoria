@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.groupphase.backend.entity;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.id.LineId;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,8 +12,10 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
+import java.util.Set;
 
 @Entity
 @Table(name = "line")
@@ -42,6 +45,9 @@ public class Line {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "recorded_by")
     private User recordedBy;
+
+    @OneToMany(mappedBy = "line", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<Conflict> conflicts;
 
     public Line() {
     }
@@ -100,5 +106,13 @@ public class Line {
 
     public void setRecordedBy(User recordedBy) {
         this.recordedBy = recordedBy;
+    }
+
+    public Set<Conflict> getConflicts() {
+        return conflicts;
+    }
+
+    public void setConflicts(Set<Conflict> conflicts) {
+        this.conflicts = conflicts;
     }
 }
