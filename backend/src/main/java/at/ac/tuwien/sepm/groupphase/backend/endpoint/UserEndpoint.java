@@ -47,8 +47,7 @@ public class UserEndpoint {
     @ResponseBody
     public SimpleUserDto getUser(@PathVariable Long id) throws ServiceException {
         LOGGER.info("GET " + UserEndpoint.path);
-        userService.getUser(id);
-        return null;
+        return userService.getUser(id);
     }
 
     @PostMapping

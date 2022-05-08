@@ -23,6 +23,10 @@ public class SimpleUserDto {
         this.verified = false;
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public String getFirstName() {
         return firstName;
     }

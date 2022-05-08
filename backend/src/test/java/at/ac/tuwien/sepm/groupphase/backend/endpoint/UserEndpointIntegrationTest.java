@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedUserDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UpdateUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserRegistrationDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -39,6 +40,34 @@ class UserEndpointIntegrationTest {
     @BeforeEach
     public void setup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webAppContext).build();
+    }
+
+
+    //TESTING GET
+    @Test
+    @Transactional
+    @DisplayName("getUserSuccessful() Get a User correctly")
+    void getUserSuccessful() throws Exception {
+        byte[] body = mockMvc
+            .perform(MockMvcRequestBuilders
+                .get("/api/v1/users/-1")
+                .accept(MediaType.APPLICATION_JSON)
+            ).andExpect(status().isOk())
+            .andReturn().getResponse().getContentAsByteArray();
+        SimpleUserDto userResult = objectMapper.readValue(body, SimpleUserDto.class);
+
+        assertThat(userResult).isNotNull();
+        assertThat(userResult.getId()).isEqualTo(-1);
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("getNonexistentUser() Get a User that does not exist")
+    void getNonexistentUser() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders
+            .get("/api/v1/users/0")
+            .accept(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isNotFound());
     }
 
     //TESTING POST
@@ -144,6 +173,16 @@ class UserEndpointIntegrationTest {
         assertThat(userResult.getEmail()).isEqualTo("admin@email.com");
     }
 
+    @Test
+    @Transactional
+    @DisplayName("postUserBodyNull() Post a new User with null as body")
+    void postUserBodyNull() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders
+            .post("/api/v1/users")
+            .accept(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isUnprocessableEntity());
+    }
+
 
     //TESTING PATCH
 
@@ -167,6 +206,28 @@ class UserEndpointIntegrationTest {
         assertThat(userResult.getEmail()).isEqualTo("admin@email.com");
         assertThat(userResult.getPassword()).isEqualTo("newPassword");
         assertThat(userResult.getVerified()).isEqualTo(false);
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("patchUserBodyNull() Update an existing User with null as body")
+    void patchUserBodyNull() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders
+            .post("/api/v1/users/-1?passwordChange=true")
+            .accept(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("patchNonexistentUser() Update a User that does not exist")
+    void patchNonexistentUser() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders
+            .post("/api/v1/users/0?passwordChange=true")
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsBytes(new UpdateUserDto((long) -1, "NewName", "newWow", "admin@email.com", "oldPassword", "newPassword", true)))
+        ).andExpect(status().isNotFound());
     }
 
     @Test
@@ -236,22 +297,23 @@ class UserEndpointIntegrationTest {
     void deleteUserSuccessful() throws Exception {
         mockMvc
             .perform(MockMvcRequestBuilders
-                .delete("/api/v1/users?id=-1")
+                .delete("/api/v1/users/-1")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
             ).andExpect(status().isNoContent());
     }
 
+
     @Test
     @Transactional
-    @DisplayName("deleteUserInvalidId() Delete a User with invalid Id")
-    void deleteUserInvalidId() throws Exception {
+    @DisplayName("deleteNonexistentUser() Delete a User with that does not exist")
+    void deleteNonexistentUser() throws Exception {
         mockMvc
             .perform(MockMvcRequestBuilders
-                .delete("/api/v1/users?id=0")
+                .delete("/api/v1/users/0")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-            ).andExpect(status().isUnprocessableEntity());
+            ).andExpect(status().isNotFound());
     }
 
 
