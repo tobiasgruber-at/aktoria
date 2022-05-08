@@ -46,7 +46,7 @@ public class Line {
     @JoinColumn(name = "recorded_by")
     private User recordedBy;
 
-    @OneToMany(mappedBy = "line", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "line")
     private Set<Conflict> conflicts;
 
     public Line() {

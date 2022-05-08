@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -23,8 +24,12 @@ public class Conflict {
     @Column(name = "type", nullable = false)
     private ConflictType type;
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "line", nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumns({
+        @JoinColumn(name = "line_id", nullable = false),
+        @JoinColumn(name = "page_id", nullable = false),
+        @JoinColumn(name = "script_id", nullable = false)
+    })
     private Line line;
 
     public Conflict() {
