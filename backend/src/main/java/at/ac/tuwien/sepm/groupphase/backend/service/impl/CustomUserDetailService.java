@@ -5,7 +5,6 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordChangeDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserRegistrationDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.User;
-import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.UserNotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
@@ -44,7 +43,7 @@ public class CustomUserDetailService implements UserService {
     }
 
     @Override
-    public SimpleUserDto changeUserData(SimpleUserDto simpleUserDto, Long id) throws ServiceException {
+    public DetailedUserDto changeUserData(SimpleUserDto simpleUserDto, Long id) throws ServiceException {
         return null;
     }
 

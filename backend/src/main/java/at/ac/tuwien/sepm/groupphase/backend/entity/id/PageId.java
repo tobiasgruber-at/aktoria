@@ -13,7 +13,8 @@ public class PageId implements Serializable {
     private Script script;
     private Long id;
 
-    public PageId() {}
+    public PageId() {
+    }
 
     public Script getScript() {
         return script;
