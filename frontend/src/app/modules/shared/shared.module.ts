@@ -12,6 +12,7 @@ import { FormErrorComponent } from './components/form-errors/form-error/form-err
 import { FormErrorsComponent } from './components/form-errors/form-errors.component';
 
 const icons = {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   PersonCircle
 };
 const sharedDeclarations = [

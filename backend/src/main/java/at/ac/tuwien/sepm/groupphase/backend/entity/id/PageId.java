@@ -1,15 +1,19 @@
-package at.ac.tuwien.sepm.groupphase.backend.entity.ids;
+package at.ac.tuwien.sepm.groupphase.backend.entity.id;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Script;
 
 import java.io.Serializable;
 
-public class RoleId implements Serializable {
-
+/**
+ * Id class for pages.
+ *
+ * @author Marvin Flandorfer
+ */
+public class PageId implements Serializable {
     private Script script;
     private Long id;
 
-    private RoleId() {
+    public PageId() {
     }
 
     public Script getScript() {
