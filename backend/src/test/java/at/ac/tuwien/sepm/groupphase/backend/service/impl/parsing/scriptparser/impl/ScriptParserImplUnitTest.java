@@ -1,8 +1,9 @@
-package at.ac.tuwien.sepm.groupphase.backend.service.parsing.scriptparser.impl;
+package at.ac.tuwien.sepm.groupphase.backend.service.impl.parsing.scriptparser.impl;
 
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.line.Line;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.line.impl.LineImpl;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.script.ParsedScript;
+import at.ac.tuwien.sepm.groupphase.backend.service.parsing.scriptparser.impl.ScriptParserImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
