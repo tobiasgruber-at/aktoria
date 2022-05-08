@@ -14,12 +14,10 @@ import at.ac.tuwien.sepm.groupphase.backend.service.parsing.scriptparser.impl.Sc
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 /**
  * A specific implementation of ScriptService.
@@ -32,12 +30,12 @@ public class ScriptServiceImpl implements ScriptService {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     @Override
-    public StagedScriptDto create(File pdfScript) throws ServiceException {
-        LOGGER.trace("newScript(pdfScript = {})", pdfScript);
+    public StagedScriptDto create(MultipartFile file) throws ServiceException {
+        LOGGER.trace("newScript(pdfScript = {})", file);
 
         boolean isPdfFile;
         try {
-            isPdfFile = isPdfFileType(pdfScript);
+            isPdfFile = isPdfFileType(file);
         } catch (IOException e) {
             throw new ServiceException(e.getMessage(), e);
         }
@@ -46,7 +44,7 @@ public class ScriptServiceImpl implements ScriptService {
             throw new IllegalFileFormatException("Illegal File Format.");
         }
 
-        Script s = new Script(pdfScript);
+        Script s = new Script(file);
         String raw;
 
         try {
@@ -61,12 +59,10 @@ public class ScriptServiceImpl implements ScriptService {
         return ParsedScriptMapper.INSTANCE.parsedScriptToScriptDto(parsedScript);
     }
 
-    private boolean isPdfFileType(File file) throws IOException {
+    private boolean isPdfFileType(MultipartFile file) throws IOException {
         // https://sceweb.sce.uhcl.edu/abeysekera/itec3831/labs/FILE%20SIGNATURES%20TABLE.pdf
 
-        // TODO: maybe find a better way to read in all bytes since the method description 
-        //  states, that it is not intended for "large files"
-        byte[] data = Files.readAllBytes(Path.of(file.getPath()));
+        byte[] data = file.getBytes();
 
         // Header
         if (data.length >= 4

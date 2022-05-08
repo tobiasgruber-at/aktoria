@@ -1,25 +1,27 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
-import at.ac.tuwien.sepm.groupphase.backend.service.parsing.page.Page;
-
 import java.util.List;
 import java.util.Objects;
 
 public class StagedScriptDto {
 
-    List<Page> pages;
-    List<String> roles;
+    private List<SimplePageDto> pages;
+    private List<String> roles;
 
-    public StagedScriptDto(List<Page> pages, List<String> roles) {
+    public StagedScriptDto(List<SimplePageDto> pages, List<String> roles) {
         this.pages = pages;
         this.roles = roles;
     }
 
-    public List<Page> getPages() {
+    public StagedScriptDto() {
+        this(null, null);
+    }
+
+    public List<SimplePageDto> getPages() {
         return pages;
     }
 
-    public void setPages(List<Page> pages) {
+    public void setPages(List<SimplePageDto> pages) {
         this.pages = pages;
     }
 

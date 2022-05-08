@@ -4,8 +4,8 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 
@@ -17,9 +17,9 @@ import java.lang.invoke.MethodHandles;
 public class Script {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-    private final File pdfFile;
+    private final MultipartFile pdfFile;
 
-    public Script(File pdfFile) {
+    public Script(MultipartFile pdfFile) {
         this.pdfFile = pdfFile;
     }
 
@@ -37,7 +37,7 @@ public class Script {
     public String getFileContentsAsPlainText() throws IOException {
         LOGGER.trace("getFileContentsAsPlainText()");
 
-        PDDocument document = PDDocument.load(pdfFile);
+        PDDocument document = PDDocument.load(pdfFile.getBytes());
 
         // TODO: throw exception on document.isEncrypted()
 

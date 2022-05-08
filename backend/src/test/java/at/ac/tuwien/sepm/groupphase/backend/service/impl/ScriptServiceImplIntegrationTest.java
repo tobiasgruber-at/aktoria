@@ -1,6 +1,8 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimplePageDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.StagedScriptDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.PageMapper;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.service.ScriptService;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.line.Line;
@@ -10,9 +12,13 @@ import at.ac.tuwien.sepm.groupphase.backend.service.parsing.page.impl.PageImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -24,7 +30,7 @@ class ScriptServiceImplIntegrationTest {
 
     @Test
     @DisplayName("newScript() returns the correct DTO")
-    void newScript() throws ServiceException {
+    void newScript() throws ServiceException, IOException {
         List<Line> expectedLines = new LinkedList<>();
         expectedLines.add(new LineImpl("Erster Akt", 0));
         expectedLines.add(new LineImpl("Das ist eine Beschreibung der Örtlichkeit, wo sich der erste Akt abspielt. Diese Phrase soll keiner Rolle zugewiesen werden.", 0));
@@ -50,10 +56,13 @@ class ScriptServiceImplIntegrationTest {
         expectedRoles.add("LADY MARI-MUSTER");
 
         File f = new File("./src/test/resources/service/parsing/script/Skript_NF.pdf");
+        MultipartFile multipartFile = new MockMultipartFile("file", new FileInputStream(f));
         ScriptService scriptService = new ScriptServiceImpl();
 
-        StagedScriptDto actual = scriptService.create(f);
-        StagedScriptDto expected = new StagedScriptDto(expectedPages, expectedRoles);
+        List<SimplePageDto> expectedPagesDto = PageMapper.INSTANCE.listOfPageToListOfSimplePageDto(expectedPages);
+
+        StagedScriptDto actual = scriptService.create(multipartFile);
+        StagedScriptDto expected = new StagedScriptDto(expectedPagesDto, expectedRoles);
 
         assertEquals(expected, actual);
     }
