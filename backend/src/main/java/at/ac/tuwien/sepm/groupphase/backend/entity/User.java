@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -34,6 +35,9 @@ public class User {
     @Column(name = "verified", nullable = false, columnDefinition = "boolean default false")
     private Boolean verified;
 
+    @Column(name = "created", nullable = false)
+    private LocalDate created;
+
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Script> scripts;
 
@@ -43,13 +47,14 @@ public class User {
     public User() {
     }
 
-    public User(Long id, String firstName, String lastName, String email, String passwordHash, Boolean verified, List<Script> scripts, List<Line> linesRecorded) {
+    public User(Long id, String firstName, String lastName, String email, String passwordHash, Boolean verified, LocalDate created, List<Script> scripts, List<Line> linesRecorded) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.passwordHash = passwordHash;
         this.verified = verified;
+        this.created = created;
         this.scripts = scripts;
         this.linesRecorded = linesRecorded;
     }
@@ -100,6 +105,14 @@ public class User {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public LocalDate getCreated() {
+        return created;
+    }
+
+    public void setCreated(LocalDate created) {
+        this.created = created;
     }
 
     public List<Script> getScripts() {
