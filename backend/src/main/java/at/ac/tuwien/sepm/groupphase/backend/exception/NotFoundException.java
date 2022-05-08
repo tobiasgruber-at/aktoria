@@ -4,6 +4,7 @@ package at.ac.tuwien.sepm.groupphase.backend.exception;
 public class NotFoundException extends RuntimeException {
 
     public NotFoundException() {
+        super();
     }
 
     public NotFoundException(String message) {

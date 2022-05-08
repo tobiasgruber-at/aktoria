@@ -4,6 +4,7 @@ package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ScriptDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.StagedScriptDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ParsedScriptMapper;
+import at.ac.tuwien.sepm.groupphase.backend.exception.IllegalFileFormatException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.service.ScriptService;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.script.ParsedScript;
@@ -42,7 +43,7 @@ public class ScriptServiceImpl implements ScriptService {
         }
 
         if (!isPdfFile) {
-            throw new ServiceException("Illegal File Format.");
+            throw new IllegalFileFormatException("Illegal File Format.");
         }
 
         Script s = new Script(pdfScript);
@@ -63,6 +64,8 @@ public class ScriptServiceImpl implements ScriptService {
     private boolean isPdfFileType(File file) throws IOException {
         // https://sceweb.sce.uhcl.edu/abeysekera/itec3831/labs/FILE%20SIGNATURES%20TABLE.pdf
 
+        // TODO: maybe find a better way to read in all bytes since the method description 
+        //  states, that it is not intended for "large files"
         byte[] data = Files.readAllBytes(Path.of(file.getPath()));
 
         // Header
