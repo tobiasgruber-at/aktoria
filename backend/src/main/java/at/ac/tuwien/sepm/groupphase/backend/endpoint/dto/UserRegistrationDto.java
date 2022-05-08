@@ -14,10 +14,10 @@ public class UserRegistrationDto {
     }
 
     public UserRegistrationDto() {
-        this.lastName = "";
-        this.firstName = "";
-        this.email = "";
-        this.password = "";
+        this.lastName = null;
+        this.firstName = null;
+        this.email = null;
+        this.password = null;
     }
 
     public String getFirstName() {

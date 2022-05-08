@@ -16,10 +16,10 @@ public class SimpleUserDto {
     }
 
     public SimpleUserDto() {
-        this.id = (long) 0;
-        this.firstName = "";
-        this.lastName = "";
-        this.email = "";
+        this.id = 0L;
+        this.firstName = null;
+        this.lastName = null;
+        this.email = null;
         this.verified = false;
     }
 

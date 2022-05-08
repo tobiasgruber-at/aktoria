@@ -1,9 +1,8 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedUserDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.FullUserDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordChangeDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UpdateUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserRegistrationDto;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.UserNotFoundException;
@@ -43,74 +42,51 @@ public class UserEndpoint {
         this.userService = userService;
     }
 
-    @GetMapping(path = "{id}")
+    @GetMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public SimpleUserDto getUser(@PathVariable Long id) {
+    public SimpleUserDto getUser(@PathVariable Long id) throws ServiceException {
         LOGGER.info("GET " + UserEndpoint.path);
-        try {
-            userService.getUser(id);
-        } catch (ServiceException e) {
-            LOGGER.error("Internal Server Error", e);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error");
-        }
+        userService.getUser(id);
         return null;
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public UserRegistrationDto postUser(@RequestBody UserRegistrationDto userRegistrationDto) {
+    public UserRegistrationDto postUser(@RequestBody UserRegistrationDto userRegistrationDto) throws ServiceException {
         LOGGER.info("POST " + UserEndpoint.path);
-        UserRegistrationDto user;
         try {
-            user = userService.createUser(userRegistrationDto);
-        } catch (ServiceException e) {
-            LOGGER.error("Internal Server Error", e);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error");
+            return userService.createUser(userRegistrationDto);
         } catch (ValidationException e) {
-            LOGGER.error("Validation Error", e);
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage());
+            LOGGER.error(e.getMessage(), e);
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage(), e);
         }
-        return user;
     }
 
     @PatchMapping(path = "/{id}")
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.NOT_IMPLEMENTED)
     @ResponseBody
-    public DetailedUserDto patchUser(@RequestParam Boolean passwordChange, @RequestBody FullUserDto fullUserDto, @PathVariable Long id) {
+    public DetailedUserDto patchUser(@RequestParam Boolean passwordChange, @RequestBody UpdateUserDto updateUserDto, @PathVariable Long id) throws ServiceException {
         LOGGER.info("PATCH " + UserEndpoint.path + "/{}", id);
         //this method calls either changeUserData or changePassword or both
-        DetailedUserDto detailedUser = new DetailedUserDto();
-        if (passwordChange) {
-            PasswordChangeDto passwordChangeDto = new PasswordChangeDto(fullUserDto.getOldPassword(), fullUserDto.getNewPassword());
-            try {
-                detailedUser = userService.changePassword(passwordChangeDto, id);
-            } catch (ServiceException e) {
-                LOGGER.error("Internal Server Error", e);
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error");
-            }
-        }
-        SimpleUserDto simpleUser = new SimpleUserDto(id, fullUserDto.getFirstName(), fullUserDto.getLastName(), fullUserDto.getEmail(), fullUserDto.getVerified());
-        try {
-            simpleUser = userService.changeUserData(simpleUser, id);
-        } catch (ServiceException e) {
-            LOGGER.error("Internal Server Error", e);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error");
-        }
-        return new DetailedUserDto(id, simpleUser.getFirstName(), simpleUser.getLastName(), simpleUser.getEmail(), detailedUser.getPassword(), simpleUser.getVerified());
+        // TODO: create path method in Service
+        // return userService.patch(updateUserDto, passwordChange, id);
+        return null;
     }
 
-    @DeleteMapping
+    @DeleteMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteUser(@RequestParam Long id) {
-        LOGGER.info("DELETE " + UserEndpoint.path + " " + id);
-        try {
-            userService.deleteUser(id);
-        } catch (ServiceException e) {
-            LOGGER.error("Internal Server Error", e);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error");
-        }
+    public void deleteUser(@PathVariable Long id) throws ServiceException {
+        LOGGER.info("DELETE {}/{}", UserEndpoint.path, id);
+        //  try {
+        userService.deleteUser(id);
+        //  }
+        /*TODO: uncomment as soon as Service is implemented
+        catch(UserNotFoundException e){
+            LOGGER.error(e.getMessage(), e);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }*/
     }
 
     @PostMapping(path = "/forgotten-password")
@@ -120,7 +96,8 @@ public class UserEndpoint {
         try {
             userService.forgotPassword(email);
         } catch (UserNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not Found");
+            LOGGER.error(e.getMessage(), e);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
     }
 }
