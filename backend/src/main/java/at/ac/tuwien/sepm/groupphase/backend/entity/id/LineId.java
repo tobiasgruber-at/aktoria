@@ -1,4 +1,4 @@
-package at.ac.tuwien.sepm.groupphase.backend.entity.ids;
+package at.ac.tuwien.sepm.groupphase.backend.entity.id;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Page;
 

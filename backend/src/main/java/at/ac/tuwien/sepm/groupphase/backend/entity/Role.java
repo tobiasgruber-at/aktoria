@@ -1,6 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
-import at.ac.tuwien.sepm.groupphase.backend.entity.ids.RoleId;
+import at.ac.tuwien.sepm.groupphase.backend.entity.id.RoleId;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

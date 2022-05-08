@@ -1,6 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
-import at.ac.tuwien.sepm.groupphase.backend.entity.ids.PageId;
+import at.ac.tuwien.sepm.groupphase.backend.entity.id.PageId;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
