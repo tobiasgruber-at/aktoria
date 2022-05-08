@@ -32,14 +32,16 @@ public class Script {
      * The page end is denoted with the form feed character \f.
      *
      * @return the file contents as a string
-     * @throws IOException if the pdf file is corrupted
+     * @throws IOException if the pdf file is corrupted or encrypted
      */
     public String getFileContentsAsPlainText() throws IOException {
         LOGGER.trace("getFileContentsAsPlainText()");
 
         PDDocument document = PDDocument.load(pdfFile.getBytes());
 
-        // TODO: throw exception on document.isEncrypted()
+        if (document.isEncrypted()) {
+            throw new IOException("File is encrypted.");
+        }
 
         PDFTextStripper stripper = new PDFTextStripper();
 
