@@ -24,10 +24,6 @@ public class UserRegistrationDto {
         return firstName;
     }
 
-    public String getLastName() {
-        return this.lastName;
-    }
-
     public String getEmail() {
         return email;
     }

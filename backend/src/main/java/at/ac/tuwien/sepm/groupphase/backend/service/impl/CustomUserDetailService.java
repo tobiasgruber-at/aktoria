@@ -3,13 +3,16 @@ package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordChangeDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UpdateUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserRegistrationDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.User;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.UserNotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.UserService;
+import at.ac.tuwien.sepm.groupphase.backend.validation.UserValidation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,31 +22,52 @@ import org.springframework.stereotype.Service;
 
 import java.lang.invoke.MethodHandles;
 
-
+/**
+ * Service for User.
+ *
+ * @author Luke Nemeskeri
+ */
 @Service
 public class CustomUserDetailService implements UserService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final UserRepository userRepository;
+    private final UserValidation userValidation;
 
     @Autowired
-    public CustomUserDetailService(UserRepository userRepository) {
+    public CustomUserDetailService(UserRepository userRepository, UserValidation userValidation) {
         this.userRepository = userRepository;
+        this.userValidation = userValidation;
     }
 
 
     @Override
-    public UserRegistrationDto createUser(UserRegistrationDto userRegistrationDto) throws ServiceException, ValidationException {
+    public UserRegistrationDto createUser(UserRegistrationDto userRegistrationDto) throws ServiceException, ValidationException, ConflictException {
+        LOGGER.info("Post new user");
+        try {
+            userValidation.validateCreateUserInput(userRegistrationDto);
+        } catch (ValidationException e) {
+            throw new ValidationException(e.getMessage(), e);
+        } catch (ConflictException e) {
+            throw new ConflictException(e.getMessage(), e);
+        }
         return null;
     }
 
     @Override
-    public SimpleUserDto getUser(double id) throws ServiceException {
+    public SimpleUserDto getUser(double id) throws ServiceException, UserNotFoundException {
         return null;
     }
 
     @Override
-    public DetailedUserDto changeUserData(SimpleUserDto simpleUserDto, Long id) throws ServiceException {
+    public DetailedUserDto patch(UpdateUserDto updateUserDto, Boolean passwordChange, Long id) throws ServiceException, ValidationException, ConflictException {
+        try {
+            userValidation.validatePatchUser(updateUserDto);
+        } catch (ValidationException e) {
+            throw new ValidationException(e.getMessage(), e);
+        } catch (ConflictException e) {
+            throw new ConflictException(e.getMessage(), e);
+        }
         return null;
     }
 

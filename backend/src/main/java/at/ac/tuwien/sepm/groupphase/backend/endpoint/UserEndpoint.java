@@ -4,6 +4,7 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UpdateUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserRegistrationDto;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.UserNotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
@@ -47,7 +48,12 @@ public class UserEndpoint {
     @ResponseBody
     public SimpleUserDto getUser(@PathVariable Long id) throws ServiceException {
         LOGGER.info("GET " + UserEndpoint.path);
-        userService.getUser(id);
+        try {
+            userService.getUser(id);
+        } catch (UserNotFoundException e) {
+            LOGGER.error(e.getMessage(), e);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        }
         return null;
     }
 
@@ -61,18 +67,26 @@ public class UserEndpoint {
         } catch (ValidationException e) {
             LOGGER.error(e.getMessage(), e);
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage(), e);
+        } catch (ConflictException e) {
+            LOGGER.error(e.getMessage(), e);
+            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage(), e);
         }
     }
 
     @PatchMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.NOT_IMPLEMENTED)
     @ResponseBody
-    public DetailedUserDto patchUser(@RequestParam Boolean passwordChange, @RequestBody UpdateUserDto updateUserDto, @PathVariable Long id) throws ServiceException {
+    public DetailedUserDto patchUser(@RequestParam Boolean passwordChange, @RequestBody UpdateUserDto updateUserDto, @PathVariable Long id) throws ServiceException, ValidationException {
         LOGGER.info("PATCH " + UserEndpoint.path + "/{}", id);
         //this method calls either changeUserData or changePassword or both
-        // TODO: create path method in Service
-        // return userService.patch(updateUserDto, passwordChange, id);
-        return null;
+        try {
+            return userService.patch(updateUserDto, passwordChange, id);
+        } catch (ValidationException e) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage(), e);
+        } catch (ConflictException e) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage(), e);
+        }
+
     }
 
     @DeleteMapping(path = "/{id}")

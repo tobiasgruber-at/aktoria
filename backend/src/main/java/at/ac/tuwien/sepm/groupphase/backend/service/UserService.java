@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.groupphase.backend.service;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordChangeDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UpdateUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserRegistrationDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.User;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
@@ -39,17 +40,17 @@ public interface UserService extends UserDetailsService {
      * @return the specified user
      * @throws ServiceException is thrown if something went wrong with getting the user
      */
-    SimpleUserDto getUser(double id) throws ServiceException;
+    SimpleUserDto getUser(double id) throws ServiceException, UserNotFoundException;
 
     /**
      * Changes the email/username of a user.
      *
-     * @param simpleUserDto filled with the new email/username
+     * @param updateUserDto filled with the user input
      * @param id            the id of the user to be changed
      * @return the updated user
      * @throws ServiceException is thrown when the user data could not be updated
      */
-    DetailedUserDto changeUserData(SimpleUserDto simpleUserDto, Long id) throws ServiceException;
+    DetailedUserDto patch(UpdateUserDto updateUserDto, Boolean passwordChange, Long id) throws ServiceException, ConflictException, ValidationException;
 
     /**
      * Deletes a user from the system.
