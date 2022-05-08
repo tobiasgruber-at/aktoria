@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordChangeDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserRegistrationDto;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.UnauthorizedException;
@@ -282,7 +283,7 @@ class CustomUserDetailServiceUnitTest {
         @DisplayName("assert that the user with the right user data is created")
         @MethodSource("parameterizedUserRegistrationDtoProvider")
         @Transactional
-        void createUserIsOk(UserRegistrationDto input) throws ServiceException, ValidationException {
+        void createUserIsOk(UserRegistrationDto input) throws ServiceException, ValidationException, ConflictException {
             assertEquals(input, userService.createUser(input));
         }
     }

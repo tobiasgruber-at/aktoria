@@ -5,6 +5,7 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordChangeDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserRegistrationDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.User;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.UserNotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
@@ -27,8 +28,9 @@ public interface UserService extends UserDetailsService {
      * @return the created User
      * @throws ServiceException    is thrown when user could not be created.
      * @throws ValidationException is thrown when user data is not valid
+     * @throws ConflictException   is thrown when there is a conflict with the data base
      */
-    UserRegistrationDto createUser(UserRegistrationDto userRegistrationDto) throws ServiceException, ValidationException;
+    UserRegistrationDto createUser(UserRegistrationDto userRegistrationDto) throws ServiceException, ValidationException, ConflictException;
 
     /**
      * Returns a user.
@@ -47,7 +49,7 @@ public interface UserService extends UserDetailsService {
      * @return the updated user
      * @throws ServiceException is thrown when the user data could not be updated
      */
-    SimpleUserDto changeUserData(SimpleUserDto simpleUserDto, Long id) throws ServiceException;
+    DetailedUserDto changeUserData(SimpleUserDto simpleUserDto, Long id) throws ServiceException;
 
     /**
      * Deletes a user from the system.

@@ -9,7 +9,8 @@ public class LineId implements Serializable {
     private Page page;
     private Long id;
 
-    public LineId() {}
+    public LineId() {
+    }
 
     public Page getPage() {
         return page;
