@@ -52,8 +52,10 @@ class UserEndpointIntegrationTest {
             .perform(MockMvcRequestBuilders
                 .get("/api/v1/users/-1")
                 .accept(MediaType.APPLICATION_JSON)
-            ).andExpect(status().isOk())
+            )
+            .andExpect(status().isOk())
             .andReturn().getResponse().getContentAsByteArray();
+
         SimpleUserDto userResult = objectMapper.readValue(body, SimpleUserDto.class);
 
         assertThat(userResult).isNotNull();
@@ -180,7 +182,7 @@ class UserEndpointIntegrationTest {
         mockMvc.perform(MockMvcRequestBuilders
             .post("/api/v1/users")
             .accept(MediaType.APPLICATION_JSON)
-        ).andExpect(status().isUnprocessableEntity());
+        ).andExpect(status().isBadRequest()); //Spring automatically throws 400 Bad Request when Request Body is empty
     }
 
 
@@ -215,7 +217,7 @@ class UserEndpointIntegrationTest {
         mockMvc.perform(MockMvcRequestBuilders
             .post("/api/v1/users/-1?passwordChange=true")
             .accept(MediaType.APPLICATION_JSON)
-        ).andExpect(status().isUnprocessableEntity());
+        ).andExpect(status().isBadRequest()); //Spring automatically throws 400 Bad Request when Request Body is empty
     }
 
     @Test

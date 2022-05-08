@@ -75,7 +75,7 @@ public class UserEndpoint {
     }
 
     @DeleteMapping(path = "/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.NOT_IMPLEMENTED)
     public void deleteUser(@PathVariable Long id) throws ServiceException {
         LOGGER.info("DELETE {}/{}", UserEndpoint.path, id);
         //  try {
