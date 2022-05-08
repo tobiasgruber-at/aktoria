@@ -4,12 +4,17 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Script;
 
 import java.io.Serializable;
 
+/**
+ * Id class for roles.
+ *
+ * @author Marvin Flandorfer
+ */
 public class RoleId implements Serializable {
 
     private Script script;
     private Long id;
 
-    private RoleId() {}
+    public RoleId() {}
 
     public Script getScript() {
         return script;
