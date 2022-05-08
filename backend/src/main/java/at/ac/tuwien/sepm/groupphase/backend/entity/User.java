@@ -49,13 +49,13 @@ public class User {
 
     @ManyToMany
     @JoinTable(name = "participates_in", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "script_id"))
-    private Set<Script> participated;
+    private Set<Script> participatesIn;
 
     public User() {
     }
 
     public User(Long id, String firstName, String lastName, String email, String passwordHash, Boolean verified, LocalDate created, Set<Script> scripts, Set<Line> linesRecorded,
-                Set<Script> participated) {
+                Set<Script> participatesIn) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -65,7 +65,7 @@ public class User {
         this.created = created;
         this.scripts = scripts;
         this.linesRecorded = linesRecorded;
-        this.participated = participated;
+        this.participatesIn = participatesIn;
     }
 
     public String getEmail() {
@@ -138,5 +138,13 @@ public class User {
 
     public void setLinesRecorded(Set<Line> linesRecorded) {
         this.linesRecorded = linesRecorded;
+    }
+
+    public Set<Script> getParticipatesIn() {
+        return participatesIn;
+    }
+
+    public void setParticipatesIn(Set<Script> participatesIn) {
+        this.participatesIn = participatesIn;
     }
 }

@@ -36,7 +36,7 @@ public class Script {
     @OneToMany(mappedBy = "script", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Role> roles;
 
-    @ManyToMany
+    @ManyToMany(mappedBy = "participatesIn")
     private Set<User> participants;
 
     public Script(Long id, String name, User owner, List<Page> pages, Set<Role> roles) {
