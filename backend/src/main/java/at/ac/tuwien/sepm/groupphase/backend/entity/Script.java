@@ -8,11 +8,19 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import java.util.List;
+import java.util.Set;
 
+/**
+ * Entity class for scripts.
+ *
+ * @author Marvin Flandorfer
+ */
 @Entity
 @Table(name = "script")
 public class Script {
@@ -29,12 +37,16 @@ public class Script {
     private User owner;
 
     @OneToMany(mappedBy = "script", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OrderBy("index desc")
     private List<Page> pages;
 
     @OneToMany(mappedBy = "script", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Role> roles;
+    private Set<Role> roles;
 
-    public Script(Long id, String name, User owner, List<Page> pages, List<Role> roles) {
+    @ManyToMany(mappedBy = "participatesIn")
+    private Set<User> participants;
+
+    public Script(Long id, String name, User owner, List<Page> pages, Set<Role> roles) {
         this.id = id;
         this.name = name;
         this.owner = owner;
@@ -78,11 +90,19 @@ public class Script {
         this.pages = pages;
     }
 
-    public List<Role> getRoles() {
+    public Set<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<Role> roles) {
+    public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public Set<User> getParticipants() {
+        return participants;
+    }
+
+    public void setParticipants(Set<User> participants) {
+        this.participants = participants;
     }
 }
