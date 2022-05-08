@@ -33,7 +33,7 @@ public class ScriptParserImpl implements ScriptParser {
     private void processLines(Line line, Stack<Line> stagedLines) {
         LOGGER.trace("processLines(line = {}, stagedLines = {})", line, stagedLines);
 
-        // TODO: exclude character list
+        // TODO: exclude character list?
 
         if (line.hasRoles()) {
             for (String c : line.getRoles()) {

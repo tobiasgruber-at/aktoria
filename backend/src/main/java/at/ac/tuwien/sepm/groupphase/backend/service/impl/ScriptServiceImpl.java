@@ -59,8 +59,13 @@ public class ScriptServiceImpl implements ScriptService {
         return ParsedScriptMapper.INSTANCE.parsedScriptToScriptDto(parsedScript);
     }
 
+    /**
+     * Checks if the given file is of type pdf.
+     *
+     * @see <a href="https://sceweb.sce.uhcl.edu/abeysekera/itec3831/labs/FILE%20SIGNATURES%20TABLE.pdf"></a>
+     */
     private boolean isPdfFileType(MultipartFile file) throws IOException {
-        // https://sceweb.sce.uhcl.edu/abeysekera/itec3831/labs/FILE%20SIGNATURES%20TABLE.pdf
+        LOGGER.trace("isPdfFileType(file = {})", file);
 
         byte[] data = file.getBytes();
 
@@ -116,6 +121,8 @@ public class ScriptServiceImpl implements ScriptService {
 
     @Override
     public ScriptDto save(ScriptDto scriptDto) throws ServiceException {
+        LOGGER.trace("save(scriptDto = {})", scriptDto);
+
         throw new UnsupportedOperationException();
     }
 }
