@@ -1,6 +1,8 @@
-package at.ac.tuwien.sepm.groupphase.backend.service.parsing.line;
+package at.ac.tuwien.sepm.groupphase.backend.service.impl.parsing.line;
 
+import at.ac.tuwien.sepm.groupphase.backend.service.parsing.line.Line;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.line.impl.LineImpl;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -113,7 +115,7 @@ class LineImplUnitTest {
         })
         void getConflictTypeAssignmentRequired(String input) {
             LineImpl l = new LineImpl(input, 0);
-            assertEquals(Line.ConflictType.ASSIGNMENT_REQUIRED, l.getConflictType());
+            Assertions.assertEquals(Line.ConflictType.ASSIGNMENT_REQUIRED, l.getConflictType());
         }
 
         @ParameterizedTest
