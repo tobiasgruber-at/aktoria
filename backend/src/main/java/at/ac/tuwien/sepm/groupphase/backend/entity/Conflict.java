@@ -13,6 +13,11 @@ import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+/**
+ * Entity class for conflicts.
+ *
+ * @author Marvin Flandorfer
+ */
 @Entity
 @Table(name = "conflict")
 public class Conflict {

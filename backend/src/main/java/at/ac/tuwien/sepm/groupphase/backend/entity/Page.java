@@ -17,6 +17,11 @@ import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import java.util.List;
 
+/**
+ * Entity class for pages.
+ *
+ * @author Marvin Flandorfer
+ */
 @Entity
 @Table(name = "page")
 @IdClass(PageId.class)

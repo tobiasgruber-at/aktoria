@@ -4,6 +4,11 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Script;
 
 import java.io.Serializable;
 
+/**
+ * Id class for pages.
+ *
+ * @author Marvin Flandorfer
+ */
 public class PageId implements Serializable {
     private Script script;
     private Long id;

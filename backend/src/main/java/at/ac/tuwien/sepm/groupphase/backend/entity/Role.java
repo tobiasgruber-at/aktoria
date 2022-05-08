@@ -14,6 +14,11 @@ import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import java.awt.Color;
 
+/**
+ * Entity class for roles.
+ *
+ * @author Marvin Flandorfer
+ */
 @Entity
 @Table(name = "role")
 @IdClass(RoleId.class)

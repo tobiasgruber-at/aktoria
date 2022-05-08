@@ -17,6 +17,11 @@ import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import java.util.Set;
 
+/**
+ * Entity class for lines.
+ *
+ * @author Marvin Flandorfer
+ */
 @Entity
 @Table(name = "line")
 @IdClass(LineId.class)

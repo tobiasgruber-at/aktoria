@@ -15,6 +15,11 @@ import javax.persistence.Table;
 import java.time.LocalDate;
 import java.util.Set;
 
+/**
+ * Entity class for users.
+ *
+ * @author Marvin Flandorfer
+ */
 @Entity
 @Table(name = "users")
 public class User {

@@ -16,6 +16,11 @@ import javax.persistence.Table;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Entity class for scripts.
+ *
+ * @author Marvin Flandorfer
+ */
 @Entity
 @Table(name = "script")
 public class Script {
