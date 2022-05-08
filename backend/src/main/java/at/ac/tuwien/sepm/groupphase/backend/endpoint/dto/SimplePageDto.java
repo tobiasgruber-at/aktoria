@@ -3,6 +3,14 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Simple Page Data Access Object.
+ * <br>
+ * A simple page DAO only contains the line that start on
+ * this page.
+ *
+ * @author Simon Josef Kreuzpointner
+ */
 public class SimplePageDto {
     private List<SimpleLineDto> lines;
 

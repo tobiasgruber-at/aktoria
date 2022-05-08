@@ -5,6 +5,14 @@ import at.ac.tuwien.sepm.groupphase.backend.service.parsing.line.Line;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Simple Line Data Access Object.
+ * <br>
+ * A simple line DAO only contains the role names, the content
+ * a raw version as well as the conflict type.
+ *
+ * @author Simon Josef Kreuzpointner
+ */
 public class SimpleLineDto {
 
     private List<String> roles;
