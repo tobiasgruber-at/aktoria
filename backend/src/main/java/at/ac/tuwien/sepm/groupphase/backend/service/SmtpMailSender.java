@@ -11,6 +11,7 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.io.UnsupportedEncodingException;
 import java.util.Properties;
 
 @Component
@@ -58,7 +59,12 @@ public class SmtpMailSender {
         Message message = new MimeMessage(mailSession);
         InternetAddress addressTo = new InternetAddress(receiver);
         message.setRecipient(Message.RecipientType.TO, addressTo);
-        message.setFrom(new InternetAddress(sender));
+        try {
+            message.setFrom(new InternetAddress(sender, "Noreply Aktoria"));
+        } catch (UnsupportedEncodingException e) {
+            throw new MessagingException();
+        }
+
         message.setSubject(subject);
         message.setContent(content, "text/plain");
         Transport.send(message);

@@ -8,10 +8,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DetailedUserDto extends SimpleUserDto {
-    private String password;
+    private String passwordHash;
 
-    public DetailedUserDto(Long id, String firstName, String lastName, String email, String password, Boolean verified) {
+    public DetailedUserDto(Long id, String firstName, String lastName, String email, String passwordHash, Boolean verified) {
         super(id, firstName, lastName, email, verified);
-        this.password = password;
+        this.passwordHash = passwordHash;
     }
 }

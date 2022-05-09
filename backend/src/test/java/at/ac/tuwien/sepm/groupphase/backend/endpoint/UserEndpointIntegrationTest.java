@@ -207,7 +207,7 @@ class UserEndpointIntegrationTest {
         assertEquals("NewName", userResult.getFirstName());
         assertEquals("newWow", userResult.getLastName());
         assertEquals("admin@email.com", userResult.getEmail());
-        assertEquals("newPassword", userResult.getPassword());
+        assertEquals("newPassword", userResult.getPasswordHash());
         assertEquals(false, userResult.getVerified());
     }
 
