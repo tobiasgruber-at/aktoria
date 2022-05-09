@@ -5,6 +5,7 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordChangeDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UpdateUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserRegistrationDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.UserMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.User;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
@@ -18,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.lang.invoke.MethodHandles;
@@ -31,18 +33,20 @@ import java.lang.invoke.MethodHandles;
 public class CustomUserDetailService implements UserService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-    private final UserRepository userRepository;
     private final UserValidation userValidation;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public CustomUserDetailService(UserRepository userRepository, UserValidation userValidation) {
+    public CustomUserDetailService(UserRepository userRepository, UserValidation userValidation, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.userValidation = userValidation;
+        this.passwordEncoder = passwordEncoder;
     }
 
 
     @Override
-    public UserRegistrationDto createUser(UserRegistrationDto userRegistrationDto) throws ServiceException, ValidationException, ConflictException {
+    public DetailedUserDto createUser(UserRegistrationDto userRegistrationDto) throws ServiceException, ValidationException, ConflictException {
         LOGGER.info("Post new user");
         try {
             userValidation.validateCreateUserInput(userRegistrationDto);
@@ -51,16 +55,20 @@ public class CustomUserDetailService implements UserService {
         } catch (ConflictException e) {
             throw new ConflictException(e.getMessage(), e);
         }
-        return null;
+        User user = UserMapper.INSTANCE.userRegistrationDtoToUser(userRegistrationDto, passwordEncoder.encode(userRegistrationDto.getPassword()));
+        User savedUser = userRepository.saveAndFlush(user);
+        return UserMapper.INSTANCE.userToDetailedUserDto(savedUser);
     }
 
     @Override
     public SimpleUserDto getUser(double id) throws ServiceException, UserNotFoundException {
-        return null;
+        LOGGER.info("get user by id");
+        return UserMapper.INSTANCE.userToSimpleUserDto(userRepository.getById((long) id));
     }
 
     @Override
     public DetailedUserDto patch(UpdateUserDto updateUserDto, Boolean passwordChange, Long id) throws ServiceException, ValidationException, ConflictException {
+        LOGGER.info("patch user");
         try {
             userValidation.validatePatchUser(updateUserDto);
         } catch (ValidationException e) {
@@ -73,15 +81,24 @@ public class CustomUserDetailService implements UserService {
 
     @Override
     public void deleteUser(Long id) throws ServiceException {
+        LOGGER.info("delete user with id = /{}", id);
+        userRepository.deleteById(id);
     }
 
     @Override
     public void forgotPassword(String email) throws UserNotFoundException {
+        LOGGER.info("forgot password, sending email");
 
     }
 
     @Override
-    public DetailedUserDto changePassword(PasswordChangeDto passwordChangeDto, Long id) throws ServiceException {
+    public DetailedUserDto changePassword(PasswordChangeDto passwordChangeDto, Long id) throws ServiceException, ValidationException {
+        LOGGER.info("change password of user with id = /{}", id);
+        try {
+            userValidation.validateChangePassword(passwordChangeDto);
+        } catch (ValidationException e) {
+            throw new ValidationException(e.getMessage(), e);
+        }
         return null;
     }
 

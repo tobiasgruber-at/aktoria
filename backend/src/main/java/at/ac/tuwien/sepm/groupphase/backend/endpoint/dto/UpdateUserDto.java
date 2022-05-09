@@ -1,5 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
+import java.util.Objects;
+
 public class UpdateUserDto extends DetailedUserDto {
     String newPassword;
 
@@ -17,4 +19,20 @@ public class UpdateUserDto extends DetailedUserDto {
         return newPassword;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        UpdateUserDto that = (UpdateUserDto) o;
+        return Objects.equals(newPassword, that.newPassword);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(newPassword);
+    }
 }

@@ -7,6 +7,7 @@ import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
+import org.springframework.stereotype.Component;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -16,6 +17,7 @@ import java.util.regex.Pattern;
  *
  * @author Luke Nemeskeri
  */
+@Component
 public class UserValidationImpl implements UserValidation {
 
     UserRepository userRepository;

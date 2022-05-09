@@ -1,5 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
+import java.util.Objects;
+
 public class UserRegistrationDto {
     private final String firstName;
     private final String lastName;
@@ -34,5 +36,22 @@ public class UserRegistrationDto {
 
     public String getLastName() {
         return lastName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        UserRegistrationDto that = (UserRegistrationDto) o;
+        return Objects.equals(firstName, that.firstName) && Objects.equals(lastName, that.lastName) && Objects.equals(email, that.email) && Objects.equals(password, that.password);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(firstName, lastName, email, password);
     }
 }

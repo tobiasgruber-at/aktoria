@@ -41,9 +41,9 @@ public class User {
     private String passwordHash;
 
     @Column(name = "verified", nullable = false, columnDefinition = "boolean default false")
-    private Boolean verified;
+    private Boolean verified = false;
 
-    @Column(name = "created", nullable = false)
+    @Column(name = "created", updatable = false, columnDefinition = "date default current_date")
     private LocalDate created;
 
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

@@ -13,12 +13,14 @@ import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
 /**
  * Service for user.
  *
  * @author Luke Nemeskeri
  */
+@Service
 public interface UserService extends UserDetailsService {
 
 
@@ -31,7 +33,7 @@ public interface UserService extends UserDetailsService {
      * @throws ValidationException is thrown when user data is not valid
      * @throws ConflictException   is thrown when there is a conflict with the data base
      */
-    UserRegistrationDto createUser(UserRegistrationDto userRegistrationDto) throws ServiceException, ValidationException, ConflictException;
+    DetailedUserDto createUser(UserRegistrationDto userRegistrationDto) throws ServiceException, ValidationException, ConflictException;
 
     /**
      * Returns a user.
@@ -76,7 +78,7 @@ public interface UserService extends UserDetailsService {
      * @return the user with the new password
      * @throws ServiceException is thrown if the password could not be changed
      */
-    DetailedUserDto changePassword(PasswordChangeDto passwordChangeDto, Long id) throws ServiceException;
+    DetailedUserDto changePassword(PasswordChangeDto passwordChangeDto, Long id) throws ServiceException, ValidationException;
 
     /**
      * Find a user in the context of Spring Security based on the email address

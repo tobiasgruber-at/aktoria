@@ -60,7 +60,7 @@ public class UserEndpoint {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public UserRegistrationDto postUser(@RequestBody UserRegistrationDto userRegistrationDto) throws ServiceException {
+    public DetailedUserDto postUser(@RequestBody UserRegistrationDto userRegistrationDto) throws ServiceException {
         LOGGER.info("POST " + UserEndpoint.path);
         try {
             return userService.createUser(userRegistrationDto);
