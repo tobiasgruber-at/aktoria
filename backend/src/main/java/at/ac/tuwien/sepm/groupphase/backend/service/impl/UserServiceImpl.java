@@ -7,15 +7,14 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UpdateUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserRegistrationDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.UserMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.User;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
-import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.UserService;
 import at.ac.tuwien.sepm.groupphase.backend.validation.UserValidation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -24,7 +23,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,9 +32,8 @@ import java.util.Optional;
  * @author Luke Nemeskeri & Nikolaus Peter
  */
 @Service
+@Slf4j
 public class UserServiceImpl implements UserService {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final UserValidation userValidation;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -47,11 +44,10 @@ public class UserServiceImpl implements UserService {
         this.userValidation = userValidation;
         this.passwordEncoder = passwordEncoder;
     }
-
-
+    
     @Override
     public DetailedUserDto createUser(UserRegistrationDto userRegistrationDto) throws ServiceException, ValidationException, ConflictException {
-        LOGGER.info("Post new user");
+        log.info("Post new user");
         try {
             userValidation.validateCreateUserInput(userRegistrationDto);
         } catch (ValidationException e) {
@@ -66,7 +62,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public SimpleUserDto getUser(double id) {
-        LOGGER.info("get user by id");
+        log.info("get user by id");
         Optional<User> userOptional = userRepository.findById((long) id);
         if (userOptional.isPresent()) {
             return UserMapper.INSTANCE.userToSimpleUserDto(userOptional.get());
@@ -77,7 +73,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public DetailedUserDto patch(UpdateUserDto updateUserDto, Boolean passwordChange, Long id) throws ServiceException, ValidationException, ConflictException {
-        LOGGER.info("patch user");
+        log.info("patch user");
         try {
             userValidation.validatePatchUser(updateUserDto);
         } catch (ValidationException e) {
@@ -90,19 +86,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(Long id) throws ServiceException {
-        LOGGER.info("delete user with id = /{}", id);
+        log.info("delete user with id = /{}", id);
         userRepository.deleteById(id);
     }
 
     @Override
     public void forgotPassword(String email) {
-        LOGGER.info("forgot password, sending email");
+        log.info("forgot password, sending email");
 
     }
 
     @Override
     public DetailedUserDto changePassword(PasswordChangeDto passwordChangeDto, Long id) throws ServiceException, ValidationException {
-        LOGGER.info("change password of user with id = /{}", id);
+        log.info("change password of user with id = /{}", id);
         try {
             userValidation.validateChangePassword(passwordChangeDto);
         } catch (ValidationException e) {
@@ -113,7 +109,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        LOGGER.debug("Load all user by email");
+        log.debug("Load all user by email");
         try {
             User user = findUserByEmail(email);
 
@@ -132,7 +128,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findUserByEmail(String email) {
-        LOGGER.debug("Find application user by email");
+        log.debug("Find application user by email");
         Optional<User> userOptional = userRepository.findByEmail(email);
         if (userOptional.isPresent()) {
             return userOptional.get();
