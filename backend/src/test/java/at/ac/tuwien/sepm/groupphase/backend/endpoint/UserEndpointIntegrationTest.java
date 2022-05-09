@@ -21,7 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Disabled
@@ -58,8 +59,8 @@ class UserEndpointIntegrationTest {
 
         SimpleUserDto userResult = objectMapper.readValue(body, SimpleUserDto.class);
 
-        assertThat(userResult).isNotNull();
-        assertThat(userResult.getId()).isEqualTo(-1);
+        assertNotNull(userResult);
+        assertEquals(-1L, userResult.getId());
     }
 
     @Test
@@ -87,10 +88,10 @@ class UserEndpointIntegrationTest {
             .andReturn().getResponse().getContentAsByteArray();
         UserRegistrationDto userResult = objectMapper.readValue(body, UserRegistrationDto.class);
 
-        assertThat(userResult).isNotNull();
-        assertThat(userResult.getFirstName()).isEqualTo("Name");
-        assertThat(userResult.getLastName()).isEqualTo("lastName");
-        assertThat(userResult.getEmail()).isEqualTo("admin@email.com");
+        assertNotNull(userResult);
+        assertEquals("Name", userResult.getFirstName());
+        assertEquals("lastName", userResult.getLastName());
+        assertEquals("admin@email.com", userResult.getEmail());
     }
 
     @Test
@@ -169,10 +170,10 @@ class UserEndpointIntegrationTest {
             .andReturn().getResponse().getContentAsByteArray();
         UserRegistrationDto userResult = objectMapper.readValue(body, UserRegistrationDto.class);
 
-        assertThat(userResult).isNotNull();
-        assertThat(userResult.getFirstName()).isEqualTo(s);
-        assertThat(userResult.getLastName()).isEqualTo(s);
-        assertThat(userResult.getEmail()).isEqualTo("admin@email.com");
+        assertNotNull(userResult);
+        assertEquals(s, userResult.getFirstName());
+        assertEquals(s, userResult.getLastName());
+        assertEquals("admin@email.com", userResult.getFirstName());
     }
 
     @Test
@@ -194,20 +195,20 @@ class UserEndpointIntegrationTest {
     void patchUserAndPassword() throws Exception {
         byte[] body = mockMvc
             .perform(MockMvcRequestBuilders
-                .patch("/api/v1/users/{id}?passwordChange=true", (long) -1)
+                .patch("/api/v1/users/{id}?passwordChange=true", -1L)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(new UpdateUserDto((long) -1, "NewName", "newWow", "admin@email.com", "oldPassword", "newPassword", true)))
+                .content(objectMapper.writeValueAsBytes(new UpdateUserDto(-1L, "NewName", "newWow", "admin@email.com", "oldPassword", "newPassword", true)))
             ).andExpect(status().isCreated())
             .andReturn().getResponse().getContentAsByteArray();
         DetailedUserDto userResult = objectMapper.readValue(body, DetailedUserDto.class);
 
-        assertThat(userResult).isNotNull();
-        assertThat(userResult.getFirstName()).isEqualTo("NewName");
-        assertThat(userResult.getLastName()).isEqualTo("newWow");
-        assertThat(userResult.getEmail()).isEqualTo("admin@email.com");
-        assertThat(userResult.getPassword()).isEqualTo("newPassword");
-        assertThat(userResult.getVerified()).isEqualTo(false);
+        assertNotNull(userResult);
+        assertEquals("NewName", userResult.getFirstName());
+        assertEquals("newWow", userResult.getLastName());
+        assertEquals("admin@email.com", userResult.getEmail());
+        assertEquals("newPassword", userResult.getPassword());
+        assertEquals(false, userResult.getVerified());
     }
 
     @Test
@@ -228,7 +229,7 @@ class UserEndpointIntegrationTest {
             .post("/api/v1/users/0?passwordChange=true")
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsBytes(new UpdateUserDto((long) -1, "NewName", "newWow", "admin@email.com", "oldPassword", "newPassword", true)))
+            .content(objectMapper.writeValueAsBytes(new UpdateUserDto(-1L, "NewName", "newWow", "admin@email.com", "oldPassword", "newPassword", true)))
         ).andExpect(status().isNotFound());
     }
 
@@ -238,9 +239,9 @@ class UserEndpointIntegrationTest {
     void patchUserInvalidEmail() throws Exception {
         String s = "a".repeat(101);
         mockMvc.perform(MockMvcRequestBuilders
-            .patch("/api/v1/users/{id}?passwordChange=true", (long) -1)
+            .patch("/api/v1/users/{id}?passwordChange=true", -1L)
             .accept(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsBytes(new UpdateUserDto((long) -1, "NewName", "newLastName", s, "PASSWORD", "PASSWORD", true)))
+            .content(objectMapper.writeValueAsBytes(new UpdateUserDto(-1L, "NewName", "newLastName", s, "PASSWORD", "PASSWORD", true)))
             .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isUnprocessableEntity());
     }
@@ -251,9 +252,9 @@ class UserEndpointIntegrationTest {
     void patchUserInvalidName() throws Exception {
         String s = "a".repeat(101);
         mockMvc.perform(MockMvcRequestBuilders
-            .patch("/api/v1/users/{id}?passwordChange=true", (long) -1)
+            .patch("/api/v1/users/{id}?passwordChange=true", -1L)
             .accept(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsBytes(new UpdateUserDto((long) -1, s, s, "admin@email.com", "PASSWORD", "", true)))
+            .content(objectMapper.writeValueAsBytes(new UpdateUserDto(-1L, s, s, "admin@email.com", "PASSWORD", "", true)))
             .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isUnprocessableEntity());
     }
@@ -264,19 +265,19 @@ class UserEndpointIntegrationTest {
     void patchUserEdgeCase() throws Exception {
         String s = "a".repeat(100);
         byte[] body = mockMvc.perform(MockMvcRequestBuilders
-                .patch("/api/v1/users/{id}?passwordChange=false", (long) -1)
+                .patch("/api/v1/users/{id}?passwordChange=false", -1L)
                 .accept(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(new UpdateUserDto((long) -1, s, s, "admin@email.com", "", "", true)))
+                .content(objectMapper.writeValueAsBytes(new UpdateUserDto(-1L, s, s, "admin@email.com", "", "", true)))
                 .contentType(MediaType.APPLICATION_JSON)
             ).andExpect(status().isCreated())
             .andReturn().getResponse().getContentAsByteArray();
         DetailedUserDto userResult = objectMapper.readValue(body, DetailedUserDto.class);
 
-        assertThat(userResult).isNotNull();
-        assertThat(userResult.getFirstName()).isEqualTo(s);
-        assertThat(userResult.getLastName()).isEqualTo(s);
-        assertThat(userResult.getEmail()).isEqualTo("admin@email.com");
-        assertThat(userResult.getVerified()).isEqualTo(false);
+        assertNotNull(userResult);
+        assertEquals(s, userResult.getFirstName());
+        assertEquals(s, userResult.getLastName());
+        assertEquals("admin@email.com", userResult.getEmail());
+        assertEquals(false, userResult.getVerified());
     }
 
     @Test
@@ -285,9 +286,9 @@ class UserEndpointIntegrationTest {
     void patchUserPasswordEdgeCase() throws Exception {
         String s = "a".repeat(100);
         mockMvc.perform(MockMvcRequestBuilders
-            .patch("/api/v1/users/{id}?passwordChange=true", (long) -1)
+            .patch("/api/v1/users/{id}?passwordChange=true", -1L)
             .accept(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsBytes(new UpdateUserDto((long) -1, "NewName", "newLastName", "admin@email.com", "Password", s, true)))
+            .content(objectMapper.writeValueAsBytes(new UpdateUserDto(-1L, "NewName", "newLastName", "admin@email.com", "Password", s, true)))
             .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isUnprocessableEntity());
     }
