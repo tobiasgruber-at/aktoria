@@ -7,10 +7,19 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.util.List;
+import java.time.LocalDate;
+import java.util.Set;
 
+/**
+ * Entity class for users.
+ *
+ * @author Marvin Flandorfer
+ */
 @Entity
 @Table(name = "users")
 public class User {
@@ -34,24 +43,34 @@ public class User {
     @Column(name = "verified", nullable = false, columnDefinition = "boolean default false")
     private Boolean verified;
 
+    @Column(name = "created", nullable = false)
+    private LocalDate created;
+
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Script> scripts;
+    private Set<Script> scripts;
 
     @OneToMany(mappedBy = "recordedBy", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Line> linesRecorded;
+    private Set<Line> linesRecorded;
+
+    @ManyToMany
+    @JoinTable(name = "participates_in", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "script_id"))
+    private Set<Script> participatesIn;
 
     public User() {
     }
 
-    public User(Long id, String firstName, String lastName, String email, String passwordHash, Boolean verified, List<Script> scripts, List<Line> linesRecorded) {
+    public User(Long id, String firstName, String lastName, String email, String passwordHash, Boolean verified, LocalDate created, Set<Script> scripts, Set<Line> linesRecorded,
+                Set<Script> participatesIn) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.passwordHash = passwordHash;
         this.verified = verified;
+        this.created = created;
         this.scripts = scripts;
         this.linesRecorded = linesRecorded;
+        this.participatesIn = participatesIn;
     }
 
     public String getEmail() {
@@ -102,19 +121,35 @@ public class User {
         this.lastName = lastName;
     }
 
-    public List<Script> getScripts() {
+    public LocalDate getCreated() {
+        return created;
+    }
+
+    public void setCreated(LocalDate created) {
+        this.created = created;
+    }
+
+    public Set<Script> getScripts() {
         return scripts;
     }
 
-    public void setScripts(List<Script> scripts) {
+    public void setScripts(Set<Script> scripts) {
         this.scripts = scripts;
     }
 
-    public List<Line> getLinesRecorded() {
+    public Set<Line> getLinesRecorded() {
         return linesRecorded;
     }
 
-    public void setLinesRecorded(List<Line> linesRecorded) {
+    public void setLinesRecorded(Set<Line> linesRecorded) {
         this.linesRecorded = linesRecorded;
+    }
+
+    public Set<Script> getParticipatesIn() {
+        return participatesIn;
+    }
+
+    public void setParticipatesIn(Set<Script> participatesIn) {
+        this.participatesIn = participatesIn;
     }
 }

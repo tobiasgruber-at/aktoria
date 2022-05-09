@@ -12,6 +12,11 @@ import org.springframework.stereotype.Component;
 import javax.sql.DataSource;
 import java.lang.invoke.MethodHandles;
 
+/**
+ * Data source bean post processor for processing retryable data sources.
+ *
+ * @author Marvin Flandorfer
+ */
 @Order(value = Ordered.HIGHEST_PRECEDENCE)
 @Component
 @NonNullApi

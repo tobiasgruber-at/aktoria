@@ -11,6 +11,11 @@ import java.lang.invoke.MethodHandles;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+/**
+ * Data source connection class for retrying failing data source connections.
+ *
+ * @author Marvin Flandorfer
+ */
 public class RetryableDataSource extends AbstractDataSource {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

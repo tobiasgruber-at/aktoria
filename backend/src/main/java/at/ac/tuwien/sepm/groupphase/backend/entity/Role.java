@@ -1,6 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
-import at.ac.tuwien.sepm.groupphase.backend.entity.ids.RoleId;
+import at.ac.tuwien.sepm.groupphase.backend.entity.id.RoleId;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,6 +14,11 @@ import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import java.awt.Color;
 
+/**
+ * Entity class for roles.
+ *
+ * @author Marvin Flandorfer
+ */
 @Entity
 @Table(name = "role")
 @IdClass(RoleId.class)

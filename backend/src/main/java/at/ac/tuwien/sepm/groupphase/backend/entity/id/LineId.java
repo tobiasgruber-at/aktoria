@@ -1,9 +1,14 @@
-package at.ac.tuwien.sepm.groupphase.backend.entity.ids;
+package at.ac.tuwien.sepm.groupphase.backend.entity.id;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Page;
 
 import java.io.Serializable;
 
+/**
+ * Id class for lines.
+ *
+ * @author Marvin Flandorfer
+ */
 public class LineId implements Serializable {
 
     private Page page;
