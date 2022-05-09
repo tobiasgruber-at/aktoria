@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author Simon Josef Kreuzpointner
  */
-@Mapper(uses = { RoleMapper.class })
+@Mapper(componentModel = "spring", uses = { RoleMapper.class })
 public interface PageMapper {
     PageMapper INSTANCE = Mappers.getMapper(PageMapper.class);
 
