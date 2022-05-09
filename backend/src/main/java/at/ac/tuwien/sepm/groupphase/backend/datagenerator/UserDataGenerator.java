@@ -39,7 +39,8 @@ public class UserDataGenerator {
                 User user = User.builder().firstName(TEST_USER_FIRST_NAME + i)
                     .lastName(TEST_USER_LAST_NAME + i)
                     .email(TEST_USER_EMAIL_LOCAL + i + TEST_USER_EMAIL_DOMAIN)
-                    .passwordHash(passwordEncoder.encode(TEST_USER_PASSWORD + i)).build();
+                    .passwordHash(passwordEncoder.encode(TEST_USER_PASSWORD + i))
+                    .verified(false).build();
                 log.debug("saving user {}", user);
                 userRepository.save(user);
             }
