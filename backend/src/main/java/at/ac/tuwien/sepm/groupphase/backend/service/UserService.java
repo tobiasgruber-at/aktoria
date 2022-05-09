@@ -18,8 +18,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
  * @author Luke Nemeskeri
  */
 public interface UserService extends UserDetailsService {
-
-
     /**
      * Creates a new User.
      *

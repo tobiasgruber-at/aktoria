@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-@ActiveProfiles({ "test", "datagen" })
+@ActiveProfiles({"test", "datagen"})
 @EnableWebMvc
 @WebAppConfiguration
 class ScriptEndpointIntegrationTest {
@@ -76,15 +76,15 @@ class ScriptEndpointIntegrationTest {
             simpleLineDtos.add(new SimpleLineDto(null, "Erster Akt", "Erster Akt", null));
             simpleLineDtos.add(new SimpleLineDto(null, "Das ist eine Beschreibung der Örtlichkeit, wo sich der erste Akt abspielt. Diese Phrase soll keiner Rolle zugewiesen werden.",
                 "Das ist eine Beschreibung der Örtlichkeit, wo sich der erste Akt abspielt. Diese Phrase soll keiner Rolle zugewiesen werden.", null));
-            simpleLineDtos.add(new SimpleLineDto(Arrays.stream(new String[] { "ALICE" }).toList(), "Das ist die erste Phrase in diesem Theaterstück. Diese Phrase soll Alice zugeteilt werden.",
+            simpleLineDtos.add(new SimpleLineDto(Arrays.stream(new String[] {"ALICE"}).toList(), "Das ist die erste Phrase in diesem Theaterstück. Diese Phrase soll Alice zugeteilt werden.",
                 "ALICE Das ist die erste Phrase in diesem Theaterstück. Diese Phrase soll Alice zugeteilt werden.", null));
-            simpleLineDtos.add(new SimpleLineDto(Arrays.stream(new String[] { "BOB" }).toList(), "Hallo Alice! Wie geht’s dir so? (Schaut Alice in die Augen)", "BOB Hallo Alice! Wie geht’s dir so? (Schaut Alice in die Augen)", null));
-            simpleLineDtos.add(new SimpleLineDto(Arrays.stream(new String[] { "MR. MISTER" }).toList(), "Bla Bla Bla.", "MR. MISTER Bla Bla Bla.", null));
+            simpleLineDtos.add(new SimpleLineDto(Arrays.stream(new String[] {"BOB"}).toList(), "Hallo Alice! Wie geht’s dir so? (Schaut Alice in die Augen)", "BOB Hallo Alice! Wie geht’s dir so? (Schaut Alice in die Augen)", null));
+            simpleLineDtos.add(new SimpleLineDto(Arrays.stream(new String[] {"MR. MISTER"}).toList(), "Bla Bla Bla.", "MR. MISTER Bla Bla Bla.", null));
             simpleLineDtos.add(new SimpleLineDto(null, "(Anna tritt auf.)", "(Anna tritt auf.)", null));
-            simpleLineDtos.add(new SimpleLineDto(Arrays.stream(new String[] { "ANNA P." }).toList(), "(fröhlich) Halli-hallöchen!", "ANNA P. (fröhlich) Halli-hallöchen!", null));
-            simpleLineDtos.add(new SimpleLineDto(Arrays.stream(new String[] { "LADY MARI-MUSTER" }).toList(), "O man. Ich brauch‘ erst mal einen Kaffee.", "LADY MARI-MUSTER O man. Ich brauch‘ erst mal einen Kaffee.",
+            simpleLineDtos.add(new SimpleLineDto(Arrays.stream(new String[] {"ANNA P."}).toList(), "(fröhlich) Halli-hallöchen!", "ANNA P. (fröhlich) Halli-hallöchen!", null));
+            simpleLineDtos.add(new SimpleLineDto(Arrays.stream(new String[] {"LADY MARI-MUSTER"}).toList(), "O man. Ich brauch‘ erst mal einen Kaffee.", "LADY MARI-MUSTER O man. Ich brauch‘ erst mal einen Kaffee.",
                 Line.ConflictType.VERIFICATION_REQUIRED));
-            simpleLineDtos.add(new SimpleLineDto(Arrays.stream(new String[] { "ANNA P.", "BOB" }).toList(), "(gleichzeitig.) Ich auch!", "ANNA P. UND BOB (gleichzeitig.) Ich auch!", null));
+            simpleLineDtos.add(new SimpleLineDto(Arrays.stream(new String[] {"ANNA P.", "BOB"}).toList(), "(gleichzeitig.) Ich auch!", "ANNA P. UND BOB (gleichzeitig.) Ich auch!", null));
             simpleLineDtos.add(new SimpleLineDto(null, "Zweiter Akt", "Zweiter Akt", null));
             simpleLineDtos.add(new SimpleLineDto(null, "Vorhang", "Vorhang", null));
 

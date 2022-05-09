@@ -10,19 +10,16 @@ import at.ac.tuwien.sepm.groupphase.backend.exception.UserNotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.UserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.lang.invoke.MethodHandles;
-
 
 @Service
+@Slf4j
 public class CustomUserDetailService implements UserService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final UserRepository userRepository;
 
     @Autowired
@@ -86,7 +83,7 @@ public class CustomUserDetailService implements UserService {
 
     @Override
     public User findUserByEmail(String email) {
-        LOGGER.debug("Find application user by email");
+        log.debug("Find application user by email");
         return null;
         /*User user = userRepository.findUserByEmail(email);
         if (user != null) {
