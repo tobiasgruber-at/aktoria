@@ -12,6 +12,7 @@ public class DetailedUserDto extends SimpleUserDto {
 
     public DetailedUserDto() {
         super();
+        this.password = null;
     }
 
     public String getPassword() {

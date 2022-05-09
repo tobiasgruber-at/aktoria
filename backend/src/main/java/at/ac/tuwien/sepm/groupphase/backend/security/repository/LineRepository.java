@@ -1,4 +1,4 @@
-package at.ac.tuwien.sepm.groupphase.backend.repository;
+package at.ac.tuwien.sepm.groupphase.backend.security.repository;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Line;
 import at.ac.tuwien.sepm.groupphase.backend.entity.id.LineId;

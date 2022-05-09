@@ -81,14 +81,12 @@ public interface UserService extends UserDetailsService {
     DetailedUserDto changePassword(PasswordChangeDto passwordChangeDto, Long id) throws ServiceException, ValidationException;
 
     /**
-     * Find a user in the context of Spring Security based on the email address
-     * <br>
-     * For more information have a look at this tutorial:
-     * https://www.baeldung.com/spring-security-authentication-with-a-database
+     * Find a user in the context of Spring Security based on the email address.
      *
      * @param email the email address
      * @return a Spring Security user
-     * @throws UsernameNotFoundException is thrown if the specified user does not exists
+     * @throws UsernameNotFoundException is thrown if the specified user does not exist
+     * @see <a href="https://www.baeldung.com/spring-security-authentication-with-a-database">https://www.baeldung.com/spring-security-authentication-with-a-database</a>
      */
     @Override
     UserDetails loadUserByUsername(String email) throws UsernameNotFoundException;
