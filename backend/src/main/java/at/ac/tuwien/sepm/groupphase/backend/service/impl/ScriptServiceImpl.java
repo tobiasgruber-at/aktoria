@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.lang.invoke.MethodHandles;
 
 /**
  * A specific implementation of ScriptService.
@@ -24,13 +23,11 @@ import java.lang.invoke.MethodHandles;
  * @author Simon Josef Kreuzpointner
  */
 @Service
+@Slf4j
 public class ScriptServiceImpl implements ScriptService {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
     @Override
-    public SimpleScriptDto create(MultipartFile file) throws ServiceException {
-        LOGGER.trace("newScript(pdfScript = {})", file);
+    public StagedScriptDto create(MultipartFile file) throws ServiceException {
+        log.trace("newScript(pdfScript = {})", file);
 
         boolean isPdfFile;
         try {
@@ -64,7 +61,7 @@ public class ScriptServiceImpl implements ScriptService {
      * @see <a href="https://sceweb.sce.uhcl.edu/abeysekera/itec3831/labs/FILE%20SIGNATURES%20TABLE.pdf"></a>
      */
     private boolean isPdfFileType(MultipartFile file) throws IOException {
-        LOGGER.trace("isPdfFileType(file = {})", file);
+        log.trace("isPdfFileType(file = {})", file);
 
         byte[] data = file.getBytes();
 
@@ -115,7 +112,7 @@ public class ScriptServiceImpl implements ScriptService {
 
     @Override
     public ScriptDto save(ScriptDto scriptDto) throws ServiceException {
-        LOGGER.trace("save(scriptDto = {})", scriptDto);
+        log.trace("save(scriptDto = {})", scriptDto);
 
         throw new UnsupportedOperationException();
     }

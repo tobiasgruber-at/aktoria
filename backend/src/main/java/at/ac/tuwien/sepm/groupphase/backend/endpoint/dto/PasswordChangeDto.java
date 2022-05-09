@@ -1,19 +1,13 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class PasswordChangeDto {
-    private final String oldPassword;
-    private final String newPassword;
-
-    public PasswordChangeDto(String oldPassword, String newPassword) {
-        this.oldPassword = oldPassword;
-        this.newPassword = newPassword;
-    }
-
-    public String getOldPassword() {
-        return oldPassword;
-    }
-
-    public String getNewPassword() {
-        return newPassword;
-    }
+    private String oldPassword;
+    private String newPassword;
 }

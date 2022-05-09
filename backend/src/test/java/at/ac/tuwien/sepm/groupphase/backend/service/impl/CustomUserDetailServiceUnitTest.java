@@ -1,8 +1,10 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordChangeDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserRegistrationDto;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.UnauthorizedException;
@@ -31,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  *
  * @author Luke Nemeskeri
  */
-@Disabled
+
 @ActiveProfiles({"test", "datagen"})
 @SpringBootTest
 class CustomUserDetailServiceUnitTest {
@@ -263,10 +265,10 @@ class CustomUserDetailServiceUnitTest {
     @Nested
     @DisplayName("Create User Tests")
     class CreateUser {
-        private static Stream<UserRegistrationDto> parameterizedUserRegistrationDtoProvider() {
-            List<UserRegistrationDto> temp = new LinkedList<>();
-            temp.add(new UserRegistrationDto("John", "LastName123", "john@gmail.com", "hellohello"));
-            temp.add(new UserRegistrationDto("Amy", "LastName545", "amy.gmail.at", "hellohello2"));
+        private static Stream<CreateUserRecord> parameterizedUserRegistrationDtoProvider() {
+            List<CreateUserRecord> temp = new LinkedList<>();
+            temp.add(new CreateUserRecord(new UserRegistrationDto("John", "LastName123", "john@gmail.com", "hellohello"), new DetailedUserDto(null, "John", "LastName123", "john@gmail.com", "hellohello", false)));
+            /* temp.add(new UserRegistrationDto("Amy", "LastName545", "amy@gmail.at", "hellohello2"));
             temp.add(new UserRegistrationDto("Mathew", "Last312Name", "mathew.newer@mail.com", "interestingpassword"));
             temp.add(new UserRegistrationDto("Alison", "Last555Name", "alison@m.c", "maimaimai"));
             temp.add(new UserRegistrationDto("Mark", "Last3123Name", "mark@state.com", "hwkdoaksdoasd"));
@@ -274,7 +276,8 @@ class CustomUserDetailServiceUnitTest {
             temp.add(new UserRegistrationDto("Leon", "Last664Name", "leon@mail.com", "okok20832"));
             temp.add(new UserRegistrationDto("Lara", "Last7657Name868", "lara.lol@gmx.at", "jlljhallo1321"));
             temp.add(new UserRegistrationDto("Harald", "LastName86", "harald@mymail.com", "wildesPasswort"));
-            temp.add(new UserRegistrationDto("Gerald", "LastNamesss", "Gerald@world.at", "aber warum"));
+            temp.add(new UserRegistrationDto("Gerald", "LastNamesss", "gerald@world.at", "aber warum"));
+          */
             return temp.stream();
         }
 
@@ -282,8 +285,13 @@ class CustomUserDetailServiceUnitTest {
         @DisplayName("assert that the user with the right user data is created")
         @MethodSource("parameterizedUserRegistrationDtoProvider")
         @Transactional
-        void createUserIsOk(UserRegistrationDto input) throws ServiceException, ValidationException {
-            assertEquals(input, userService.createUser(input));
+        void createUserIsOk(CreateUserRecord input) throws ServiceException, ValidationException, ConflictException {
+            DetailedUserDto actual = userService.createUser(input.input);
+            input.expected.setId(actual.getId());
+            assertEquals(input.expected, actual);
+        }
+
+        record CreateUserRecord(UserRegistrationDto input, DetailedUserDto expected) {
         }
     }
 }

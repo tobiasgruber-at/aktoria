@@ -1,6 +1,9 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.line.Line;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -15,6 +18,9 @@ import java.util.List;
  *
  * @author Simon Josef Kreuzpointner
  */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class LineDto {
 
     private Long id;

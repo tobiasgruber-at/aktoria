@@ -40,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-@ActiveProfiles({ "test", "datagen" })
+@ActiveProfiles({"test", "datagen"})
 @EnableWebMvc
 @WebAppConfiguration
 class ScriptEndpointIntegrationTest {

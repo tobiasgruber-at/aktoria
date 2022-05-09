@@ -1,7 +1,12 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
 public class UpdateUserDto extends DetailedUserDto {
-    String newPassword;
+    private String newPassword;
 
     public UpdateUserDto(Long id, String firstName, String lastName, String email, String oldPassword, String newPassword, Boolean verified) {
         super(id, firstName, lastName, email, oldPassword, verified);
@@ -12,9 +17,4 @@ public class UpdateUserDto extends DetailedUserDto {
         super();
         this.newPassword = null;
     }
-
-    public String getNewPassword() {
-        return newPassword;
-    }
-
 }

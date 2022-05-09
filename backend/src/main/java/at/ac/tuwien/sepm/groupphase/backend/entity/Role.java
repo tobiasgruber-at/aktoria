@@ -1,6 +1,10 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.id.RoleId;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,8 +26,11 @@ import java.awt.Color;
 @Entity
 @Table(name = "role")
 @IdClass(RoleId.class)
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Role {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -37,39 +44,4 @@ public class Role {
 
     @Column(name = "color")
     private Color color;
-
-    public Role() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Script getScript() {
-        return script;
-    }
-
-    public void setScript(Script script) {
-        this.script = script;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Color getColor() {
-        return color;
-    }
-
-    public void setColor(Color color) {
-        this.color = color;
-    }
 }
