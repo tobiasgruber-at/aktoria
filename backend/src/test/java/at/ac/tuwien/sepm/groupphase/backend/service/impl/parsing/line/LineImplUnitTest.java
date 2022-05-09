@@ -76,7 +76,7 @@ class LineImplUnitTest {
     @DisplayName("getRoles() returns the correct roles")
     @MethodSource("parameterizedTupleGetRolesProvider")
     void getRoles(ParameterizedTupleGetRoles input) {
-        LineImpl l = new LineImpl(input.input, 0);
+        LineImpl l = new LineImpl(input.input, 0L);
         assertEquals(input.expected, l.getRoles());
     }
 
@@ -84,7 +84,7 @@ class LineImplUnitTest {
     @DisplayName("getContent() returns the correct content")
     @MethodSource("parameterizedTupleGetContentProvider")
     void getContent(ParameterizedTupleGetContent input) {
-        LineImpl l = new LineImpl(input.input, 0);
+        LineImpl l = new LineImpl(input.input, 0L);
         assertEquals(input.expected, l.getContent());
     }
 
@@ -92,7 +92,7 @@ class LineImplUnitTest {
     @DisplayName("getRaw() returns the correct value")
     @MethodSource("parameterizedTupleGetRawProvider")
     void getRaw(ParameterizedTupleGetRaw input) {
-        LineImpl l = new LineImpl(input.input, 0);
+        LineImpl l = new LineImpl(input.input, 0L);
         assertEquals(input.expected, l.getRaw());
     }
 
@@ -114,7 +114,7 @@ class LineImplUnitTest {
             "ALLE This is my text."
         })
         void getConflictTypeAssignmentRequired(String input) {
-            LineImpl l = new LineImpl(input, 0);
+            LineImpl l = new LineImpl(input, 0L);
             Assertions.assertEquals(Line.ConflictType.ASSIGNMENT_REQUIRED, l.getConflictType());
         }
 
@@ -132,7 +132,7 @@ class LineImplUnitTest {
             "PETER P. This is my text."
         })
         void getConflictTypeNull(String input) {
-            LineImpl l = new LineImpl(input, 0);
+            LineImpl l = new LineImpl(input, 0L);
             assertNull(l.getConflictType());
         }
     }
@@ -154,7 +154,7 @@ class LineImplUnitTest {
             "PETER P. This is my text."
         })
         void hasRolesTrue(String value) {
-            LineImpl l = new LineImpl(value, 0);
+            LineImpl l = new LineImpl(value, 0L);
             assertTrue(l.hasRoles());
         }
 
@@ -169,7 +169,7 @@ class LineImplUnitTest {
             "\f"
         })
         void hasRolesFalse(String value) {
-            LineImpl l = new LineImpl(value, 0);
+            LineImpl l = new LineImpl(value, 0L);
             assertFalse(l.hasRoles());
         }
     }
@@ -195,7 +195,7 @@ class LineImplUnitTest {
             "Ende"
         })
         void isCompletedLineTrue(String value) {
-            LineImpl l = new LineImpl(value, 0);
+            LineImpl l = new LineImpl(value, 0L);
             assertTrue(l.isCompletedLine());
         }
 
@@ -212,7 +212,7 @@ class LineImplUnitTest {
             "\f"
         })
         void isCompletedLineFalse(String value) {
-            LineImpl l = new LineImpl(value, 0);
+            LineImpl l = new LineImpl(value, 0L);
             assertFalse(l.isCompletedLine());
         }
     }

@@ -23,11 +23,11 @@ public class ScriptParserImpl implements ScriptParser {
     private static final String[] CHARACTER_LIST_KEYWORDS = new String[] { "characters", "personen", "personenverzeichnis", "rollen" };
     private final List<String> allRoles = new LinkedList<>();
     private String raw;
-    private int curRowIndex;
+    private Long curRowIndex;
 
     public ScriptParserImpl(String raw) {
         this.raw = raw;
-        this.curRowIndex = 0;
+        this.curRowIndex = 0L;
     }
 
     private void processLines(Line line, Stack<Line> stagedLines) {

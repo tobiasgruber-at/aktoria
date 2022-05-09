@@ -1,4 +1,4 @@
-package at.ac.tuwien.sepm.groupphase.backend.security;
+package at.ac.tuwien.sepm.groupphase.backend.service.security;
 
 import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties;
 import io.jsonwebtoken.Jwts;

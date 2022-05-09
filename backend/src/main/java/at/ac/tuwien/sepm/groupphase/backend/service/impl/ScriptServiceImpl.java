@@ -2,8 +2,7 @@ package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ScriptDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.StagedScriptDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ParsedScriptMapper;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleScriptDto;
 import at.ac.tuwien.sepm.groupphase.backend.exception.IllegalFileFormatException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.service.ScriptService;
@@ -30,7 +29,7 @@ public class ScriptServiceImpl implements ScriptService {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     @Override
-    public StagedScriptDto create(MultipartFile file) throws ServiceException {
+    public SimpleScriptDto create(MultipartFile file) throws ServiceException {
         LOGGER.trace("newScript(pdfScript = {})", file);
 
         boolean isPdfFile;
@@ -56,7 +55,7 @@ public class ScriptServiceImpl implements ScriptService {
         ScriptParser parser = new ScriptParserImpl(raw);
         ParsedScript parsedScript = parser.parse();
 
-        return ParsedScriptMapper.INSTANCE.parsedScriptToScriptDto(parsedScript);
+        return SimpleScriptDto.of(parsedScript, file.getName());
     }
 
     /**

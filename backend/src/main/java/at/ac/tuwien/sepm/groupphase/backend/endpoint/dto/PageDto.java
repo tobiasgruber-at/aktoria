@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Page Data Access Object.
@@ -14,10 +15,10 @@ import java.util.List;
  */
 public class PageDto {
 
-    private final Long id;
-    private final Long scriptId;
-    private final Long index;
-    private final List<LineDto> lines;
+    private Long id;
+    private Long scriptId;
+    private Long index;
+    private List<LineDto> lines;
 
     public PageDto(Long id, Long scriptId, Long index, List<LineDto> lines) {
         this.id = id;
@@ -30,15 +31,48 @@ public class PageDto {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public Long getScriptId() {
         return scriptId;
+    }
+
+    public void setScriptId(Long scriptId) {
+        this.scriptId = scriptId;
     }
 
     public Long getIndex() {
         return index;
     }
 
+    public void setIndex(Long index) {
+        this.index = index;
+    }
+
     public List<LineDto> getLines() {
         return lines;
+    }
+
+    public void setLines(List<LineDto> lines) {
+        this.lines = lines;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        PageDto pageDto = (PageDto) o;
+        return Objects.equals(id, pageDto.id) && Objects.equals(scriptId, pageDto.scriptId) && Objects.equals(index, pageDto.index) && Objects.equals(lines, pageDto.lines);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, scriptId, index, lines);
     }
 }

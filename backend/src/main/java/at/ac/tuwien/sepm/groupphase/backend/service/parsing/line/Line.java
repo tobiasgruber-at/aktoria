@@ -15,18 +15,32 @@ import java.util.List;
 public interface Line extends CharSequence {
 
     /**
-     * Gets the page of the current line.
+     * Gets the page of this line.
      *
      * @return the page
      */
-    int getPage();
+    Long getPage();
 
     /**
-     * Sets the page of the line.
+     * Sets the page of this line.
      *
      * @param value the page
      */
-    void setPage(int value);
+    void setPage(Long value);
+
+    /**
+     * Gets the index of this line.
+     *
+     * @return the index
+     */
+    Long getIndex();
+
+    /**
+     * Sets the index of this line.
+     *
+     * @param value the index
+     */
+    void setIndex(Long value);
 
     /**
      * Gets the conflict type of this line.
