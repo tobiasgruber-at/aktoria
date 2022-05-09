@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author Simon Josef Kreuzpointner
  */
-@Mapper
+@Mapper(uses = { RoleMapper.class })
 public interface PageMapper {
     PageMapper INSTANCE = Mappers.getMapper(PageMapper.class);
 

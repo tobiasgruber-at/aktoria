@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 /**
  * Line Data Access Object.
  * <br>
@@ -23,7 +25,7 @@ public class LineDto {
     private Long id;
     private Long index;
     private Long pageId;
-    private RoleDto role;
+    private List<RoleDto> roles;
     private String content;
     private String audio;
     private SimpleUserDto recordedBy;

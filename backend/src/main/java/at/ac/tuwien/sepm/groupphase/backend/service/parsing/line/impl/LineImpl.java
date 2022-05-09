@@ -20,20 +20,20 @@ import java.util.regex.Pattern;
  * @author Simon Josef Kreuzpointner
  */
 public class LineImpl implements Line {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-    private static final String[] SENTENCE_DELIMITERS = {".", "!", "?", "\"", "”", "/", ")", "…"};
-    private static final String[] MULTI_ROLES_DELIMITERS = {" UND ", "/", " / "};
-    private static final String[] SPECIAL_SENTENCES_PATTERNS = {"^.* Akt$", "^Vorhang$", "^Ende$"};
-    private static final String[] ALL_ROLES_IDENTIFIERS = {"ALLE"};
+    private static final String[] SENTENCE_DELIMITERS = { ".", "!", "?", "\"", "”", "/", ")", "…" };
+    private static final String[] MULTI_ROLES_DELIMITERS = { " UND ", "/", " / " };
+    private static final String[] SPECIAL_SENTENCES_PATTERNS = { "^.* Akt$", "^Vorhang$", "^Ende$" };
+    private static final String[] ALL_ROLES_IDENTIFIERS = { "ALLE" };
     private Line.ConflictType conflictType;
     private boolean isDecomposed;
     private String raw;
     private List<String> roles;
     private String content;
-    private int page;
+    private Long page;
+    private Long index;
 
-    public LineImpl(String raw, int page) {
+    public LineImpl(String raw, Long page) {
         this.raw = raw;
         this.page = page;
         this.isDecomposed = false;
@@ -210,13 +210,23 @@ public class LineImpl implements Line {
     }
 
     @Override
-    public int getPage() {
+    public Long getPage() {
         return page;
     }
 
     @Override
-    public void setPage(int value) {
+    public void setPage(Long value) {
         page = value;
+    }
+
+    @Override
+    public Long getIndex() {
+        return index;
+    }
+
+    @Override
+    public void setIndex(Long value) {
+        index = value;
     }
 
     @Override
@@ -385,11 +395,12 @@ public class LineImpl implements Line {
             return false;
         }
         LineImpl line = (LineImpl) o;
-        return isDecomposed == line.isDecomposed && page == line.page && conflictType == line.conflictType && Objects.equals(raw, line.raw) && Objects.equals(roles, line.roles) && Objects.equals(content, line.content);
+        return isDecomposed == line.isDecomposed && conflictType == line.conflictType && Objects.equals(raw, line.raw) && Objects.equals(roles, line.roles) && Objects.equals(content, line.content)
+            && Objects.equals(page, line.page) && Objects.equals(index, line.index);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(conflictType, isDecomposed, raw, roles, content, page);
+        return Objects.hash(conflictType, isDecomposed, raw, roles, content, page, index);
     }
 }

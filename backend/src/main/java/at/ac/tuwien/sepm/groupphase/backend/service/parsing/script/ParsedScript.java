@@ -27,7 +27,7 @@ public class ParsedScript {
     public ParsedScript(List<Line> lines, List<String> roles) {
         this.lines = lines;
         this.roles = roles;
-        indexPages();
+        indexComponents();
     }
 
     /**
@@ -63,22 +63,25 @@ public class ParsedScript {
         return pages;
     }
 
-    private void indexPages() {
+    private void indexComponents() {
         LOGGER.trace("indexPages()");
 
         pages = new LinkedList<>();
 
-        int previousPageIndex = 0;
-        int curPageIndex;
+        Long previousPageIndex = 0L;
+        Long curPageIndex = 0L;
+        Long curLineIndex = 0L;
 
         Page curPage = new PageImpl();
+        curPage.setIndex(curPageIndex);
 
         for (Line l : lines) {
+            l.setIndex(curLineIndex++);
             curPageIndex = l.getPage();
             if (previousPageIndex != curPageIndex) {
                 pages.add(curPage);
                 curPage = new PageImpl();
-                previousPageIndex = curPageIndex;
+                curPage.setIndex(curPageIndex);
             }
             curPage.add(l);
         }

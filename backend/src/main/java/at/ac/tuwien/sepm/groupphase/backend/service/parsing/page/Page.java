@@ -13,6 +13,20 @@ import java.util.List;
 public interface Page extends List<Line> {
 
     /**
+     * Gets the index of this page.
+     *
+     * @return the index
+     */
+    Long getIndex();
+
+    /**
+     * Sets the index of this page.
+     *
+     * @param value the index
+     */
+    void setIndex(Long value);
+
+    /**
      * Gets all the lines of this page.
      *
      * @return all the lines of this page

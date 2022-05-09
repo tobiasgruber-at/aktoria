@@ -15,27 +15,37 @@ import java.util.Objects;
  */
 public class SimpleLineDto {
 
-    private List<String> roles;
+    private Long index;
+    private List<SimpleRoleDto> roles;
     private String content;
-    private String raw;
+    private boolean active = true;
     private Line.ConflictType conflictType;
 
-    public SimpleLineDto(List<String> roles, String content, String raw, Line.ConflictType conflictType) {
+    public SimpleLineDto(Long index, List<SimpleRoleDto> roles, String content, boolean active, Line.ConflictType conflictType) {
+        this.index = index;
         this.roles = roles;
         this.content = content;
-        this.raw = raw;
+        this.active = active;
         this.conflictType = conflictType;
     }
 
     public SimpleLineDto() {
-        this(null, null, null, null);
+        this(null, null, null, true, null);
     }
 
-    public List<String> getRoles() {
+    public Long getIndex() {
+        return index;
+    }
+
+    public void setIndex(Long index) {
+        this.index = index;
+    }
+
+    public List<SimpleRoleDto> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<String> roles) {
+    public void setRoles(List<SimpleRoleDto> roles) {
         this.roles = roles;
     }
 
@@ -47,12 +57,12 @@ public class SimpleLineDto {
         this.content = content;
     }
 
-    public String getRaw() {
-        return raw;
+    public boolean isActive() {
+        return active;
     }
 
-    public void setRaw(String raw) {
-        this.raw = raw;
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public Line.ConflictType getConflictType() {
@@ -72,11 +82,11 @@ public class SimpleLineDto {
             return false;
         }
         SimpleLineDto that = (SimpleLineDto) o;
-        return Objects.equals(roles, that.roles) && Objects.equals(content, that.content) && Objects.equals(raw, that.raw) && conflictType == that.conflictType;
+        return active == that.active && Objects.equals(index, that.index) && Objects.equals(roles, that.roles) && Objects.equals(content, that.content) && conflictType == that.conflictType;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(roles, content, raw, conflictType);
+        return Objects.hash(index, roles, content, active, conflictType);
     }
 }

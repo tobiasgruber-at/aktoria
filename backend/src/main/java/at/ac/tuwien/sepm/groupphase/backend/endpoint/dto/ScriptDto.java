@@ -21,6 +21,5 @@ public class ScriptDto {
     private Long id;
     private String name;
     private SimpleUserDto owner;
-    private List<LineDto> lines;
-    private List<RoleDto> roles;
+    private List<PageDto> pages;
 }
