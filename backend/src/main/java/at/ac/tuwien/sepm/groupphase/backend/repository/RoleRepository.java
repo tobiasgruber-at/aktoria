@@ -1,4 +1,4 @@
-package at.ac.tuwien.sepm.groupphase.backend.security.repository;
+package at.ac.tuwien.sepm.groupphase.backend.repository;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Role;
 import at.ac.tuwien.sepm.groupphase.backend.entity.id.RoleId;
