@@ -34,16 +34,16 @@ public class User {
     @Column(name = "last_name", nullable = false, length = 100)
     private String lastName;
 
-    @Column(name = "email", nullable = false, length = 100)
+    @Column(name = "email", nullable = false, length = 100, unique = true)
     private String email;
 
     @Column(name = "password_hash", nullable = false, length = 60)
     private String passwordHash;
 
     @Column(name = "verified", nullable = false, columnDefinition = "boolean default false")
-    private Boolean verified;
+    private Boolean verified = false;
 
-    @Column(name = "created", nullable = false)
+    @Column(name = "created", updatable = false, columnDefinition = "date default current_date")
     private LocalDate created;
 
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

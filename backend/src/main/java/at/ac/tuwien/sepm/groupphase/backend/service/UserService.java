@@ -3,20 +3,24 @@ package at.ac.tuwien.sepm.groupphase.backend.service;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordChangeDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UpdateUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserRegistrationDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.User;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.UserNotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
 /**
  * Service for user.
  *
  * @author Luke Nemeskeri
  */
+@Service
 public interface UserService extends UserDetailsService {
 
 
@@ -27,8 +31,9 @@ public interface UserService extends UserDetailsService {
      * @return the created User
      * @throws ServiceException    is thrown when user could not be created.
      * @throws ValidationException is thrown when user data is not valid
+     * @throws ConflictException   is thrown when there is a conflict with the data base
      */
-    UserRegistrationDto createUser(UserRegistrationDto userRegistrationDto) throws ServiceException, ValidationException;
+    DetailedUserDto createUser(UserRegistrationDto userRegistrationDto) throws ServiceException, ValidationException, ConflictException;
 
     /**
      * Returns a user.
@@ -37,17 +42,17 @@ public interface UserService extends UserDetailsService {
      * @return the specified user
      * @throws ServiceException is thrown if something went wrong with getting the user
      */
-    SimpleUserDto getUser(double id) throws ServiceException;
+    SimpleUserDto getUser(double id) throws ServiceException, UserNotFoundException;
 
     /**
      * Changes the email/username of a user.
      *
-     * @param simpleUserDto filled with the new email/username
+     * @param updateUserDto filled with the user input
      * @param id            the id of the user to be changed
      * @return the updated user
      * @throws ServiceException is thrown when the user data could not be updated
      */
-    SimpleUserDto changeUserData(SimpleUserDto simpleUserDto, Long id) throws ServiceException;
+    DetailedUserDto patch(UpdateUserDto updateUserDto, Boolean passwordChange, Long id) throws ServiceException, ConflictException, ValidationException;
 
     /**
      * Deletes a user from the system.
@@ -73,7 +78,7 @@ public interface UserService extends UserDetailsService {
      * @return the user with the new password
      * @throws ServiceException is thrown if the password could not be changed
      */
-    DetailedUserDto changePassword(PasswordChangeDto passwordChangeDto, Long id) throws ServiceException;
+    DetailedUserDto changePassword(PasswordChangeDto passwordChangeDto, Long id) throws ServiceException, ValidationException;
 
     /**
      * Find a user in the context of Spring Security based on the email address.
