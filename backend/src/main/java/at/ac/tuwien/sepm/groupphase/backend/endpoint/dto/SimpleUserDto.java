@@ -15,6 +15,18 @@ public class SimpleUserDto {
         this.verified = verified;
     }
 
+    public SimpleUserDto() {
+        this.id = 0L;
+        this.firstName = null;
+        this.lastName = null;
+        this.email = null;
+        this.verified = false;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
     public String getFirstName() {
         return firstName;
     }

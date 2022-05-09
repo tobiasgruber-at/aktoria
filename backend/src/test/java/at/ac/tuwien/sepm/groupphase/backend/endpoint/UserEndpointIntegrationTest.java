@@ -1,6 +1,8 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UpdateUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserRegistrationDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,6 +42,36 @@ class UserEndpointIntegrationTest {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webAppContext).build();
     }
 
+
+    //TESTING GET
+    @Test
+    @Transactional
+    @DisplayName("getUserSuccessful() Get a User correctly")
+    void getUserSuccessful() throws Exception {
+        byte[] body = mockMvc
+            .perform(MockMvcRequestBuilders
+                .get("/api/v1/users/-1")
+                .accept(MediaType.APPLICATION_JSON)
+            )
+            .andExpect(status().isOk())
+            .andReturn().getResponse().getContentAsByteArray();
+
+        SimpleUserDto userResult = objectMapper.readValue(body, SimpleUserDto.class);
+
+        assertThat(userResult).isNotNull();
+        assertThat(userResult.getId()).isEqualTo(-1);
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("getNonexistentUser() Get a User that does not exist")
+    void getNonexistentUser() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders
+            .get("/api/v1/users/0")
+            .accept(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isNotFound());
+    }
+
     //TESTING POST
     @Test
     @Transactional
@@ -53,12 +85,12 @@ class UserEndpointIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
             ).andExpect(status().isCreated())
             .andReturn().getResponse().getContentAsByteArray();
-        SimpleUserDto userResult = objectMapper.readValue(body, SimpleUserDto.class);
+        UserRegistrationDto userResult = objectMapper.readValue(body, UserRegistrationDto.class);
 
         assertThat(userResult).isNotNull();
         assertThat(userResult.getFirstName()).isEqualTo("Name");
+        assertThat(userResult.getLastName()).isEqualTo("lastName");
         assertThat(userResult.getEmail()).isEqualTo("admin@email.com");
-        assertThat(userResult.getVerified()).isEqualTo(false);
     }
 
     @Test
@@ -101,7 +133,7 @@ class UserEndpointIntegrationTest {
     @Transactional
     @DisplayName("postUserTooLongEmail() Post a new User with too long email")
     void postUserTooLongEmail() throws Exception {
-        String s = "admin@email.com" + "a".repeat(100);
+        String s = "admin@email.com" + "a".repeat(101);
         mockMvc.perform(MockMvcRequestBuilders
             .post("/api/v1/users")
             .accept(MediaType.APPLICATION_JSON)
@@ -112,49 +144,218 @@ class UserEndpointIntegrationTest {
 
     @Test
     @Transactional
-    @DisplayName("postUserTooLong() Post a new User with too long name and Invalid and Too long Email and too long password")
+    @DisplayName("postUserTooLong() Post a new User with too long first and last name and Invalid and Too long Email and too long password")
     void postUserTooLong() throws Exception {
-        String s = "a".repeat(100);
+        String s = "a".repeat(101);
         mockMvc.perform(MockMvcRequestBuilders
             .post("/api/v1/users")
             .accept(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsBytes(new UserRegistrationDto(s, "lastName", s, s)))
+            .content(objectMapper.writeValueAsBytes(new UserRegistrationDto(s, s, s, s)))
             .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(status().isUnprocessableEntity()); // Unprocessable Entity due to Validation Exception (name too long, email invalid, email too long, password too long)
+        ).andExpect(status().isUnprocessableEntity()); // Unprocessable Entity due to Validation Exception (first and last name too long, email invalid, email too long, password too long)
     }
-
-
-    //TESTING PUT
 
     @Test
     @Transactional
-    @DisplayName("putUser() Change an existing User correctly")
-    void putUserSuccessful() throws Exception {
-        byte[] body = mockMvc
-            .perform(MockMvcRequestBuilders
+    @DisplayName("postUserEdgeCase() Post a new User with values that are exactly at the limit")
+    void postUserEdgeCase() throws Exception {
+        String s = "a".repeat(100);
+        byte[] body = mockMvc.perform(MockMvcRequestBuilders
                 .post("/api/v1/users")
                 .accept(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(new SimpleUserDto((long) -1, "NewName", "newWow", "admin@email.com", true)))
+                .content(objectMapper.writeValueAsBytes(new UserRegistrationDto(s, s, "admin@email.com", s)))
                 .contentType(MediaType.APPLICATION_JSON)
             ).andExpect(status().isCreated())
             .andReturn().getResponse().getContentAsByteArray();
-        SimpleUserDto userResult = objectMapper.readValue(body, SimpleUserDto.class);
+        UserRegistrationDto userResult = objectMapper.readValue(body, UserRegistrationDto.class);
+
+        assertThat(userResult).isNotNull();
+        assertThat(userResult.getFirstName()).isEqualTo(s);
+        assertThat(userResult.getLastName()).isEqualTo(s);
+        assertThat(userResult.getEmail()).isEqualTo("admin@email.com");
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("postUserBodyNull() Post a new User with null as body")
+    void postUserBodyNull() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders
+            .post("/api/v1/users")
+            .accept(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isBadRequest()); //Spring automatically throws 400 Bad Request when Request Body is empty
+    }
+
+
+    //TESTING PATCH
+
+    @Test
+    @Transactional
+    @DisplayName("patchUserAndPassword() Change an existing User and their password correctly")
+    void patchUserAndPassword() throws Exception {
+        byte[] body = mockMvc
+            .perform(MockMvcRequestBuilders
+                .patch("/api/v1/users/{id}?passwordChange=true", (long) -1)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsBytes(new UpdateUserDto((long) -1, "NewName", "newWow", "admin@email.com", "oldPassword", "newPassword", true)))
+            ).andExpect(status().isCreated())
+            .andReturn().getResponse().getContentAsByteArray();
+        DetailedUserDto userResult = objectMapper.readValue(body, DetailedUserDto.class);
 
         assertThat(userResult).isNotNull();
         assertThat(userResult.getFirstName()).isEqualTo("NewName");
+        assertThat(userResult.getLastName()).isEqualTo("newWow");
+        assertThat(userResult.getEmail()).isEqualTo("admin@email.com");
+        assertThat(userResult.getPassword()).isEqualTo("newPassword");
+        assertThat(userResult.getVerified()).isEqualTo(false);
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("patchUserBodyNull() Update an existing User with null as body")
+    void patchUserBodyNull() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders
+            .post("/api/v1/users/-1?passwordChange=true")
+            .accept(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isBadRequest()); //Spring automatically throws 400 Bad Request when Request Body is empty
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("patchNonexistentUser() Update a User that does not exist")
+    void patchNonexistentUser() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders
+            .post("/api/v1/users/0?passwordChange=true")
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsBytes(new UpdateUserDto((long) -1, "NewName", "newWow", "admin@email.com", "oldPassword", "newPassword", true)))
+        ).andExpect(status().isNotFound());
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("patchUserInvalidEmail() Change an existing User with invalid email")
+    void patchUserInvalidEmail() throws Exception {
+        String s = "a".repeat(101);
+        mockMvc.perform(MockMvcRequestBuilders
+            .patch("/api/v1/users/{id}?passwordChange=true", (long) -1)
+            .accept(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsBytes(new UpdateUserDto((long) -1, "NewName", "newLastName", s, "PASSWORD", "PASSWORD", true)))
+            .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("patchUserInvalidName() Change an existing User with invalid name")
+    void patchUserInvalidName() throws Exception {
+        String s = "a".repeat(101);
+        mockMvc.perform(MockMvcRequestBuilders
+            .patch("/api/v1/users/{id}?passwordChange=true", (long) -1)
+            .accept(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsBytes(new UpdateUserDto((long) -1, s, s, "admin@email.com", "PASSWORD", "", true)))
+            .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("patchUserEdgeCase() Change an existing User with values that are at the limit")
+    void patchUserEdgeCase() throws Exception {
+        String s = "a".repeat(100);
+        byte[] body = mockMvc.perform(MockMvcRequestBuilders
+                .patch("/api/v1/users/{id}?passwordChange=false", (long) -1)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsBytes(new UpdateUserDto((long) -1, s, s, "admin@email.com", "", "", true)))
+                .contentType(MediaType.APPLICATION_JSON)
+            ).andExpect(status().isCreated())
+            .andReturn().getResponse().getContentAsByteArray();
+        DetailedUserDto userResult = objectMapper.readValue(body, DetailedUserDto.class);
+
+        assertThat(userResult).isNotNull();
+        assertThat(userResult.getFirstName()).isEqualTo(s);
+        assertThat(userResult.getLastName()).isEqualTo(s);
         assertThat(userResult.getEmail()).isEqualTo("admin@email.com");
         assertThat(userResult.getVerified()).isEqualTo(false);
     }
 
     @Test
     @Transactional
+    @DisplayName("patchUserPasswordEdgeCase() Change an existing User's password that is at the limit")
+    void patchUserPasswordEdgeCase() throws Exception {
+        String s = "a".repeat(100);
+        mockMvc.perform(MockMvcRequestBuilders
+            .patch("/api/v1/users/{id}?passwordChange=true", (long) -1)
+            .accept(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsBytes(new UpdateUserDto((long) -1, "NewName", "newLastName", "admin@email.com", "Password", s, true)))
+            .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isUnprocessableEntity());
+    }
+
+    //TESTING DELETE
+    @Test
+    @Transactional
     @DisplayName("deleteUser() Delete a User correctly")
     void deleteUserSuccessful() throws Exception {
         mockMvc
             .perform(MockMvcRequestBuilders
-                .delete("/api/v1/users?id=-1")
+                .delete("/api/v1/users/-1")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
             ).andExpect(status().isNoContent());
     }
+
+
+    @Test
+    @Transactional
+    @DisplayName("deleteNonexistentUser() Delete a User with that does not exist")
+    void deleteNonexistentUser() throws Exception {
+        mockMvc
+            .perform(MockMvcRequestBuilders
+                .delete("/api/v1/users/0")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+            ).andExpect(status().isNotFound());
+    }
+
+
+    //TESTING FORGOTTEN PASSWORD
+
+    @Test
+    @Transactional
+    @DisplayName("forgottenPasswordSuccessful() successfully change a password")
+    void forgottenPasswordSuccessful() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders
+            .post("/api/v1/users/forgotten-password")
+            .accept(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsBytes("admin@email.com"))
+            .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isCreated());
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("forgottenPasswordInvalidEmail() try to change a password with an invalid email")
+    void forgottenPasswordInvalidEmail() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders
+            .post("/api/v1/users/forgotten-password")
+            .accept(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsBytes("invalid"))
+            .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("forgottenPasswordTooLongEmail() try to change a password with a too long email")
+    void forgottenPasswordTooLongEmail() throws Exception {
+        String s = "admin@email.com" + "s".repeat(100);
+        mockMvc.perform(MockMvcRequestBuilders
+            .post("/api/v1/users/forgotten-password")
+            .accept(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsBytes(s))
+            .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isUnprocessableEntity());
+    }
+
 }
