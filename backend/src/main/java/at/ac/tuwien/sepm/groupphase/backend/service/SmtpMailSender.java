@@ -16,7 +16,6 @@ import java.util.Properties;
 
 @Component
 public class SmtpMailSender {
-
     @Value("${spring.mail.username}")
     private String sender;
 

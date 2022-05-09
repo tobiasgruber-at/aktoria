@@ -1,6 +1,10 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.id.PageId;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -25,8 +29,11 @@ import java.util.List;
 @Entity
 @Table(name = "page")
 @IdClass(PageId.class)
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Page {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -41,47 +48,4 @@ public class Page {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "page")
     @OrderBy("index desc")
     private List<Line> lines;
-
-    public Page(Long id, Script script, Long index, List<Line> lines) {
-        this.id = id;
-        this.script = script;
-        this.index = index;
-        this.lines = lines;
-    }
-
-    public Page() {
-
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Script getScript() {
-        return script;
-    }
-
-    public void setScript(Script script) {
-        this.script = script;
-    }
-
-    public Long getIndex() {
-        return index;
-    }
-
-    public void setIndex(Long index) {
-        this.index = index;
-    }
-
-    public List<Line> getLines() {
-        return lines;
-    }
-
-    public void setLines(List<Line> lines) {
-        this.lines = lines;
-    }
 }

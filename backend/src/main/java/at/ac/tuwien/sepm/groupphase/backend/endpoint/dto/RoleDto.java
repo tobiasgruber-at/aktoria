@@ -1,5 +1,9 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.awt.Color;
 
 /**
@@ -9,32 +13,12 @@ import java.awt.Color;
  *
  * @author Simon Josef Kreuzpointner
  */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class RoleDto {
-    private final Long id;
-    private final String name;
-    private final Long scriptId;
-    private final Color color;
-
-    public RoleDto(Long id, String name, Long scriptId, Color color) {
-        this.id = id;
-        this.name = name;
-        this.scriptId = scriptId;
-        this.color = color;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Long getScriptId() {
-        return scriptId;
-    }
-
-    public Color getColor() {
-        return color;
-    }
+    private Long id;
+    private String name;
+    private Long scriptId;
+    private Color color;
 }

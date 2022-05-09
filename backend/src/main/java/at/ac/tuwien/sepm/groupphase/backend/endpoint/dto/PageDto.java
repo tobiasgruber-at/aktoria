@@ -1,5 +1,9 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.List;
 
 /**
@@ -12,33 +16,12 @@ import java.util.List;
  *
  * @author Simon Josef Kreuzpointner
  */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class PageDto {
-
-    private final Long id;
-    private final Long scriptId;
-    private final Long index;
-    private final List<LineDto> lines;
-
-    public PageDto(Long id, Long scriptId, Long index, List<LineDto> lines) {
-        this.id = id;
-        this.scriptId = scriptId;
-        this.index = index;
-        this.lines = lines;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public Long getScriptId() {
-        return scriptId;
-    }
-
-    public Long getIndex() {
-        return index;
-    }
-
-    public List<LineDto> getLines() {
-        return lines;
-    }
+    private Long id;
+    private Long scriptId;
+    private Long index;
+    private List<LineDto> lines;
 }

@@ -22,8 +22,6 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public interface UserService extends UserDetailsService {
-
-
     /**
      * Creates a new User.
      *

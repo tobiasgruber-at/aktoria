@@ -11,13 +11,11 @@ import at.ac.tuwien.sepm.groupphase.backend.service.parsing.script.ParsedScript;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.script.Script;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.scriptparser.ScriptParser;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.scriptparser.impl.ScriptParserImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.lang.invoke.MethodHandles;
 
 /**
  * A specific implementation of ScriptService.
@@ -25,13 +23,11 @@ import java.lang.invoke.MethodHandles;
  * @author Simon Josef Kreuzpointner
  */
 @Service
+@Slf4j
 public class ScriptServiceImpl implements ScriptService {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
     @Override
     public StagedScriptDto create(MultipartFile file) throws ServiceException {
-        LOGGER.trace("newScript(pdfScript = {})", file);
+        log.trace("newScript(pdfScript = {})", file);
 
         boolean isPdfFile;
         try {
@@ -65,7 +61,7 @@ public class ScriptServiceImpl implements ScriptService {
      * @see <a href="https://sceweb.sce.uhcl.edu/abeysekera/itec3831/labs/FILE%20SIGNATURES%20TABLE.pdf"></a>
      */
     private boolean isPdfFileType(MultipartFile file) throws IOException {
-        LOGGER.trace("isPdfFileType(file = {})", file);
+        log.trace("isPdfFileType(file = {})", file);
 
         byte[] data = file.getBytes();
 
@@ -116,7 +112,7 @@ public class ScriptServiceImpl implements ScriptService {
 
     @Override
     public ScriptDto save(ScriptDto scriptDto) throws ServiceException {
-        LOGGER.trace("save(scriptDto = {})", scriptDto);
+        log.trace("save(scriptDto = {})", scriptDto);
 
         throw new UnsupportedOperationException();
     }
