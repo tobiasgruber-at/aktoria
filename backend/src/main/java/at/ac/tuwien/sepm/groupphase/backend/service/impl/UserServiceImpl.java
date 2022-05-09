@@ -17,21 +17,24 @@ import at.ac.tuwien.sepm.groupphase.backend.validation.UserValidation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.lang.invoke.MethodHandles;
+import java.util.List;
 import java.util.Optional;
 
 /**
  * Service for User.
  *
- * @author Luke Nemeskeri
+ * @author Luke Nemeskeri & Nikolaus Peter
  */
 @Service
-public class CustomUserDetailService implements UserService {
+public class UserServiceImpl implements UserService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final UserValidation userValidation;
@@ -39,7 +42,7 @@ public class CustomUserDetailService implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public CustomUserDetailService(UserRepository userRepository, UserValidation userValidation, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, UserValidation userValidation, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.userValidation = userValidation;
         this.passwordEncoder = passwordEncoder;
@@ -110,37 +113,32 @@ public class CustomUserDetailService implements UserService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return null;
-    }
-
-    /*@Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         LOGGER.debug("Load all user by email");
         try {
             User user = findUserByEmail(email);
 
             List<GrantedAuthority> grantedAuthorities;
-            if (user.getAdmin()) {
-                grantedAuthorities = AuthorityUtils.createAuthorityList("ROLE_ADMIN", "ROLE_USER");
+            if (user.getVerified()) {
+                grantedAuthorities = AuthorityUtils.createAuthorityList("ROLE_VERIFIED", "ROLE_USER");
             } else {
                 grantedAuthorities = AuthorityUtils.createAuthorityList("ROLE_USER");
             }
 
-            return new User(user.getEmail(), user.getPassword(), grantedAuthorities);
+            return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPasswordHash(), grantedAuthorities);
         } catch (NotFoundException e) {
             throw new UsernameNotFoundException(e.getMessage(), e);
         }
-    }*/
+    }
 
     @Override
     public User findUserByEmail(String email) {
         LOGGER.debug("Find application user by email");
-        return null;
-        /*User user = userRepository.findUserByEmail(email);
-        if (user != null) {
-            return user;
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        if (userOptional.isPresent()) {
+            return userOptional.get();
+        } else {
+            throw new NotFoundException("Could not find User with this id");
         }
-        throw new NotFoundException(String.format("Could not find the user with the email address %s", email));*/
     }
 
 
