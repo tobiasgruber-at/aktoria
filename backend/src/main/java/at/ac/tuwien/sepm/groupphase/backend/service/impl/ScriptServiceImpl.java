@@ -68,7 +68,7 @@ public class ScriptServiceImpl implements ScriptService {
         LOGGER.trace("isPdfFileType(file = {})", file);
 
         byte[] data = file.getBytes();
-        
+
         return (
             data.length >= 4
                 && data[0] == 0x25

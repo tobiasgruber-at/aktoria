@@ -5,6 +5,7 @@ import at.ac.tuwien.sepm.groupphase.backend.service.parsing.page.Page;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.validation.constraints.NotNull;
 import java.lang.invoke.MethodHandles;
 import java.util.Collection;
 import java.util.Iterator;
@@ -72,7 +73,7 @@ public class PageImpl implements Page {
     }
 
     @Override
-    public <T> T[] toArray(T[] a) {
+    public <T> T[] toArray(@NotNull T[] a) {
         LOGGER.trace("toArray(a = {})", a);
 
         return lines.toArray(a);
@@ -93,7 +94,7 @@ public class PageImpl implements Page {
     }
 
     @Override
-    public boolean containsAll(Collection<?> c) {
+    public boolean containsAll(@NotNull Collection<?> c) {
         LOGGER.trace("containsAll(c = {})", c);
 
         return lines.containsAll(c);
@@ -114,28 +115,28 @@ public class PageImpl implements Page {
     }
 
     @Override
-    public boolean addAll(Collection<? extends Line> c) {
+    public boolean addAll(@NotNull Collection<? extends Line> c) {
         LOGGER.trace("addAll(c = {})", c);
 
         return lines.addAll(c);
     }
 
     @Override
-    public boolean addAll(int index, Collection<? extends Line> c) {
+    public boolean addAll(int index, @NotNull Collection<? extends Line> c) {
         LOGGER.trace("addAll(index = {}, c = {})", index, c);
 
         return lines.addAll(index, c);
     }
 
     @Override
-    public boolean removeAll(Collection<?> c) {
+    public boolean removeAll(@NotNull Collection<?> c) {
         LOGGER.trace("removeAll(c = {})", c);
 
         return lines.removeAll(c);
     }
 
     @Override
-    public boolean retainAll(Collection<?> c) {
+    public boolean retainAll(@NotNull Collection<?> c) {
         LOGGER.trace("retainAll(c = {})", c);
 
         return lines.retainAll(c);
@@ -195,8 +196,6 @@ public class PageImpl implements Page {
 
     @Override
     public boolean equals(Object o) {
-        LOGGER.trace("equals(o = {})", o);
-
         if (this == o) {
             return true;
         }
@@ -209,8 +208,6 @@ public class PageImpl implements Page {
 
     @Override
     public int hashCode() {
-        LOGGER.trace("hashCode()");
-
         return Objects.hash(lines);
     }
 }

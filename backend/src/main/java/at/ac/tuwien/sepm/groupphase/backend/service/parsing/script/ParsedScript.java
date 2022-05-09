@@ -69,7 +69,7 @@ public class ParsedScript {
         pages = new LinkedList<>();
 
         int previousPageIndex = 0;
-        int curPageIndex = 0;
+        int curPageIndex;
 
         Page curPage = new PageImpl();
 
@@ -101,8 +101,6 @@ public class ParsedScript {
 
     @Override
     public boolean equals(Object o) {
-        LOGGER.trace("equals(o = {})", o);
-
         if (this == o) {
             return true;
         }
@@ -115,8 +113,6 @@ public class ParsedScript {
 
     @Override
     public int hashCode() {
-        LOGGER.trace("hashCode()");
-
         return Objects.hash(lines, roles, pages);
     }
 }

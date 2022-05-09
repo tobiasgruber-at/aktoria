@@ -378,8 +378,6 @@ public class LineImpl implements Line {
 
     @Override
     public boolean equals(Object o) {
-        LOGGER.trace("equals(o = {})", o);
-
         if (this == o) {
             return true;
         }
@@ -392,8 +390,6 @@ public class LineImpl implements Line {
 
     @Override
     public int hashCode() {
-        LOGGER.trace("hashCode()");
-
         return Objects.hash(conflictType, isDecomposed, raw, roles, content, page);
     }
 }
