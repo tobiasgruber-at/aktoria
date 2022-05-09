@@ -10,8 +10,7 @@ import at.ac.tuwien.sepm.groupphase.backend.service.parsing.script.ParsedScript;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.script.Script;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.scriptparser.ScriptParser;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.scriptparser.impl.ScriptParserImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,7 +25,7 @@ import java.io.IOException;
 @Slf4j
 public class ScriptServiceImpl implements ScriptService {
     @Override
-    public StagedScriptDto create(MultipartFile file) throws ServiceException {
+    public SimpleScriptDto create(MultipartFile file) throws ServiceException {
         log.trace("newScript(pdfScript = {})", file);
 
         boolean isPdfFile;

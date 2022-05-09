@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * @author Luke Nemeskeri
  */
 
-@ActiveProfiles({"test", "datagen"})
+@ActiveProfiles({ "test", "datagen" })
 @SpringBootTest
 class CustomUserDetailServiceUnitTest {
 
@@ -183,7 +183,7 @@ class CustomUserDetailServiceUnitTest {
         @DisplayName("delete user really deletes user")
         @MethodSource("parameterizedDeleteUserProvider")
         void deleteUserWorks(SimpleUserDto input) {
-            //delete users and check for no errors and void return. then check if user doesnt exist anymore
+            //delete users and check for no errors and void return. then check if user doesn't exist anymore
         }
 
         @Transactional
@@ -191,9 +191,7 @@ class CustomUserDetailServiceUnitTest {
         @DisplayName("delete user throws not found exception")
         @MethodSource("parameterizedDeleteUserExceptionProvider")
         void deleteUserThrowsException(Long input) {
-            assertThrows(NotFoundException.class, () -> {
-                userService.deleteUser(input);
-            });
+            assertThrows(NotFoundException.class, () -> userService.deleteUser(input));
         }
 
     }
@@ -256,9 +254,7 @@ class CustomUserDetailServiceUnitTest {
         @Transactional
         void createUserThrowsException(UserRegistrationDto input) {
             //test for whitespaces, null and too long inputs
-            assertThrows(ValidationException.class, () -> {
-                userService.createUser(input);
-            });
+            assertThrows(ValidationException.class, () -> userService.createUser(input));
         }
     }
 
@@ -268,7 +264,8 @@ class CustomUserDetailServiceUnitTest {
         private static Stream<CreateUserRecord> parameterizedUserRegistrationDtoProvider() {
             List<CreateUserRecord> temp = new LinkedList<>();
             temp.add(new CreateUserRecord(new UserRegistrationDto("John", "LastName123", "john@gmail.com", "hellohello"), new DetailedUserDto(null, "John", "LastName123", "john@gmail.com", "hellohello", false)));
-            /* temp.add(new UserRegistrationDto("Amy", "LastName545", "amy@gmail.at", "hellohello2"));
+            /* 
+            temp.add(new UserRegistrationDto("Amy", "LastName545", "amy@gmail.at", "hellohello2"));
             temp.add(new UserRegistrationDto("Mathew", "Last312Name", "mathew.newer@mail.com", "interestingpassword"));
             temp.add(new UserRegistrationDto("Alison", "Last555Name", "alison@m.c", "maimaimai"));
             temp.add(new UserRegistrationDto("Mark", "Last3123Name", "mark@state.com", "hwkdoaksdoasd"));
@@ -277,7 +274,7 @@ class CustomUserDetailServiceUnitTest {
             temp.add(new UserRegistrationDto("Lara", "Last7657Name868", "lara.lol@gmx.at", "jlljhallo1321"));
             temp.add(new UserRegistrationDto("Harald", "LastName86", "harald@mymail.com", "wildesPasswort"));
             temp.add(new UserRegistrationDto("Gerald", "LastNamesss", "gerald@world.at", "aber warum"));
-          */
+            */
             return temp.stream();
         }
 

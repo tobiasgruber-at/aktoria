@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
         this.userValidation = userValidation;
         this.passwordEncoder = passwordEncoder;
     }
-    
+
     @Override
     public DetailedUserDto createUser(UserRegistrationDto userRegistrationDto) throws ServiceException, ValidationException, ConflictException {
         log.info("Post new user");

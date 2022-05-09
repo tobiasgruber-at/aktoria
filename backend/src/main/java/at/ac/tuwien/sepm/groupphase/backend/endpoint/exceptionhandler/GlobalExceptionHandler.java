@@ -31,7 +31,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     /**
      * Use the @ExceptionHandler annotation to write handler for custom exceptions.
      */
-    @ExceptionHandler(value = {NotFoundException.class})
+    @ExceptionHandler(value = { NotFoundException.class })
     protected ResponseEntity<Object> handleNotFound(RuntimeException ex, WebRequest request) {
         LOGGER.warn(ex.getMessage());
         return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.NOT_FOUND, request);

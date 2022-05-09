@@ -40,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-@ActiveProfiles({"test", "datagen"})
+@ActiveProfiles({ "test", "datagen" })
 @EnableWebMvc
 @WebAppConfiguration
 class ScriptEndpointIntegrationTest {
@@ -193,7 +193,7 @@ class ScriptEndpointIntegrationTest {
             final List<SimplePageDto> simplePagesDto = new LinkedList<>();
             simplePagesDto.add(new SimplePageDto(simpleLinesDto, 0L));
 
-            final SimpleScriptDto expected = new SimpleScriptDto("name", simplePagesDto, expectedRolesDto);
+            final SimpleScriptDto expected = new SimpleScriptDto("file", simplePagesDto, expectedRolesDto);
 
             File pdf = new File("./src/test/resources/service/parsing/script/Skript_NF.pdf");
             MockMultipartFile multipartFile = new MockMultipartFile("file", pdf.getName(), MediaType.APPLICATION_PDF_VALUE, new FileInputStream(pdf));

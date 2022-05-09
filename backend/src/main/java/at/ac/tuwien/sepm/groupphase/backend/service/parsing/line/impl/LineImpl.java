@@ -21,10 +21,10 @@ import java.util.regex.Pattern;
  */
 public class LineImpl implements Line {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-    private static final String[] SENTENCE_DELIMITERS = {".", "!", "?", "\"", "”", "/", ")", "…"};
-    private static final String[] MULTI_ROLES_DELIMITERS = {" UND ", "/", " / "};
-    private static final String[] SPECIAL_SENTENCES_PATTERNS = {"^.* Akt$", "^Vorhang$", "^Ende$"};
-    private static final String[] ALL_ROLES_IDENTIFIERS = {"ALLE"};
+    private static final String[] SENTENCE_DELIMITERS = { ".", "!", "?", "\"", "”", "/", ")", "…" };
+    private static final String[] MULTI_ROLES_DELIMITERS = { " UND ", "/", " / " };
+    private static final String[] SPECIAL_SENTENCES_PATTERNS = { "^.* Akt$", "^Vorhang$", "^Ende$" };
+    private static final String[] ALL_ROLES_IDENTIFIERS = { "ALLE" };
     private Line.ConflictType conflictType;
     private boolean isDecomposed;
     private String raw;
