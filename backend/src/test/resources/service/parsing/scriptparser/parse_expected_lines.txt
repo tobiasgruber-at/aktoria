@@ -1,0 +1,13 @@
+Erster Akt
+(Der Vorhang geht auf, es ist eine Wiese zu sehen bla. bla bla.)
+ROLEA Das ist meine Zeile bla bla blub. Dieser Text wird in der Hälfte geteilt. Er gehört allerdings immernoch zu role a dazu.
+MR. ROLEB Hallo hier bin ich! Wie geht es denn dir?
+ROLEA "Wie geht es denn dir?"
+MR. ROLEB Jetzt lach nicht so komisch. Ich bin hier der Mister!
+
+ROLE-C Ich bin bereits auf einer neuen Seite.
+ROLED UND ROLEE (gleichzeitig.) Ich auch!
+(Mr. Roleb schaut verachtend herüber.)
+ROLED Ich bin ja so froh, dass das alles geklappt hat. Ich habe mich schon so auf heute gefreut.
+ROLEE O ja! Ich auch!
+Ende
