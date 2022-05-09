@@ -8,6 +8,9 @@ import java.util.Objects;
  * <br>
  * This DAO only includes simple data access objects.
  * The roles are only saved as role names.
+ * <br>
+ * The staged script DTO is intended for newly uploaded and parsed
+ * scripts, that are not yet stored.
  *
  * @author Simon Josef Kreuzpointner
  */

@@ -4,6 +4,9 @@ import java.util.List;
 
 /**
  * Script Data Access Object.
+ * <br>
+ * In contrast to the simple script DTO this DTO is intended
+ * for already stored scripts.
  *
  * @author Simon Josef Kreuzpointner
  */

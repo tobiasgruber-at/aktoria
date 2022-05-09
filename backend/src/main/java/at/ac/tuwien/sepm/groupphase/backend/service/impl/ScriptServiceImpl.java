@@ -68,55 +68,50 @@ public class ScriptServiceImpl implements ScriptService {
         LOGGER.trace("isPdfFileType(file = {})", file);
 
         byte[] data = file.getBytes();
-
-        // Header
-        if (data.length >= 4
-            && data[0] == 0x25
-            && data[1] == 0x50
-            && data[2] == 0x44
-            && data[3] == 0x46) {
-
-            // Trailer
-            return (
-                data.length >= 10
-                    && data[data.length - 6] == 0x0a
-                    && data[data.length - 5] == 0x25
-                    && data[data.length - 4] == 0x25
-                    && data[data.length - 3] == 0x45
-                    && data[data.length - 2] == 0x4f
-                    && data[data.length - 1] == 0x46)
-                || (
-                data.length >= 11
-                    && data[data.length - 7] == 0x0a
-                    && data[data.length - 6] == 0x25
-                    && data[data.length - 5] == 0x25
-                    && data[data.length - 4] == 0x45
-                    && data[data.length - 3] == 0x4f
-                    && data[data.length - 2] == 0x46
-                    && data[data.length - 1] == 0x0a)
-                || (
-                data.length >= 13
-                    && data[data.length - 9] == 0x0d
-                    && data[data.length - 8] == 0x2a
-                    && data[data.length - 7] == 0x25
-                    && data[data.length - 6] == 0x25
-                    && data[data.length - 5] == 0x45
-                    && data[data.length - 4] == 0x4f
-                    && data[data.length - 3] == 0x46
-                    && data[data.length - 2] == 0x0d
-                    && data[data.length - 1] == 0x0a)
-                || (
-                data.length >= 11
-                    && data[data.length - 7] == 0x0d
-                    && data[data.length - 6] == 0x25
-                    && data[data.length - 5] == 0x25
-                    && data[data.length - 4] == 0x45
-                    && data[data.length - 3] == 0x4f
-                    && data[data.length - 2] == 0x46
-                    && data[data.length - 1] == 0x0d);
-        }
-
-        return false;
+        
+        return (
+            data.length >= 4
+                && data[0] == 0x25
+                && data[1] == 0x50
+                && data[2] == 0x44
+                && data[3] == 0x46)
+            && (
+            data.length >= 10
+                && data[data.length - 6] == 0x0a
+                && data[data.length - 5] == 0x25
+                && data[data.length - 4] == 0x25
+                && data[data.length - 3] == 0x45
+                && data[data.length - 2] == 0x4f
+                && data[data.length - 1] == 0x46)
+            || (
+            data.length >= 11
+                && data[data.length - 7] == 0x0a
+                && data[data.length - 6] == 0x25
+                && data[data.length - 5] == 0x25
+                && data[data.length - 4] == 0x45
+                && data[data.length - 3] == 0x4f
+                && data[data.length - 2] == 0x46
+                && data[data.length - 1] == 0x0a)
+            || (
+            data.length >= 13
+                && data[data.length - 9] == 0x0d
+                && data[data.length - 8] == 0x2a
+                && data[data.length - 7] == 0x25
+                && data[data.length - 6] == 0x25
+                && data[data.length - 5] == 0x45
+                && data[data.length - 4] == 0x4f
+                && data[data.length - 3] == 0x46
+                && data[data.length - 2] == 0x0d
+                && data[data.length - 1] == 0x0a)
+            || (
+            data.length >= 11
+                && data[data.length - 7] == 0x0d
+                && data[data.length - 6] == 0x25
+                && data[data.length - 5] == 0x25
+                && data[data.length - 4] == 0x45
+                && data[data.length - 3] == 0x4f
+                && data[data.length - 2] == 0x46
+                && data[data.length - 1] == 0x0d);
     }
 
     @Override

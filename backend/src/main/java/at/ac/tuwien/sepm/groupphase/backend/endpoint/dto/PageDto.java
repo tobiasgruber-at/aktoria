@@ -4,6 +4,11 @@ import java.util.List;
 
 /**
  * Page Data Access Object.
+ * <br>
+ * In contrast to the simple page DTO this DTO holds a reference
+ * to an id, the script it belongs to as well as the index of a page.
+ * <br>
+ * This DTO is intended for the use of already stored pages.
  *
  * @author Simon Josef Kreuzpointner
  */

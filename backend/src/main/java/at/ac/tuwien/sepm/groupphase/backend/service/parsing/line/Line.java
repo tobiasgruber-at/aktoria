@@ -8,7 +8,7 @@ import java.util.List;
  * A line is a section of the script
  * that a specific role or multiple specific roles say.
  * <br>
- * The content of the line does not contain any new lines.
+ * The content of a line does not contain any new lines.
  *
  * @author Simon Josef Kreuzpointner
  */

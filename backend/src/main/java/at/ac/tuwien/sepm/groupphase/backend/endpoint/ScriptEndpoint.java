@@ -38,14 +38,11 @@ public class ScriptEndpoint {
 
     @PostMapping(path = "/new", produces = { MediaType.APPLICATION_JSON_VALUE }, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     @ResponseStatus(HttpStatus.OK)
-    public StagedScriptDto uploadScript(@RequestPart("file") MultipartFile multipartFile) {
+    public StagedScriptDto uploadScript(@RequestPart("file") MultipartFile multipartFile) throws ServiceException {
         LOGGER.info("POST {}/new", path);
 
         try {
             return scriptService.create(multipartFile);
-        } catch (ServiceException e) {
-            LOGGER.error(e.getMessage(), e);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error", e);
         } catch (IllegalFileFormatException e) {
             LOGGER.error(e.getMessage(), e);
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage());
@@ -54,14 +51,9 @@ public class ScriptEndpoint {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ScriptDto saveScript(@RequestBody ScriptDto scriptDto) {
+    public ScriptDto saveScript(@RequestBody ScriptDto scriptDto) throws ServiceException {
         LOGGER.info("POST {}", path);
 
-        try {
-            return scriptService.save(scriptDto);
-        } catch (ServiceException e) {
-            LOGGER.error(e.getMessage(), e);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error", e);
-        }
+        return scriptService.save(scriptDto);
     }
 }

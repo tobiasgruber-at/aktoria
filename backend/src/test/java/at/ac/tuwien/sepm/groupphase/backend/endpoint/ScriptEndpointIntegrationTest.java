@@ -10,8 +10,6 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -94,7 +92,7 @@ class ScriptEndpointIntegrationTest {
             simplePageDtos.add(new SimplePageDto(simpleLineDtos));
 
             final StagedScriptDto expected = new StagedScriptDto(simplePageDtos, roles);
-            
+
             File pdf = new File("./src/test/resources/service/parsing/script/Skript_NF.pdf");
             MockMultipartFile multipartFile = new MockMultipartFile("file", pdf.getName(), MediaType.APPLICATION_PDF_VALUE, new FileInputStream(pdf));
 
@@ -111,27 +109,6 @@ class ScriptEndpointIntegrationTest {
 
             assertThat(response).isNotNull();
             assertEquals(expected, response);
-        }
-
-        @Disabled
-        @ParameterizedTest
-        @Transactional
-        @DisplayName("returns the correct status codes for different media types")
-        @ValueSource(strings = {
-            MediaType.TEXT_PLAIN_VALUE,
-            MediaType.MULTIPART_FORM_DATA_VALUE,
-            MediaType.APPLICATION_JSON_VALUE
-        })
-        void uploadScriptReturnsCorrectStatusCodeForDifferentMediaTypes(String input) throws Exception {
-
-            File pdf = new File("./src/test/resources/service/parsing/script/Skript_NF.pdf");
-            MockMultipartFile multipartFile = new MockMultipartFile("file", pdf.getName(), input, new FileInputStream(pdf));
-
-            mockMvc
-                .perform(MockMvcRequestBuilders
-                    .multipart("/api/v1/scripts/new")
-                    .file(multipartFile)
-                ).andExpect(status().isUnsupportedMediaType());
         }
 
         @Test

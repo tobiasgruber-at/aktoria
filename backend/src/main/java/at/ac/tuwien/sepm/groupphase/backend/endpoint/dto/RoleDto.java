@@ -4,6 +4,8 @@ import java.awt.Color;
 
 /**
  * Role Data Access Object.
+ * <br>
+ * This represents a role of a script.
  *
  * @author Simon Josef Kreuzpointner
  */
