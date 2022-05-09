@@ -7,11 +7,11 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UpdateUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserRegistrationDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.UserMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.User;
-import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
-import at.ac.tuwien.sepm.groupphase.backend.exception.UserNotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
-import at.ac.tuwien.sepm.groupphase.backend.security.repository.UserRepository;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
+import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.UserService;
 import at.ac.tuwien.sepm.groupphase.backend.validation.UserValidation;
 import org.slf4j.Logger;
@@ -23,6 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.lang.invoke.MethodHandles;
+import java.util.Optional;
 
 /**
  * Service for User.
@@ -61,9 +62,14 @@ public class CustomUserDetailService implements UserService {
     }
 
     @Override
-    public SimpleUserDto getUser(double id) throws ServiceException, UserNotFoundException {
+    public SimpleUserDto getUser(double id) {
         LOGGER.info("get user by id");
-        return UserMapper.INSTANCE.userToSimpleUserDto(userRepository.getById((long) id));
+        Optional<User> userOptional = userRepository.findById((long) id);
+        if (userOptional.isPresent()) {
+            return UserMapper.INSTANCE.userToSimpleUserDto(userOptional.get());
+        } else {
+            throw new NotFoundException("Could not find User with this id");
+        }
     }
 
     @Override
@@ -86,7 +92,7 @@ public class CustomUserDetailService implements UserService {
     }
 
     @Override
-    public void forgotPassword(String email) throws UserNotFoundException {
+    public void forgotPassword(String email) {
         LOGGER.info("forgot password, sending email");
 
     }
