@@ -84,7 +84,7 @@ public class UserEndpoint {
         /*TODO: uncomment as soon as Service is implemented
         catch(UserNotFoundException e){
             LOGGER.error(e.getMessage(), e);
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }*/
     }
 
