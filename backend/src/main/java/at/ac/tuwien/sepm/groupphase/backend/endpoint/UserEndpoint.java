@@ -49,12 +49,11 @@ public class UserEndpoint {
     public SimpleUserDto getUser(@PathVariable Long id) throws ServiceException {
         LOGGER.info("GET " + UserEndpoint.path);
         try {
-            userService.getUser(id);
+            return userService.getUser(id);
         } catch (UserNotFoundException e) {
             LOGGER.error(e.getMessage(), e);
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
-        return null;
     }
 
     @PostMapping
