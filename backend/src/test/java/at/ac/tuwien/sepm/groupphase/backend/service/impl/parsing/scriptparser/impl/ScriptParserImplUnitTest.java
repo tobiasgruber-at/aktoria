@@ -23,13 +23,13 @@ class ScriptParserImplUnitTest {
     @Test
     @DisplayName("parse() parses the script correctly")
     void parse() throws IOException {
-        String input = Files.readString(Path.of("./src/test/resources/service/parsing/scriptparser/parse_input.txt"));
-        List<String> rawLines = Files.readAllLines(Path.of("./src/test/resources/service/parsing/scriptparser/parse_expected_lines.txt"));
-        List<String> roles = Files.readAllLines(Path.of("./src/test/resources/service/parsing/scriptparser/parse_expected_roles.txt"));
+        String input = Files.readString(Path.of("./src/test/resources/service/parsing/scriptParser/parse_input.txt"));
+        List<String> rawLines = Files.readAllLines(Path.of("./src/test/resources/service/parsing/scriptParser/parse_expected_lines.txt"));
+        List<String> roles = Files.readAllLines(Path.of("./src/test/resources/service/parsing/scriptParser/parse_expected_roles.txt"));
 
-        List<Line> lines = rawLines.stream().map(line -> (Line) new LineImpl(line, 0)).toList();
+        List<Line> lines = rawLines.stream().map(line -> (Line) new LineImpl(line, 0L)).toList();
 
-        int pageIndex = 0;
+        Long pageIndex = 0L;
         for (Line l : lines) {
             l.setPage(pageIndex);
             if (l.getRaw().equals("\f")) {

@@ -20,16 +20,27 @@ import java.util.Objects;
  * @author Simon Josef Kreuzpointner
  */
 public class PageImpl implements Page {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final List<Line> lines;
+    private Long index;
 
-    public PageImpl(List<Line> lines) {
+    public PageImpl(List<Line> lines, Long index) {
         this.lines = lines;
+        this.index = index;
     }
 
     public PageImpl() {
         this.lines = new LinkedList<>();
+    }
+
+    @Override
+    public Long getIndex() {
+        return index;
+    }
+
+    @Override
+    public void setIndex(Long value) {
+        index = value;
     }
 
     @Override

@@ -4,13 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.awt.Color;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SimpleUserDto {
-    private Long id;
-    private String firstName;
-    private String lastName;
-    private String email;
-    private Boolean verified;
+public class SimpleRoleDto {
+    private String name;
+    private Color color;
 }

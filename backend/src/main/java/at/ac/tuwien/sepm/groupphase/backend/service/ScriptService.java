@@ -1,7 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.service;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ScriptDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.StagedScriptDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleScriptDto;
 import at.ac.tuwien.sepm.groupphase.backend.exception.IllegalFileFormatException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import org.springframework.stereotype.Service;
@@ -23,11 +23,11 @@ public interface ScriptService {
      * not start with the PDF header and the PDF trailer is not found at the end of the file.
      *
      * @param file a script file
-     * @return a new instance of StagedScriptDto
+     * @return a new instance of SimpleScriptDto
      * @throws ServiceException           when an error occurs while trying to process the file
      * @throws IllegalFileFormatException when the given file is not a pdf
      */
-    StagedScriptDto create(MultipartFile file) throws ServiceException, IllegalFileFormatException;
+    SimpleScriptDto create(MultipartFile file) throws ServiceException, IllegalFileFormatException;
 
     /**
      * Saves a given script in the data storage.
