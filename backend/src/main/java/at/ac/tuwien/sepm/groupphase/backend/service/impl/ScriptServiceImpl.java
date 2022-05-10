@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ScriptDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleScriptDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.SimpleScriptMapper;
 import at.ac.tuwien.sepm.groupphase.backend.exception.IllegalFileFormatException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.service.ScriptService;
@@ -11,6 +12,7 @@ import at.ac.tuwien.sepm.groupphase.backend.service.parsing.script.Script;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.scriptparser.ScriptParser;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.scriptparser.impl.ScriptParserImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,6 +26,14 @@ import java.io.IOException;
 @Service
 @Slf4j
 public class ScriptServiceImpl implements ScriptService {
+
+    private final SimpleScriptMapper simpleScriptMapper;
+
+    @Autowired
+    public ScriptServiceImpl(SimpleScriptMapper simpleScriptMapper) {
+        this.simpleScriptMapper = simpleScriptMapper;
+    }
+
     @Override
     public SimpleScriptDto create(MultipartFile file) throws ServiceException {
         log.trace("newScript(pdfScript = {})", file);
@@ -51,7 +61,7 @@ public class ScriptServiceImpl implements ScriptService {
         ScriptParser parser = new ScriptParserImpl(raw);
         ParsedScript parsedScript = parser.parse();
 
-        return SimpleScriptDto.of(parsedScript, file.getName());
+        return simpleScriptMapper.parsedScriptToSimpleScriptDto(parsedScript, file.getName());
     }
 
     /**

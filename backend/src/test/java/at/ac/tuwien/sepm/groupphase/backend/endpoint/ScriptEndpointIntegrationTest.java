@@ -4,9 +4,6 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleLineDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimplePageDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleRoleDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleScriptDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.PageMapper;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.PageMapperImpl;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.RoleMapper;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.line.Line;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,15 +11,12 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.mapstruct.factory.Mappers;
-import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -66,16 +60,6 @@ class ScriptEndpointIntegrationTest {
     @Nested
     @DisplayName("uploadScript() ")
     class UploadScript {
-
-        @InjectMocks
-        private PageMapper pageMapper = PageMapperImpl.INSTANCE;
-
-        @BeforeEach
-        public void init() {
-            RoleMapper roleMapper = Mappers.getMapper(RoleMapper.class);
-            ReflectionTestUtils.setField(pageMapper, "roleMapper", roleMapper);
-        }
-
         @Test
         @Transactional
         @DisplayName("returns the correctly parsed script")
