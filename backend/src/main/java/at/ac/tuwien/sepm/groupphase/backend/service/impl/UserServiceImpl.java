@@ -29,7 +29,8 @@ import java.util.Optional;
 /**
  * Service for User.
  *
- * @author Luke Nemeskeri & Nikolaus Peter
+ * @author Luke Nemeskeri
+ * @author Nikolaus Peter
  */
 @Service
 @Slf4j
@@ -37,12 +38,14 @@ public class UserServiceImpl implements UserService {
     private final UserValidation userValidation;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserMapper userMapper;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, UserValidation userValidation, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, UserValidation userValidation, PasswordEncoder passwordEncoder, UserMapper userMapper) {
         this.userRepository = userRepository;
         this.userValidation = userValidation;
         this.passwordEncoder = passwordEncoder;
+        this.userMapper = userMapper;
     }
 
     @Override
@@ -55,9 +58,9 @@ public class UserServiceImpl implements UserService {
         } catch (ConflictException e) {
             throw new ConflictException(e.getMessage(), e);
         }
-        User user = UserMapper.INSTANCE.userRegistrationDtoToUser(userRegistrationDto, passwordEncoder.encode(userRegistrationDto.getPassword()));
+        User user = userMapper.userRegistrationDtoToUser(userRegistrationDto, passwordEncoder.encode(userRegistrationDto.getPassword()));
         User savedUser = userRepository.saveAndFlush(user);
-        return UserMapper.INSTANCE.userToDetailedUserDto(savedUser);
+        return userMapper.userToDetailedUserDto(savedUser);
     }
 
     @Override
@@ -65,7 +68,7 @@ public class UserServiceImpl implements UserService {
         log.info("get user by id");
         Optional<User> userOptional = userRepository.findById((long) id);
         if (userOptional.isPresent()) {
-            return UserMapper.INSTANCE.userToSimpleUserDto(userOptional.get());
+            return userMapper.userToSimpleUserDto(userOptional.get());
         } else {
             throw new NotFoundException("Could not find User with this id");
         }

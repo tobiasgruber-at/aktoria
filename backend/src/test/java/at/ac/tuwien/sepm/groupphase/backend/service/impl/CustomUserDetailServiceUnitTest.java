@@ -8,6 +8,7 @@ import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.UnauthorizedException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.UserNotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.service.UserService;
 import org.junit.jupiter.api.Disabled;
@@ -18,6 +19,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,12 +28,15 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Class for testing user services.
  *
  * @author Luke Nemeskeri
+ * @author Simon Josef Kreuzpointner
  */
 
 @ActiveProfiles({ "test", "datagen" })
@@ -42,21 +47,23 @@ class CustomUserDetailServiceUnitTest {
     UserService userService;
 
     @Test
+    @DisplayName("forgotPassword()")
     void forgotPassword() {
     }
 
-
     @Test
+    @DisplayName("loadUserByUsername()")
     void loadUserByUsername() {
     }
 
     @Test
+    @DisplayName("findUserByEmail()")
     void findUserByEmail() {
     }
 
-
+    @Disabled
     @Nested
-    @DisplayName("change password tests")
+    @DisplayName("changePassword()")
     class ChangePasswordTesting {
 
         private static Stream<ChangePasswordRecord> parameterizedChangePasswordWorksProvider() {
@@ -79,35 +86,28 @@ class CustomUserDetailServiceUnitTest {
 
         @Disabled
         @ParameterizedTest
-        @DisplayName("changePassword works")
+        @DisplayName("changes the password correctly")
         @Transactional
         @MethodSource("parameterizedChangePasswordWorksProvider")
         void changePasswordWorks(ChangePasswordRecord input) {
-
         }
 
-        @Disabled
         @ParameterizedTest
-        @DisplayName("changePassword throws UnauthorizedException")
+        @DisplayName("throws UnauthorizedException")
         @Transactional
         @MethodSource("parameterizedChangePasswordThrowsUnauthorizedExceptionProvider")
         void changePasswordThrowsUnauthorizedException(ChangePasswordRecord input) {
             //test if entered old password matches current password
-            assertThrows(UnauthorizedException.class, () -> {
-                userService.changePassword(input.passwordChangeDto, input.id);
-            });
+            assertThrows(UnauthorizedException.class, () -> userService.changePassword(input.passwordChangeDto, input.id));
         }
 
-        @Disabled
         @ParameterizedTest
-        @DisplayName("changePassword throws ValidationException")
+        @DisplayName("throws ValidationException")
         @Transactional
         @MethodSource("parameterizedChangePasswordThrowsValidationExceptionProvider")
         void changePasswordThrowsValidationException(ChangePasswordRecord input) {
             //test if new password is a valid password
-            assertThrows(ValidationException.class, () -> {
-                userService.changePassword(input.passwordChangeDto, input.id);
-            });
+            assertThrows(ValidationException.class, () -> userService.changePassword(input.passwordChangeDto, input.id));
         }
 
         record ChangePasswordRecord(PasswordChangeDto passwordChangeDto, Long id) {
@@ -115,8 +115,9 @@ class CustomUserDetailServiceUnitTest {
 
     }
 
+    @Disabled
     @Nested
-    @DisplayName("get user tests")
+    @DisplayName("getUser()")
     class GetUserTesting {
         private static Stream<Long> parameterizedGetUserWorksProvider() {
             List<Long> temp = new LinkedList<>();
@@ -130,30 +131,27 @@ class CustomUserDetailServiceUnitTest {
             return temp.stream();
         }
 
-        @Disabled
         @ParameterizedTest
         @Transactional
+        @DisplayName("throws ServiceException")
         @MethodSource("parameterizedGetUserExceptionProvider")
-        @DisplayName("get user by his id throws exception")
         void getUserThrowsException(Long input) throws ServiceException {
             assertThrows(NotFoundException.class, () -> {
                 userService.getUser(input);
             });
         }
 
-        @Disabled
         @ParameterizedTest
         @Transactional
+        @DisplayName("gets the correct user")
         @MethodSource("parameterizedGetUserWorksProvider")
-        @DisplayName("get user by his id works accordingly")
-        void getUserWorks(Long input) {
-            //assertEquals(null,userService.getUser(input));
+        void getUserWorks(Long input) throws UserNotFoundException, ServiceException {
+            assertNull(userService.getUser(input));
         }
-
     }
 
     @Nested
-    @DisplayName("delete user tests")
+    @DisplayName("deleteUser()")
     class DeleteUserTesting {
         private static Stream<Long> parameterizedDeleteUserProvider() {
             List<Long> temp = new LinkedList<>();
@@ -180,7 +178,7 @@ class CustomUserDetailServiceUnitTest {
         @Disabled
         @Transactional
         @ParameterizedTest
-        @DisplayName("delete user really deletes user")
+        @DisplayName("deletes user correctly")
         @MethodSource("parameterizedDeleteUserProvider")
         void deleteUserWorks(SimpleUserDto input) {
             //delete users and check for no errors and void return. then check if user doesn't exist anymore
@@ -188,16 +186,15 @@ class CustomUserDetailServiceUnitTest {
 
         @Transactional
         @ParameterizedTest
-        @DisplayName("delete user throws not found exception")
+        @DisplayName("throws NotFoundException")
         @MethodSource("parameterizedDeleteUserExceptionProvider")
         void deleteUserThrowsException(Long input) {
             assertThrows(NotFoundException.class, () -> userService.deleteUser(input));
         }
-
     }
 
     @Nested
-    @DisplayName("assert that changeUser changes the user data accordingly")
+    @DisplayName("changeUser()")
     class ChangeUserWorks {
         private static Stream<SimpleUserDto> parameterizedChangeUserProvider() {
             List<SimpleUserDto> temp = new LinkedList<>();
@@ -207,7 +204,7 @@ class CustomUserDetailServiceUnitTest {
 
         @Disabled
         @ParameterizedTest
-        @DisplayName("assert that changing user data returns the changed user data")
+        @DisplayName("changes the user data correctly")
         @Transactional
         @MethodSource("parameterizedChangeUserProvider")
         void changeUserDataIsOk(SimpleUserDto input) {
@@ -215,77 +212,162 @@ class CustomUserDetailServiceUnitTest {
     }
 
     @Nested
-    @DisplayName("Creating user with invalid inputs")
-    class CreateUserThrowsExceptions {
+    @DisplayName("createUser()")
+    @SpringBootTest
+    class CreateUser {
+
+        private final PasswordEncoder passwordEncoder;
+
+        @Autowired
+        public CreateUser(PasswordEncoder passwordEncoder) {
+            this.passwordEncoder = passwordEncoder;
+        }
+
         private static Stream<UserRegistrationDto> parameterizedCreateUserThrowsExceptionProvider() {
             List<UserRegistrationDto> temp = new LinkedList<>();
-            temp.add(new UserRegistrationDto("", "LastName", "anna.stunt@mail.com", "jdasdjiajsid"));
-            temp.add(new UserRegistrationDto("  ", "LastName", "anna.stunt@mail.com", "jalloo12334"));
-            temp.add(new UserRegistrationDto("Fjsafkaskfjaskdjkasjkdasjkdjaskdjaskldjaskdjkasdjkasjdkasjdasjdasjdjasdjaskdjkasdjkasjdkasdjkasjdk"
-                + "asjdkasdjkasjdkasjdkasjfiwjifjqwfgnwqudwinwqdwqdwqndqngqbgvuiqbuewhuhebfqnunfzvqndbqdjjeiqjwejqiwjeiqjeiwqe"
-                + "821e291u32713z1he2j12e12jw281nd1bh1vdu192hd1b2d1du12hdu12db127du12d912bd91sf891u88c31n8udc1jd8j1c8dj1jcd18"
-                + "j2c1dj1c818cdjch1c89w1cd9w1cw1hcd1whc1wndcn1wc17whdc1w7hdc17whc81hc1dhc1c81hwnc1hwc1hwd8c131", "LastName", "longname@mail.at", "hellooooo"));
-            temp.add(new UserRegistrationDto(null, "LastName", "annasum.stunt@mail.com", "jalliiioo12334"));
-            temp.add(new UserRegistrationDto("hallo", "LastName", "", "jdasdjiajsidjo"));
-            temp.add(new UserRegistrationDto("halloeeqe", "LastName", "  ", "jdasdjiajsidjoopopopop"));
-            temp.add(new UserRegistrationDto("hallo19239", "LastName", "Fjsafkaskfjaskdjkasjkdasjkdjaskdjaskldjaskdjkasdjkasjdkasjdasjdasjdjasdjaskdjka"
-                + "sdjkasjdkasdjkasjdkasjdkasdjkasjdkasjdkasjfiwjifjqwfgnwqudwinwqdwqdwqndqngqbgvuiqbuewhuhebfqnunfzvqnd"
-                + "bqdjjeiqjwejqiwjeiqjeiwqe821e291u32713z1he2j12e12jw281nd1bh1vdu192hd1b2d1du12hdu12db127du12d912bd91sf891u"
-                + "88c31n8udc1jd8j1c8dj1jcd1oooc1dj1c818cdjch1c89w1cd9w1cw1hcd1whc1wndcn1wc17whdc1w7hdc17whc81hc1dhc1c1hwnc1hwc1hwd@gmx.at", "jdasdjiajsidjo231"));
-            temp.add(new UserRegistrationDto("Hellomain", "LastName", null, "jalapenjo123"));
-            temp.add(new UserRegistrationDto("test3", "LastName", "jan.stunt@mail.com", ""));
-            temp.add(new UserRegistrationDto("test1", "LastName", "janis.stunt@mail.com", "   "));
-            temp.add(new UserRegistrationDto("test1", "LastName", "janis.stunt@mail.com", "Fjsafkaskfjaskdjkhuuuaasjkdjaskdjaskldjaskdjkasdjkasjdkasjdasjdasjdjasd"
-                + "jaskdjkasdjkasjdkasdjkasjdkasjdkasdjkasjdkasjdkasjfiwjifjqwfgnwqudwinwqdwqdwqndqngqbgvuiqbuewhuhebfqnunfzvqndbqdjjeiqjwejqiwjeiqjeiwqe821e291u32713"
-                + "z1he2j12e12jw281nd1bh1vdu192hd1b2d1du12hdu12db127du12d912bd91sf891u88c31n8udc1jd8j1c8dj1jcd1oooc1dj1c818cdjch"
-                + "1c89w1cd9w1cw1hcd1whc1wndcn1wc17whdc1w7hdc17whc81hc1dhc1c81hwnc1hwc1hwd8c131"));
-            temp.add(new UserRegistrationDto("petro12", "LastName", "petrot@mail.com", null));
-            temp.add(new UserRegistrationDto("Hellomain123", "", "moin@lol.at", "jalapenjo123"));
-            temp.add(new UserRegistrationDto("Hellomain444", "   ", "hello@mail", "jalanjo123"));
-            temp.add(new UserRegistrationDto("Hellomain44865", "Fjsafkaskfjaskdjkhuuuaasjkdjaskdjaskldjaskdjkasdjkasjdkasjdasjdasjdjasd"
-                + "jaskdjkasdjkasjdkasdjkasjdkasjdkasdjkasjdkasjdkasjfiwjifjqwfgnwqudwinwqdwqdwqndqngqbgvuiqbuewhuhebfqnunfzvqndbqdjjeiqjwejqiwjeiqjeiwqe821e291u32713"
-                + "z1he2j12e12jw281nd1bh1vdu192hd1b2d1du12hdu12db127du12d912bd91sf891u88c31n8udc1jd8j1c8dj1jcd1oooc1dj1c818cdjch", "hello@mail", "jalapen23"));
+            temp.add(new UserRegistrationDto(null, "Lastname", "name@mail.com", "password"));
+            temp.add(new UserRegistrationDto("", "Lastname", "name@mail.com", "password"));
+            temp.add(new UserRegistrationDto("  ", "Lastname", "name@mail.com", "password"));
+            temp.add(new UserRegistrationDto("\n\n", "Lastname", "name@mail.com", "password"));
+            temp.add(new UserRegistrationDto("\t\t", "Lastname", "name@mail.com", "password"));
+            temp.add(new UserRegistrationDto("\r\nFirst Name", "Lastname", "name@mail.com", "password"));
+            temp.add(new UserRegistrationDto("First\r\nName", "Lastname", "name@mail.com", "password"));
+            temp.add(new UserRegistrationDto("First\tName", "Lastname", "name@mail.com", "password"));
+            temp.add(new UserRegistrationDto("a".repeat(100), "Lastname", "longname@mail.at", "password"));
+            temp.add(new UserRegistrationDto("a".repeat(400), "Lastname", "longname@mail.at", "password"));
+
+            temp.add(new UserRegistrationDto("Firstname", null, "name@mail.com", "password"));
+            temp.add(new UserRegistrationDto("Firstname", "", "name@mail.com", "password"));
+            temp.add(new UserRegistrationDto("Firstname", "  ", "name@mail.com", "password"));
+            temp.add(new UserRegistrationDto("Firstname", "\n\n", "name@mail.com", "password"));
+            temp.add(new UserRegistrationDto("Firstname", "\t\t", "name@mail.com", "password"));
+            temp.add(new UserRegistrationDto("Firstname", "\r\nLast Name", "name@mail.com", "password"));
+            temp.add(new UserRegistrationDto("Firstname", "Last\r\nName", "name@mail.com", "password"));
+            temp.add(new UserRegistrationDto("Firstname", "Last\tName", "name@mail.com", "password"));
+            temp.add(new UserRegistrationDto("Firstname", "a".repeat(100), "longname@mail.at", "password"));
+            temp.add(new UserRegistrationDto("Firstname", "a".repeat(400), "longname@mail.at", "password"));
+
+            temp.add(new UserRegistrationDto("Firstname", "Lastname", null, "password"));
+            temp.add(new UserRegistrationDto("Firstname", "Lastname", "", "password"));
+            temp.add(new UserRegistrationDto("Firstname", "Lastname", "\n\n", "password"));
+            temp.add(new UserRegistrationDto("Firstname", "Lastname", "\t\t", "password"));
+            temp.add(new UserRegistrationDto("Firstname", "Lastname", "name\t@mail.com", "password"));
+            temp.add(new UserRegistrationDto("Firstname", "Lastname", "  name@mail.com ", "password"));
+            temp.add(new UserRegistrationDto("Firstname", "Lastname", "a".repeat(100) + "@mail.com", "password"));
+            temp.add(new UserRegistrationDto("Firstname", "Lastname", "a".repeat(400) + "@mail.com", "password"));
+
+            temp.add(new UserRegistrationDto("Firstname", "Lastname", "name@mail.com", null));
+            temp.add(new UserRegistrationDto("Firstname", "Lastname", "name@mail.com", ""));
+            temp.add(new UserRegistrationDto("Firstname", "Lastname", "name@mail.com", "   "));
+            temp.add(new UserRegistrationDto("Firstname", "Lastname", "name@mail.com", "\n\n"));
+            temp.add(new UserRegistrationDto("Firstname", "Lastname", "name@mail.com", "\t\t"));
+            temp.add(new UserRegistrationDto("Firstname", "Lastname", "name@mail.com", "\tpassword\t"));
+            temp.add(new UserRegistrationDto("Firstname", "Lastname", "name@mail.com", "\tpass\tword"));
+            temp.add(new UserRegistrationDto("Firstname", "Lastname", "name@mail.com", "kurz"));
+            return temp.stream();
+        }
+
+        private static Stream<CreateUserRecord> parameterizedUserRegistrationDtoProvider() {
+            List<CreateUserRecord> temp = new LinkedList<>();
+            temp.add(
+                new CreateUserRecord(
+                    new UserRegistrationDto(
+                        "Firstname",
+                        "Lastname",
+                        "firstname.lastname@gmail.com",
+                        "   password"
+                    ),
+                    new DetailedUserDto(
+                        null,
+                        "Firstname",
+                        "Lastname",
+                        "firstname.lastname@gmail.com",
+                        "   password",
+                        false
+                    )
+                )
+            );
+            temp.add(
+                new CreateUserRecord(
+                    new UserRegistrationDto(
+                        "Firstname",
+                        "Last Name",
+                        "firstname.last-name@gmail.at",
+                        "^?ß+.,-#%$§/(){}="
+                    ),
+                    new DetailedUserDto(
+                        null,
+                        "Firstname",
+                        "Last Name",
+                        "firstname.last-name@gmail.at",
+                        "^?ß+.,-#%$§/(){}=",
+                        false
+                    )
+                )
+            );
+            temp.add(
+                new CreateUserRecord(
+                    new UserRegistrationDto(
+                        "Dr. Firstname",
+                        "Last Name",
+                        "firstname.last-name@gmx.c",
+                        "password"
+                    ),
+                    new DetailedUserDto(
+                        null,
+                        "Dr. Firstname",
+                        "Last Name",
+                        "firstname.last-name@gmx.c",
+                        "password",
+                        false
+                    )
+                )
+            );
+            temp.add(
+                new CreateUserRecord(
+                    new UserRegistrationDto(
+                        "Dr. Firstname",
+                        "Last Name",
+                        "firstname.last-name@gmx.c",
+                        "a".repeat(200)
+                    ),
+                    new DetailedUserDto(
+                        null,
+                        "Dr. Firstname",
+                        "Last Name",
+                        "firstname.last-name@gmx.c",
+                        "a".repeat(200),
+                        false
+                    )
+                )
+            );
             return temp.stream();
         }
 
         @ParameterizedTest
-        @DisplayName("assert that ValidationException is thrown")
+        @DisplayName("throws ValidationException")
         @MethodSource("parameterizedCreateUserThrowsExceptionProvider")
         @Transactional
         void createUserThrowsException(UserRegistrationDto input) {
             //test for whitespaces, null and too long inputs
             assertThrows(ValidationException.class, () -> userService.createUser(input));
         }
-    }
-
-    @Nested
-    @DisplayName("Create User Tests")
-    class CreateUser {
-        private static Stream<CreateUserRecord> parameterizedUserRegistrationDtoProvider() {
-            List<CreateUserRecord> temp = new LinkedList<>();
-            temp.add(new CreateUserRecord(new UserRegistrationDto("John", "LastName123", "john@gmail.com", "hellohello"), new DetailedUserDto(null, "John", "LastName123", "john@gmail.com", "hellohello", false)));
-            /* 
-            temp.add(new UserRegistrationDto("Amy", "LastName545", "amy@gmail.at", "hellohello2"));
-            temp.add(new UserRegistrationDto("Mathew", "Last312Name", "mathew.newer@mail.com", "interestingpassword"));
-            temp.add(new UserRegistrationDto("Alison", "Last555Name", "alison@m.c", "maimaimai"));
-            temp.add(new UserRegistrationDto("Mark", "Last3123Name", "mark@state.com", "hwkdoaksdoasd"));
-            temp.add(new UserRegistrationDto("Anna", "Last555Name", "anna.stunt@mail.com", "jdasdjiajsidjasidjasdjksadjkasjdkajdkasjdkasjdkajsdksajdkasjdkjasdjasdjasdakl"));
-            temp.add(new UserRegistrationDto("Leon", "Last664Name", "leon@mail.com", "okok20832"));
-            temp.add(new UserRegistrationDto("Lara", "Last7657Name868", "lara.lol@gmx.at", "jlljhallo1321"));
-            temp.add(new UserRegistrationDto("Harald", "LastName86", "harald@mymail.com", "wildesPasswort"));
-            temp.add(new UserRegistrationDto("Gerald", "LastNamesss", "gerald@world.at", "aber warum"));
-            */
-            return temp.stream();
-        }
 
         @ParameterizedTest
-        @DisplayName("assert that the user with the right user data is created")
+        @DisplayName("creates user correctly")
         @MethodSource("parameterizedUserRegistrationDtoProvider")
         @Transactional
         void createUserIsOk(CreateUserRecord input) throws ServiceException, ValidationException, ConflictException {
             DetailedUserDto actual = userService.createUser(input.input);
             input.expected.setId(actual.getId());
-            assertEquals(input.expected, actual);
+
+            assertTrue(passwordEncoder.matches(input.input.getPassword(), actual.getPasswordHash()));
+
+            assertEquals(input.expected.getId(), actual.getId());
+            assertEquals(input.expected.getFirstName(), actual.getFirstName());
+            assertEquals(input.expected.getLastName(), actual.getLastName());
+            assertEquals(input.expected.getEmail(), actual.getEmail());
+            assertEquals(input.expected.getVerified(), actual.getVerified());
         }
 
         record CreateUserRecord(UserRegistrationDto input, DetailedUserDto expected) {

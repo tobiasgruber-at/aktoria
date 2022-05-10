@@ -3,10 +3,10 @@ package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimplePageDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleRoleDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleScriptDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.LineMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.PageMapper;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.PageMapperImpl;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.RoleMapper;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.RoleMapperImpl;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.SimpleScriptMapper;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.service.ScriptService;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.line.Line;
@@ -16,8 +16,8 @@ import at.ac.tuwien.sepm.groupphase.backend.service.parsing.page.impl.PageImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
@@ -36,14 +36,29 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest
 class ScriptServiceImplIntegrationTest {
 
-    private final RoleMapper roleMapper = RoleMapperImpl.INSTANCE;
     @InjectMocks
-    private PageMapper pageMapper = PageMapperImpl.INSTANCE;
+    private SimpleScriptMapper simpleScriptMapper;
+    @InjectMocks
+    private RoleMapper roleMapper;
+    @InjectMocks
+    private PageMapper pageMapper;
+    @InjectMocks
+    private LineMapper lineMapper;
+
+    @Autowired
+    ScriptServiceImplIntegrationTest(SimpleScriptMapper simpleScriptMapper, RoleMapper roleMapper, PageMapper pageMapper, LineMapper lineMapper) {
+        this.simpleScriptMapper = simpleScriptMapper;
+        this.roleMapper = roleMapper;
+        this.pageMapper = pageMapper;
+        this.lineMapper = lineMapper;
+    }
 
     @BeforeEach
     public void init() {
-        RoleMapper roleMapper = Mappers.getMapper(RoleMapper.class);
-        ReflectionTestUtils.setField(pageMapper, "roleMapper", roleMapper);
+        ReflectionTestUtils.setField(lineMapper, "roleMapper", roleMapper);
+        ReflectionTestUtils.setField(pageMapper, "lineMapper", lineMapper);
+        ReflectionTestUtils.setField(simpleScriptMapper, "pageMapper", pageMapper);
+        ReflectionTestUtils.setField(simpleScriptMapper, "roleMapper", roleMapper);
     }
 
     @Test
@@ -87,7 +102,7 @@ class ScriptServiceImplIntegrationTest {
 
         File f = new File("./src/test/resources/service/parsing/script/Skript_NF.pdf");
         MultipartFile multipartFile = new MockMultipartFile("file", new FileInputStream(f));
-        ScriptService scriptService = new ScriptServiceImpl();
+        ScriptService scriptService = new ScriptServiceImpl(simpleScriptMapper);
 
         List<SimplePageDto> expectedPagesDto = pageMapper.listOfPageToListOfSimplePageDto(expectedPages);
         List<SimpleRoleDto> expectedRolesDto = roleMapper.listOfStringToListOfSimpleRoleDto(expectedRoles);
