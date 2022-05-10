@@ -29,8 +29,7 @@ public class UserDataGenerator {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @PostConstruct
-    private void generateUser() {
+    public void generateUser() {
         if (userRepository.findAll().size() > 0) {
             log.debug("users already generated");
         } else {
