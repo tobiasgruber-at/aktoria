@@ -6,6 +6,7 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UpdateUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserRegistrationDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.User;
+import at.ac.tuwien.sepm.groupphase.backend.enums.TokenType;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.UserNotFoundException;
@@ -96,4 +97,18 @@ public interface UserService extends UserDetailsService {
      * @return an application user
      */
     User findUserByEmail(String email);
+
+    /**
+     * Send an email with a email verification link to the user.
+     *
+     * @param user the user
+     */
+    void sendEmailVerificationLink(User user);
+
+    /**
+     * Verifies the account with the matching token.
+     *
+     * @param token the token string
+     */
+    void verifyEmail(String token);
 }

@@ -110,4 +110,12 @@ public class UserEndpoint {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
     }
+
+    @GetMapping(path = "/token/{token}")
+    @ResponseStatus(HttpStatus.OK)
+    public String verifyEmailToken(@PathVariable String token) {
+        log.info("POST " + UserEndpoint.path + "/token");
+        userService.verifyEmail(token);
+        return "token sent";
+    }
 }

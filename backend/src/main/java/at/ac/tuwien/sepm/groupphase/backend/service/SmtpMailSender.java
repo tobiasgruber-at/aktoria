@@ -10,6 +10,8 @@ import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.InternetHeaders;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import java.io.UnsupportedEncodingException;
 import java.util.Properties;
@@ -33,7 +35,7 @@ public class SmtpMailSender {
      *
      * @param receiver the email address of the receiver
      * @param subject  subject of the mail
-     * @param content  content of the mail
+     * @param content  content of the mail in html format
      * @throws MessagingException if there occurred an error during transport
      */
     public void sendMail(String receiver, String subject, String content) throws MessagingException {
@@ -66,7 +68,7 @@ public class SmtpMailSender {
         }
 
         message.setSubject(subject);
-        message.setContent(content, "text/plain");
+        message.setContent(content, "text/html; charset=utf-8");
         Transport.send(message);
     }
 }
