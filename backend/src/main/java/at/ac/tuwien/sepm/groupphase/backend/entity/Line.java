@@ -49,7 +49,7 @@ public class Line {
     private String audio;
 
     @Column(name = "active", nullable = false, columnDefinition = "boolean default true")
-    private boolean active;
+    private boolean active = true;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "recorded_by")
