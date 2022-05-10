@@ -8,6 +8,7 @@ import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.UnauthorizedException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.UserNotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.service.UserService;
 import org.junit.jupiter.api.Disabled;
@@ -27,6 +28,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -45,21 +47,23 @@ class CustomUserDetailServiceUnitTest {
     UserService userService;
 
     @Test
+    @DisplayName("forgotPassword()")
     void forgotPassword() {
     }
 
-
     @Test
+    @DisplayName("loadUserByUsername()")
     void loadUserByUsername() {
     }
 
     @Test
+    @DisplayName("findUserByEmail()")
     void findUserByEmail() {
     }
 
-
+    @Disabled
     @Nested
-    @DisplayName("change password tests")
+    @DisplayName("changePassword()")
     class ChangePasswordTesting {
 
         private static Stream<ChangePasswordRecord> parameterizedChangePasswordWorksProvider() {
@@ -82,35 +86,28 @@ class CustomUserDetailServiceUnitTest {
 
         @Disabled
         @ParameterizedTest
-        @DisplayName("changePassword works")
+        @DisplayName("changes the password correctly")
         @Transactional
         @MethodSource("parameterizedChangePasswordWorksProvider")
         void changePasswordWorks(ChangePasswordRecord input) {
-
         }
 
-        @Disabled
         @ParameterizedTest
-        @DisplayName("changePassword throws UnauthorizedException")
+        @DisplayName("throws UnauthorizedException")
         @Transactional
         @MethodSource("parameterizedChangePasswordThrowsUnauthorizedExceptionProvider")
         void changePasswordThrowsUnauthorizedException(ChangePasswordRecord input) {
             //test if entered old password matches current password
-            assertThrows(UnauthorizedException.class, () -> {
-                userService.changePassword(input.passwordChangeDto, input.id);
-            });
+            assertThrows(UnauthorizedException.class, () -> userService.changePassword(input.passwordChangeDto, input.id));
         }
 
-        @Disabled
         @ParameterizedTest
-        @DisplayName("changePassword throws ValidationException")
+        @DisplayName("throws ValidationException")
         @Transactional
         @MethodSource("parameterizedChangePasswordThrowsValidationExceptionProvider")
         void changePasswordThrowsValidationException(ChangePasswordRecord input) {
             //test if new password is a valid password
-            assertThrows(ValidationException.class, () -> {
-                userService.changePassword(input.passwordChangeDto, input.id);
-            });
+            assertThrows(ValidationException.class, () -> userService.changePassword(input.passwordChangeDto, input.id));
         }
 
         record ChangePasswordRecord(PasswordChangeDto passwordChangeDto, Long id) {
@@ -118,8 +115,9 @@ class CustomUserDetailServiceUnitTest {
 
     }
 
+    @Disabled
     @Nested
-    @DisplayName("get user tests")
+    @DisplayName("getUser()")
     class GetUserTesting {
         private static Stream<Long> parameterizedGetUserWorksProvider() {
             List<Long> temp = new LinkedList<>();
@@ -133,30 +131,27 @@ class CustomUserDetailServiceUnitTest {
             return temp.stream();
         }
 
-        @Disabled
         @ParameterizedTest
         @Transactional
+        @DisplayName("throws ServiceException")
         @MethodSource("parameterizedGetUserExceptionProvider")
-        @DisplayName("get user by his id throws exception")
         void getUserThrowsException(Long input) throws ServiceException {
             assertThrows(NotFoundException.class, () -> {
                 userService.getUser(input);
             });
         }
 
-        @Disabled
         @ParameterizedTest
         @Transactional
+        @DisplayName("gets the correct user")
         @MethodSource("parameterizedGetUserWorksProvider")
-        @DisplayName("get user by his id works accordingly")
-        void getUserWorks(Long input) {
-            //assertEquals(null,userService.getUser(input));
+        void getUserWorks(Long input) throws UserNotFoundException, ServiceException {
+            assertNull(userService.getUser(input));
         }
-
     }
 
     @Nested
-    @DisplayName("delete user tests")
+    @DisplayName("deleteUser()")
     class DeleteUserTesting {
         private static Stream<Long> parameterizedDeleteUserProvider() {
             List<Long> temp = new LinkedList<>();
@@ -183,7 +178,7 @@ class CustomUserDetailServiceUnitTest {
         @Disabled
         @Transactional
         @ParameterizedTest
-        @DisplayName("delete user really deletes user")
+        @DisplayName("deletes user correctly")
         @MethodSource("parameterizedDeleteUserProvider")
         void deleteUserWorks(SimpleUserDto input) {
             //delete users and check for no errors and void return. then check if user doesn't exist anymore
@@ -191,16 +186,15 @@ class CustomUserDetailServiceUnitTest {
 
         @Transactional
         @ParameterizedTest
-        @DisplayName("delete user throws not found exception")
+        @DisplayName("throws NotFoundException")
         @MethodSource("parameterizedDeleteUserExceptionProvider")
         void deleteUserThrowsException(Long input) {
             assertThrows(NotFoundException.class, () -> userService.deleteUser(input));
         }
-
     }
 
     @Nested
-    @DisplayName("assert that changeUser changes the user data accordingly")
+    @DisplayName("changeUser()")
     class ChangeUserWorks {
         private static Stream<SimpleUserDto> parameterizedChangeUserProvider() {
             List<SimpleUserDto> temp = new LinkedList<>();
@@ -210,7 +204,7 @@ class CustomUserDetailServiceUnitTest {
 
         @Disabled
         @ParameterizedTest
-        @DisplayName("assert that changing user data returns the changed user data")
+        @DisplayName("changes the user data correctly")
         @Transactional
         @MethodSource("parameterizedChangeUserProvider")
         void changeUserDataIsOk(SimpleUserDto input) {
@@ -218,8 +212,17 @@ class CustomUserDetailServiceUnitTest {
     }
 
     @Nested
-    @DisplayName("Creating user with invalid inputs")
-    class CreateUserThrowsExceptions {
+    @DisplayName("createUser()")
+    @SpringBootTest
+    class CreateUser {
+
+        private final PasswordEncoder passwordEncoder;
+
+        @Autowired
+        public CreateUser(PasswordEncoder passwordEncoder) {
+            this.passwordEncoder = passwordEncoder;
+        }
+
         private static Stream<UserRegistrationDto> parameterizedCreateUserThrowsExceptionProvider() {
             List<UserRegistrationDto> temp = new LinkedList<>();
             temp.add(new UserRegistrationDto(null, "Lastname", "name@mail.com", "password"));
@@ -262,28 +265,6 @@ class CustomUserDetailServiceUnitTest {
             temp.add(new UserRegistrationDto("Firstname", "Lastname", "name@mail.com", "\tpass\tword"));
             temp.add(new UserRegistrationDto("Firstname", "Lastname", "name@mail.com", "kurz"));
             return temp.stream();
-        }
-
-        @ParameterizedTest
-        @DisplayName("assert that ValidationException is thrown")
-        @MethodSource("parameterizedCreateUserThrowsExceptionProvider")
-        @Transactional
-        void createUserThrowsException(UserRegistrationDto input) {
-            //test for whitespaces, null and too long inputs
-            assertThrows(ValidationException.class, () -> userService.createUser(input));
-        }
-    }
-
-    @Nested
-    @DisplayName("Create User Tests")
-    @SpringBootTest
-    class CreateUser {
-
-        private final PasswordEncoder passwordEncoder;
-
-        @Autowired
-        public CreateUser(PasswordEncoder passwordEncoder) {
-            this.passwordEncoder = passwordEncoder;
         }
 
         private static Stream<CreateUserRecord> parameterizedUserRegistrationDtoProvider() {
@@ -364,7 +345,16 @@ class CustomUserDetailServiceUnitTest {
         }
 
         @ParameterizedTest
-        @DisplayName("assert that the user with the right user data is created")
+        @DisplayName("throws ValidationException")
+        @MethodSource("parameterizedCreateUserThrowsExceptionProvider")
+        @Transactional
+        void createUserThrowsException(UserRegistrationDto input) {
+            //test for whitespaces, null and too long inputs
+            assertThrows(ValidationException.class, () -> userService.createUser(input));
+        }
+
+        @ParameterizedTest
+        @DisplayName("creates user correctly")
         @MethodSource("parameterizedUserRegistrationDtoProvider")
         @Transactional
         void createUserIsOk(CreateUserRecord input) throws ServiceException, ValidationException, ConflictException {
