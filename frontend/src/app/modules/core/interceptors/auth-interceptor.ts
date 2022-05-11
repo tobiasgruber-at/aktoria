@@ -1,37 +1,50 @@
-import { Injectable } from '@angular/core';
-import {
-  HttpEvent,
-  HttpHandler,
-  HttpInterceptor,
-  HttpRequest
-} from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { Globals } from '../global/globals';
-import { AuthService } from '../services/auth/auth-service';
+import {Injectable} from '@angular/core';
+import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
+import {Observable} from 'rxjs';
+import {Globals} from '../global/globals';
+import {AuthService} from '../services/auth/auth-service';
+import {UserService} from '../services/user/user-service';
 
+/** @author Tobias Gruber */
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  constructor(private authService: AuthService, private globals: Globals) {}
+  constructor(
+    private authService: AuthService,
+    private userService: UserService,
+    private globals: Globals
+  ) {}
 
-  /** Intercepts outgoing http requests and adds authorizations headers if necessary */
+  /** Intercepts outgoing http requests and adds authorizations headers if necessary. */
   intercept(
     req: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    const authUri = this.globals.backendUri + '/authentication';
-
-    // Do not intercept authentication requests
-    if (req.url === authUri) {
-      return next.handle(req);
+    let adaptedReq = req;
+    if (!this.isBlacklistedRequest(req)) {
+      adaptedReq = req.clone({
+        headers: req.headers.set(
+          'Authorization',
+          'Bearer ' + this.authService.getToken()
+        )
+      });
     }
+    return next.handle(adaptedReq);
+  }
 
-    const authReq = req.clone({
-      headers: req.headers.set(
-        'Authorization',
-        'Bearer ' + this.authService.getToken()
-      )
-    });
-
-    return next.handle(authReq);
+  /**
+   * Checks if the request is blacklisted.
+   *
+   * @description Authorization headers won't be appended to blacklisted requests.
+   */
+  private isBlacklistedRequest(req: HttpRequest<any>): boolean {
+    const blacklistedEndpoints = [];
+    if (req.method === 'GET') {
+      blacklistedEndpoints.push('/authentication');
+    } else if (req.method === 'POST') {
+      blacklistedEndpoints.push('/users');
+    }
+    return blacklistedEndpoints.some(
+      (e) => req.url === this.globals.backendUri + e
+    );
   }
 }
