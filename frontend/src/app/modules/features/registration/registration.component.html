@@ -3,18 +3,40 @@
     <span class="anchor" id="formLogin"></span>
     <form (ngSubmit)="submit()" [formGroup]="form" class="form">
       <div class="form-group mb-3">
-        <label class="test" for="input-username">Name</label>
+        <label class="test" for="input-firstname">Vorname</label>
         <input
           class="form-control"
-          formControlName="name"
-          id="input-username"
-          name="username"
-          placeholder="Dein Name"
+          formControlName="firstName"
+          id="input-firstname"
+          name="firstName"
+          placeholder="Dein Vorname"
           type="text"
         />
         <app-form-errors>
-          <app-form-error *ngIf="fieldHasErrors('name', 'required')"
-            >Bitte gib deinen Namen ein.
+          <app-form-error *ngIf="fieldHasErrors('firstName', 'required')"
+            >Bitte gib deinen Vornamen an.
+          </app-form-error>
+          <app-form-error *ngIf="fieldHasErrors('firstName', 'maxlength')"
+            >Vorname zu lange.
+          </app-form-error>
+        </app-form-errors>
+      </div>
+      <div class="form-group mb-3">
+        <label class="test" for="input-lastname">Nachname</label>
+        <input
+          class="form-control"
+          formControlName="lastName"
+          id="input-lastname"
+          name="lastName"
+          placeholder="Dein Nachname"
+          type="text"
+        />
+        <app-form-errors>
+          <app-form-error *ngIf="fieldHasErrors('lastName', 'required')"
+            >Bitte gib deinen Nachnamen an.
+          </app-form-error>
+          <app-form-error *ngIf="fieldHasErrors('lastName', 'maxlength')"
+            >Nachname zu lange.
           </app-form-error>
         </app-form-errors>
       </div>
@@ -33,6 +55,9 @@
           </app-form-error>
           <app-form-error *ngIf="fieldHasErrors('email', 'email')"
             >Bitte gib eine gültige Email Adresse ein.
+          </app-form-error>
+          <app-form-error *ngIf="fieldHasErrors('email', 'maxlength')"
+            >Email zu lange.
           </app-form-error>
         </app-form-errors>
       </div>

@@ -1,11 +1,8 @@
 import { Observable } from 'rxjs';
-import {
-  AuthenticatedUser,
-  UserRegistration
-} from '../../../shared/dtos/user-dtos';
+import { SimpleUser, UserRegistration } from '../../../shared/dtos/user-dtos';
 
 export abstract class UserService {
-  abstract register(req: UserRegistration): Observable<AuthenticatedUser>;
+  abstract register(req: UserRegistration): Observable<SimpleUser>;
 
   abstract delete(): Observable<any>;
 
