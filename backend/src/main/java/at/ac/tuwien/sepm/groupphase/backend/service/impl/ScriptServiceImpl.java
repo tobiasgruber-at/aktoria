@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ScriptDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ScriptPreviewDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleScriptDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.SimpleScriptMapper;
 import at.ac.tuwien.sepm.groupphase.backend.exception.IllegalFileFormatException;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.stream.Stream;
 
 /**
  * A specific implementation of ScriptService.
@@ -121,6 +123,20 @@ public class ScriptServiceImpl implements ScriptService {
     @Override
     public ScriptDto save(SimpleScriptDto simpleScriptDto) throws ServiceException {
         log.trace("save(scriptDto = {})", simpleScriptDto);
+
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Stream<ScriptPreviewDto> getAllPreviews() throws ServiceException {
+        log.trace("getAllPreviews()");
+
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public ScriptDto getById(Long id) throws ServiceException {
+        log.trace("getById(id = {})", id);
 
         throw new UnsupportedOperationException();
     }
