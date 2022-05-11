@@ -1,9 +1,9 @@
-import {Injectable} from '@angular/core';
-import {AuthRequest} from '../../../shared/dtos/auth-request';
-import {Observable, of} from 'rxjs';
+import { Injectable } from '@angular/core';
+import { AuthRequest } from '../../../shared/dtos/auth-request';
+import { Observable, of } from 'rxjs';
 // @ts-ignore
 import jwt_decode from 'jwt-decode';
-import {AuthService} from './auth-service';
+import { AuthService } from './auth-service';
 
 /** @author Tobias Gruber */
 @Injectable()
@@ -21,7 +21,8 @@ export class AuthMockService extends AuthService {
   }
 
   isLoggedIn() {
-    return !!this.getToken();
+    //TODO: return !!this.getToken();
+    return true;
   }
 
   isVerifiedEmail() {

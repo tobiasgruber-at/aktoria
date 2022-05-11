@@ -26,7 +26,8 @@ const routes: Routes = [
   },
   {
     path: 'scripts',
-    canActivate: [AuthGuard],
+    //TODO: uncomment
+    //canActivate: [AuthGuard],
     loadChildren: () =>
       import('./modules/features/scripts/scripts.module').then(
         (m) => m.ScriptsModule
