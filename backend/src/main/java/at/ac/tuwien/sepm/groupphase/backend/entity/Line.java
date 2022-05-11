@@ -15,9 +15,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
+import java.util.Set;
 
 /**
  * Entity class for lines.
@@ -56,4 +60,9 @@ public class Line {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "recorded_by")
     private User recordedBy;
+
+    @ManyToMany
+    @JoinTable(name = "spoken_by", joinColumns = {@JoinColumn(name = "script_id"), @JoinColumn(name = "page_id"), @JoinColumn(name = "line_id")},
+        inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> spokenBy;
 }

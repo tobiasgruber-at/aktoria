@@ -14,10 +14,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import java.awt.Color;
+import java.util.List;
 
 /**
  * Entity class for roles.
@@ -46,4 +48,7 @@ public class Role {
 
     @Column(name = "color")
     private Color color;
+
+    @ManyToMany(mappedBy = "spokenBy")
+    private List<Line> lines;
 }
