@@ -116,6 +116,6 @@ public class UserEndpoint {
     public String verifyEmailToken(@PathVariable String token) {
         log.info("POST " + UserEndpoint.path + "/token");
         userService.verifyEmail(token);
-        return "token sent";
+        return "account verified";
     }
 }
