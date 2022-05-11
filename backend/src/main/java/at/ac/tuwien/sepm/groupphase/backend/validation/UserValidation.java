@@ -13,13 +13,9 @@ public interface UserValidation {
 
     void validateCreateUserInput(UserRegistrationDto userRegistrationDto) throws ValidationException, ConflictException;
 
-    void validatePatchUser(UpdateUserDto updateUserDto) throws ValidationException, ConflictException;
+    void validatePatchUserInput(UpdateUserDto updateUserDto) throws ValidationException, ConflictException;
 
-    void validateEmailForForgottenPassword(String email) throws NotFoundException;
+    void validateEmailForForgottenPasswordInput(String email) throws NotFoundException;
 
-    void validateChangePassword(PasswordChangeDto passwordChangeDto) throws ValidationException;
-
-
+    void validateChangePasswordInput(PasswordChangeDto passwordChangeDto) throws ValidationException;
 }
-
-

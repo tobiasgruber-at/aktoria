@@ -18,7 +18,7 @@ import java.awt.Color;
 @NoArgsConstructor
 public class RoleDto {
     private Long id;
-    private String name;
     private Long scriptId;
+    private String name;
     private Color color;
 }
