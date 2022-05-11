@@ -20,6 +20,7 @@ import java.util.List;
 public class ScriptDto {
     private Long id;
     private String name;
-    private SimpleUserDto owner;
     private List<PageDto> pages;
+    private List<RoleDto> roles;
+    private SimpleUserDto owner;
 }

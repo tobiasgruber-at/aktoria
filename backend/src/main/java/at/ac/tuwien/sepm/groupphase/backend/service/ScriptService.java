@@ -32,9 +32,9 @@ public interface ScriptService {
     /**
      * Saves a given script in the data storage.
      *
-     * @param scriptDto the scrip to be saved
+     * @param simpleScriptDto the scrip to be saved
      * @return the saved script
      * @throws ServiceException when an error occurs while trying to process the script
      */
-    ScriptDto save(ScriptDto scriptDto) throws ServiceException;
+    ScriptDto save(SimpleScriptDto simpleScriptDto) throws ServiceException;
 }

@@ -26,7 +26,6 @@ import java.io.IOException;
 @Service
 @Slf4j
 public class ScriptServiceImpl implements ScriptService {
-
     private final SimpleScriptMapper simpleScriptMapper;
 
     @Autowired
@@ -46,7 +45,7 @@ public class ScriptServiceImpl implements ScriptService {
         }
 
         if (!isPdfFile) {
-            throw new IllegalFileFormatException("Illegal File Format.");
+            throw new IllegalFileFormatException("Illegales Dateiformat.");
         }
 
         Script s = new Script(file);
@@ -120,8 +119,8 @@ public class ScriptServiceImpl implements ScriptService {
     }
 
     @Override
-    public ScriptDto save(ScriptDto scriptDto) throws ServiceException {
-        log.trace("save(scriptDto = {})", scriptDto);
+    public ScriptDto save(SimpleScriptDto simpleScriptDto) throws ServiceException {
+        log.trace("save(scriptDto = {})", simpleScriptDto);
 
         throw new UnsupportedOperationException();
     }
