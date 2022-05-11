@@ -64,7 +64,7 @@ public class ScriptEndpoint {
     public Stream<ScriptPreviewDto> getScriptPreviews() throws ServiceException {
         log.info("GET {}", path);
 
-        return scriptService.getAllPreviews();
+        return scriptService.findAllPreviews();
     }
 
     @GetMapping(path = "/{id}")
@@ -72,6 +72,6 @@ public class ScriptEndpoint {
     public ScriptDto getScriptById(@PathVariable Long id) throws ServiceException {
         log.info("GET {}/{}", path, id);
 
-        return scriptService.getById(id);
+        return scriptService.findById(id);
     }
 }

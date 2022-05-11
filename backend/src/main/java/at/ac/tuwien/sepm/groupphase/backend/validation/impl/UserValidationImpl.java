@@ -48,6 +48,7 @@ public class UserValidationImpl implements UserValidation {
     public void validatePatchUserInput(UpdateUserDto updateUserDto) throws ValidationException, ConflictException {
         try {
             validateNames(updateUserDto.getFirstName(), updateUserDto.getLastName());
+            validateEmail(updateUserDto.getEmail());
             checkForEmailConflict(updateUserDto.getEmail());
         } catch (ValidationException e) {
             throw new ValidationException(e.getMessage(), e);

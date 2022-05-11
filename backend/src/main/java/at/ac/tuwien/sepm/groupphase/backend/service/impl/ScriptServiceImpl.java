@@ -128,14 +128,14 @@ public class ScriptServiceImpl implements ScriptService {
     }
 
     @Override
-    public Stream<ScriptPreviewDto> getAllPreviews() throws ServiceException {
+    public Stream<ScriptPreviewDto> findAllPreviews() throws ServiceException {
         log.trace("getAllPreviews()");
 
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public ScriptDto getById(Long id) throws ServiceException {
+    public ScriptDto findById(Long id) throws ServiceException {
         log.trace("getById(id = {})", id);
 
         throw new UnsupportedOperationException();

@@ -47,7 +47,7 @@ public interface ScriptService {
      * @return a stream of previews
      * @throws ServiceException when an error occurs while trying to get the scripts
      */
-    Stream<ScriptPreviewDto> getAllPreviews() throws ServiceException;
+    Stream<ScriptPreviewDto> findAllPreviews() throws ServiceException;
 
     /**
      * Gets the script corresponding to the given id.
@@ -56,5 +56,5 @@ public interface ScriptService {
      * @return the script corresponding to the given id.
      * @throws ServiceException when an error occurs while trying to get the script
      */
-    ScriptDto getById(Long id) throws ServiceException;
+    ScriptDto findById(Long id) throws ServiceException;
 }

@@ -136,7 +136,7 @@ class UserServiceUnitTest {
         @MethodSource("parameterizedGetUserExceptionProvider")
         void getUserThrowsException(Long input) throws ServiceException {
             assertThrows(NotFoundException.class, () -> {
-                userService.getUser(input);
+                userService.findById(input);
             });
         }
 
@@ -145,7 +145,7 @@ class UserServiceUnitTest {
         @DisplayName("gets the correct user")
         @MethodSource("parameterizedGetUserWorksProvider")
         void getUserWorks(Long input) throws UserNotFoundException, ServiceException {
-            assertNull(userService.getUser(input));
+            assertNull(userService.findById(input));
         }
     }
 
@@ -188,7 +188,7 @@ class UserServiceUnitTest {
         @DisplayName("throws NotFoundException")
         @MethodSource("parameterizedDeleteUserExceptionProvider")
         void deleteUserThrowsException(Long input) {
-            assertThrows(NotFoundException.class, () -> userService.deleteUser(input));
+            assertThrows(NotFoundException.class, () -> userService.delete(input));
         }
     }
 
@@ -347,7 +347,7 @@ class UserServiceUnitTest {
         @Transactional
         void createUserThrowsException(UserRegistrationDto input) {
             //test for whitespaces, null and too long inputs
-            assertThrows(ValidationException.class, () -> userService.createUser(input));
+            assertThrows(ValidationException.class, () -> userService.create(input));
         }
 
         @ParameterizedTest
@@ -355,7 +355,7 @@ class UserServiceUnitTest {
         @MethodSource("parameterizedUserRegistrationDtoProvider")
         @Transactional
         void createUserIsOk(CreateUserRecord input) throws ServiceException, ValidationException, ConflictException {
-            SimpleUserDto actual = userService.createUser(input.input);
+            SimpleUserDto actual = userService.create(input.input);
             input.expected.setId(actual.getId());
 
             assertEquals(input.expected.getId(), actual.getId());
