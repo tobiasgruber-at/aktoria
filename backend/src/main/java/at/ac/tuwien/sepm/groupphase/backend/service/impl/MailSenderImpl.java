@@ -1,5 +1,6 @@
-package at.ac.tuwien.sepm.groupphase.backend.service;
+package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
+import at.ac.tuwien.sepm.groupphase.backend.service.MailSender;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +16,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Properties;
 
 @Component
-public class SmtpMailSender {
+public class MailSenderImpl implements MailSender {
     @Value("${spring.mail.username}")
     private String sender;
 
@@ -28,14 +29,6 @@ public class SmtpMailSender {
     @Value("${spring.mail.port}")
     private String port;
 
-    /**
-     * Sends an email from aktoria.norepl@gmx.at
-     *
-     * @param receiver the email address of the receiver
-     * @param subject  subject of the mail
-     * @param content  content of the mail
-     * @throws MessagingException if there occurred an error during transport
-     */
     public void sendMail(String receiver, String subject, String content) throws MessagingException {
         Properties properties = new Properties();
 
@@ -66,7 +59,7 @@ public class SmtpMailSender {
         }
 
         message.setSubject(subject);
-        message.setContent(content, "text/plain");
+        message.setContent(content, "text/html; charset=utf-8");
         Transport.send(message);
     }
 }

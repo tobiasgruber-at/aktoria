@@ -6,6 +6,7 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UpdateUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserRegistrationDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.User;
+import at.ac.tuwien.sepm.groupphase.backend.enums.TokenType;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.UserNotFoundException;
@@ -31,7 +32,7 @@ public interface UserService extends UserDetailsService {
      * @throws ValidationException is thrown when user data is not valid
      * @throws ConflictException   is thrown when there is a conflict with the data base
      */
-    DetailedUserDto createUser(UserRegistrationDto userRegistrationDto) throws ServiceException, ValidationException, ConflictException;
+    SimpleUserDto createUser(UserRegistrationDto userRegistrationDto) throws ServiceException, ValidationException, ConflictException;
 
     /**
      * Returns a user.
@@ -96,4 +97,25 @@ public interface UserService extends UserDetailsService {
      * @return an application user
      */
     User findUserByEmail(String email);
+
+    /**
+     * Send an email with an email verification link to the user.
+     *
+     * @param user the user
+     */
+    void sendEmailVerificationLink(User user);
+
+    /**
+     * Resend an email with an email verification link to the user.
+     *
+     * @param id the id of the user
+     */
+    void resendEmailVerificationLink(Long id);
+
+    /**
+     * Verifies the account with the matching token.
+     *
+     * @param token the token string
+     */
+    void verifyEmail(String token);
 }

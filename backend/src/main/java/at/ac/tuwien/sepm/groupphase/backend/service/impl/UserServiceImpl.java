@@ -6,12 +6,17 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UpdateUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserRegistrationDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.UserMapper;
+import at.ac.tuwien.sepm.groupphase.backend.entity.SecureToken;
 import at.ac.tuwien.sepm.groupphase.backend.entity.User;
+import at.ac.tuwien.sepm.groupphase.backend.enums.TokenType;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
-import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.InvalidTokenException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
+import at.ac.tuwien.sepm.groupphase.backend.service.MailSender;
+import at.ac.tuwien.sepm.groupphase.backend.service.SecureTokenService;
 import at.ac.tuwien.sepm.groupphase.backend.service.UserService;
 import at.ac.tuwien.sepm.groupphase.backend.validation.UserValidation;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +28,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,17 +46,21 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
+    private final MailSender mailSender;
+    private final SecureTokenService secureTokenService;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, UserValidation userValidation, PasswordEncoder passwordEncoder, UserMapper userMapper) {
+    public UserServiceImpl(UserRepository userRepository, UserValidation userValidation, PasswordEncoder passwordEncoder, UserMapper userMapper, MailSender mailSender, SecureTokenService secureTokenService) {
         this.userRepository = userRepository;
         this.userValidation = userValidation;
         this.passwordEncoder = passwordEncoder;
         this.userMapper = userMapper;
+        this.mailSender = mailSender;
+        this.secureTokenService = secureTokenService;
     }
 
     @Override
-    public DetailedUserDto createUser(UserRegistrationDto userRegistrationDto) throws ServiceException, ValidationException, ConflictException {
+    public SimpleUserDto createUser(UserRegistrationDto userRegistrationDto) throws ServiceException, ValidationException, ConflictException {
         log.info("Post new user");
         try {
             userValidation.validateCreateUserInput(userRegistrationDto);
@@ -58,9 +69,11 @@ public class UserServiceImpl implements UserService {
         } catch (ConflictException e) {
             throw new ConflictException(e.getMessage(), e);
         }
-        User user = userMapper.userRegistrationDtoToUser(userRegistrationDto, passwordEncoder.encode(userRegistrationDto.getPassword()));
+        User user = userMapper.userRegistrationDtoToUser(userRegistrationDto, false, passwordEncoder.encode(userRegistrationDto.getPassword()));
         User savedUser = userRepository.saveAndFlush(user);
-        return userMapper.userToDetailedUserDto(savedUser);
+
+        sendEmailVerificationLink(savedUser);
+        return userMapper.userToSimpleUserDto(savedUser);
     }
 
     @Override
@@ -140,5 +153,56 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    public void sendEmailVerificationLink(User user) {
+        log.info("send email with verification link");
 
+        SecureToken secureToken = secureTokenService.createSecureToken(TokenType.verifyEmail);
+        secureToken.setAccount(user);
+        secureTokenService.saveSecureToken(secureToken);
+
+        String link = "http://localhost:8080/api/v1/users/submitToken/" + secureToken.getToken();
+        try {
+            mailSender.sendMail(user.getEmail(), "Aktoria Verifikationslink",
+                """
+                    <h1>Hallo %s,</h1>
+                    klick auf den folgenden Link um deine Mailadresse zu bestätigen.<br>
+                    <a href='%s'>Email Adresse bestätigen</a><br>
+                    <br>
+                    Wenn du dich nicht bei Akoria registriert haben solltest, ignorier bitte diese Mail.
+                    """.formatted(user.getFirstName(), link));
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void resendEmailVerificationLink(Long id) {
+        log.info("resend email with verification link");
+        Optional<User> userOptional = userRepository.findById((long) id);
+        if (userOptional.isPresent()) {
+            sendEmailVerificationLink(userOptional.get());
+        } else {
+            throw new NotFoundException("Could not find a user with this id");
+        }
+    }
+
+    @Override
+    public void verifyEmail(String token) {
+        log.info("verify email");
+
+        SecureToken secureToken = secureTokenService.findByToken(token);
+        secureTokenService.removeToken(token);
+        if (secureToken.getType() == TokenType.verifyEmail) {
+            if (secureToken.getExpireAt().isAfter(LocalDateTime.now())) {
+                User user = secureToken.getAccount();
+                user.setVerified(true);
+                userRepository.saveAndFlush(user);
+            } else {
+                throw new InvalidTokenException();
+            }
+        } else {
+            throw new InvalidTokenException();
+        }
+    }
 }
