@@ -162,7 +162,7 @@ public class UserServiceImpl implements UserService {
 
         String link = "http://localhost:8080/api/v1/users/token/" + secureToken.getToken();
         try {
-            mailSender.sendMail("nikolauspeter99@hotmail.com", "Aktoria Verifikationslink",
+            mailSender.sendMail(user.getEmail(), "Aktoria Verifikationslink",
                 """
                     <h1>Hallo %s,</h1>
                     klick auf den folgenden Link um deine Mailadresse zu bestätigen.<br>
