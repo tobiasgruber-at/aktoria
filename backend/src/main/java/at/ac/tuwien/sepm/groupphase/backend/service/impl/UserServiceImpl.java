@@ -10,17 +10,18 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.SecureToken;
 import at.ac.tuwien.sepm.groupphase.backend.entity.User;
 import at.ac.tuwien.sepm.groupphase.backend.enums.TokenType;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
-import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
-import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.InvalidTokenException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
+import at.ac.tuwien.sepm.groupphase.backend.service.MailSender;
 import at.ac.tuwien.sepm.groupphase.backend.service.SecureTokenService;
-import at.ac.tuwien.sepm.groupphase.backend.service.SmtpMailSender;
 import at.ac.tuwien.sepm.groupphase.backend.service.UserService;
 import at.ac.tuwien.sepm.groupphase.backend.validation.UserValidation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -46,11 +47,11 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
-    private final SmtpMailSender mailSender;
+    private final MailSender mailSender;
     private final SecureTokenService secureTokenService;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, UserValidation userValidation, PasswordEncoder passwordEncoder, UserMapper userMapper, SmtpMailSender mailSender, SecureTokenService secureTokenService) {
+    public UserServiceImpl(UserRepository userRepository, UserValidation userValidation, PasswordEncoder passwordEncoder, UserMapper userMapper, MailSender mailSender, SecureTokenService secureTokenService) {
         this.userRepository = userRepository;
         this.userValidation = userValidation;
         this.passwordEncoder = passwordEncoder;
@@ -60,8 +61,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public SimpleUserDto createUser(UserRegistrationDto userRegistrationDto) throws ServiceException, ValidationException, ConflictException {
-        log.info("Post new user");
+    public SimpleUserDto create(UserRegistrationDto userRegistrationDto) throws ServiceException, ValidationException, ConflictException {
+        log.trace("createUser(userRegistrationDto = {})", userRegistrationDto);
+
         try {
             userValidation.validateCreateUserInput(userRegistrationDto);
         } catch (ValidationException e) {
@@ -69,17 +71,19 @@ public class UserServiceImpl implements UserService {
         } catch (ConflictException e) {
             throw new ConflictException(e.getMessage(), e);
         }
+
         User user = userMapper.userRegistrationDtoToUser(userRegistrationDto, false, passwordEncoder.encode(userRegistrationDto.getPassword()));
         User savedUser = userRepository.saveAndFlush(user);
-
         sendEmailVerificationLink(savedUser);
+
         return userMapper.userToSimpleUserDto(savedUser);
     }
 
     @Override
-    public SimpleUserDto getUser(double id) {
-        log.info("get user by id");
-        Optional<User> userOptional = userRepository.findById((long) id);
+    public SimpleUserDto findById(Long id) throws NotFoundException {
+        log.trace("getUser(id = {})", id);
+
+        Optional<User> userOptional = userRepository.findById(id);
         if (userOptional.isPresent()) {
             return userMapper.userToSimpleUserDto(userOptional.get());
         } else {
@@ -88,10 +92,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public DetailedUserDto patch(UpdateUserDto updateUserDto, Boolean passwordChange, Long id) throws ServiceException, ValidationException, ConflictException {
-        log.info("patch user");
+    public DetailedUserDto patch(UpdateUserDto updateUserDto, Boolean passwordChange, Long id) throws ServiceException, ValidationException, ConflictException, NotFoundException {
+        log.trace("patch(updateUserDto = {}, passwordChange = {}, id = {})", updateUserDto, passwordChange, id);
+
         try {
-            userValidation.validatePatchUser(updateUserDto);
+            userValidation.validatePatchUserInput(updateUserDto);
         } catch (ValidationException e) {
             throw new ValidationException(e.getMessage(), e);
         } catch (ConflictException e) {
@@ -101,33 +106,42 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(Long id) throws ServiceException {
-        log.info("delete user with id = /{}", id);
-        userRepository.deleteById(id);
-    }
+    public void delete(Long id) throws ServiceException, NotFoundException {
+        log.trace("deleteUser(id = {})", id);
 
-    @Override
-    public void forgotPassword(String email) {
-        log.info("forgot password, sending email");
-
-    }
-
-    @Override
-    public DetailedUserDto changePassword(PasswordChangeDto passwordChangeDto, Long id) throws ServiceException, ValidationException {
-        log.info("change password of user with id = /{}", id);
         try {
-            userValidation.validateChangePassword(passwordChangeDto);
+            userRepository.deleteById(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new NotFoundException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void forgotPassword(String email) throws NotFoundException {
+        log.trace("forgotPassword(email = {})", email);
+
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public DetailedUserDto changePassword(PasswordChangeDto passwordChangeDto, Long id) throws ServiceException, ValidationException, NotFoundException {
+        log.trace("changePassword(passwordChangeDto = {}, id = {})", passwordChangeDto, id);
+
+        try {
+            userValidation.validateChangePasswordInput(passwordChangeDto);
         } catch (ValidationException e) {
             throw new ValidationException(e.getMessage(), e);
         }
-        return null;
+
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        log.debug("Load all user by email");
+        log.trace("loadUserByUsername(email = {})", email);
+
         try {
-            User user = findUserByEmail(email);
+            User user = findByEmail(email);
 
             List<GrantedAuthority> grantedAuthorities;
             if (user.getVerified()) {
@@ -143,39 +157,62 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findUserByEmail(String email) {
-        log.debug("Find application user by email");
+    public User findByEmail(String email) throws NotFoundException {
+        log.trace("findUserByEmail(email = {})", email);
+
         Optional<User> userOptional = userRepository.findByEmail(email);
         if (userOptional.isPresent()) {
             return userOptional.get();
         } else {
-            throw new NotFoundException("Could not find User with this id");
+            throw new NotFoundException("Es konnte kein Benutzer gefunden werden.");
         }
     }
 
     @Override
-    public void sendEmailVerificationLink(User user) {
+    public void sendEmailVerificationLink(User user) throws ServiceException {
+        log.trace("sendEmailVerificationLink(user = {})", user);
+
         SecureToken secureToken = secureTokenService.createSecureToken(TokenType.verifyEmail);
         secureToken.setAccount(user);
         secureTokenService.saveSecureToken(secureToken);
 
-        String link = "http://localhost:8080/api/v1/users/token/" + secureToken.getToken();
+        final String link = String.join("", "http://localhost:8080/api/v1/users/submitToken/", secureToken.getToken());
         try {
             mailSender.sendMail(user.getEmail(), "Aktoria Verifikationslink",
                 """
-                    <h1>Hallo %s,</h1>
-                    klick auf den folgenden Link um deine Mailadresse zu bestätigen.<br>
-                    <a href='%s'>Email Adresse bestätigen</a><br>
-                    <br>
-                    Wenn du dich nicht bei Akoria registriert haben solltest, ignorier bitte diese Mail.
-                    """.formatted(user.getFirstName(), link));
+                        <h1>Hallo %s,</h1>
+                        klick auf den folgenden Link um deine Mailadresse zu bestätigen.<br>
+                        <a href='%s'>Email Adresse bestätigen</a>
+                        <br>
+                        <br>
+                        Wenn du dich nicht bei Aktoria registriert haben solltest, ignoriere bitte diese Mail.
+                    """
+                    .formatted(user.getFirstName(), link));
         } catch (MessagingException e) {
-            throw new RuntimeException(e);
+            throw new ServiceException(e.getMessage(), e);
         }
     }
 
     @Override
-    public void verifyEmail(String token) {
+    public void resendEmailVerificationLink(Long id) throws ServiceException, NotFoundException {
+        log.trace("resendEmailVerificationLink(id = {})", id);
+
+        Optional<User> userOptional = userRepository.findById(id);
+        if (userOptional.isPresent()) {
+            try {
+                sendEmailVerificationLink(userOptional.get());
+            } catch (ServiceException e) {
+                throw new ServiceException(e.getMessage(), e);
+            }
+        } else {
+            throw new NotFoundException("Es konnte kein Benutzer gefunden werden.");
+        }
+    }
+
+    @Override
+    public void verifyEmail(String token) throws InvalidTokenException {
+        log.trace("verifyEmail(token = {})", token);
+
         SecureToken secureToken = secureTokenService.findByToken(token);
         secureTokenService.removeToken(token);
         if (secureToken.getType() == TokenType.verifyEmail) {

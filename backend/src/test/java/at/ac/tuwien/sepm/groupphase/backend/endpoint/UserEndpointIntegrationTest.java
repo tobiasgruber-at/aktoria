@@ -4,11 +4,15 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UpdateUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserRegistrationDto;
+import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -20,6 +24,10 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -77,70 +85,47 @@ class UserEndpointIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
             ).andExpect(status().isUnprocessableEntity()); // Unprocessable Entity due to Validation Exception (pw too short)
         }
+        
+        private static Stream<UserRegistrationDto> userRegistrationDtoNullProvider() {
+            final List<UserRegistrationDto> temp = new LinkedList<>();
+            temp.add(new UserRegistrationDto(null, "lastName", "admin@email.com", "Password"));
+            temp.add(new UserRegistrationDto("firstName", null, "admin@email.com", "Password"));
+            temp.add(new UserRegistrationDto("firstName", "lastName", null, "Password"));
+            temp.add(new UserRegistrationDto("firstName", "lastName", "admin@email.com", null));
+            return temp.stream();
+        }
 
-        @Test
+        @ParameterizedTest
         @Transactional
         @DisplayName("returns UnprocessableEntity for null values")
-        void postUserFailedName() throws Exception {
+        @MethodSource("userRegistrationDtoNullProvider")
+        void postUserFailedName(UserRegistrationDto input) throws Exception {
             mockMvc.perform(MockMvcRequestBuilders
                 .post("/api/v1/users")
                 .accept(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(new UserRegistrationDto(null, "lastName", "admin@email.com", "Password")))
-                .contentType(MediaType.APPLICATION_JSON)
-            ).andExpect(status().isUnprocessableEntity()); // Unprocessable Entity due to Validation Exception (name is null)
-
-            mockMvc.perform(MockMvcRequestBuilders
-                .post("/api/v1/users")
-                .accept(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(new UserRegistrationDto("firstName", null, "admin@email.com", "Password")))
-                .contentType(MediaType.APPLICATION_JSON)
-            ).andExpect(status().isUnprocessableEntity());
-
-            mockMvc.perform(MockMvcRequestBuilders
-                .post("/api/v1/users")
-                .accept(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(new UserRegistrationDto("firstName", "lastName", null, "Password")))
-                .contentType(MediaType.APPLICATION_JSON)
-            ).andExpect(status().isUnprocessableEntity());
-
-            mockMvc.perform(MockMvcRequestBuilders
-                .post("/api/v1/users")
-                .accept(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(new UserRegistrationDto("firstName", "lastName", "admin@gmail.com", null)))
+                .content(objectMapper.writeValueAsBytes(input))
                 .contentType(MediaType.APPLICATION_JSON)
             ).andExpect(status().isUnprocessableEntity());
         }
+        
+        private static Stream<UserRegistrationDto> userRegistrationDtoProvider() {
+            final List<UserRegistrationDto> temp = new LinkedList<>();
+            temp.add(new UserRegistrationDto("Name", "lastName", "adminemailcom", "Password"));
+            temp.add(new UserRegistrationDto("Name", "lastName", "", "Password"));
+            temp.add(new UserRegistrationDto("Name", "lastName", "   ", "Password"));
+            temp.add(new UserRegistrationDto("Name", "lastName", "admin@email.com" + "a".repeat(101), "Password"));
+            return temp.stream();
+        }
 
-        @Test
+        @ParameterizedTest
         @Transactional
         @DisplayName("returns UnprocessableEntity for invalid email")
-        void postUserFailedEmail() throws Exception {
+        @MethodSource("userRegistrationDtoProvider")
+        void postUserFailedEmail(UserRegistrationDto input) throws Exception {
             mockMvc.perform(MockMvcRequestBuilders
                 .post("/api/v1/users")
                 .accept(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(new UserRegistrationDto("Name", "lastName", "adminemailcom", "Password")))
-                .contentType(MediaType.APPLICATION_JSON)
-            ).andExpect(status().isUnprocessableEntity()); // Unprocessable Entity due to Validation Exception (email format is invalid)
-
-            mockMvc.perform(MockMvcRequestBuilders
-                .post("/api/v1/users")
-                .accept(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(new UserRegistrationDto("Name", "lastName", "", "Password")))
-                .contentType(MediaType.APPLICATION_JSON)
-            ).andExpect(status().isUnprocessableEntity());
-
-            mockMvc.perform(MockMvcRequestBuilders
-                .post("/api/v1/users")
-                .accept(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(new UserRegistrationDto("Name", "lastName", "   ", "Password")))
-                .contentType(MediaType.APPLICATION_JSON)
-            ).andExpect(status().isUnprocessableEntity());
-
-            String email = "admin@email.com" + "a".repeat(101);
-            mockMvc.perform(MockMvcRequestBuilders
-                .post("/api/v1/users")
-                .accept(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(new UserRegistrationDto("Name", "lastName", email, "Password")))
+                .content(objectMapper.writeValueAsBytes(input))
                 .contentType(MediaType.APPLICATION_JSON)
             ).andExpect(status().isUnprocessableEntity());
         }
@@ -201,8 +186,7 @@ class UserEndpointIntegrationTest {
                 .perform(MockMvcRequestBuilders
                     .get("/api/v1/users/-1")
                     .accept(MediaType.APPLICATION_JSON)
-                )
-                .andExpect(status().isOk())
+                ).andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsByteArray();
 
             SimpleUserDto userResult = objectMapper.readValue(body, SimpleUserDto.class);
@@ -235,17 +219,17 @@ class UserEndpointIntegrationTest {
                     .patch("/api/v1/users/{id}?passwordChange=true", -1L)
                     .accept(MediaType.APPLICATION_JSON)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsBytes(new UpdateUserDto(-1L, "NewName", "newWow", "admin@email.com", "oldPassword", "newPassword", true)))
-                ).andExpect(status().isCreated())
+                    .content(objectMapper.writeValueAsBytes(new UpdateUserDto(-1L, "NewFirstName", "newLastName", "new@email.com", "oldPassword", "newPassword", true)))
+                ).andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsByteArray();
             DetailedUserDto userResult = objectMapper.readValue(body, DetailedUserDto.class);
 
             assertNotNull(userResult);
-            assertEquals("NewName", userResult.getFirstName());
-            assertEquals("newWow", userResult.getLastName());
-            assertEquals("admin@email.com", userResult.getEmail());
+            assertEquals("NewFirstName", userResult.getFirstName());
+            assertEquals("newLastName", userResult.getLastName());
+            assertEquals("new@email.com", userResult.getEmail());
             assertEquals("newPassword", userResult.getPasswordHash());
-            assertEquals(false, userResult.getVerified());
+            assertEquals(true, userResult.getVerified());
         }
 
         @Test
@@ -270,37 +254,24 @@ class UserEndpointIntegrationTest {
             ).andExpect(status().isNotFound());
         }
 
-        @Test
+        private static Stream<UpdateUserDto> updateUserDtoProvider() {
+            final List<UpdateUserDto> temp = new LinkedList<>();
+            temp.add(new UpdateUserDto(-1L, "NewName", "newLastName", "a".repeat(101) + "@mail.com", "PASSWORD", "PASSWORD", true));
+            temp.add(new UpdateUserDto(-1L, "a".repeat(101), "a".repeat(101), "admin@email.com", "PASSWORD", "", true));
+            temp.add(new UpdateUserDto(-1L, "", "", "admin@email.com", "PASSWORD", "", true));
+            temp.add(new UpdateUserDto(-1L, "   ", "   ", "admin@email.com", "PASSWORD", "", true));
+            return temp.stream();
+        }
+
+        @ParameterizedTest
         @Transactional
         @DisplayName("returns UnprocessableEntity")
-        void patchUserInvalidEmail() throws Exception {
-            String invalidEmail = "a".repeat(101) + "@mail.com";
+        @MethodSource("updateUserDtoProvider")
+        void patchUserInvalidEmail(UpdateUserDto input) throws Exception {
             mockMvc.perform(MockMvcRequestBuilders
                 .patch("/api/v1/users/{id}?passwordChange=true", -1L)
                 .accept(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(new UpdateUserDto(-1L, "NewName", "newLastName", invalidEmail, "PASSWORD", "PASSWORD", true)))
-                .contentType(MediaType.APPLICATION_JSON)
-            ).andExpect(status().isUnprocessableEntity());
-
-            String invalidName = "a".repeat(101);
-            mockMvc.perform(MockMvcRequestBuilders
-                .patch("/api/v1/users/{id}?passwordChange=true", -1L)
-                .accept(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(new UpdateUserDto(-1L, invalidName, invalidName, "admin@email.com", "PASSWORD", "", true)))
-                .contentType(MediaType.APPLICATION_JSON)
-            ).andExpect(status().isUnprocessableEntity());
-
-            mockMvc.perform(MockMvcRequestBuilders
-                .patch("/api/v1/users/{id}?passwordChange=true", -1L)
-                .accept(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(new UpdateUserDto(-1L, "", "", "admin@email.com", "PASSWORD", "", true)))
-                .contentType(MediaType.APPLICATION_JSON)
-            ).andExpect(status().isUnprocessableEntity());
-
-            mockMvc.perform(MockMvcRequestBuilders
-                .patch("/api/v1/users/{id}?passwordChange=true", -1L)
-                .accept(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(new UpdateUserDto(-1L, "   ", "   ", "admin@email.com", "PASSWORD", "", true)))
+                .content(objectMapper.writeValueAsBytes(input))
                 .contentType(MediaType.APPLICATION_JSON)
             ).andExpect(status().isUnprocessableEntity());
         }
@@ -313,9 +284,9 @@ class UserEndpointIntegrationTest {
             byte[] body = mockMvc.perform(MockMvcRequestBuilders
                     .patch("/api/v1/users/{id}?passwordChange=false", -1L)
                     .accept(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsBytes(new UpdateUserDto(-1L, name, name, "admin@email.com", "", "", true)))
+                    .content(objectMapper.writeValueAsBytes(new UpdateUserDto(-1L, name, name, "admin@email.com", null, null, true)))
                     .contentType(MediaType.APPLICATION_JSON)
-                ).andExpect(status().isCreated())
+                ).andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsByteArray();
             DetailedUserDto userResult = objectMapper.readValue(body, DetailedUserDto.class);
 
@@ -365,6 +336,7 @@ class UserEndpointIntegrationTest {
     }
 
     //TESTING FORGOTTEN PASSWORD
+    @Disabled
     @Nested
     @DisplayName("forgottenPassword()")
     class ForgottenPassword {

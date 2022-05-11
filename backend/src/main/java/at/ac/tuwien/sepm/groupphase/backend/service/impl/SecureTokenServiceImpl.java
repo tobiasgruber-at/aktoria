@@ -19,8 +19,8 @@ import java.util.Optional;
 @Transactional
 public class SecureTokenServiceImpl implements SecureTokenService {
 
-    final SecureTokenRepository secureTokenRepository;
     private static final BytesKeyGenerator DEFAULT_TOKEN_GENERATOR = KeyGenerators.secureRandom(15);
+    final SecureTokenRepository secureTokenRepository;
 
     @Autowired
     SecureTokenServiceImpl(SecureTokenRepository secureTokenRepository) {

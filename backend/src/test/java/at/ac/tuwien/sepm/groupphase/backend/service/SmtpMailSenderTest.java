@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.service;
 
+import at.ac.tuwien.sepm.groupphase.backend.service.impl.MailSenderImpl;
 import com.icegreen.greenmail.configuration.GreenMailConfiguration;
 import com.icegreen.greenmail.junit5.GreenMailExtension;
 import com.icegreen.greenmail.util.GreenMailUtil;
@@ -27,7 +28,7 @@ class SmtpMailSenderTest {
         .withPerMethodLifecycle(false);
 
     @Autowired
-    private SmtpMailSender mailSender;
+    private MailSenderImpl mailSender;
 
     @Test
     void sendMail() {
