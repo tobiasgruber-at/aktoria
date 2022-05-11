@@ -111,11 +111,17 @@ public class UserEndpoint {
         }
     }
 
-    @GetMapping(path = "/token/{token}")
+    @GetMapping(path = "/submitToken/{token}")
     @ResponseStatus(HttpStatus.OK)
     public String verifyEmailToken(@PathVariable String token) {
         log.info("POST " + UserEndpoint.path + "/token");
         userService.verifyEmail(token);
         return "account verified";
+    }
+
+    @PostMapping(path = "/verificationToken")
+    @ResponseStatus(HttpStatus.OK)
+    public void resendEmailVerificationToken(@RequestBody Long id){
+        userService.resendEmailVerificationLink(id);
     }
 }

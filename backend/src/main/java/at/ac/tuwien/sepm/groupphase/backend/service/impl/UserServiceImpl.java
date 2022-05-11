@@ -155,11 +155,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void sendEmailVerificationLink(User user) {
+        log.info("send email with verification link");
+
         SecureToken secureToken = secureTokenService.createSecureToken(TokenType.verifyEmail);
         secureToken.setAccount(user);
         secureTokenService.saveSecureToken(secureToken);
 
-        String link = "http://localhost:8080/api/v1/users/token/" + secureToken.getToken();
+        String link = "http://localhost:8080/api/v1/users/submitToken/" + secureToken.getToken();
         try {
             mailSender.sendMail(user.getEmail(), "Aktoria Verifikationslink",
                 """
@@ -175,7 +177,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void resendEmailVerificationLink(Long id) {
+        log.info("resend email with verification link");
+        Optional<User> userOptional = userRepository.findById((long) id);
+        if (userOptional.isPresent()) {
+            sendEmailVerificationLink(userOptional.get());
+        } else {
+            throw new NotFoundException("Could not find a user with this id");
+        }
+    }
+
+    @Override
     public void verifyEmail(String token) {
+        log.info("verify email");
+
         SecureToken secureToken = secureTokenService.findByToken(token);
         secureTokenService.removeToken(token);
         if (secureToken.getType() == TokenType.verifyEmail) {

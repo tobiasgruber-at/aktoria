@@ -99,11 +99,18 @@ public interface UserService extends UserDetailsService {
     User findUserByEmail(String email);
 
     /**
-     * Send an email with a email verification link to the user.
+     * Send an email with an email verification link to the user.
      *
      * @param user the user
      */
     void sendEmailVerificationLink(User user);
+
+    /**
+     * Resend an email with an email verification link to the user.
+     *
+     * @param id the id of the user
+     */
+    void resendEmailVerificationLink(Long id);
 
     /**
      * Verifies the account with the matching token.
