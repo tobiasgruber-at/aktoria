@@ -15,8 +15,8 @@ import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.InvalidTokenException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
+import at.ac.tuwien.sepm.groupphase.backend.service.MailSender;
 import at.ac.tuwien.sepm.groupphase.backend.service.SecureTokenService;
-import at.ac.tuwien.sepm.groupphase.backend.service.SmtpMailSender;
 import at.ac.tuwien.sepm.groupphase.backend.service.UserService;
 import at.ac.tuwien.sepm.groupphase.backend.validation.UserValidation;
 import lombok.extern.slf4j.Slf4j;
@@ -46,11 +46,11 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
-    private final SmtpMailSender mailSender;
+    private final MailSender mailSender;
     private final SecureTokenService secureTokenService;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, UserValidation userValidation, PasswordEncoder passwordEncoder, UserMapper userMapper, SmtpMailSender mailSender, SecureTokenService secureTokenService) {
+    public UserServiceImpl(UserRepository userRepository, UserValidation userValidation, PasswordEncoder passwordEncoder, UserMapper userMapper, MailSender mailSender, SecureTokenService secureTokenService) {
         this.userRepository = userRepository;
         this.userValidation = userValidation;
         this.passwordEncoder = passwordEncoder;

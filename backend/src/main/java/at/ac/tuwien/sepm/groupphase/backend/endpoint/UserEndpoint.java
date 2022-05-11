@@ -121,7 +121,7 @@ public class UserEndpoint {
 
     @PostMapping(path = "/verificationToken")
     @ResponseStatus(HttpStatus.OK)
-    public void resendEmailVerificationToken(@RequestBody Long id){
+    public void resendEmailVerificationToken(@RequestBody Long id) {
         userService.resendEmailVerificationLink(id);
     }
 }
