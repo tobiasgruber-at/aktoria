@@ -14,9 +14,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.awt.Color;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Data generator for scripts (including pages, lines and rolls).
@@ -69,6 +70,7 @@ public class ScriptDataGenerator {
                 scriptRepository.save(script);
                 generatePage(script);
                 generateRole(script);
+                generateSpokenBy();
             }
         }
     }
@@ -100,6 +102,22 @@ public class ScriptDataGenerator {
                 .color(TEST_ROLE_COLOR).build();
             log.debug("saving role {}", role);
             roleRepository.save(role);
+        }
+    }
+
+    private void generateSpokenBy() {
+        List<Line> lines = lineRepository.findAll();
+        List<Role> roles = roleRepository.findAll();
+        int linesSize = lines.size();
+        int rolesSize = roles.size();
+        log.debug("generating {} spoken by entries", linesSize);
+        for (int i = 0; i < linesSize; i++) {
+            Set<Role> spokenBy = new HashSet<>();
+            spokenBy.add(roles.get(i % rolesSize));
+            Line line = lines.get(i);
+            line.setSpokenBy(spokenBy);
+            log.debug("updating line {}", line);
+            lineRepository.save(line);
         }
     }
 }
