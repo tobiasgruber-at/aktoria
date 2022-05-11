@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.groupphase.backend.datagenerator;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Line;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Page;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Role;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Script;
 import at.ac.tuwien.sepm.groupphase.backend.entity.User;
 import at.ac.tuwien.sepm.groupphase.backend.repository.LineRepository;
@@ -14,6 +15,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.awt.Color;
 import java.util.List;
 
 /**
@@ -35,6 +37,7 @@ public class ScriptDataGenerator {
     private static final String TEST_LINE_CONTENT = "Lorem ipsum dolor sit amet, "
         + "consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
     private static final String TEST_ROLE_NAME = "Role";
+    private static final Color TEST_ROLE_COLOR = Color.CYAN;
 
     private final UserRepository userRepository;
     private final ScriptRepository scriptRepository;
@@ -65,6 +68,7 @@ public class ScriptDataGenerator {
                 log.debug("saving script {}", script);
                 scriptRepository.save(script);
                 generatePage(script);
+                generateRole(script);
             }
         }
     }
@@ -86,6 +90,16 @@ public class ScriptDataGenerator {
                 .content(TEST_LINE_CONTENT).active(true).build();
             log.debug("saving line {}", line);
             lineRepository.save(line);
+        }
+    }
+
+    private void generateRole(Script script) {
+        log.debug("generating {} role entries for script {}", NUMBER_OF_ROLES_PER_SCRIPT, script);
+        for (int i = 0; i < NUMBER_OF_ROLES_PER_SCRIPT; i++) {
+            Role role = Role.builder().script(script).name(TEST_ROLE_NAME + " " + i)
+                .color(TEST_ROLE_COLOR).build();
+            log.debug("saving role {}", role);
+            roleRepository.save(role);
         }
     }
 }
