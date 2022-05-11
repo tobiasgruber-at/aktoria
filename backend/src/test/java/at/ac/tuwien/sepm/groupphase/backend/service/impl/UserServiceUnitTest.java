@@ -40,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ActiveProfiles({"test", "datagen"})
 @SpringBootTest
-class CustomUserDetailServiceUnitTest {
+class UserServiceUnitTest {
 
     @Autowired
     UserService userService;
@@ -232,7 +232,7 @@ class CustomUserDetailServiceUnitTest {
             temp.add(new UserRegistrationDto("\r\nFirst Name", "Lastname", "name@mail.com", "password"));
             temp.add(new UserRegistrationDto("First\r\nName", "Lastname", "name@mail.com", "password"));
             temp.add(new UserRegistrationDto("First\tName", "Lastname", "name@mail.com", "password"));
-            temp.add(new UserRegistrationDto("a".repeat(100), "Lastname", "longname@mail.at", "password"));
+            temp.add(new UserRegistrationDto("a".repeat(101), "Lastname", "longname@mail.at", "password"));
             temp.add(new UserRegistrationDto("a".repeat(400), "Lastname", "longname@mail.at", "password"));
 
             temp.add(new UserRegistrationDto("Firstname", null, "name@mail.com", "password"));
@@ -243,7 +243,7 @@ class CustomUserDetailServiceUnitTest {
             temp.add(new UserRegistrationDto("Firstname", "\r\nLast Name", "name@mail.com", "password"));
             temp.add(new UserRegistrationDto("Firstname", "Last\r\nName", "name@mail.com", "password"));
             temp.add(new UserRegistrationDto("Firstname", "Last\tName", "name@mail.com", "password"));
-            temp.add(new UserRegistrationDto("Firstname", "a".repeat(100), "longname@mail.at", "password"));
+            temp.add(new UserRegistrationDto("Firstname", "a".repeat(101), "longname@mail.at", "password"));
             temp.add(new UserRegistrationDto("Firstname", "a".repeat(400), "longname@mail.at", "password"));
 
             temp.add(new UserRegistrationDto("Firstname", "Lastname", null, "password"));
@@ -252,7 +252,7 @@ class CustomUserDetailServiceUnitTest {
             temp.add(new UserRegistrationDto("Firstname", "Lastname", "\t\t", "password"));
             temp.add(new UserRegistrationDto("Firstname", "Lastname", "name\t@mail.com", "password"));
             temp.add(new UserRegistrationDto("Firstname", "Lastname", "  name@mail.com ", "password"));
-            temp.add(new UserRegistrationDto("Firstname", "Lastname", "a".repeat(100) + "@mail.com", "password"));
+            temp.add(new UserRegistrationDto("Firstname", "Lastname", "a".repeat(101) + "@mail.com", "password"));
             temp.add(new UserRegistrationDto("Firstname", "Lastname", "a".repeat(400) + "@mail.com", "password"));
 
             temp.add(new UserRegistrationDto("Firstname", "Lastname", "name@mail.com", null));
@@ -260,8 +260,6 @@ class CustomUserDetailServiceUnitTest {
             temp.add(new UserRegistrationDto("Firstname", "Lastname", "name@mail.com", "   "));
             temp.add(new UserRegistrationDto("Firstname", "Lastname", "name@mail.com", "\n\n"));
             temp.add(new UserRegistrationDto("Firstname", "Lastname", "name@mail.com", "\t\t"));
-            temp.add(new UserRegistrationDto("Firstname", "Lastname", "name@mail.com", "\tpassword\t"));
-            temp.add(new UserRegistrationDto("Firstname", "Lastname", "name@mail.com", "\tpass\tword"));
             temp.add(new UserRegistrationDto("Firstname", "Lastname", "name@mail.com", "kurz"));
             return temp.stream();
         }

@@ -6,7 +6,6 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UpdateUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserRegistrationDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.User;
-import at.ac.tuwien.sepm.groupphase.backend.enums.TokenType;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.UserNotFoundException;
@@ -30,7 +29,7 @@ public interface UserService extends UserDetailsService {
      * @return the created User
      * @throws ServiceException    is thrown when user could not be created.
      * @throws ValidationException is thrown when user data is not valid
-     * @throws ConflictException   is thrown when there is a conflict with the data base
+     * @throws ConflictException   is thrown when there is a conflict with the data storage
      */
     SimpleUserDto createUser(UserRegistrationDto userRegistrationDto) throws ServiceException, ValidationException, ConflictException;
 
@@ -41,7 +40,7 @@ public interface UserService extends UserDetailsService {
      * @return the specified user
      * @throws ServiceException is thrown if something went wrong with getting the user
      */
-    SimpleUserDto getUser(double id) throws ServiceException, UserNotFoundException;
+    SimpleUserDto getUser(Long id) throws ServiceException, UserNotFoundException;
 
     /**
      * Changes the email/username of a user.

@@ -10,10 +10,10 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.SecureToken;
 import at.ac.tuwien.sepm.groupphase.backend.entity.User;
 import at.ac.tuwien.sepm.groupphase.backend.enums.TokenType;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
-import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
-import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.InvalidTokenException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.MailSender;
 import at.ac.tuwien.sepm.groupphase.backend.service.SecureTokenService;
@@ -61,7 +61,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public SimpleUserDto createUser(UserRegistrationDto userRegistrationDto) throws ServiceException, ValidationException, ConflictException {
-        log.info("Post new user");
+        log.trace("createUser(userRegistrationDto = {})", userRegistrationDto);
+
         try {
             userValidation.validateCreateUserInput(userRegistrationDto);
         } catch (ValidationException e) {
@@ -69,17 +70,19 @@ public class UserServiceImpl implements UserService {
         } catch (ConflictException e) {
             throw new ConflictException(e.getMessage(), e);
         }
+
         User user = userMapper.userRegistrationDtoToUser(userRegistrationDto, false, passwordEncoder.encode(userRegistrationDto.getPassword()));
         User savedUser = userRepository.saveAndFlush(user);
-
         sendEmailVerificationLink(savedUser);
+
         return userMapper.userToSimpleUserDto(savedUser);
     }
 
     @Override
-    public SimpleUserDto getUser(double id) {
-        log.info("get user by id");
-        Optional<User> userOptional = userRepository.findById((long) id);
+    public SimpleUserDto getUser(Long id) {
+        log.trace("getUser(id = {})", id);
+
+        Optional<User> userOptional = userRepository.findById(id);
         if (userOptional.isPresent()) {
             return userMapper.userToSimpleUserDto(userOptional.get());
         } else {
@@ -89,9 +92,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public DetailedUserDto patch(UpdateUserDto updateUserDto, Boolean passwordChange, Long id) throws ServiceException, ValidationException, ConflictException {
-        log.info("patch user");
+        log.trace("patch(updateUserDto = {}, passwordChange = {}, id = {})", updateUserDto, passwordChange, id);
+
         try {
-            userValidation.validatePatchUser(updateUserDto);
+            userValidation.validatePatchUserInput(updateUserDto);
         } catch (ValidationException e) {
             throw new ValidationException(e.getMessage(), e);
         } catch (ConflictException e) {
@@ -102,21 +106,23 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(Long id) throws ServiceException {
-        log.info("delete user with id = /{}", id);
+        log.trace("deleteUser(id = {})", id);
+
         userRepository.deleteById(id);
     }
 
     @Override
     public void forgotPassword(String email) {
-        log.info("forgot password, sending email");
+        log.trace("forgotPassword(email = {})", email);
 
     }
 
     @Override
     public DetailedUserDto changePassword(PasswordChangeDto passwordChangeDto, Long id) throws ServiceException, ValidationException {
-        log.info("change password of user with id = /{}", id);
+        log.trace("changePassword(passwordChangeDto = {}, id = {})", passwordChangeDto, id);
+
         try {
-            userValidation.validateChangePassword(passwordChangeDto);
+            userValidation.validateChangePasswordInput(passwordChangeDto);
         } catch (ValidationException e) {
             throw new ValidationException(e.getMessage(), e);
         }
@@ -125,7 +131,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        log.debug("Load all user by email");
+        log.trace("loadUserByUsername(email = {})", email);
+
         try {
             User user = findUserByEmail(email);
 
@@ -144,33 +151,36 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findUserByEmail(String email) {
-        log.debug("Find application user by email");
+        log.trace("findUserByEmail(email = {})", email);
+
         Optional<User> userOptional = userRepository.findByEmail(email);
         if (userOptional.isPresent()) {
             return userOptional.get();
         } else {
-            throw new NotFoundException("Could not find User with this id");
+            throw new NotFoundException("Es konnte kein Benutzer gefunden werden.");
         }
     }
 
     @Override
     public void sendEmailVerificationLink(User user) {
-        log.info("send email with verification link");
+        log.trace("sendEmailVerificationLink(user = {})", user);
 
         SecureToken secureToken = secureTokenService.createSecureToken(TokenType.verifyEmail);
         secureToken.setAccount(user);
         secureTokenService.saveSecureToken(secureToken);
 
-        String link = "http://localhost:8080/api/v1/users/submitToken/" + secureToken.getToken();
+        final String link = String.join("", "http://localhost:8080/api/v1/users/submitToken/", secureToken.getToken());
         try {
             mailSender.sendMail(user.getEmail(), "Aktoria Verifikationslink",
                 """
-                    <h1>Hallo %s,</h1>
-                    klick auf den folgenden Link um deine Mailadresse zu bestätigen.<br>
-                    <a href='%s'>Email Adresse bestätigen</a><br>
-                    <br>
-                    Wenn du dich nicht bei Akoria registriert haben solltest, ignorier bitte diese Mail.
-                    """.formatted(user.getFirstName(), link));
+                        <h1>Hallo %s,</h1>
+                        klick auf den folgenden Link um deine Mailadresse zu bestätigen.<br>
+                        <a href='%s'>Email Adresse bestätigen</a>
+                        <br>
+                        <br>
+                        Wenn du dich nicht bei Aktoria registriert haben solltest, ignoriere bitte diese Mail.
+                    """
+                    .formatted(user.getFirstName(), link));
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         }
@@ -178,18 +188,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void resendEmailVerificationLink(Long id) {
-        log.info("resend email with verification link");
-        Optional<User> userOptional = userRepository.findById((long) id);
+        log.trace("resendEmailVerificationLink(id = {})", id);
+
+        Optional<User> userOptional = userRepository.findById(id);
         if (userOptional.isPresent()) {
             sendEmailVerificationLink(userOptional.get());
         } else {
-            throw new NotFoundException("Could not find a user with this id");
+            throw new NotFoundException("Es konnte kein Benutzer gefunden werden.");
         }
     }
 
     @Override
     public void verifyEmail(String token) {
-        log.info("verify email");
+        log.trace("verifyEmail(token = {})", token);
 
         SecureToken secureToken = secureTokenService.findByToken(token);
         secureTokenService.removeToken(token);
