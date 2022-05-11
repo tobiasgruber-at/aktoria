@@ -13,7 +13,6 @@ import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 /**
@@ -59,7 +58,8 @@ public interface UserService extends UserDetailsService {
      * Deletes a user from the system.
      *
      * @param id the id of the user to be deleted
-     * @throws ServiceException is thrown when the user could not be deleted
+     * @throws ServiceException  is thrown when the user could not be deleted
+     * @throws NotFoundException is thrown if the user does not exist
      */
     void delete(Long id) throws ServiceException, NotFoundException;
 
@@ -79,6 +79,7 @@ public interface UserService extends UserDetailsService {
      * @return the user with the new password
      * @throws ServiceException    is thrown if the password could not be changed
      * @throws ValidationException is thrown if the new password is not valid
+     * @throws NotFoundException   is thrown if the user does not exist
      */
     DetailedUserDto changePassword(PasswordChangeDto passwordChangeDto, Long id) throws ServiceException, ValidationException, NotFoundException;
 
@@ -87,7 +88,7 @@ public interface UserService extends UserDetailsService {
      *
      * @param email the email address
      * @return a Spring Security user
-     * @throws UsernameNotFoundException is thrown if the specified user does not exist
+     * @throws NotFoundException is thrown if the specified user does not exist
      * @see <a href="https://www.baeldung.com/spring-security-authentication-with-a-database">https://www.baeldung.com/spring-security-authentication-with-a-database</a>
      */
     @Override
@@ -105,7 +106,7 @@ public interface UserService extends UserDetailsService {
      * Send an email with an email verification link to the user.
      *
      * @param user the user
-     * @throws ServiceException is thrown if something went wrong with sending the email
+     * @throws ServiceException is thrown when something went wrong with sending the email
      */
     void sendEmailVerificationLink(User user) throws ServiceException;
 
@@ -114,6 +115,7 @@ public interface UserService extends UserDetailsService {
      *
      * @param id the id of the user
      * @throws NotFoundException is thrown if the user does not exist in the data base
+     * @throws ServiceException  is thrown when something went wrong with sending the email
      */
     void resendEmailVerificationLink(Long id) throws NotFoundException, ServiceException;
 

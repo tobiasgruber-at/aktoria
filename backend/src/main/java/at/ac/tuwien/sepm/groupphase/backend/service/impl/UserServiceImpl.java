@@ -103,17 +103,30 @@ public class UserServiceImpl implements UserService {
             throw new ConflictException(e.getMessage(), e);
         }
 
-        if (passwordChange) {
-            changePassword(new PasswordChangeDto("", ""), id);
+        Optional<User> userOptional = userRepository.findById(id);
+        User update;
+        if (userOptional.isPresent()) {
+            update = userOptional.get();
+        } else {
+            throw new NotFoundException("User exisitert nicht!");
         }
 
-        User user = userMapper.updateUserDtoToUser(updateUserDto);
-        User patchedUser = userRepository.saveAndFlush(user);
-        return userMapper.userToDetailedUserDto(patchedUser);
-    }
+        if (passwordChange) {
+            changePassword(new PasswordChangeDto(updateUserDto.getPasswordHash(), updateUserDto.getNewPassword()), id);
+        }
 
-    private User patchUser(UpdateUserDto updateUserDto, Long id) {
-        return null;
+        if (updateUserDto.getFirstName() != null) {
+            update.setFirstName(updateUserDto.getFirstName());
+        }
+        if (updateUserDto.getLastName() != null) {
+            update.setLastName(updateUserDto.getLastName());
+        }
+        if (updateUserDto.getEmail() != null) {
+            update.setEmail(updateUserDto.getEmail());
+        }
+
+        User patchedUser = userRepository.saveAndFlush(update);
+        return userMapper.userToDetailedUserDto(patchedUser);
     }
 
     @Override
@@ -130,21 +143,34 @@ public class UserServiceImpl implements UserService {
     @Override
     public void forgotPassword(String email) throws NotFoundException {
         log.trace("forgotPassword(email = {})", email);
+        //TODO:
 
-        throw new UnsupportedOperationException();
     }
 
     @Override
     public DetailedUserDto changePassword(PasswordChangeDto passwordChangeDto, Long id) throws ServiceException, ValidationException, NotFoundException {
         log.trace("changePassword(passwordChangeDto = {}, id = {})", passwordChangeDto, id);
 
-        try {
-            userValidation.validateChangePasswordInput(passwordChangeDto);
-        } catch (ValidationException e) {
-            throw new ValidationException(e.getMessage(), e);
+        Optional<User> userOptional = userRepository.findById(id);
+        User user;
+        if (userOptional.isPresent()) {
+            user = userOptional.get();
+        } else {
+            throw new NotFoundException("User exisitert nicht!");
         }
 
-        throw new UnsupportedOperationException();
+        if (!(passwordEncoder.matches(passwordChangeDto.getOldPassword(), user.getPasswordHash()))) {
+            throw new ValidationException("Passwort ist falsch!");
+        } else {
+            try {
+                userValidation.validateChangePasswordInput(passwordChangeDto);
+            } catch (ValidationException e) {
+                throw new ValidationException(e.getMessage(), e);
+            }
+            user.setPasswordHash(passwordEncoder.encode(passwordChangeDto.getNewPassword()));
+            userRepository.saveAndFlush(user);
+            return userMapper.userToDetailedUserDto(user);
+        }
     }
 
     @Override
