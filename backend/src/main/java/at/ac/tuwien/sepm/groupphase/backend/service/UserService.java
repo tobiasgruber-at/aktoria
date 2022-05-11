@@ -30,19 +30,18 @@ public interface UserService extends UserDetailsService {
      * @return the created User
      * @throws ServiceException    is thrown when user could not be created.
      * @throws ValidationException is thrown when user data is not valid
-     * @throws ConflictException   is thrown when there is a conflict with the data base
+     * @throws ConflictException   is thrown when there is a conflict with the data storage
      */
-    SimpleUserDto createUser(UserRegistrationDto userRegistrationDto) throws ServiceException, ValidationException, ConflictException;
+    SimpleUserDto create(UserRegistrationDto userRegistrationDto) throws ServiceException, ValidationException, ConflictException;
 
     /**
      * Returns a user.
      *
      * @param id the id of a user
      * @return the specified user
-     * @throws ServiceException  is thrown if something went wrong with getting the user
-     * @throws NotFoundException is thrown if the user does not exist
+     * @throws NotFoundException when the user could not be found
      */
-    SimpleUserDto getUser(double id) throws ServiceException, NotFoundException;
+    SimpleUserDto findById(Long id) throws NotFoundException;
 
     /**
      * Changes the email/username of a user.
@@ -54,7 +53,7 @@ public interface UserService extends UserDetailsService {
      * @throws ConflictException   is thrown when there is a conflict with the data base
      * @throws ValidationException is thrown when user data is not valid
      */
-    DetailedUserDto patch(UpdateUserDto updateUserDto, Boolean passwordChange, Long id) throws ServiceException, ConflictException, ValidationException;
+    DetailedUserDto patch(UpdateUserDto updateUserDto, Boolean passwordChange, Long id) throws ServiceException, ConflictException, ValidationException, NotFoundException;
 
     /**
      * Deletes a user from the system.
@@ -62,7 +61,7 @@ public interface UserService extends UserDetailsService {
      * @param id the id of the user to be deleted
      * @throws ServiceException is thrown when the user could not be deleted
      */
-    void deleteUser(Long id) throws ServiceException;
+    void delete(Long id) throws ServiceException, NotFoundException;
 
     /**
      * Sends an email to the user to set a new password.
@@ -81,7 +80,7 @@ public interface UserService extends UserDetailsService {
      * @throws ServiceException    is thrown if the password could not be changed
      * @throws ValidationException is thrown if the new password is not valid
      */
-    DetailedUserDto changePassword(PasswordChangeDto passwordChangeDto, Long id) throws ServiceException, ValidationException;
+    DetailedUserDto changePassword(PasswordChangeDto passwordChangeDto, Long id) throws ServiceException, ValidationException, NotFoundException;
 
     /**
      * Find a user in the context of Spring Security based on the email address.
@@ -92,7 +91,7 @@ public interface UserService extends UserDetailsService {
      * @see <a href="https://www.baeldung.com/spring-security-authentication-with-a-database">https://www.baeldung.com/spring-security-authentication-with-a-database</a>
      */
     @Override
-    UserDetails loadUserByUsername(String email) throws UsernameNotFoundException;
+    UserDetails loadUserByUsername(String email) throws NotFoundException;
 
     /**
      * Find a user based on the email address.
@@ -100,15 +99,15 @@ public interface UserService extends UserDetailsService {
      * @param email the email address
      * @return an application user
      */
-    User findUserByEmail(String email);
+    User findByEmail(String email) throws NotFoundException;
 
     /**
      * Send an email with an email verification link to the user.
      *
      * @param user the user
-     * @throws RuntimeException is thrown if something went wrong with sending the email
+     * @throws ServiceException is thrown if something went wrong with sending the email
      */
-    void sendEmailVerificationLink(User user) throws RuntimeException;
+    void sendEmailVerificationLink(User user) throws ServiceException;
 
     /**
      * Resend an email with an email verification link to the user.
@@ -116,7 +115,7 @@ public interface UserService extends UserDetailsService {
      * @param id the id of the user
      * @throws NotFoundException is thrown if the user does not exist in the data base
      */
-    void resendEmailVerificationLink(Long id) throws NotFoundException;
+    void resendEmailVerificationLink(Long id) throws NotFoundException, ServiceException;
 
     /**
      * Verifies the account with the matching token.

@@ -32,7 +32,7 @@ public interface UserValidation {
      * @throws ValidationException is thrown when the data is not valid
      * @throws ConflictException   is thrown when the email is already in use
      */
-    void validatePatchUser(UpdateUserDto updateUserDto) throws ValidationException, ConflictException;
+    void validatePatchUserInput(UpdateUserDto updateUserDto) throws ValidationException, ConflictException;
 
     /**
      * Validates if email is correct.
@@ -40,7 +40,7 @@ public interface UserValidation {
      * @param email the email to send the link for the password reset
      * @throws NotFoundException is thrown if the email does not exist in the data base
      */
-    void validateEmailForForgottenPassword(String email) throws NotFoundException;
+    void validateEmailForForgottenPasswordInput(String email) throws NotFoundException;
 
     /**
      * Validates the new password.
@@ -48,8 +48,6 @@ public interface UserValidation {
      * @param passwordChangeDto filled with the old and new password
      * @throws ValidationException is thrown when the new password is not valid
      */
-    void validateChangePassword(PasswordChangeDto passwordChangeDto) throws ValidationException;
+    void validateChangePasswordInput(PasswordChangeDto passwordChangeDto) throws ValidationException;
 
 }
-
-

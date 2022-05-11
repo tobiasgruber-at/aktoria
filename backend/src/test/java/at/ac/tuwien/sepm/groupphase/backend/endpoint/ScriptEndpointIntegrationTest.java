@@ -38,7 +38,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @EnableWebMvc
 @WebAppConfiguration
 class ScriptEndpointIntegrationTest {
-
     @Autowired
     ObjectMapper objectMapper;
     @Autowired
@@ -55,6 +54,20 @@ class ScriptEndpointIntegrationTest {
     @Transactional
     @DisplayName("saveScript() saves the script correctly")
     void saveScript() {
+    }
+
+    @Disabled
+    @Test
+    @Transactional
+    @DisplayName("getScriptPreviews() gets the correct previews")
+    void getScriptPreviews() {
+    }
+
+    @Disabled
+    @Test
+    @Transactional
+    @DisplayName("getScriptById() gets the correct script")
+    void getScriptById() {
     }
 
     @Nested
@@ -211,4 +224,6 @@ class ScriptEndpointIntegrationTest {
                 ).andExpect(status().isUnprocessableEntity());
         }
     }
+
+
 }

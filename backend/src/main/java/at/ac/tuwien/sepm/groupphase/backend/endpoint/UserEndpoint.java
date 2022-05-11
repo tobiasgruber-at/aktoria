@@ -5,6 +5,7 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UpdateUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserRegistrationDto;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.InvalidTokenException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
@@ -43,10 +44,11 @@ public class UserEndpoint {
     @GetMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public SimpleUserDto getUser(@PathVariable Long id) throws ServiceException {
-        log.info("GET " + UserEndpoint.path);
+    public SimpleUserDto getUser(@PathVariable Long id) {
+        log.info("GET {}/{}", path, id);
+
         try {
-            return userService.getUser(id);
+            return userService.findById(id);
         } catch (NotFoundException e) {
             log.error(e.getMessage(), e);
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
@@ -57,9 +59,10 @@ public class UserEndpoint {
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public SimpleUserDto postUser(@RequestBody UserRegistrationDto userRegistrationDto) throws ServiceException {
-        log.info("POST " + UserEndpoint.path);
+        log.info("POST {}", path);
+
         try {
-            return userService.createUser(userRegistrationDto);
+            return userService.create(userRegistrationDto);
         } catch (ValidationException e) {
             log.error(e.getMessage(), e);
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage(), e);
@@ -70,39 +73,40 @@ public class UserEndpoint {
     }
 
     @PatchMapping(path = "/{id}")
-    @ResponseStatus(HttpStatus.NOT_IMPLEMENTED)
+    @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public DetailedUserDto patchUser(@RequestParam Boolean passwordChange, @RequestBody UpdateUserDto updateUserDto, @PathVariable Long id) throws ServiceException, ValidationException {
-        log.info("PATCH " + UserEndpoint.path + "/{}", id);
-        //this method calls either changeUserData or changePassword or both
+    public DetailedUserDto patchUser(@RequestParam Boolean passwordChange, @RequestBody UpdateUserDto updateUserDto, @PathVariable Long id) throws ServiceException {
+        log.info("PATCH {}/{}", path, id);
+
         try {
             return userService.patch(updateUserDto, passwordChange, id);
         } catch (ValidationException e) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage(), e);
         } catch (ConflictException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage(), e);
+        } catch (NotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
-
     }
 
     @DeleteMapping(path = "/{id}")
-    @ResponseStatus(HttpStatus.NOT_IMPLEMENTED)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable Long id) throws ServiceException {
         log.info("DELETE {}/{}", UserEndpoint.path, id);
-        //  try {
-        userService.deleteUser(id);
-        //  }
-        /*TODO: uncomment as soon as Service is implemented
-        catch(UserNotFoundException e){
+
+        try {
+            userService.delete(id);
+        } catch (NotFoundException e) {
             log.error(e.getMessage(), e);
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
-        }*/
+        }
     }
 
     @PostMapping(path = "/forgotten-password")
     @ResponseStatus(HttpStatus.CREATED)
     public void forgottenPassword(@RequestBody String email) {
-        log.info("POST " + UserEndpoint.path + "/forgotten-password");
+        log.info("POST {}/forgotten-password", path);
+
         try {
             userService.forgotPassword(email);
         } catch (NotFoundException e) {
@@ -113,15 +117,18 @@ public class UserEndpoint {
 
     @GetMapping(path = "/submitToken/{token}")
     @ResponseStatus(HttpStatus.OK)
-    public String verifyEmailToken(@PathVariable String token) {
-        log.info("POST " + UserEndpoint.path + "/token");
+    public String verifyEmailToken(@PathVariable String token) throws InvalidTokenException {
+        log.info("POST {}/submitToken/{}", path, token);
+
         userService.verifyEmail(token);
         return "account verified";
     }
 
     @PostMapping(path = "/verificationToken")
     @ResponseStatus(HttpStatus.OK)
-    public void resendEmailVerificationToken(@RequestBody Long id) {
+    public void resendEmailVerificationToken(@RequestBody Long id) throws ServiceException {
+        log.info("POST {}/verificationToken", path);
+
         userService.resendEmailVerificationLink(id);
     }
 }
