@@ -58,7 +58,7 @@ public class UserValidationImpl implements UserValidation {
     @Override
     public void validateEmailForForgottenPassword(String email) throws NotFoundException {
         if ((userRepository.findByEmail(email)).isEmpty()) {
-            throw new NotFoundException("Email does not exist!");
+            throw new NotFoundException("Email existiert nicht!");
         }
     }
 
@@ -74,26 +74,26 @@ public class UserValidationImpl implements UserValidation {
     private void validatePassword(String password) throws ValidationException {
         if (password != null) {
             if (password.trim().length() <= 0) {
-                throw new ValidationException("Password must not contain only whitespaces!");
+                throw new ValidationException("Passwort darf nicht nur aus Leerzeichen bestehen!");
             }
             if (password.length() < 8) {
-                throw new ValidationException("Password must be at least 8 characters long!");
+                throw new ValidationException("Passwort muss mindestens 8 Zeichen lang sein!");
             }
         } else {
-            throw new ValidationException("Please fill out required fields!");
+            throw new ValidationException("Nicht alle erfordelichen Felder ausgefüllt!");
         }
     }
 
     private void validateEmail(String email, Boolean canBeNull) throws ValidationException {
         if (email != null) {
             if (email.trim().length() <= 0) {
-                throw new ValidationException("Email must not contain only whitespaces!");
+                throw new ValidationException("Email darf nicht nur aus Leerzeichen bestehen!");
             }
             if (email.length() > 100) {
-                throw new ValidationException("Email is too long!");
+                throw new ValidationException("Email ist zu lange!");
             }
             if (!email.trim().equals(email)) {
-                throw new ValidationException("Email must not start or end with whitespaces!");
+                throw new ValidationException("Email darf nicht mit Leerzeichen beginnen oder aufhören!");
             }
             Pattern pattern = Pattern.compile(
                 "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\"
@@ -101,34 +101,34 @@ public class UserValidationImpl implements UserValidation {
                     + "[0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])");
             Matcher matcher = pattern.matcher(email);
             if (!matcher.matches()) {
-                throw new ValidationException("Email is not valid!");
+                throw new ValidationException("Email entspricht keinem gültigen Format!");
             }
         } else if (!canBeNull) {
-            throw new ValidationException("Please fill out required fields!");
+            throw new ValidationException("Nicht alle erfordelichen Felder ausgefüllt!");
         }
     }
 
     private void validateNamesForPatch(String firstName, String lastName) throws ValidationException {
         if (firstName != null) {
             if (!firstName.trim().equals(firstName)) {
-                throw new ValidationException("First-Name must not start or end with whitespaces!");
+                throw new ValidationException("Vorname darf nicht mit Leerzeichen beginnen oder aufhören!");
             }
             if (firstName.trim().length() <= 0) {
-                throw new ValidationException("First-Name must not contain only whitespaces!");
+                throw new ValidationException("Vorname darf nicht nur aus Leerzeichen bestehen!");
             }
             if (firstName.length() > 100) {
-                throw new ValidationException("First-Name is too long!");
+                throw new ValidationException("Vorname zu lange!");
             }
         }
         if (lastName != null) {
             if (lastName.trim().length() <= 0) {
-                throw new ValidationException("Last-Name must not contain only whitespaces!");
+                throw new ValidationException("Nachname darf nicht nur aus Leerzeichen bestehen!");
             }
             if (lastName.length() > 100) {
-                throw new ValidationException("Last-Name is too long!");
+                throw new ValidationException("Nachname zu lange!");
             }
             if (!lastName.trim().equals(lastName)) {
-                throw new ValidationException("Last-Name must not start or end with whitespaces!");
+                throw new ValidationException("Nachname darf nicht mit Leerzeichen beginnen oder aufhören!");
             }
         }
     }
@@ -136,36 +136,36 @@ public class UserValidationImpl implements UserValidation {
     private void validateNames(String firstName, String lastName) throws ValidationException {
         if (firstName != null) {
             if (!firstName.trim().equals(firstName)) {
-                throw new ValidationException("First-Name must not start or end with whitespaces!");
+                throw new ValidationException("Vorname darf nicht mit Leerzeichen beginnen oder aufhören!");
             }
             if (firstName.trim().length() <= 0) {
-                throw new ValidationException("First-Name must not contain only whitespaces!");
+                throw new ValidationException("Vorname darf nicht nur aus Leerzeichen bestehen!");
             }
             if (firstName.length() > 100) {
-                throw new ValidationException("First-Name is too long!");
+                throw new ValidationException("Vorname zu lange!");
             }
         } else {
-            throw new ValidationException("Please fill out required fields!");
+            throw new ValidationException("Nicht alle erfordelichen Felder ausgefüllt!");
         }
         if (lastName != null) {
             if (lastName.trim().length() <= 0) {
-                throw new ValidationException("Last-Name must not contain only whitespaces!");
+                throw new ValidationException("Nachname darf nicht nur aus Leerzeichen bestehen!");
             }
             if (lastName.length() > 100) {
-                throw new ValidationException("Last-Name is too long!");
+                throw new ValidationException("Nachname zu lange!");
             }
             if (!lastName.trim().equals(lastName)) {
-                throw new ValidationException("Last-Name must not start or end with whitespaces!");
+                throw new ValidationException("Nachname darf nicht mit Leerzeichen beginnen oder aufhören!");
             }
         } else {
-            throw new ValidationException("Please fill out required fields!");
+            throw new ValidationException("Nicht alle erfordelichen Felder ausgefüllt!");
         }
     }
 
 
     private void checkForEmailConflict(String email) throws ConflictException {
         if ((userRepository.findByEmail(email)).isPresent()) {
-            throw new ConflictException("Email is already used!");
+            throw new ConflictException("Email wird bereits verwendet!");
         }
     }
 }
