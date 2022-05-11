@@ -1,22 +1,20 @@
 import { Globals } from '../../global/globals';
 import { Observable } from 'rxjs';
-import {
-  AuthenticatedUser,
-  UserRegistration
-} from '../../../shared/dtos/user-dtos';
+import { SimpleUser, UserRegistration } from '../../../shared/dtos/user-dtos';
 import { UserService } from './user-service';
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class UserImplService extends UserService {
-  private userBaseUri: string = this.globals.backendUri + '/users';
+  private baseUri: string = this.globals.backendUri + '/users';
 
-  constructor(private globals: Globals) {
+  constructor(private globals: Globals, private http: HttpClient) {
     super();
   }
 
-  register(req: UserRegistration): Observable<AuthenticatedUser> {
-    return null;
+  register(req: UserRegistration): Observable<SimpleUser> {
+    return this.http.post<SimpleUser>(this.baseUri, req);
   }
 
   update(): Observable<any> {

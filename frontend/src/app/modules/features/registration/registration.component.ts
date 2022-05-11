@@ -27,8 +27,12 @@ export class RegistrationComponent extends FormBase implements OnInit {
   ngOnInit(): void {
     this.form = this.formBuilder.group(
       {
-        name: ['', [Validators.required]],
-        email: ['', [Validators.required, Validators.email]],
+        firstName: ['', [Validators.required, Validators.maxLength(100)]],
+        lastName: ['', [Validators.required, Validators.maxLength(100)]],
+        email: [
+          '',
+          [Validators.required, Validators.maxLength(100), Validators.email]
+        ],
         password: ['', [Validators.required, Validators.minLength(8)]],
         passwordConfirm: ['', [Validators.required]]
       },
@@ -37,9 +41,9 @@ export class RegistrationComponent extends FormBase implements OnInit {
   }
 
   protected sendSubmit() {
-    const { name, email, password } = this.form.value;
+    const { firstName, lastName, email, password } = this.form.value;
     this.userService
-      .register(new UserRegistration(name, email, password))
+      .register(new UserRegistration(firstName, lastName, email, password))
       .subscribe({
         next: (res) => {
           this.toggleLoading(false);

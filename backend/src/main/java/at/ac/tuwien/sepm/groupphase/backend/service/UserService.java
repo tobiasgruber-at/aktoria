@@ -32,7 +32,7 @@ public interface UserService extends UserDetailsService {
      * @throws ValidationException is thrown when user data is not valid
      * @throws ConflictException   is thrown when there is a conflict with the data base
      */
-    DetailedUserDto createUser(UserRegistrationDto userRegistrationDto) throws ServiceException, ValidationException, ConflictException;
+    SimpleUserDto createUser(UserRegistrationDto userRegistrationDto) throws ServiceException, ValidationException, ConflictException;
 
     /**
      * Returns a user.

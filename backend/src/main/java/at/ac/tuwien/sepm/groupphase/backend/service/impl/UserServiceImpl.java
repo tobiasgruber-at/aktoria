@@ -6,17 +6,12 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UpdateUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserRegistrationDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.UserMapper;
-import at.ac.tuwien.sepm.groupphase.backend.entity.SecureToken;
 import at.ac.tuwien.sepm.groupphase.backend.entity.User;
-import at.ac.tuwien.sepm.groupphase.backend.enums.TokenType;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
-import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
-import at.ac.tuwien.sepm.groupphase.backend.exception.InvalidTokenException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
-import at.ac.tuwien.sepm.groupphase.backend.service.SecureTokenService;
-import at.ac.tuwien.sepm.groupphase.backend.service.SmtpMailSender;
 import at.ac.tuwien.sepm.groupphase.backend.service.UserService;
 import at.ac.tuwien.sepm.groupphase.backend.validation.UserValidation;
 import lombok.extern.slf4j.Slf4j;
@@ -28,8 +23,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.mail.MessagingException;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -60,7 +53,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public DetailedUserDto createUser(UserRegistrationDto userRegistrationDto) throws ServiceException, ValidationException, ConflictException {
+    public SimpleUserDto createUser(UserRegistrationDto userRegistrationDto) throws ServiceException, ValidationException, ConflictException {
         log.info("Post new user");
         try {
             userValidation.validateCreateUserInput(userRegistrationDto);
@@ -74,7 +67,7 @@ public class UserServiceImpl implements UserService {
         User savedUser = userRepository.saveAndFlush(user);
 
         sendEmailVerificationLink(savedUser);
-        return userMapper.userToDetailedUserDto(savedUser);
+        return userMapper.userToSimpleUserDto(savedUser);
     }
 
     @Override
