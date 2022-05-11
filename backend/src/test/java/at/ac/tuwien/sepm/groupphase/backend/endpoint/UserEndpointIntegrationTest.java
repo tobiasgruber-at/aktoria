@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ActiveProfiles({ "test", "datagen" })
+@ActiveProfiles({"test", "datagen"})
 @SpringBootTest
 @EnableWebMvc
 @WebAppConfiguration
@@ -166,7 +166,7 @@ class UserEndpointIntegrationTest {
             byte[] body = mockMvc.perform(MockMvcRequestBuilders
                     .post("/api/v1/users")
                     .accept(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsBytes(new UserRegistrationDto(s, s, "admin@email.com", s)))
+                    .content(objectMapper.writeValueAsBytes(new UserRegistrationDto(s, s, "admin2@email.com", s)))
                     .contentType(MediaType.APPLICATION_JSON)
                 ).andExpect(status().isCreated())
                 .andReturn().getResponse().getContentAsByteArray();

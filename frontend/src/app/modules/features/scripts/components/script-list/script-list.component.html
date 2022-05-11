@@ -1,7 +1,4 @@
 <div class="scripts">
-  <ng-container *ngFor="let script of scripts" class="script-item">
-    <div>
-      <app-script></app-script>
-    </div>
-  </ng-container>
+  <ng-content></ng-content>
+  <app-script *ngFor="let script of scripts" [title]="'test'"></app-script>
 </div>

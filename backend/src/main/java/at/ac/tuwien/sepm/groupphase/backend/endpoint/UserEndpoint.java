@@ -5,11 +5,13 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UpdateUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserRegistrationDto;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.UserNotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -70,7 +72,7 @@ public class UserEndpoint {
     }
 
     @PatchMapping(path = "/{id}")
-    @ResponseStatus(HttpStatus.NOT_IMPLEMENTED)
+    @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public DetailedUserDto patchUser(@RequestParam Boolean passwordChange, @RequestBody UpdateUserDto updateUserDto, @PathVariable Long id) throws ServiceException, ValidationException {
         log.info("PATCH " + UserEndpoint.path + "/{}", id);
@@ -81,6 +83,8 @@ public class UserEndpoint {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage(), e);
         } catch (ConflictException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage(), e);
+        } catch (EmptyResultDataAccessException e) {
+            throw new NotFoundException("Could ");
         }
 
     }
@@ -89,14 +93,11 @@ public class UserEndpoint {
     @ResponseStatus(HttpStatus.NOT_IMPLEMENTED)
     public void deleteUser(@PathVariable Long id) throws ServiceException {
         log.info("DELETE {}/{}", UserEndpoint.path, id);
-        //  try {
-        userService.deleteUser(id);
-        //  }
-        /*TODO: uncomment as soon as Service is implemented
-        catch(UserNotFoundException e){
-            log.error(e.getMessage(), e);
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
-        }*/
+        try {
+            userService.deleteUser(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new NotFoundException("Could ");
+        }
     }
 
     @PostMapping(path = "/forgotten-password")
