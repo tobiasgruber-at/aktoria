@@ -5,8 +5,8 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UpdateUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserRegistrationDto;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
-import at.ac.tuwien.sepm.groupphase.backend.exception.UserNotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -47,7 +47,7 @@ public class UserEndpoint {
         log.info("GET " + UserEndpoint.path);
         try {
             return userService.getUser(id);
-        } catch (UserNotFoundException e) {
+        } catch (NotFoundException e) {
             log.error(e.getMessage(), e);
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
@@ -105,7 +105,7 @@ public class UserEndpoint {
         log.info("POST " + UserEndpoint.path + "/forgotten-password");
         try {
             userService.forgotPassword(email);
-        } catch (UserNotFoundException e) {
+        } catch (NotFoundException e) {
             log.error(e.getMessage(), e);
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }

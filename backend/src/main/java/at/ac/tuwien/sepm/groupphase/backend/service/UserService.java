@@ -6,10 +6,10 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UpdateUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserRegistrationDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.User;
-import at.ac.tuwien.sepm.groupphase.backend.enums.TokenType;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.InvalidTokenException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
-import at.ac.tuwien.sepm.groupphase.backend.exception.UserNotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -39,9 +39,10 @@ public interface UserService extends UserDetailsService {
      *
      * @param id the id of a user
      * @return the specified user
-     * @throws ServiceException is thrown if something went wrong with getting the user
+     * @throws ServiceException  is thrown if something went wrong with getting the user
+     * @throws NotFoundException is thrown if the user does not exist
      */
-    SimpleUserDto getUser(double id) throws ServiceException, UserNotFoundException;
+    SimpleUserDto getUser(double id) throws ServiceException, NotFoundException;
 
     /**
      * Changes the email/username of a user.
@@ -49,7 +50,9 @@ public interface UserService extends UserDetailsService {
      * @param updateUserDto filled with the user input
      * @param id            the id of the user to be changed
      * @return the updated user
-     * @throws ServiceException is thrown when the user data could not be updated
+     * @throws ServiceException    is thrown when the user data could not be updated
+     * @throws ConflictException   is thrown when there is a conflict with the data base
+     * @throws ValidationException is thrown when user data is not valid
      */
     DetailedUserDto patch(UpdateUserDto updateUserDto, Boolean passwordChange, Long id) throws ServiceException, ConflictException, ValidationException;
 
@@ -65,9 +68,9 @@ public interface UserService extends UserDetailsService {
      * Sends an email to the user to set a new password.
      *
      * @param email the email of the user
-     * @throws UserNotFoundException is thrown if the user does not exist
+     * @throws NotFoundException is thrown if the user does not exist
      */
-    void forgotPassword(String email) throws UserNotFoundException;
+    void forgotPassword(String email) throws NotFoundException;
 
     /**
      * Changes the password of a user.
@@ -75,7 +78,8 @@ public interface UserService extends UserDetailsService {
      * @param passwordChangeDto filled with the old and new password
      * @param id                the id of the user
      * @return the user with the new password
-     * @throws ServiceException is thrown if the password could not be changed
+     * @throws ServiceException    is thrown if the password could not be changed
+     * @throws ValidationException is thrown if the new password is not valid
      */
     DetailedUserDto changePassword(PasswordChangeDto passwordChangeDto, Long id) throws ServiceException, ValidationException;
 
@@ -91,7 +95,7 @@ public interface UserService extends UserDetailsService {
     UserDetails loadUserByUsername(String email) throws UsernameNotFoundException;
 
     /**
-     * Find an application user based on the email address.
+     * Find a user based on the email address.
      *
      * @param email the email address
      * @return an application user
@@ -102,20 +106,23 @@ public interface UserService extends UserDetailsService {
      * Send an email with an email verification link to the user.
      *
      * @param user the user
+     * @throws RuntimeException is thrown if something went wrong with sending the email
      */
-    void sendEmailVerificationLink(User user);
+    void sendEmailVerificationLink(User user) throws RuntimeException;
 
     /**
      * Resend an email with an email verification link to the user.
      *
      * @param id the id of the user
+     * @throws NotFoundException is thrown if the user does not exist in the data base
      */
-    void resendEmailVerificationLink(Long id);
+    void resendEmailVerificationLink(Long id) throws NotFoundException;
 
     /**
      * Verifies the account with the matching token.
      *
      * @param token the token string
+     * @throws InvalidTokenException is thrown if the token already expired
      */
-    void verifyEmail(String token);
+    void verifyEmail(String token) throws InvalidTokenException;
 }
