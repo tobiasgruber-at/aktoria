@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public DetailedUserDto createUser(UserRegistrationDto userRegistrationDto) throws ServiceException, ValidationException, ConflictException {
+    public SimpleUserDto createUser(UserRegistrationDto userRegistrationDto) throws ServiceException, ValidationException, ConflictException {
         log.info("Post new user");
         try {
             userValidation.validateCreateUserInput(userRegistrationDto);
@@ -58,9 +58,9 @@ public class UserServiceImpl implements UserService {
         } catch (ConflictException e) {
             throw new ConflictException(e.getMessage(), e);
         }
-        User user = userMapper.userRegistrationDtoToUser(userRegistrationDto, passwordEncoder.encode(userRegistrationDto.getPassword()));
+        User user = userMapper.userRegistrationDtoToUser(userRegistrationDto, false, passwordEncoder.encode(userRegistrationDto.getPassword()));
         User savedUser = userRepository.saveAndFlush(user);
-        return userMapper.userToDetailedUserDto(savedUser);
+        return userMapper.userToSimpleUserDto(savedUser);
     }
 
     @Override

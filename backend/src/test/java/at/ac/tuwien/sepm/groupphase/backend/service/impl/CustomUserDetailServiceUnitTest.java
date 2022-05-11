@@ -30,7 +30,6 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Class for testing user services.
@@ -39,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @author Simon Josef Kreuzpointner
  */
 
-@ActiveProfiles({ "test", "datagen" })
+@ActiveProfiles({"test", "datagen"})
 @SpringBootTest
 class CustomUserDetailServiceUnitTest {
 
@@ -358,10 +357,8 @@ class CustomUserDetailServiceUnitTest {
         @MethodSource("parameterizedUserRegistrationDtoProvider")
         @Transactional
         void createUserIsOk(CreateUserRecord input) throws ServiceException, ValidationException, ConflictException {
-            DetailedUserDto actual = userService.createUser(input.input);
+            SimpleUserDto actual = userService.createUser(input.input);
             input.expected.setId(actual.getId());
-
-            assertTrue(passwordEncoder.matches(input.input.getPassword(), actual.getPasswordHash()));
 
             assertEquals(input.expected.getId(), actual.getId());
             assertEquals(input.expected.getFirstName(), actual.getFirstName());
