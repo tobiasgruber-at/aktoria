@@ -13,7 +13,7 @@
     </div>
   </div>
   <ng-template #loggedIn>
-    <div *ngIf="authService.isVerifiedEmail(); else emailVerification">
+    <div *ngIf="userService.getOwnUser()?.verified; else emailVerification">
       Logged in
     </div>
     <ng-template #emailVerification>

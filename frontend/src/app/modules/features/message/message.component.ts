@@ -42,7 +42,7 @@ export class MessageComponent implements OnInit {
    * Returns true if the authenticated user is an admin
    */
   isAdmin(): boolean {
-    return this.authService.getUserRole() === 'ADMIN';
+    return this.authService.getRole() === 'ADMIN';
   }
 
   openAddModal(messageAddModal: TemplateRef<any>) {

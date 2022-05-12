@@ -7,10 +7,23 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 
 @Injectable()
 export class UserImplService extends UserService {
-  private baseUri: string = this.globals.backendUri + '/users';
+  private baseUri: string = this.globals.backendUri + '/users/';
+  private user: SimpleUser = null;
 
   constructor(private globals: Globals, private http: HttpClient) {
     super();
+  }
+
+  getOwnUser(): SimpleUser {
+    return this.user;
+  }
+
+  setOwnUser(user: SimpleUser): void {
+    this.user = user;
+  }
+
+  getOne(email): Observable<SimpleUser> {
+    return this.http.get<SimpleUser>(this.baseUri, { params: { email } });
   }
 
   register(req: UserRegistration): Observable<SimpleUser> {

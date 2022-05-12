@@ -96,7 +96,7 @@ public interface UserService extends UserDetailsService {
      * @param email the email address
      * @return an application user
      */
-    User findByEmail(String email) throws NotFoundException;
+    SimpleUserDto findByEmail(String email) throws NotFoundException;
 
     /**
      * Send an email with an email verification link to the user.
@@ -107,7 +107,6 @@ public interface UserService extends UserDetailsService {
 
     /**
      * Resend an email with an email verification link to the user.
-     *
      */
     void resendEmailVerificationLink() throws ServiceException;
 

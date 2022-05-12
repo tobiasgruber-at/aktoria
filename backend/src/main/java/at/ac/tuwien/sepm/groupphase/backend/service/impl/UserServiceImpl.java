@@ -158,8 +158,11 @@ public class UserServiceImpl implements UserService {
         log.trace("loadUserByUsername(email = {})", email);
 
         try {
-            User user = findByEmail(email);
-
+            Optional<User> userOptional = userRepository.findByEmail(email);
+            if (!userOptional.isPresent()) {
+                throw new NotFoundException("Es konnte kein Benutzer gefunden werden.");
+            }
+            User user = userOptional.get();
             List<GrantedAuthority> grantedAuthorities;
             if (user.getVerified()) {
                 grantedAuthorities = AuthorityUtils.createAuthorityList("ROLE_VERIFIED", "ROLE_USER");
@@ -174,12 +177,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findByEmail(String email) throws NotFoundException {
+    public SimpleUserDto findByEmail(String email) throws NotFoundException {
         log.trace("findUserByEmail(email = {})", email);
 
         Optional<User> userOptional = userRepository.findByEmail(email);
         if (userOptional.isPresent()) {
-            return userOptional.get();
+            return userMapper.userToSimpleUserDto(userOptional.get());
         } else {
             throw new NotFoundException("Es konnte kein Benutzer gefunden werden.");
         }

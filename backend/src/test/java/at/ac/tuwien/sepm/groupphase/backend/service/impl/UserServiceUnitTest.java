@@ -41,7 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * @author Simon Josef Kreuzpointner
  */
 
-@ActiveProfiles({ "test", "datagen" })
+@ActiveProfiles({"test", "datagen"})
 @SpringBootTest
 class UserServiceUnitTest {
 
@@ -125,14 +125,14 @@ class UserServiceUnitTest {
     @Nested
     @DisplayName("getUser()")
     class GetUserTesting {
-        private static Stream<Long> parameterizedGetUserWorksProvider() {
-            final List<Long> temp = new LinkedList<>();
+        private static Stream<String> parameterizedGetUserWorksProvider() {
+            final List<String> temp = new LinkedList<>();
             //needed datagen for valid ids
             return temp.stream();
         }
 
-        private static Stream<Long> parameterizedGetUserExceptionProvider() {
-            final List<Long> temp = new LinkedList<>();
+        private static Stream<String> parameterizedGetUserExceptionProvider() {
+            final List<String> temp = new LinkedList<>();
             //needed datagen to know which ids are invalid for this test
             return temp.stream();
         }
@@ -141,16 +141,16 @@ class UserServiceUnitTest {
         @Transactional
         @DisplayName("throws ServiceException")
         @MethodSource("parameterizedGetUserExceptionProvider")
-        void getUserThrowsException(Long input) throws ServiceException {
-            assertThrows(NotFoundException.class, () -> userService.findById(input));
+        void getUserThrowsException(String input) throws ServiceException {
+            assertThrows(NotFoundException.class, () -> userService.findByEmail(input));
         }
 
         @ParameterizedTest
         @Transactional
         @DisplayName("gets the correct user")
         @MethodSource("parameterizedGetUserWorksProvider")
-        void getUserWorks(Long input) throws UserNotFoundException, ServiceException {
-            assertNull(userService.findById(input));
+        void getUserWorks(String input) throws UserNotFoundException, ServiceException {
+            assertNull(userService.findByEmail(input));
         }
     }
 
@@ -219,7 +219,7 @@ class UserServiceUnitTest {
     @DisplayName("createUser()")
     @SpringBootTest
     class CreateUser {
-        
+
         private static Stream<UserRegistrationDto> parameterizedCreateUserThrowsExceptionProvider() {
             final List<UserRegistrationDto> temp = new LinkedList<>();
             temp.add(new UserRegistrationDto(null, "Lastname", "name@mail.com", "password"));

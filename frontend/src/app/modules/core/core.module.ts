@@ -5,8 +5,8 @@ import { ToastsComponent } from './components/toasts/toasts.component';
 import { ToastsItemComponent } from './components/toasts/toasts-item/toasts-item.component';
 import { UserService } from './services/user/user-service';
 import { AuthService } from './services/auth/auth-service';
-import { UserImplService } from './services/user/user-impl.service';
 import { AuthImplService } from './services/auth/auth-impl.service';
+import { UserImplService } from './services/user/user-impl.service';
 
 const sharedDeclarations = [ToastsComponent];
 
