@@ -1,25 +1,12 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
-import at.ac.tuwien.sepm.groupphase.backend.entity.id.LineId;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Set;
 
 /**
@@ -29,7 +16,6 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "line")
-@IdClass(LineId.class)
 @Getter
 @Setter
 @Builder
@@ -41,7 +27,7 @@ public class Line {
     private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @PrimaryKeyJoinColumn
+    @JoinColumn(name = "page", nullable = false)
     private Page page;
 
     @Column(name = "index", nullable = false)
@@ -61,7 +47,7 @@ public class Line {
     private User recordedBy;
 
     @ManyToMany
-    @JoinTable(name = "spoken_by", joinColumns = {@JoinColumn(name = "script_id"), @JoinColumn(name = "page_id"), @JoinColumn(name = "line_id")},
+    @JoinTable(name = "spoken_by", joinColumns = @JoinColumn(name = "line_id"),
         inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> spokenBy;
 }

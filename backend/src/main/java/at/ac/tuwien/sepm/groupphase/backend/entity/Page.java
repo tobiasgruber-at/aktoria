@@ -1,25 +1,12 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
-import at.ac.tuwien.sepm.groupphase.backend.entity.id.PageId;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.List;
 
 /**
@@ -29,7 +16,6 @@ import java.util.List;
  */
 @Entity
 @Table(name = "page")
-@IdClass(PageId.class)
 @Getter
 @Setter
 @Builder
@@ -41,7 +27,7 @@ public class Page {
     private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @PrimaryKeyJoinColumn
+    @JoinColumn(name = "script", nullable = false)
     private Script script;
 
     @Column(name = "index", nullable = false)
