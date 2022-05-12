@@ -43,7 +43,7 @@ public class UserEndpoint {
         this.userService = userService;
     }
 
-    @GetMapping(path = "/")
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public SimpleUserDto getUser(@RequestParam String email) {
         log.info("GET {}/{}", path, email);

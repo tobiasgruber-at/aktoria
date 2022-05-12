@@ -3,23 +3,23 @@ import { Observable } from 'rxjs';
 import { SimpleUser, UserRegistration } from '../../../shared/dtos/user-dtos';
 import { UserService } from './user-service';
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class UserImplService extends UserService {
-  private baseUri: string = this.globals.backendUri + '/users/';
-  private user: SimpleUser = null;
+  private baseUri: string = this.globals.backendUri + '/users';
+  private ownUser: SimpleUser = null;
 
   constructor(private globals: Globals, private http: HttpClient) {
     super();
   }
 
   getOwnUser(): SimpleUser {
-    return this.user;
+    return this.ownUser;
   }
 
   setOwnUser(user: SimpleUser): void {
-    this.user = user;
+    this.ownUser = user;
   }
 
   getOne(email): Observable<SimpleUser> {
@@ -42,7 +42,7 @@ export class UserImplService extends UserService {
     return this.http.post<void>(this.baseUri + '/tokens', null);
   }
 
-  submitEmailToken(token: string): any  {
+  submitEmailToken(token: string): any {
     return this.http.post<void>(this.baseUri + '/verification', token);
   }
 }
