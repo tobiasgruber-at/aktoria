@@ -1,11 +1,14 @@
 package at.ac.tuwien.sepm.groupphase.backend.service;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ScriptDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ScriptPreviewDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleScriptDto;
 import at.ac.tuwien.sepm.groupphase.backend.exception.IllegalFileFormatException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.stream.Stream;
 
 /**
  * Describes a script service component.
@@ -32,9 +35,26 @@ public interface ScriptService {
     /**
      * Saves a given script in the data storage.
      *
-     * @param scriptDto the scrip to be saved
+     * @param simpleScriptDto the scrip to be saved
      * @return the saved script
      * @throws ServiceException when an error occurs while trying to process the script
      */
-    ScriptDto save(ScriptDto scriptDto) throws ServiceException;
+    ScriptDto save(SimpleScriptDto simpleScriptDto) throws ServiceException;
+
+    /**
+     * Gets all script in the form of script preview data access objects.
+     *
+     * @return a stream of previews
+     * @throws ServiceException when an error occurs while trying to get the scripts
+     */
+    Stream<ScriptPreviewDto> findAllPreviews() throws ServiceException;
+
+    /**
+     * Gets the script corresponding to the given id.
+     *
+     * @param id the id of the wanted script
+     * @return the script corresponding to the given id.
+     * @throws ServiceException when an error occurs while trying to get the script
+     */
+    ScriptDto findById(Long id) throws ServiceException;
 }

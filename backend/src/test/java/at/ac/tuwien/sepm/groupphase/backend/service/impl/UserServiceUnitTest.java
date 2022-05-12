@@ -11,15 +11,18 @@ import at.ac.tuwien.sepm.groupphase.backend.exception.UnauthorizedException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.UserNotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.service.UserService;
+import com.icegreen.greenmail.configuration.GreenMailConfiguration;
+import com.icegreen.greenmail.junit5.GreenMailExtension;
+import com.icegreen.greenmail.util.ServerSetupTest;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,7 +43,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ActiveProfiles({"test", "datagen"})
 @SpringBootTest
-class CustomUserDetailServiceUnitTest {
+class UserServiceUnitTest {
+
+    @RegisterExtension
+    static GreenMailExtension greenMail = new GreenMailExtension(ServerSetupTest.SMTP)
+        .withConfiguration(GreenMailConfiguration.aConfig().withUser("tester", "password"))
+        .withPerMethodLifecycle(true);
 
     @Autowired
     UserService userService;
@@ -66,19 +74,19 @@ class CustomUserDetailServiceUnitTest {
     class ChangePasswordTesting {
 
         private static Stream<ChangePasswordRecord> parameterizedChangePasswordWorksProvider() {
-            List<ChangePasswordRecord> temp = new LinkedList<>();
+            final List<ChangePasswordRecord> temp = new LinkedList<>();
             //needed datagen for valid ids and password
             return temp.stream();
         }
 
         private static Stream<ChangePasswordRecord> parameterizedChangePasswordThrowsUnauthorizedExceptionProvider() {
-            List<ChangePasswordRecord> temp = new LinkedList<>();
+            final List<ChangePasswordRecord> temp = new LinkedList<>();
             //needed datagen for invalid ids and password
             return temp.stream();
         }
 
         private static Stream<ChangePasswordRecord> parameterizedChangePasswordThrowsValidationExceptionProvider() {
-            List<ChangePasswordRecord> temp = new LinkedList<>();
+            final List<ChangePasswordRecord> temp = new LinkedList<>();
             //needed datagen for invalid ids and password
             return temp.stream();
         }
@@ -111,7 +119,6 @@ class CustomUserDetailServiceUnitTest {
 
         record ChangePasswordRecord(PasswordChangeDto passwordChangeDto, Long id) {
         }
-
     }
 
     @Disabled
@@ -119,13 +126,13 @@ class CustomUserDetailServiceUnitTest {
     @DisplayName("getUser()")
     class GetUserTesting {
         private static Stream<String> parameterizedGetUserWorksProvider() {
-            List<String> temp = new LinkedList<>();
+            final List<String> temp = new LinkedList<>();
             //needed datagen for valid ids
             return temp.stream();
         }
 
         private static Stream<String> parameterizedGetUserExceptionProvider() {
-            List<String> temp = new LinkedList<>();
+            final List<String> temp = new LinkedList<>();
             //needed datagen to know which ids are invalid for this test
             return temp.stream();
         }
@@ -135,9 +142,7 @@ class CustomUserDetailServiceUnitTest {
         @DisplayName("throws ServiceException")
         @MethodSource("parameterizedGetUserExceptionProvider")
         void getUserThrowsException(String input) throws ServiceException {
-            assertThrows(NotFoundException.class, () -> {
-                userService.getUser(input);
-            });
+            assertThrows(NotFoundException.class, () -> userService.findByEmail(input));
         }
 
         @ParameterizedTest
@@ -145,7 +150,7 @@ class CustomUserDetailServiceUnitTest {
         @DisplayName("gets the correct user")
         @MethodSource("parameterizedGetUserWorksProvider")
         void getUserWorks(String input) throws UserNotFoundException, ServiceException {
-            assertNull(userService.getUser(input));
+            assertNull(userService.findByEmail(input));
         }
     }
 
@@ -153,13 +158,13 @@ class CustomUserDetailServiceUnitTest {
     @DisplayName("deleteUser()")
     class DeleteUserTesting {
         private static Stream<Long> parameterizedDeleteUserProvider() {
-            List<Long> temp = new LinkedList<>();
+            final List<Long> temp = new LinkedList<>();
             //needed datagen
             return temp.stream();
         }
 
         private static Stream<Long> parameterizedDeleteUserExceptionProvider() {
-            List<Long> temp = new LinkedList<>();
+            final List<Long> temp = new LinkedList<>();
             temp.add(-200L);
             temp.add(-201L);
             temp.add(-202L);
@@ -188,7 +193,7 @@ class CustomUserDetailServiceUnitTest {
         @DisplayName("throws NotFoundException")
         @MethodSource("parameterizedDeleteUserExceptionProvider")
         void deleteUserThrowsException(Long input) {
-            assertThrows(NotFoundException.class, () -> userService.deleteUser(input));
+            assertThrows(NotFoundException.class, () -> userService.delete(input));
         }
     }
 
@@ -196,7 +201,7 @@ class CustomUserDetailServiceUnitTest {
     @DisplayName("changeUser()")
     class ChangeUserWorks {
         private static Stream<SimpleUserDto> parameterizedChangeUserProvider() {
-            List<SimpleUserDto> temp = new LinkedList<>();
+            final List<SimpleUserDto> temp = new LinkedList<>();
             //needed datagen
             return temp.stream();
         }
@@ -215,15 +220,8 @@ class CustomUserDetailServiceUnitTest {
     @SpringBootTest
     class CreateUser {
 
-        private final PasswordEncoder passwordEncoder;
-
-        @Autowired
-        public CreateUser(PasswordEncoder passwordEncoder) {
-            this.passwordEncoder = passwordEncoder;
-        }
-
         private static Stream<UserRegistrationDto> parameterizedCreateUserThrowsExceptionProvider() {
-            List<UserRegistrationDto> temp = new LinkedList<>();
+            final List<UserRegistrationDto> temp = new LinkedList<>();
             temp.add(new UserRegistrationDto(null, "Lastname", "name@mail.com", "password"));
             temp.add(new UserRegistrationDto("", "Lastname", "name@mail.com", "password"));
             temp.add(new UserRegistrationDto("  ", "Lastname", "name@mail.com", "password"));
@@ -232,7 +230,7 @@ class CustomUserDetailServiceUnitTest {
             temp.add(new UserRegistrationDto("\r\nFirst Name", "Lastname", "name@mail.com", "password"));
             temp.add(new UserRegistrationDto("First\r\nName", "Lastname", "name@mail.com", "password"));
             temp.add(new UserRegistrationDto("First\tName", "Lastname", "name@mail.com", "password"));
-            temp.add(new UserRegistrationDto("a".repeat(100), "Lastname", "longname@mail.at", "password"));
+            temp.add(new UserRegistrationDto("a".repeat(101), "Lastname", "longname@mail.at", "password"));
             temp.add(new UserRegistrationDto("a".repeat(400), "Lastname", "longname@mail.at", "password"));
 
             temp.add(new UserRegistrationDto("Firstname", null, "name@mail.com", "password"));
@@ -243,7 +241,7 @@ class CustomUserDetailServiceUnitTest {
             temp.add(new UserRegistrationDto("Firstname", "\r\nLast Name", "name@mail.com", "password"));
             temp.add(new UserRegistrationDto("Firstname", "Last\r\nName", "name@mail.com", "password"));
             temp.add(new UserRegistrationDto("Firstname", "Last\tName", "name@mail.com", "password"));
-            temp.add(new UserRegistrationDto("Firstname", "a".repeat(100), "longname@mail.at", "password"));
+            temp.add(new UserRegistrationDto("Firstname", "a".repeat(101), "longname@mail.at", "password"));
             temp.add(new UserRegistrationDto("Firstname", "a".repeat(400), "longname@mail.at", "password"));
 
             temp.add(new UserRegistrationDto("Firstname", "Lastname", null, "password"));
@@ -252,7 +250,7 @@ class CustomUserDetailServiceUnitTest {
             temp.add(new UserRegistrationDto("Firstname", "Lastname", "\t\t", "password"));
             temp.add(new UserRegistrationDto("Firstname", "Lastname", "name\t@mail.com", "password"));
             temp.add(new UserRegistrationDto("Firstname", "Lastname", "  name@mail.com ", "password"));
-            temp.add(new UserRegistrationDto("Firstname", "Lastname", "a".repeat(100) + "@mail.com", "password"));
+            temp.add(new UserRegistrationDto("Firstname", "Lastname", "a".repeat(101) + "@mail.com", "password"));
             temp.add(new UserRegistrationDto("Firstname", "Lastname", "a".repeat(400) + "@mail.com", "password"));
 
             temp.add(new UserRegistrationDto("Firstname", "Lastname", "name@mail.com", null));
@@ -260,14 +258,12 @@ class CustomUserDetailServiceUnitTest {
             temp.add(new UserRegistrationDto("Firstname", "Lastname", "name@mail.com", "   "));
             temp.add(new UserRegistrationDto("Firstname", "Lastname", "name@mail.com", "\n\n"));
             temp.add(new UserRegistrationDto("Firstname", "Lastname", "name@mail.com", "\t\t"));
-            temp.add(new UserRegistrationDto("Firstname", "Lastname", "name@mail.com", "\tpassword\t"));
-            temp.add(new UserRegistrationDto("Firstname", "Lastname", "name@mail.com", "\tpass\tword"));
             temp.add(new UserRegistrationDto("Firstname", "Lastname", "name@mail.com", "kurz"));
             return temp.stream();
         }
 
         private static Stream<CreateUserRecord> parameterizedUserRegistrationDtoProvider() {
-            List<CreateUserRecord> temp = new LinkedList<>();
+            final List<CreateUserRecord> temp = new LinkedList<>();
             temp.add(
                 new CreateUserRecord(
                     new UserRegistrationDto(
@@ -349,7 +345,7 @@ class CustomUserDetailServiceUnitTest {
         @Transactional
         void createUserThrowsException(UserRegistrationDto input) {
             //test for whitespaces, null and too long inputs
-            assertThrows(ValidationException.class, () -> userService.createUser(input));
+            assertThrows(ValidationException.class, () -> userService.create(input));
         }
 
         @ParameterizedTest
@@ -357,7 +353,7 @@ class CustomUserDetailServiceUnitTest {
         @MethodSource("parameterizedUserRegistrationDtoProvider")
         @Transactional
         void createUserIsOk(CreateUserRecord input) throws ServiceException, ValidationException, ConflictException {
-            SimpleUserDto actual = userService.createUser(input.input);
+            SimpleUserDto actual = userService.create(input.input);
             input.expected.setId(actual.getId());
 
             assertEquals(input.expected.getId(), actual.getId());

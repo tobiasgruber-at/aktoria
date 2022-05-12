@@ -4,23 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 /**
- * Script Data Access Object.
- * <br>
- * In contrast to the simple script DTO this DTO is intended
- * for already stored scripts.
+ * Script Preview Data Access Object.
  *
  * @author Simon Josef Kreuzpointner
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ScriptDto {
+public class ScriptPreviewDto {
     private Long id;
     private String name;
-    private List<PageDto> pages;
-    private List<RoleDto> roles;
-    private SimpleUserDto owner;
 }
