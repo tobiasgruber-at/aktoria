@@ -213,12 +213,13 @@ public class UserServiceImpl implements UserService {
         secureToken.setAccount(user);
         secureTokenService.saveSecureToken(secureToken);
 
-        final String link = String.join("", "http://localhost:8080/api/v1/users/submitToken/", secureToken.getToken());
+        final String link = String.join("", "http://localhost:8080/api/v1/users/verification/", secureToken.getToken());
         try {
             mailSender.sendMail(user.getEmail(), "Aktoria Verifikationslink",
                 """
                         <h1>Hallo %s,</h1>
-                        klick auf den folgenden Link um deine Mailadresse zu bestätigen.<br>
+                        klick auf den folgenden Link um deine Mailadresse zu bestätigen.
+                        <br>
                         <a href='%s'>Email Adresse bestätigen</a>
                         <br>
                         <br>
