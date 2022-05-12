@@ -70,7 +70,6 @@ public class ScriptDataGenerator {
                 scriptRepository.save(script);
                 generatePage(script);
                 generateRole(script);
-                generateSpokenBy();
             }
         }
     }
@@ -105,7 +104,7 @@ public class ScriptDataGenerator {
         }
     }
 
-    private void generateSpokenBy() {
+    public void generateSpokenBy() {
         List<Line> lines = lineRepository.findAll();
         List<Role> roles = roleRepository.findAll();
         int linesSize = lines.size();

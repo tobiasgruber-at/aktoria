@@ -29,5 +29,6 @@ public class DataGeneratorController {
     private void generateData() {
         userDataGenerator.generateUser();
         scriptDataGenerator.generateScript();
+        scriptDataGenerator.generateSpokenBy();
     }
 }
