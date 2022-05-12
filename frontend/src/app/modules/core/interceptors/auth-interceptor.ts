@@ -42,7 +42,9 @@ export class AuthInterceptor implements HttpInterceptor {
       blacklistedEndpoints.push('/authentication');
     } else if (req.method === 'POST') {
       blacklistedEndpoints.push('/users');
+      blacklistedEndpoints.push('/users/submitToken');
     }
+
     return blacklistedEndpoints.some(
       (e) => req.url === this.globals.backendUri + e
     );

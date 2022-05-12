@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
+import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordChangeDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
@@ -20,6 +21,7 @@ import at.ac.tuwien.sepm.groupphase.backend.service.SecureTokenService;
 import at.ac.tuwien.sepm.groupphase.backend.service.UserService;
 import at.ac.tuwien.sepm.groupphase.backend.validation.UserValidation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.core.GrantedAuthority;
@@ -28,8 +30,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -49,15 +55,25 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final MailSender mailSender;
     private final SecureTokenService secureTokenService;
+    private final SecurityProperties securityProperties;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, UserValidation userValidation, PasswordEncoder passwordEncoder, UserMapper userMapper, MailSender mailSender, SecureTokenService secureTokenService) {
+    public UserServiceImpl(
+        UserRepository userRepository,
+        UserValidation userValidation,
+        PasswordEncoder passwordEncoder,
+        UserMapper userMapper,
+        MailSender mailSender,
+        SecureTokenService secureTokenService,
+        SecurityProperties securityProperties
+    ) {
         this.userRepository = userRepository;
         this.userValidation = userValidation;
         this.passwordEncoder = passwordEncoder;
         this.userMapper = userMapper;
         this.mailSender = mailSender;
         this.secureTokenService = secureTokenService;
+        this.securityProperties = securityProperties;
     }
 
     @Override
@@ -176,7 +192,7 @@ public class UserServiceImpl implements UserService {
         secureToken.setAccount(user);
         secureTokenService.saveSecureToken(secureToken);
 
-        final String link = String.join("", "http://localhost:8080/api/v1/users/submitToken/", secureToken.getToken());
+        final String link = String.join("", "http://localhost:4200/#/verifyEmail/", secureToken.getToken());
         try {
             mailSender.sendMail(user.getEmail(), "Aktoria Verifikationslink",
                 """
@@ -194,16 +210,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void resendEmailVerificationLink(Long id) throws ServiceException, NotFoundException {
-        log.trace("resendEmailVerificationLink(id = {})", id);
+    public void resendEmailVerificationLink() throws ServiceException, NotFoundException {
+        log.trace("resendEmailVerificationLink()");
 
-        Optional<User> userOptional = userRepository.findById(id);
+        String email = getCurrentUserEmail();
+
+        Optional<User> userOptional = userRepository.findByEmail(email);
         if (userOptional.isPresent()) {
-            try {
-                sendEmailVerificationLink(userOptional.get());
-            } catch (ServiceException e) {
-                throw new ServiceException(e.getMessage(), e);
-            }
+            sendEmailVerificationLink(userOptional.get());
         } else {
             throw new NotFoundException("Es konnte kein Benutzer gefunden werden.");
         }
@@ -225,6 +239,22 @@ public class UserServiceImpl implements UserService {
             }
         } else {
             throw new InvalidTokenException();
+        }
+    }
+
+    /**
+     * Get the email of the logged in user, returns null if user is not logged in.
+     *
+     * @return the email address of the current user
+     */
+    public String getCurrentUserEmail() {
+        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        if (requestAttributes instanceof ServletRequestAttributes) {
+            HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
+            String token = request.getHeader(securityProperties.getAuthHeader());
+            return (new String(Base64.decodeBase64(token.split("\\.")[1]))).split("sub\":\"")[1].split("\"")[0];
+        } else {
+            return null;
         }
     }
 }

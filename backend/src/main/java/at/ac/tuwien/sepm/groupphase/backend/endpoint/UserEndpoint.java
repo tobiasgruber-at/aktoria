@@ -12,18 +12,23 @@ import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.security.access.annotation.Secured;
+
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import org.springframework.web.server.ResponseStatusException;
+
+import javax.annotation.security.PermitAll;
 
 /**
  * Endpoint for user related requests.
@@ -115,20 +120,19 @@ public class UserEndpoint {
         }
     }
 
-    @GetMapping(path = "/submitToken/{token}")
+    @PostMapping(path = "/submitToken")
     @ResponseStatus(HttpStatus.OK)
-    public String verifyEmailToken(@PathVariable String token) throws InvalidTokenException {
+    @PermitAll
+    public void verifyEmailToken(@RequestBody String token) throws InvalidTokenException {
         log.info("POST {}/submitToken/{}", path, token);
-
         userService.verifyEmail(token);
-        return "account verified";
     }
 
     @PostMapping(path = "/verificationToken")
     @ResponseStatus(HttpStatus.OK)
-    public void resendEmailVerificationToken(@RequestBody Long id) throws ServiceException {
+    @Secured("ROLE_USER")
+    public void resendEmailVerificationToken() throws ServiceException {
         log.info("POST {}/verificationToken", path);
-
-        userService.resendEmailVerificationLink(id);
+        userService.resendEmailVerificationLink();
     }
 }

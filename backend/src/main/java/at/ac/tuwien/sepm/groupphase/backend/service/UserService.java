@@ -108,9 +108,8 @@ public interface UserService extends UserDetailsService {
     /**
      * Resend an email with an email verification link to the user.
      *
-     * @param id the id of the user
      */
-    void resendEmailVerificationLink(Long id) throws ServiceException;
+    void resendEmailVerificationLink() throws ServiceException;
 
     /**
      * Verifies the account with the matching token.

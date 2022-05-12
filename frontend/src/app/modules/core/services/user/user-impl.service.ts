@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { SimpleUser, UserRegistration } from '../../../shared/dtos/user-dtos';
 import { UserService } from './user-service';
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 
 @Injectable()
 export class UserImplService extends UserService {
@@ -26,6 +26,10 @@ export class UserImplService extends UserService {
   }
 
   resendVerificationEmail(): Observable<void> {
-    return null;
+    return this.http.post<void>(this.baseUri + '/verificationToken', null);
+  }
+
+  submitEmailToken(token: string): any  {
+    return this.http.post<void>(this.baseUri + '/submitToken', token);
   }
 }

@@ -9,4 +9,6 @@ export abstract class UserService {
   abstract update(): Observable<any>;
 
   abstract resendVerificationEmail(): Observable<void>;
+
+  abstract submitEmailToken(token: string): any;
 }
