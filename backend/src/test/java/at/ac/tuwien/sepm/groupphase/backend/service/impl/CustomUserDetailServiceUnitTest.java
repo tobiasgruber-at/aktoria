@@ -118,14 +118,14 @@ class CustomUserDetailServiceUnitTest {
     @Nested
     @DisplayName("getUser()")
     class GetUserTesting {
-        private static Stream<Long> parameterizedGetUserWorksProvider() {
-            List<Long> temp = new LinkedList<>();
+        private static Stream<String> parameterizedGetUserWorksProvider() {
+            List<String> temp = new LinkedList<>();
             //needed datagen for valid ids
             return temp.stream();
         }
 
-        private static Stream<Long> parameterizedGetUserExceptionProvider() {
-            List<Long> temp = new LinkedList<>();
+        private static Stream<String> parameterizedGetUserExceptionProvider() {
+            List<String> temp = new LinkedList<>();
             //needed datagen to know which ids are invalid for this test
             return temp.stream();
         }
@@ -134,7 +134,7 @@ class CustomUserDetailServiceUnitTest {
         @Transactional
         @DisplayName("throws ServiceException")
         @MethodSource("parameterizedGetUserExceptionProvider")
-        void getUserThrowsException(Long input) throws ServiceException {
+        void getUserThrowsException(String input) throws ServiceException {
             assertThrows(NotFoundException.class, () -> {
                 userService.getUser(input);
             });
@@ -144,7 +144,7 @@ class CustomUserDetailServiceUnitTest {
         @Transactional
         @DisplayName("gets the correct user")
         @MethodSource("parameterizedGetUserWorksProvider")
-        void getUserWorks(Long input) throws UserNotFoundException, ServiceException {
+        void getUserWorks(String input) throws UserNotFoundException, ServiceException {
             assertNull(userService.getUser(input));
         }
     }

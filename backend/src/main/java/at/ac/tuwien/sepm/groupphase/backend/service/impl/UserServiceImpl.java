@@ -64,9 +64,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public SimpleUserDto getUser(double id) {
+    public SimpleUserDto getUser(String email) {
         log.info("get user by id");
-        Optional<User> userOptional = userRepository.findById((long) id);
+        // TODO: validate email
+        Optional<User> userOptional = userRepository.findByEmail(email);
         if (userOptional.isPresent()) {
             return userMapper.userToSimpleUserDto(userOptional.get());
         } else {

@@ -40,13 +40,13 @@ public class UserEndpoint {
         this.userService = userService;
     }
 
-    @GetMapping(path = "/{id}")
+    @GetMapping(path = "/")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public SimpleUserDto getUser(@PathVariable Long id) throws ServiceException {
+    public SimpleUserDto getUser(@RequestParam String email) throws ServiceException {
         log.info("GET " + UserEndpoint.path);
         try {
-            return userService.getUser(id);
+            return userService.getUser(email);
         } catch (UserNotFoundException e) {
             log.error(e.getMessage(), e);
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);

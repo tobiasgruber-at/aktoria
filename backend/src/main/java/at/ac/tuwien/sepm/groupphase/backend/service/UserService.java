@@ -40,7 +40,7 @@ public interface UserService extends UserDetailsService {
      * @return the specified user
      * @throws ServiceException is thrown if something went wrong with getting the user
      */
-    SimpleUserDto getUser(double id) throws ServiceException, UserNotFoundException;
+    SimpleUserDto getUser(String email) throws ServiceException, UserNotFoundException;
 
     /**
      * Changes the email/username of a user.
