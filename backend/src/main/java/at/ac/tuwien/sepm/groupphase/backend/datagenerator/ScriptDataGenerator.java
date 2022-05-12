@@ -13,7 +13,6 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.awt.Color;
 import java.util.HashSet;
