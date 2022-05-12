@@ -1,0 +1,13 @@
+<button
+  [disabled]="loading || disabled"
+  class="btn btn-{{ theme }}"
+  type="submit"
+>
+  {{ label }}
+  <span
+    *ngIf="loading"
+    aria-hidden="true"
+    class="spinner-border spinner-border-sm ms-1"
+    role="status"
+  ></span>
+</button>

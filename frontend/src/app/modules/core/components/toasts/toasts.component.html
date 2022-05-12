@@ -1,0 +1,8 @@
+<div class="m-4">
+  <app-toasts-item
+    *ngFor="let toast of toastService.$toasts | async; let i = index"
+    @lightAppear
+    [style.z-index]="i"
+    [toast]="toast"
+  ></app-toasts-item>
+</div>

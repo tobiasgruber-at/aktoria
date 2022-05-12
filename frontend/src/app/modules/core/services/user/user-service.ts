@@ -1,0 +1,14 @@
+import { Observable } from 'rxjs';
+import { SimpleUser, UserRegistration } from '../../../shared/dtos/user-dtos';
+
+export abstract class UserService {
+  abstract register(req: UserRegistration): Observable<SimpleUser>;
+
+  abstract delete(): Observable<any>;
+
+  abstract update(): Observable<any>;
+
+  abstract resendVerificationEmail(): Observable<void>;
+
+  abstract submitEmailToken(token: string): any;
+}
