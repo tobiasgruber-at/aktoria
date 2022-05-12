@@ -26,10 +26,10 @@ export class UserImplService extends UserService {
   }
 
   resendVerificationEmail(): Observable<void> {
-    return this.http.post<void>(this.baseUri + '/verificationToken', null);
+    return this.http.post<void>(this.baseUri + '/tokens', null);
   }
 
   submitEmailToken(token: string): any  {
-    return this.http.post<void>(this.baseUri + '/submitToken', token);
+    return this.http.post<void>(this.baseUri + '/verification', token);
   }
 }

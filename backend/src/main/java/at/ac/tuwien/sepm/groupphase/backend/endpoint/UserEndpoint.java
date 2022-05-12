@@ -119,19 +119,19 @@ public class UserEndpoint {
         }
     }
 
-    @PostMapping(path = "/submitToken")
+    @PostMapping(path = "/verification")
     @ResponseStatus(HttpStatus.OK)
     @PermitAll
     public void verifyEmailToken(@RequestBody String token) throws InvalidTokenException {
-        log.info("POST {}/submitToken/{}", path, token);
+        log.info("POST {}/verification", path);
         userService.verifyEmail(token);
     }
 
-    @PostMapping(path = "/verificationToken")
+    @PostMapping(path = "/tokens")
     @ResponseStatus(HttpStatus.OK)
     @Secured("ROLE_USER")
     public void resendEmailVerificationToken() throws ServiceException {
-        log.info("POST {}/verificationToken", path);
+        log.info("POST {}/verification", path);
         userService.resendEmailVerificationLink();
     }
 }
