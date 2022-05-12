@@ -31,7 +31,7 @@ public class ScriptDataGenerator {
 
     private static final int NUMBER_OF_SCRIPTS_TO_GENERATE = 5;
     private static final int NUMBER_OF_PAGES_PER_SCRIPT = 10;
-    private static final int NUMBER_OF_LINES_PER_PAGE = 15;
+    private static final int NUMBER_OF_LINES_PER_PAGE = 10;
     private static final int NUMBER_OF_ROLES_PER_SCRIPT = 5;
 
     private static final String TEST_SCRIPT_NAME = "Script";
