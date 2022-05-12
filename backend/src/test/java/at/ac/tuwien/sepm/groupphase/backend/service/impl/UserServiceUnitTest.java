@@ -38,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * @author Simon Josef Kreuzpointner
  */
 
-@ActiveProfiles({"test", "datagen"})
+@ActiveProfiles({ "test", "datagen" })
 @SpringBootTest
 class UserServiceUnitTest {
 
@@ -111,7 +111,6 @@ class UserServiceUnitTest {
 
         record ChangePasswordRecord(PasswordChangeDto passwordChangeDto, Long id) {
         }
-
     }
 
     @Disabled
