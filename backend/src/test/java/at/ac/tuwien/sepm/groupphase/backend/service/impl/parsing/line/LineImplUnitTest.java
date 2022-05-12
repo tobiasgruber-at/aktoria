@@ -2,7 +2,6 @@ package at.ac.tuwien.sepm.groupphase.backend.service.impl.parsing.line;
 
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.line.Line;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.line.impl.LineImpl;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -25,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class LineImplUnitTest {
 
     private static Stream<ParameterizedTupleGetRoles> parameterizedTupleGetRolesProvider() {
-        List<ParameterizedTupleGetRoles> temp = new LinkedList<>();
+        final List<ParameterizedTupleGetRoles> temp = new LinkedList<>();
         temp.add(new ParameterizedTupleGetRoles(List.of(new String[] { "ROLE" }), "ROLE This is my text."));
         temp.add(new ParameterizedTupleGetRoles(List.of(new String[] { "NAME SURNAME" }), "NAME SURNAME This is my text."));
         temp.add(new ParameterizedTupleGetRoles(List.of(new String[] { "ROLEA", "ROLEB" }), "ROLEA UND ROLEB This is my text."));
@@ -41,7 +40,7 @@ class LineImplUnitTest {
     }
 
     private static Stream<ParameterizedTupleGetContent> parameterizedTupleGetContentProvider() {
-        List<ParameterizedTupleGetContent> temp = new LinkedList<>();
+        final List<ParameterizedTupleGetContent> temp = new LinkedList<>();
         temp.add(new ParameterizedTupleGetContent("This is my text.", "ROLE This is my text."));
         temp.add(new ParameterizedTupleGetContent("This is my text", "ROLE This is my text"));
         temp.add(new ParameterizedTupleGetContent("This is my text.", "ROLE This is my text. "));
@@ -58,7 +57,7 @@ class LineImplUnitTest {
     }
 
     private static Stream<ParameterizedTupleGetRaw> parameterizedTupleGetRawProvider() {
-        List<ParameterizedTupleGetRaw> temp = new LinkedList<>();
+        final List<ParameterizedTupleGetRaw> temp = new LinkedList<>();
         temp.add(new ParameterizedTupleGetRaw("ROLE This is my text.", "ROLE This is my text."));
         temp.add(new ParameterizedTupleGetRaw("ROLE This is my text.", "ROLE       This is my text."));
         temp.add(new ParameterizedTupleGetRaw("ROLE This is my text.", "ROLE This is my text. "));
@@ -76,7 +75,7 @@ class LineImplUnitTest {
     @DisplayName("getRoles() returns the correct roles")
     @MethodSource("parameterizedTupleGetRolesProvider")
     void getRoles(ParameterizedTupleGetRoles input) {
-        LineImpl l = new LineImpl(input.input, 0L);
+        final LineImpl l = new LineImpl(input.input, 0L);
         assertEquals(input.expected, l.getRoles());
     }
 
@@ -84,7 +83,7 @@ class LineImplUnitTest {
     @DisplayName("getContent() returns the correct content")
     @MethodSource("parameterizedTupleGetContentProvider")
     void getContent(ParameterizedTupleGetContent input) {
-        LineImpl l = new LineImpl(input.input, 0L);
+        final LineImpl l = new LineImpl(input.input, 0L);
         assertEquals(input.expected, l.getContent());
     }
 
@@ -92,7 +91,7 @@ class LineImplUnitTest {
     @DisplayName("getRaw() returns the correct value")
     @MethodSource("parameterizedTupleGetRawProvider")
     void getRaw(ParameterizedTupleGetRaw input) {
-        LineImpl l = new LineImpl(input.input, 0L);
+        final LineImpl l = new LineImpl(input.input, 0L);
         assertEquals(input.expected, l.getRaw());
     }
 
@@ -114,8 +113,8 @@ class LineImplUnitTest {
             "ALLE This is my text."
         })
         void getConflictTypeAssignmentRequired(String input) {
-            LineImpl l = new LineImpl(input, 0L);
-            Assertions.assertEquals(Line.ConflictType.ASSIGNMENT_REQUIRED, l.getConflictType());
+            final LineImpl l = new LineImpl(input, 0L);
+            assertEquals(Line.ConflictType.ASSIGNMENT_REQUIRED, l.getConflictType());
         }
 
         @ParameterizedTest
@@ -132,7 +131,7 @@ class LineImplUnitTest {
             "PETER P. This is my text."
         })
         void getConflictTypeNull(String input) {
-            LineImpl l = new LineImpl(input, 0L);
+            final LineImpl l = new LineImpl(input, 0L);
             assertNull(l.getConflictType());
         }
     }
@@ -154,7 +153,7 @@ class LineImplUnitTest {
             "PETER P. This is my text."
         })
         void hasRolesTrue(String value) {
-            LineImpl l = new LineImpl(value, 0L);
+            final LineImpl l = new LineImpl(value, 0L);
             assertTrue(l.hasRoles());
         }
 
@@ -169,7 +168,7 @@ class LineImplUnitTest {
             "\f"
         })
         void hasRolesFalse(String value) {
-            LineImpl l = new LineImpl(value, 0L);
+            final LineImpl l = new LineImpl(value, 0L);
             assertFalse(l.hasRoles());
         }
     }
@@ -195,7 +194,7 @@ class LineImplUnitTest {
             "Ende"
         })
         void isCompletedLineTrue(String value) {
-            LineImpl l = new LineImpl(value, 0L);
+            final LineImpl l = new LineImpl(value, 0L);
             assertTrue(l.isCompletedLine());
         }
 
@@ -212,7 +211,7 @@ class LineImplUnitTest {
             "\f"
         })
         void isCompletedLineFalse(String value) {
-            LineImpl l = new LineImpl(value, 0L);
+            final LineImpl l = new LineImpl(value, 0L);
             assertFalse(l.isCompletedLine());
         }
     }

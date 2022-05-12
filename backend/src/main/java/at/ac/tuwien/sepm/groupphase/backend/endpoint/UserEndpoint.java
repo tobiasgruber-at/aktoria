@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
@@ -43,7 +42,6 @@ public class UserEndpoint {
 
     @GetMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
     public SimpleUserDto getUser(@PathVariable Long id) {
         log.info("GET {}/{}", path, id);
 
@@ -57,7 +55,6 @@ public class UserEndpoint {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @ResponseBody
     public SimpleUserDto postUser(@RequestBody UserRegistrationDto userRegistrationDto) throws ServiceException {
         log.info("POST {}", path);
 
@@ -74,7 +71,6 @@ public class UserEndpoint {
 
     @PatchMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
     public DetailedUserDto patchUser(@RequestParam Boolean passwordChange, @RequestBody UpdateUserDto updateUserDto, @PathVariable Long id) throws ServiceException {
         log.info("PATCH {}/{}", path, id);
 
@@ -102,10 +98,10 @@ public class UserEndpoint {
         }
     }
 
-    @PostMapping(path = "/forgotten-password")
-    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping(path = "/reset-password")
+    @ResponseStatus(HttpStatus.ACCEPTED)
     public void forgottenPassword(@RequestBody String email) {
-        log.info("POST {}/forgotten-password", path);
+        log.info("POST {}/reset-password", path);
 
         try {
             userService.forgotPassword(email);
@@ -115,19 +111,19 @@ public class UserEndpoint {
         }
     }
 
-    @GetMapping(path = "/submitToken/{token}")
+    @GetMapping(path = "/verification/{token}")
     @ResponseStatus(HttpStatus.OK)
     public String verifyEmailToken(@PathVariable String token) throws InvalidTokenException {
-        log.info("POST {}/submitToken/{}", path, token);
+        log.info("POST {}/verification/{}", path, token);
 
         userService.verifyEmail(token);
         return "account verified";
     }
 
-    @PostMapping(path = "/verificationToken")
+    @PostMapping(path = "/{id}/verification")
     @ResponseStatus(HttpStatus.OK)
-    public void resendEmailVerificationToken(@RequestBody Long id) throws ServiceException {
-        log.info("POST {}/verificationToken", path);
+    public void resendEmailVerificationToken(@PathVariable Long id) throws ServiceException {
+        log.info("POST {}/{}/verification", path, id);
 
         userService.resendEmailVerificationLink(id);
     }
