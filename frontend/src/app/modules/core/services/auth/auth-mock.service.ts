@@ -16,16 +16,12 @@ export class AuthMockService extends AuthService {
   }
 
   loginUser(authRequest: AuthRequest): Observable<string> {
-    this.setToken(AuthMockService.mockedToken);
-    return of(AuthMockService.mockedToken);
+    this.token = AuthMockService.mockedToken;
+    return of(this.token);
   }
 
   isLoggedIn() {
     return !!this.getToken();
-  }
-
-  isVerifiedEmail() {
-    return false;
   }
 
   logoutUser() {
@@ -37,13 +33,17 @@ export class AuthMockService extends AuthService {
     return this.token;
   }
 
-  getUserRole() {
+  getRole() {
     if (this.getToken() != null) {
       return 'ADMIN';
     }
   }
 
-  setToken(authRes: string) {
-    this.token = authRes;
+  $loginChanges(): Observable<boolean> {
+    return undefined;
+  }
+
+  getEmail(): string {
+    return '';
   }
 }

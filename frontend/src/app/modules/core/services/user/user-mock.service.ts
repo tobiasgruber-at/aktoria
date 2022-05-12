@@ -3,14 +3,21 @@ import { Observable, of } from 'rxjs';
 import { SimpleUser, UserRegistration } from '../../../shared/dtos/user-dtos';
 import { UserService } from './user-service';
 import { randomDelay } from '../../../shared/functions/random-delay';
-import { AuthService } from '../auth/auth-service';
 
 @Injectable()
 export class UserMockService extends UserService {
-  readonly mockedToken: string = 'test';
-
-  constructor(private authService: AuthService) {
+  constructor() {
     super();
+  }
+
+  getOwnUser(): SimpleUser {
+    return undefined;
+  }
+
+  setOwnUser(user: SimpleUser): void {}
+
+  getOne(email: string): Observable<SimpleUser> {
+    return of(new SimpleUser(1, 'Max', 'Patternman', 'asdf@asdf.asdf', false));
   }
 
   delete(): Observable<any> {

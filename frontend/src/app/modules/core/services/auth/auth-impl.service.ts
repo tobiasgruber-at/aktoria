@@ -1,25 +1,41 @@
 import { Injectable } from '@angular/core';
 import { AuthRequest } from '../../../shared/dtos/auth-request';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { tap } from 'rxjs/operators';
 // @ts-ignore
 import jwt_decode from 'jwt-decode';
 import { Globals } from '../../global/globals';
 import { AuthService } from './auth-service';
+import { DecodedToken } from '../../../shared/interfaces/decoded-token';
 
 @Injectable()
 export class AuthImplService extends AuthService {
-  private authBaseUri: string = this.globals.backendUri + '/authentication';
+  private readonly authBaseUri = this.globals.backendUri + '/authentication';
+  /** LocalStorage key for the token */
+  private readonly tokenLSKey = 'authToken';
+  private loginChangesSubject = new BehaviorSubject<boolean>(this.isLoggedIn());
 
   constructor(private httpClient: HttpClient, private globals: Globals) {
     super();
   }
 
+  $loginChanges(): Observable<boolean> {
+    return this.loginChangesSubject.asObservable();
+  }
+
   loginUser(authRequest: AuthRequest): Observable<string> {
     return this.httpClient
       .post(this.authBaseUri, authRequest, { responseType: 'text' })
-      .pipe(tap((authResponse: string) => this.setToken(authResponse)));
+      .pipe(
+        tap((authResponse: string) => {
+          this.updateLoginState(authResponse);
+        })
+      );
+  }
+
+  logoutUser() {
+    this.updateLoginState();
   }
 
   isLoggedIn() {
@@ -30,23 +46,19 @@ export class AuthImplService extends AuthService {
     );
   }
 
-  isVerifiedEmail() {
-    return false;
-  }
-
-  logoutUser() {
-    console.log('Logout');
-    localStorage.removeItem('authToken');
-  }
-
   getToken() {
     return localStorage.getItem('authToken');
   }
 
-  getUserRole() {
+  getEmail(): string {
+    const decoded: DecodedToken = jwt_decode(this.getToken());
+    return decoded?.sub;
+  }
+
+  getRole() {
     if (this.getToken() != null) {
-      const decoded: any = jwt_decode(this.getToken());
-      const authInfo: string[] = decoded.rol;
+      const decoded: DecodedToken = jwt_decode(this.getToken());
+      const authInfo = decoded.rol;
       if (authInfo.includes('ROLE_ADMIN')) {
         return 'ADMIN';
       } else if (authInfo.includes('ROLE_USER')) {
@@ -56,12 +68,22 @@ export class AuthImplService extends AuthService {
     return 'UNDEFINED';
   }
 
-  setToken(authResponse: string) {
-    localStorage.setItem('authToken', authResponse);
+  /**
+   * Updates the login state.
+   *
+   * @description If a token is passed, a loggedIn event is emitted, otherwise (if null is passed) a loggedOut event.
+   */
+  private updateLoginState(token: string = null): void {
+    if (token === null) {
+      localStorage.removeItem(this.tokenLSKey);
+    } else {
+      localStorage.setItem(this.tokenLSKey, token);
+    }
+    this.loginChangesSubject.next(this.isLoggedIn());
   }
 
   private getTokenExpirationDate(token: string): Date {
-    const decoded: any = jwt_decode(token);
+    const decoded: DecodedToken = jwt_decode(token);
     if (decoded.exp === undefined) {
       return null;
     }
