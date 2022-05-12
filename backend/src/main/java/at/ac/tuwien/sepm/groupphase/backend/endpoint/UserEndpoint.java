@@ -26,6 +26,8 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.annotation.security.PermitAll;
@@ -48,7 +50,6 @@ public class UserEndpoint {
 
     @GetMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
     public SimpleUserDto getUser(@PathVariable Long id) {
         log.info("GET {}/{}", path, id);
 
@@ -62,7 +63,6 @@ public class UserEndpoint {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @ResponseBody
     public SimpleUserDto postUser(@RequestBody UserRegistrationDto userRegistrationDto) throws ServiceException {
         log.info("POST {}", path);
 
@@ -79,7 +79,6 @@ public class UserEndpoint {
 
     @PatchMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
     public DetailedUserDto patchUser(@RequestParam Boolean passwordChange, @RequestBody UpdateUserDto updateUserDto, @PathVariable Long id) throws ServiceException {
         log.info("PATCH {}/{}", path, id);
 
@@ -107,10 +106,10 @@ public class UserEndpoint {
         }
     }
 
-    @PostMapping(path = "/forgotten-password")
-    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping(path = "/reset-password")
+    @ResponseStatus(HttpStatus.ACCEPTED)
     public void forgottenPassword(@RequestBody String email) {
-        log.info("POST {}/forgotten-password", path);
+        log.info("POST {}/reset-password", path);
 
         try {
             userService.forgotPassword(email);

@@ -27,6 +27,9 @@ spring:
     host: mail.gmx.net
     port: 587
     protocol: smtp
+  servlet:
+    multipart:
+      max-file-size: 10MB
 
 security:
   auth:

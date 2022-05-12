@@ -118,7 +118,8 @@ public class UserServiceImpl implements UserService {
         } catch (ConflictException e) {
             throw new ConflictException(e.getMessage(), e);
         }
-        return null;
+
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -197,7 +198,8 @@ public class UserServiceImpl implements UserService {
             mailSender.sendMail(user.getEmail(), "Aktoria Verifikationslink",
                 """
                         <h1>Hallo %s,</h1>
-                        klick auf den folgenden Link um deine Mailadresse zu bestätigen.<br>
+                        klick auf den folgenden Link um deine Mailadresse zu bestätigen.
+                        <br>
                         <a href='%s'>Email Adresse bestätigen</a>
                         <br>
                         <br>

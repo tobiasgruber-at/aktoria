@@ -77,7 +77,6 @@ class ScriptEndpointIntegrationTest {
         @Transactional
         @DisplayName("returns the correctly parsed script")
         void uploadScriptReturnsCorrectly() throws Exception {
-
             final List<SimpleRoleDto> expectedRolesDto = new LinkedList<>();
             expectedRolesDto.add(new SimpleRoleDto("ALICE", null));
             expectedRolesDto.add(new SimpleRoleDto("BOB", null));
@@ -192,8 +191,8 @@ class ScriptEndpointIntegrationTest {
 
             final SimpleScriptDto expected = new SimpleScriptDto("file", simplePagesDto, expectedRolesDto);
 
-            File pdf = new File("./src/test/resources/service/parsing/script/Skript_NF.pdf");
-            MockMultipartFile multipartFile = new MockMultipartFile("file", pdf.getName(), MediaType.APPLICATION_PDF_VALUE, new FileInputStream(pdf));
+            final File pdf = new File("./src/test/resources/service/parsing/script/Skript_NF.pdf");
+            final MockMultipartFile multipartFile = new MockMultipartFile("file", pdf.getName(), MediaType.APPLICATION_PDF_VALUE, new FileInputStream(pdf));
 
             byte[] body = mockMvc
                 .perform(MockMvcRequestBuilders
@@ -204,7 +203,7 @@ class ScriptEndpointIntegrationTest {
                 .getResponse()
                 .getContentAsByteArray();
 
-            SimpleScriptDto response = objectMapper.readValue(body, SimpleScriptDto.class);
+            final SimpleScriptDto response = objectMapper.readValue(body, SimpleScriptDto.class);
 
             assertNotNull(response);
             assertEquals(expected, response);
@@ -214,8 +213,8 @@ class ScriptEndpointIntegrationTest {
         @DisplayName("returns correct status code for corrupted files")
         @Transactional
         void uploadScriptReturnsCorrectStatusCodeForCorruptedFiles() throws Exception {
-            File pdf = new File("./src/test/resources/service/parsing/script/Skript_NF_CORRUPTED.pdf");
-            MockMultipartFile multipartFile = new MockMultipartFile("file", pdf.getName(), MediaType.APPLICATION_PDF_VALUE, new FileInputStream(pdf));
+            final File pdf = new File("./src/test/resources/service/parsing/script/Skript_NF_CORRUPTED.pdf");
+            final MockMultipartFile multipartFile = new MockMultipartFile("file", pdf.getName(), MediaType.APPLICATION_PDF_VALUE, new FileInputStream(pdf));
 
             mockMvc
                 .perform(MockMvcRequestBuilders
@@ -224,6 +223,4 @@ class ScriptEndpointIntegrationTest {
                 ).andExpect(status().isUnprocessableEntity());
         }
     }
-
-
 }
