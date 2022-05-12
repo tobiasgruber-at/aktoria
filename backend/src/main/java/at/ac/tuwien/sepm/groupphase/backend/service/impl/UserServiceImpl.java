@@ -74,7 +74,7 @@ public class UserServiceImpl implements UserService {
 
         User user = userMapper.userRegistrationDtoToUser(userRegistrationDto, false, passwordEncoder.encode(userRegistrationDto.getPassword()));
         User savedUser = userRepository.saveAndFlush(user);
-        sendEmailVerificationLink(savedUser);
+        // sendEmailVerificationLink(savedUser);
 
         return userMapper.userToSimpleUserDto(savedUser);
     }
