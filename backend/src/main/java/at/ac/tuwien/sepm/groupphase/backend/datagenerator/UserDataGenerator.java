@@ -6,8 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.PostConstruct;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Profile("datagen")
@@ -29,7 +28,7 @@ public class UserDataGenerator {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public void generateUser() {
+    void generateUser() {
         if (userRepository.findAll().size() > 0) {
             log.debug("users already generated");
         } else {

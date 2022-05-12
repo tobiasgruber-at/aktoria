@@ -13,6 +13,7 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.awt.Color;
 import java.util.HashSet;
@@ -56,7 +57,7 @@ public class ScriptDataGenerator {
         this.roleRepository = roleRepository;
     }
 
-    public void generateScript() {
+    void generateScript() {
         if (scriptRepository.findAll().size() > 0) {
             log.debug("scripts already generated");
         } else {
@@ -104,7 +105,7 @@ public class ScriptDataGenerator {
         }
     }
 
-    public void generateSpokenBy() {
+    void generateSpokenBy() {
         List<Line> lines = lineRepository.findAll();
         List<Role> roles = roleRepository.findAll();
         int linesSize = lines.size();
