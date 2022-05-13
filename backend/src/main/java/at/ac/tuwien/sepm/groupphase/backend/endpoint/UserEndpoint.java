@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedUserDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordChangeDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UpdateUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserRegistrationDto;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.annotation.security.PermitAll;
@@ -102,15 +104,16 @@ public class UserEndpoint {
 
     @PostMapping(path = "/reset-password")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void forgottenPassword(@RequestBody String email) {
+    public void forgottenPassword(@RequestBody String email) throws ServiceException {
         log.info("POST {}/reset-password", path);
+        userService.forgotPassword(email);
+    }
 
-        try {
-            userService.forgotPassword(email);
-        } catch (NotFoundException e) {
-            log.error(e.getMessage(), e);
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
-        }
+    @PutMapping(path = "/change-password")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void changePassword(@RequestBody PasswordChangeDto passwordChange) throws ValidationException, ServiceException {
+        log.info("POST {}/reset-password", path);
+        userService.changePassword(passwordChange, null);
     }
 
     @PostMapping(path = "/verification")

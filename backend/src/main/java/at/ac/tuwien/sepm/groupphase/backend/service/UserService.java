@@ -67,12 +67,12 @@ public interface UserService extends UserDetailsService {
      * @param email the email of the user
      * @throws NotFoundException is thrown if the user does not exist
      */
-    void forgotPassword(String email) throws NotFoundException;
+    void forgotPassword(String email) throws NotFoundException, ServiceException;
 
     /**
      * Changes the password of a user.
      *
-     * @param passwordChangeDto filled with the old and new password
+     * @param passwordChangeDto filled with the old and new password or with a token and a new password
      * @param id                the id of the user
      * @return the user with the new password
      * @throws ServiceException is thrown if the password could not be changed

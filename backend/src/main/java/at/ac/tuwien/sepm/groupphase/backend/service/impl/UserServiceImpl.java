@@ -134,10 +134,32 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void forgotPassword(String email) throws NotFoundException {
+    public void forgotPassword(String email) throws NotFoundException, ServiceException {
         log.trace("forgotPassword(email = {})", email);
 
-        throw new UnsupportedOperationException();
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        if (!userOptional.isPresent()) {
+            throw new NotFoundException("Es exisitert kein User mit dieser Mail-Adresse.");
+        }
+        User user = userOptional.get();
+
+        SecureToken secureToken = secureTokenService.createSecureToken(TokenType.resetPassword);
+        secureToken.setAccount(user);
+        secureTokenService.saveSecureToken(secureToken);
+
+        final String link = String.join("", "http://localhost:4200/#/password/restore/", secureToken.getToken());
+        try {
+            mailSender.sendMail(user.getEmail(), "Aktoria Passwort zurücksetzten",
+                """
+                        <h1>Hallo %s,</h1>
+                        klick auf den folgenden Link, um ein neues Passwort zu wählen.
+                        <br>
+                        <a href='%s'>Passwort zurücksetzten</a>
+                    """
+                    .formatted(user.getFirstName(), link));
+        } catch (MessagingException e) {
+            throw new ServiceException(e.getMessage(), e);
+        }
     }
 
     @Override
@@ -148,6 +170,25 @@ public class UserServiceImpl implements UserService {
             userValidation.validateChangePasswordInput(passwordChangeDto);
         } catch (ValidationException e) {
             throw new ValidationException(e.getMessage(), e);
+        }
+
+        String token = passwordChangeDto.getToken();
+
+        if (token != null) {
+            SecureToken secureToken = secureTokenService.findByToken(token);
+            secureTokenService.removeToken(token);
+            if (secureToken.getType() == TokenType.resetPassword) {
+                if (secureToken.getExpireAt().isAfter(LocalDateTime.now())) {
+                    User user = secureToken.getAccount();
+                    user.setPasswordHash(passwordEncoder.encode(passwordChangeDto.getNewPassword()));
+                    user = userRepository.saveAndFlush(user);
+                    return userMapper.userToDetailedUserDto(user);
+                } else {
+                    throw new InvalidTokenException();
+                }
+            } else {
+                throw new InvalidTokenException();
+            }
         }
 
         throw new UnsupportedOperationException();
@@ -201,7 +242,7 @@ public class UserServiceImpl implements UserService {
             mailSender.sendMail(user.getEmail(), "Aktoria Verifikationslink",
                 """
                         <h1>Hallo %s,</h1>
-                        klick auf den folgenden Link um deine Mailadresse zu bestätigen.
+                        klick auf den folgenden Link, um deine Mailadresse zu bestätigen.
                         <br>
                         <a href='%s'>Email Adresse bestätigen</a>
                         <br>
