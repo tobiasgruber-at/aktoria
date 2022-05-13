@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import {FormBuilder, Validators} from '@angular/forms';
-import {AuthService} from '../../../core/services/auth/auth-service';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {ToastService} from '../../../core/services/toast/toast.service';
 import {FormBase} from '../../../shared/classes/form-base';
 import {matchingPasswordsValidator} from '../../../shared/validators/matching-passwords-validator';
+import {UserService} from '../../../core/services/user/user-service';
+import {ChangePassword} from '../../../shared/dtos/password-change-dto';
 
 @Component({
   selector: 'app-restore-password',
@@ -12,10 +13,12 @@ import {matchingPasswordsValidator} from '../../../shared/validators/matching-pa
   styleUrls: ['./restore-password.component.scss']
 })
 export class RestorePasswordComponent extends FormBase implements OnInit {
+  token: string;
 
   constructor(
+    private route: ActivatedRoute,
     private formBuilder: FormBuilder,
-    private authService: AuthService,
+    private userService: UserService,
     private router: Router,
     toastService: ToastService
   ) {
@@ -29,9 +32,18 @@ export class RestorePasswordComponent extends FormBase implements OnInit {
       },
       { validators: [matchingPasswordsValidator] }
     );
+    this.token = this.route.snapshot.paramMap.get('token');
   }
 
   protected sendSubmit(): void {
+    const { password } = this.form.value;
+    this.userService.changePassword(new ChangePassword(this.token, null, password)).subscribe({
+      next: () => {
+        this.toggleLoading(false);
+        console.log('Successfully changed Password');
+      },
+      error: (err) => this.handleError(err)
+    });
   }
 
 }

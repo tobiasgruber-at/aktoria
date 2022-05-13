@@ -1,5 +1,6 @@
 import { Observable } from 'rxjs';
 import { SimpleUser, UserRegistration } from '../../../shared/dtos/user-dtos';
+import {ChangePassword} from '../../../shared/dtos/password-change-dto';
 
 export abstract class UserService {
   abstract getOwnUser(): SimpleUser;
@@ -17,4 +18,8 @@ export abstract class UserService {
   abstract resendVerificationEmail(): Observable<void>;
 
   abstract submitEmailToken(token: string): any;
+
+  abstract forgotPassword(email: string): Observable<void>;
+
+  abstract changePassword(password: ChangePassword): Observable<void>;
 }
