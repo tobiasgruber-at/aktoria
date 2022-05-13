@@ -43,7 +43,7 @@ export class UserImplService extends UserService {
     return this.http.post<void>(this.baseUri + '/tokens', null);
   }
 
-  submitEmailToken(token: string): any {
+  submitEmailToken(token: string): Observable<void> {
     return this.http.post<void>(this.baseUri + '/verification', token);
   }
 

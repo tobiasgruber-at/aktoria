@@ -3,6 +3,7 @@ import { Observable, of } from 'rxjs';
 import { SimpleUser, UserRegistration } from '../../../shared/dtos/user-dtos';
 import { UserService } from './user-service';
 import { randomDelay } from '../../../shared/functions/random-delay';
+import {ChangePassword} from '../../../shared/dtos/password-change-dto';
 
 @Injectable()
 export class UserMockService extends UserService {
@@ -36,5 +37,16 @@ export class UserMockService extends UserService {
 
   resendVerificationEmail(): Observable<void> {
     return of(null).pipe(randomDelay());
+  }
+
+  changePassword(password: ChangePassword): Observable<void> {
+    return undefined;
+  }
+
+  forgotPassword(email: string): Observable<void> {
+    return undefined;
+  }
+
+  submitEmailToken(token: string): any {
   }
 }
