@@ -1,6 +1,5 @@
-package at.ac.tuwien.sepm.groupphase.backend.service;
+package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
-import at.ac.tuwien.sepm.groupphase.backend.service.impl.MailSenderImpl;
 import com.icegreen.greenmail.configuration.GreenMailConfiguration;
 import com.icegreen.greenmail.junit5.GreenMailExtension;
 import com.icegreen.greenmail.util.GreenMailUtil;
@@ -15,13 +14,11 @@ import org.springframework.test.context.ActiveProfiles;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
-class SmtpMailSenderIntegrationTest {
-
+class MailSenderImplTest {
     @RegisterExtension
     static GreenMailExtension greenMail = new GreenMailExtension(ServerSetupTest.SMTP)
         .withConfiguration(GreenMailConfiguration.aConfig().withUser("tester", "password"))
