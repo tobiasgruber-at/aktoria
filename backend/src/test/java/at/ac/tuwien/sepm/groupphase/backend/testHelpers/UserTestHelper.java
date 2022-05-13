@@ -9,12 +9,6 @@ public class UserTestHelper {
     public static final String dummyUserPassword = "password1";
 
     public SimpleUserDto dummyUserDto() {
-        return SimpleUserDto.builder()
-            .id(2L)
-            .firstName("firstName1")
-            .lastName("lastName1")
-            .email(dummyUserEmail)
-            .verified(false)
-            .build();
+        return new SimpleUserDto(2L, "firstName1", "lastName1", dummyUserEmail, false);
     }
 }
