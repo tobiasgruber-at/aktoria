@@ -1,6 +1,6 @@
-import {FormGroup} from '@angular/forms';
-import {Theme} from '../enums/theme.enum';
-import {ToastService} from '../../core/services/toast/toast.service';
+import { FormGroup } from '@angular/forms';
+import { Theme } from '../enums/theme.enum';
+import { ToastService } from '../../core/services/toast/toast.service';
 
 /** @author Tobias Gruber */
 export abstract class FormBase {

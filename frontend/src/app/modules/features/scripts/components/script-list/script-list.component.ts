@@ -10,7 +10,6 @@ import { ScriptService } from '../../../../core/services/script/script.service';
 })
 export class ScriptListComponent implements OnInit {
   scripts: SimpleScript[];
-  test1: SimpleScript;
 
   constructor(private service: ScriptService, private router: Router) {}
 
@@ -19,21 +18,10 @@ export class ScriptListComponent implements OnInit {
   }
 
   getAllScripts() {
-    /* TODO: this.service.getAll().subscribe({
-       next: (data) => {
-         this.scripts = data;
-       }
-     });*/
-    this.scripts = [
-      this.test1,
-      this.test1,
-      this.test1,
-      this.test1,
-      this.test1,
-      this.test1,
-      this.test1,
-      this.test1,
-      this.test1
-    ];
+    this.service.getAll().subscribe({
+      next: (data) => {
+        this.scripts = data;
+      }
+    });
   }
 }

@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { ToastService } from '../../../../core/services/toast/toast.service';
 import { ScriptService } from '../../../../core/services/script/script.service';
 import { Theme } from '../../../../shared/enums/theme.enum';
+import { SimpleScript } from '../../../../shared/dtos/script-dtos';
 
 @Component({
   selector: 'app-script-upload',
@@ -13,6 +14,7 @@ import { Theme } from '../../../../shared/enums/theme.enum';
 })
 export class ScriptUploadComponent extends FormBase implements OnInit {
   fileName: string;
+  script: SimpleScript;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -36,10 +38,18 @@ export class ScriptUploadComponent extends FormBase implements OnInit {
 
       this.scriptService.post(file).subscribe({
         next: (res) => {
+          this.script = res;
           this.router.navigateByUrl('/scripts');
           this.toastService.show({
             message: 'Skript erfolgreich hochgeladen!',
             theme: Theme.primary
+          });
+          this.scriptService.postCorrected(res).subscribe({
+            next: (detailedScript) => {
+              this.script = detailedScript;
+              console.log(this.script);
+              //TODO: remove console log
+            }
           });
         },
 

@@ -1,20 +1,27 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Globals } from '../../global/globals';
 import {
   DeleteScriptRequest,
-  SimpleScript,
-  UploadScript
+  DetailedScript,
+  SimpleScript
 } from '../../../shared/dtos/script-dtos';
+import { tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ScriptService {
   private baseUri: string = this.globals.backendUri + '/scripts';
+  private scripts: SimpleScript[] = [];
+  private scriptsSubject = new BehaviorSubject<SimpleScript[]>([]);
 
   constructor(private http: HttpClient, private globals: Globals) {}
+
+  get $scripts(): Observable<SimpleScript[]> {
+    return this.scriptsSubject.asObservable();
+  }
 
   /**
    * Gets all scripts
@@ -22,7 +29,12 @@ export class ScriptService {
    * @return observable list of scripts
    */
   getAll(): Observable<SimpleScript[]> {
-    return this.http.get<SimpleScript[]>(this.baseUri);
+    return this.http.get<SimpleScript[]>(this.baseUri).pipe(
+      tap((scripts) => {
+        this.scripts = scripts;
+        this.scriptsSubject.next(this.scripts);
+      })
+    );
   }
 
   /**
@@ -30,8 +42,12 @@ export class ScriptService {
    *
    * @param script the script to be posted
    */
-  post(script): Observable<UploadScript> {
-    return this.http.post<UploadScript>(this.baseUri + '/new', script);
+  post(script): Observable<SimpleScript> {
+    return this.http.post<SimpleScript>(this.baseUri + '/new', script);
+  }
+
+  postCorrected(script): Observable<DetailedScript> {
+    return this.http.post<DetailedScript>(this.baseUri, script);
   }
 
   /**
@@ -43,5 +59,9 @@ export class ScriptService {
     return null;
     //TODO: find correct URL
     // return this.http.delete<DeleteScriptRequest>(this.baseUri+)
+  }
+
+  private updateScripts(scripts): void {
+    this.scripts = scripts;
   }
 }
