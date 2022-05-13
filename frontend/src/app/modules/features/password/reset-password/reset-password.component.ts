@@ -4,6 +4,7 @@ import {Router} from '@angular/router';
 import {ToastService} from '../../../core/services/toast/toast.service';
 import {FormBase} from '../../../shared/classes/form-base';
 import {UserService} from '../../../core/services/user/user-service';
+import {Theme} from '../../../shared/enums/theme.enum';
 
 @Component({
   selector: 'app-reset-password',
@@ -16,7 +17,7 @@ export class ResetPasswordComponent extends FormBase implements OnInit {
     private formBuilder: FormBuilder,
     private userService: UserService,
     private router: Router,
-    toastService: ToastService
+    private toastService: ToastService
   ) {
     super(toastService);
   }
@@ -33,7 +34,10 @@ export class ResetPasswordComponent extends FormBase implements OnInit {
     this.userService.forgotPassword(email).subscribe({
       next: () => {
         this.toggleLoading(false);
-        console.log('Successfully send token to: ' + email);
+        this.toastService.show({
+          message: 'Passwort Wiederherstellungslink wurde gesendet!',
+          theme: Theme.primary
+        });
       },
       error: (err) => this.handleError(err)
     });

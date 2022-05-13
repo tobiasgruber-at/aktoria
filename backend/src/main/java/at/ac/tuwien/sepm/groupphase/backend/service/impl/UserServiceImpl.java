@@ -174,7 +174,7 @@ public class UserServiceImpl implements UserService {
 
         String token = passwordChangeDto.getToken();
 
-        if (token != null){
+        if (token != null) {
             SecureToken secureToken = secureTokenService.findByToken(token);
             secureTokenService.removeToken(token);
             if (secureToken.getType() == TokenType.resetPassword) {

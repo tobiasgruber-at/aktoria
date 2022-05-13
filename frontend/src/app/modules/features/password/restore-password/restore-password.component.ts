@@ -6,6 +6,7 @@ import {FormBase} from '../../../shared/classes/form-base';
 import {matchingPasswordsValidator} from '../../../shared/validators/matching-passwords-validator';
 import {UserService} from '../../../core/services/user/user-service';
 import {ChangePassword} from '../../../shared/dtos/password-change-dto';
+import {Theme} from '../../../shared/enums/theme.enum';
 
 @Component({
   selector: 'app-restore-password',
@@ -20,7 +21,7 @@ export class RestorePasswordComponent extends FormBase implements OnInit {
     private formBuilder: FormBuilder,
     private userService: UserService,
     private router: Router,
-    toastService: ToastService
+    private toastService: ToastService,
   ) {
     super(toastService);
   }
@@ -40,7 +41,10 @@ export class RestorePasswordComponent extends FormBase implements OnInit {
     this.userService.changePassword(new ChangePassword(this.token, null, password)).subscribe({
       next: () => {
         this.toggleLoading(false);
-        console.log('Successfully changed Password');
+        this.toastService.show({
+          message: 'Passwort wurde geändert!',
+          theme: Theme.primary
+        });
       },
       error: (err) => this.handleError(err)
     });
