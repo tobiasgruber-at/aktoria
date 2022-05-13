@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { VerifyEmailComponent } from './verify-email.component';
+import { RestorePasswordComponent } from './restore-password.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: VerifyEmailComponent
+    component: RestorePasswordComponent
   }
 ];
 
@@ -13,4 +13,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class VerifyEmailRoutingModule {}
+export class RestorePasswordRoutingModule {}
