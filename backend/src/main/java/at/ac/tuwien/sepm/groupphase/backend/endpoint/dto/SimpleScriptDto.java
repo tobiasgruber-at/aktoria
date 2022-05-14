@@ -8,9 +8,9 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 /**
- * Staged Script Data Access Object.
+ * Staged Script Data Transfer Object.
  * <br>
- * This DAO only includes simple data access objects.
+ * This DTO only includes simple data access objects.
  * The roles are only saved as role names.
  * <br>
  * The staged script DTO is intended for newly uploaded and parsed

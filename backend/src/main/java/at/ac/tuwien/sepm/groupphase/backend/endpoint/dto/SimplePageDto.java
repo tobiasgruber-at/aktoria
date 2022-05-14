@@ -7,9 +7,9 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 /**
- * Simple Page Data Access Object.
+ * Simple Page Data Transfer Object.
  * <br>
- * A simple page DAO only contains the line that start on
+ * A simple page DTO only contains the line that start on
  * this page.
  *
  * @author Simon Josef Kreuzpointner

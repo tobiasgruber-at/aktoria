@@ -1,4 +1,4 @@
-package at.ac.tuwien.sepm.groupphase.backend.testHelpers;
+package at.ac.tuwien.sepm.groupphase.backend.testhelpers;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ScriptDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleLineDto;
@@ -49,7 +49,7 @@ public class ScriptTestHelper {
         simpleLinesDto.add(
             new SimpleLineDto(
                 2L,
-                List.of(new SimpleRoleDto[] {new SimpleRoleDto("ALICE", null)}),
+                List.of(new SimpleRoleDto[] { new SimpleRoleDto("ALICE", null) }),
                 "Das ist die erste Phrase in diesem Theaterstück. Diese Phrase soll Alice zugeteilt werden.",
                 true,
                 null)
@@ -57,7 +57,7 @@ public class ScriptTestHelper {
         simpleLinesDto.add(
             new SimpleLineDto(
                 3L,
-                List.of(new SimpleRoleDto[] {new SimpleRoleDto("BOB", null)}),
+                List.of(new SimpleRoleDto[] { new SimpleRoleDto("BOB", null) }),
                 "Hallo Alice! Wie geht’s dir so? (Schaut Alice in die Augen)",
                 true,
                 null
@@ -65,7 +65,7 @@ public class ScriptTestHelper {
         simpleLinesDto.add(
             new SimpleLineDto(
                 4L,
-                List.of(new SimpleRoleDto[] {new SimpleRoleDto("MR. MISTER", null)}),
+                List.of(new SimpleRoleDto[] { new SimpleRoleDto("MR. MISTER", null) }),
                 "Bla Bla Bla.",
                 true,
                 null
@@ -81,7 +81,7 @@ public class ScriptTestHelper {
         simpleLinesDto.add(
             new SimpleLineDto(
                 6L,
-                List.of(new SimpleRoleDto[] {new SimpleRoleDto("ANNA P.", null)}),
+                List.of(new SimpleRoleDto[] { new SimpleRoleDto("ANNA P.", null) }),
                 "(fröhlich) Halli-hallöchen!",
                 true,
                 null
@@ -89,7 +89,7 @@ public class ScriptTestHelper {
         simpleLinesDto.add(
             new SimpleLineDto(
                 7L,
-                List.of(new SimpleRoleDto[] {new SimpleRoleDto("LADY MARI-MUSTER", null)}),
+                List.of(new SimpleRoleDto[] { new SimpleRoleDto("LADY MARI-MUSTER", null) }),
                 "O man. Ich brauch‘ erst mal einen Kaffee.",
                 true,
                 Line.ConflictType.VERIFICATION_REQUIRED
@@ -97,7 +97,7 @@ public class ScriptTestHelper {
         simpleLinesDto.add(
             new SimpleLineDto(
                 8L,
-                List.of(new SimpleRoleDto[] {new SimpleRoleDto("ANNA P.", null), new SimpleRoleDto("BOB", null)}),
+                List.of(new SimpleRoleDto[] { new SimpleRoleDto("ANNA P.", null), new SimpleRoleDto("BOB", null) }),
                 "(gleichzeitig.) Ich auch!",
                 true,
                 null

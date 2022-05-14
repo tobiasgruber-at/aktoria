@@ -77,7 +77,7 @@ public interface UserService extends UserDetailsService {
      * @return the user with the new password
      * @throws ServiceException is thrown if the password could not be changed
      */
-    DetailedUserDto changePassword(PasswordChangeDto passwordChangeDto, Long id) throws ServiceException, ValidationException, NotFoundException;
+    DetailedUserDto changePassword(PasswordChangeDto passwordChangeDto, Long id) throws ServiceException, ValidationException, NotFoundException, InvalidTokenException;
 
     /**
      * Find a user in the context of Spring Security based on the email address.
@@ -88,7 +88,7 @@ public interface UserService extends UserDetailsService {
      * @see <a href="https://www.baeldung.com/spring-security-authentication-with-a-database">https://www.baeldung.com/spring-security-authentication-with-a-database</a>
      */
     @Override
-    UserDetails loadUserByUsername(String email) throws NotFoundException;
+    UserDetails loadUserByUsername(String email);
 
     /**
      * Find an application user based on the email address.
@@ -108,14 +108,14 @@ public interface UserService extends UserDetailsService {
     /**
      * Resend an email with an email verification link to the user.
      */
-    void resendEmailVerificationLink() throws ServiceException;
+    void resendEmailVerificationLink() throws ServiceException, NotFoundException;
 
     /**
      * Verifies the account with the matching token.
      *
      * @param token the token string
      */
-    void verifyEmail(String token) throws InvalidTokenException;
+    void verifyEmail(String token) throws InvalidTokenException, NotFoundException;
 
     String getCurrentUserEmail();
 }

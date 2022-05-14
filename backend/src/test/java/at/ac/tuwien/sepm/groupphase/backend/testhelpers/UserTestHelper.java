@@ -1,4 +1,4 @@
-package at.ac.tuwien.sepm.groupphase.backend.testHelpers;
+package at.ac.tuwien.sepm.groupphase.backend.testhelpers;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
 import org.springframework.stereotype.Component;
