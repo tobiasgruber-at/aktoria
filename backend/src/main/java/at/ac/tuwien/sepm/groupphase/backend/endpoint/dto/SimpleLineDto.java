@@ -14,11 +14,10 @@ import java.util.Objects;
  * @author Simon Josef Kreuzpointner
  */
 public class SimpleLineDto {
-
     private Long index;
     private List<SimpleRoleDto> roles;
     private String content;
-    private boolean active = true;
+    private boolean active;
     private Line.ConflictType conflictType;
 
     public SimpleLineDto(Long index, List<SimpleRoleDto> roles, String content, boolean active, Line.ConflictType conflictType) {

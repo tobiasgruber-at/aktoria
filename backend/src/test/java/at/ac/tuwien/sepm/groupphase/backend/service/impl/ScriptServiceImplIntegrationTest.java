@@ -103,12 +103,12 @@ class ScriptServiceImplIntegrationTest {
 
         final File f = new File("./src/test/resources/service/parsing/script/Skript_NF.pdf");
         final MultipartFile multipartFile = new MockMultipartFile("file", new FileInputStream(f));
-        final ScriptService scriptService = new ScriptServiceImpl(simpleScriptMapper);
+        final ScriptService scriptService = new ScriptServiceImpl(simpleScriptMapper, null, null, null, null, null, null);
 
         final List<SimplePageDto> expectedPagesDto = pageMapper.listOfPageToListOfSimplePageDto(expectedPages);
         final List<SimpleRoleDto> expectedRolesDto = roleMapper.listOfStringToListOfSimpleRoleDto(expectedRoles);
 
-        final SimpleScriptDto actual = scriptService.create(multipartFile);
+        final SimpleScriptDto actual = scriptService.parse(multipartFile);
         final SimpleScriptDto expected = new SimpleScriptDto(multipartFile.getName(), expectedPagesDto, expectedRolesDto);
 
         assertEquals(expected, actual);

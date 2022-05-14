@@ -3,21 +3,42 @@ package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ScriptDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ScriptPreviewDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleLineDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimplePageDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleRoleDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleScriptDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.SimpleScriptMapper;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.UserMapper;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Line;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Page;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Role;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Script;
+import at.ac.tuwien.sepm.groupphase.backend.entity.User;
 import at.ac.tuwien.sepm.groupphase.backend.exception.IllegalFileFormatException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
+import at.ac.tuwien.sepm.groupphase.backend.repository.LineRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.PageRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.RoleRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.ScriptRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.ScriptService;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.script.ParsedScript;
-import at.ac.tuwien.sepm.groupphase.backend.service.parsing.script.Script;
+import at.ac.tuwien.sepm.groupphase.backend.service.parsing.script.UnparsedScript;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.scriptparser.ScriptParser;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.scriptparser.impl.ScriptParserImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Stream;
 
 /**
@@ -29,14 +50,27 @@ import java.util.stream.Stream;
 @Slf4j
 public class ScriptServiceImpl implements ScriptService {
     private final SimpleScriptMapper simpleScriptMapper;
+    private final UserMapper userMapper;
+    private final ScriptRepository scriptRepository;
+    private final UserRepository userRepository;
+    private final PageRepository pageRepository;
+    private final LineRepository lineRepository;
+    private final RoleRepository roleRepository;
 
     @Autowired
-    public ScriptServiceImpl(SimpleScriptMapper simpleScriptMapper) {
+    public ScriptServiceImpl(SimpleScriptMapper simpleScriptMapper, UserMapper userMapper, ScriptRepository scriptRepository, UserRepository userRepository, PageRepository pageRepository,
+                             LineRepository lineRepository, RoleRepository roleRepository) {
         this.simpleScriptMapper = simpleScriptMapper;
+        this.userMapper = userMapper;
+        this.scriptRepository = scriptRepository;
+        this.userRepository = userRepository;
+        this.pageRepository = pageRepository;
+        this.lineRepository = lineRepository;
+        this.roleRepository = roleRepository;
     }
 
     @Override
-    public SimpleScriptDto create(MultipartFile file) throws ServiceException, IllegalFileFormatException {
+    public SimpleScriptDto parse(MultipartFile file) throws ServiceException, IllegalFileFormatException {
         log.trace("newScript(pdfScript = {})", file);
 
         boolean isPdfFile;
@@ -50,7 +84,7 @@ public class ScriptServiceImpl implements ScriptService {
             throw new IllegalFileFormatException("Illegales Dateiformat.");
         }
 
-        Script s = new Script(file);
+        UnparsedScript s = new UnparsedScript(file);
         String raw;
 
         try {
@@ -121,10 +155,71 @@ public class ScriptServiceImpl implements ScriptService {
     }
 
     @Override
+    @Transactional
     public ScriptDto save(SimpleScriptDto simpleScriptDto) throws ServiceException {
         log.trace("save(scriptDto = {})", simpleScriptDto);
-
-        throw new UnsupportedOperationException();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail;
+        if (auth.getPrincipal() instanceof String) {
+            userEmail = (String) auth.getPrincipal();
+        } else {
+            org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) (auth.getPrincipal());
+            userEmail = user.getUsername();
+        }
+        Optional<User> user = userRepository.findByEmail(userEmail);
+        Script script;
+        if (user.isEmpty()) {
+            throw new ServiceException("Authenticated user not found.");
+        } else {
+            script = Script.builder()
+                .name(simpleScriptDto.getName())
+                .owner(user.get())
+                .build();
+            script = scriptRepository.save(script);
+            Set<Role> roles = new HashSet<>();
+            if (simpleScriptDto.getRoles() != null) {
+                for (SimpleRoleDto roleDto : simpleScriptDto.getRoles()) {
+                    Role role = Role.builder()
+                        .script(script)
+                        .name(roleDto.getName())
+                        .color(roleDto.getColor())
+                        .build();
+                    role = roleRepository.save(role);
+                    roles.add(role);
+                }
+            }
+            if (simpleScriptDto.getPages() != null) {
+                for (SimplePageDto pageDto : simpleScriptDto.getPages()) {
+                    Page page = Page.builder()
+                        .script(script)
+                        .index(pageDto.getIndex())
+                        .build();
+                    page = pageRepository.save(page);
+                    if (pageDto.getLines() != null) {
+                        for (SimpleLineDto lineDto : pageDto.getLines()) {
+                            Set<Role> spokenBy = new HashSet<>();
+                            if (lineDto.getRoles() != null) {
+                                for (SimpleRoleDto roleDto : lineDto.getRoles()) {
+                                    Optional<Role> role = roles.stream().filter(r -> r.getName().equals(roleDto.getName())).findFirst();
+                                    role.ifPresent(spokenBy::add);
+                                }
+                            }
+                            Line line = Line.builder()
+                                .page(page)
+                                .index(lineDto.getIndex())
+                                .content(lineDto.getContent())
+                                .spokenBy(spokenBy)
+                                .active(lineDto.isActive())
+                                .build();
+                            lineRepository.save(line);
+                        }
+                    }
+                }
+            }
+        }
+        SimpleUserDto owner = userMapper.userToSimpleUserDto(script.getOwner());
+        ScriptDto scriptDto = simpleScriptMapper.simpleScriptDtoToScriptDto(simpleScriptDto, script.getId(), owner);
+        return scriptDto;
     }
 
     @Override
