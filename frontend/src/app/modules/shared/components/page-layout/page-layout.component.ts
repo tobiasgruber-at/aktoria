@@ -1,8 +1,8 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {Router} from '@angular/router';
-import {Theme} from '../../enums/theme.enum';
-import {ToastService} from '../../../core/services/toast/toast.service';
-import {AuthService} from '../../../core/services/auth/auth-service';
+import { Component, Input, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { Theme } from '../../enums/theme.enum';
+import { ToastService } from '../../../core/services/toast/toast.service';
+import { AuthService } from '../../../core/services/auth/auth-service';
 
 /** @author Tobias Gruber */
 @Component({

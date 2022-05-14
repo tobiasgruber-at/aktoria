@@ -8,9 +8,9 @@
   >
     <span><ng-content></ng-content></span>
     <div
+      (click)="close()"
       *ngIf="closeable"
       class="close d-flex justify-content-center"
-      (click)="close()"
     >
       &times;
     </div>
