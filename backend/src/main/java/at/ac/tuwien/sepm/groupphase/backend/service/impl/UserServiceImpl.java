@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
+import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordChangeDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
@@ -20,6 +21,7 @@ import at.ac.tuwien.sepm.groupphase.backend.service.SecureTokenService;
 import at.ac.tuwien.sepm.groupphase.backend.service.UserService;
 import at.ac.tuwien.sepm.groupphase.backend.validation.UserValidation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.core.GrantedAuthority;
@@ -28,8 +30,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -49,15 +55,25 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final MailSender mailSender;
     private final SecureTokenService secureTokenService;
+    private final SecurityProperties securityProperties;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, UserValidation userValidation, PasswordEncoder passwordEncoder, UserMapper userMapper, MailSender mailSender, SecureTokenService secureTokenService) {
+    public UserServiceImpl(
+        UserRepository userRepository,
+        UserValidation userValidation,
+        PasswordEncoder passwordEncoder,
+        UserMapper userMapper,
+        MailSender mailSender,
+        SecureTokenService secureTokenService,
+        SecurityProperties securityProperties
+    ) {
         this.userRepository = userRepository;
         this.userValidation = userValidation;
         this.passwordEncoder = passwordEncoder;
         this.userMapper = userMapper;
         this.mailSender = mailSender;
         this.secureTokenService = secureTokenService;
+        this.securityProperties = securityProperties;
     }
 
     @Override
@@ -74,7 +90,7 @@ public class UserServiceImpl implements UserService {
 
         User user = userMapper.userRegistrationDtoToUser(userRegistrationDto, false, passwordEncoder.encode(userRegistrationDto.getPassword()));
         User savedUser = userRepository.saveAndFlush(user);
-        // sendEmailVerificationLink(savedUser);
+        sendEmailVerificationLink(savedUser);
 
         return userMapper.userToSimpleUserDto(savedUser);
     }
@@ -141,36 +157,64 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void forgotPassword(String email) throws NotFoundException {
+    public void forgotPassword(String email) throws NotFoundException, ServiceException {
         log.trace("forgotPassword(email = {})", email);
-        //TODO:
 
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        if (!userOptional.isPresent()) {
+            throw new NotFoundException("Es exisitert kein User mit dieser Mail-Adresse.");
+        }
+        User user = userOptional.get();
+
+        SecureToken secureToken = secureTokenService.createSecureToken(TokenType.resetPassword);
+        secureToken.setAccount(user);
+        secureTokenService.saveSecureToken(secureToken);
+
+        final String link = String.join("", "http://localhost:4200/#/password/restore/", secureToken.getToken());
+        try {
+            mailSender.sendMail(user.getEmail(), "Aktoria Passwort zurücksetzten",
+                """
+                        <h1>Hallo %s,</h1>
+                        klick auf den folgenden Link, um ein neues Passwort zu wählen.
+                        <br>
+                        <a href='%s'>Passwort zurücksetzten</a>
+                    """
+                    .formatted(user.getFirstName(), link));
+        } catch (MessagingException e) {
+            throw new ServiceException(e.getMessage(), e);
+        }
     }
 
     @Override
     public DetailedUserDto changePassword(PasswordChangeDto passwordChangeDto, Long id) throws ServiceException, ValidationException, NotFoundException {
         log.trace("changePassword(passwordChangeDto = {}, id = {})", passwordChangeDto, id);
 
-        Optional<User> userOptional = userRepository.findById(id);
-        User user;
-        if (userOptional.isPresent()) {
-            user = userOptional.get();
-        } else {
-            throw new NotFoundException("User exisitert nicht!");
+        try {
+            userValidation.validateChangePasswordInput(passwordChangeDto);
+        } catch (ValidationException e) {
+            throw new ValidationException(e.getMessage(), e);
         }
 
-        if (!(passwordEncoder.matches(passwordChangeDto.getOldPassword(), user.getPasswordHash()))) {
-            throw new ValidationException("Passwort ist falsch!");
-        } else {
-            try {
-                userValidation.validateChangePasswordInput(passwordChangeDto);
-            } catch (ValidationException e) {
-                throw new ValidationException(e.getMessage(), e);
+        String token = passwordChangeDto.getToken();
+
+        if (token != null) {
+            SecureToken secureToken = secureTokenService.findByToken(token);
+            secureTokenService.removeToken(token);
+            if (secureToken.getType() == TokenType.resetPassword) {
+                if (secureToken.getExpireAt().isAfter(LocalDateTime.now())) {
+                    User user = secureToken.getAccount();
+                    user.setPasswordHash(passwordEncoder.encode(passwordChangeDto.getNewPassword()));
+                    user = userRepository.saveAndFlush(user);
+                    return userMapper.userToDetailedUserDto(user);
+                } else {
+                    throw new InvalidTokenException();
+                }
+            } else {
+                throw new InvalidTokenException();
             }
-            user.setPasswordHash(passwordEncoder.encode(passwordChangeDto.getNewPassword()));
-            userRepository.saveAndFlush(user);
-            return userMapper.userToDetailedUserDto(user);
         }
+
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -178,8 +222,11 @@ public class UserServiceImpl implements UserService {
         log.trace("loadUserByUsername(email = {})", email);
 
         try {
-            User user = findByEmail(email);
-
+            Optional<User> userOptional = userRepository.findByEmail(email);
+            if (!userOptional.isPresent()) {
+                throw new NotFoundException("Es konnte kein Benutzer gefunden werden.");
+            }
+            User user = userOptional.get();
             List<GrantedAuthority> grantedAuthorities;
             if (user.getVerified()) {
                 grantedAuthorities = AuthorityUtils.createAuthorityList("ROLE_VERIFIED", "ROLE_USER");
@@ -194,12 +241,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findByEmail(String email) throws NotFoundException {
+    public SimpleUserDto findByEmail(String email) throws NotFoundException {
         log.trace("findUserByEmail(email = {})", email);
 
         Optional<User> userOptional = userRepository.findByEmail(email);
         if (userOptional.isPresent()) {
-            return userOptional.get();
+            return userMapper.userToSimpleUserDto(userOptional.get());
         } else {
             throw new NotFoundException("Es konnte kein Benutzer gefunden werden.");
         }
@@ -213,12 +260,12 @@ public class UserServiceImpl implements UserService {
         secureToken.setAccount(user);
         secureTokenService.saveSecureToken(secureToken);
 
-        final String link = String.join("", "http://localhost:8080/api/v1/users/verification/", secureToken.getToken());
+        final String link = String.join("", "http://localhost:4200/#/verifyEmail/", secureToken.getToken());
         try {
             mailSender.sendMail(user.getEmail(), "Aktoria Verifikationslink",
                 """
                         <h1>Hallo %s,</h1>
-                        klick auf den folgenden Link um deine Mailadresse zu bestätigen.
+                        klick auf den folgenden Link, um deine Mailadresse zu bestätigen.
                         <br>
                         <a href='%s'>Email Adresse bestätigen</a>
                         <br>
@@ -232,16 +279,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void resendEmailVerificationLink(Long id) throws ServiceException, NotFoundException {
-        log.trace("resendEmailVerificationLink(id = {})", id);
+    public void resendEmailVerificationLink() throws ServiceException, NotFoundException {
+        log.trace("resendEmailVerificationLink()");
 
-        Optional<User> userOptional = userRepository.findById(id);
+        String email = getCurrentUserEmail();
+
+        Optional<User> userOptional = userRepository.findByEmail(email);
         if (userOptional.isPresent()) {
-            try {
-                sendEmailVerificationLink(userOptional.get());
-            } catch (ServiceException e) {
-                throw new ServiceException(e.getMessage(), e);
-            }
+            sendEmailVerificationLink(userOptional.get());
         } else {
             throw new NotFoundException("Es konnte kein Benutzer gefunden werden.");
         }
@@ -263,6 +308,22 @@ public class UserServiceImpl implements UserService {
             }
         } else {
             throw new InvalidTokenException();
+        }
+    }
+
+    /**
+     * Get the email of the logged in user, returns null if user is not logged in.
+     *
+     * @return the email address of the current user
+     */
+    public String getCurrentUserEmail() {
+        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        if (requestAttributes instanceof ServletRequestAttributes) {
+            HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
+            String token = request.getHeader(securityProperties.getAuthHeader());
+            return (new String(Base64.decodeBase64(token.split("\\.")[1]))).split("sub\":\"")[1].split("\"")[0];
+        } else {
+            return null;
         }
     }
 }

@@ -1,7 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
-import at.ac.tuwien.sepm.groupphase.backend.entity.id.RoleId;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,11 +12,12 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.IdClass;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import java.awt.Color;
+import java.util.List;
 
 /**
  * Entity class for roles.
@@ -25,9 +26,9 @@ import java.awt.Color;
  */
 @Entity
 @Table(name = "role")
-@IdClass(RoleId.class)
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Role {
@@ -36,7 +37,7 @@ public class Role {
     private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @PrimaryKeyJoinColumn
+    @JoinColumn(name = "script", nullable = false)
     private Script script;
 
     @Column(name = "name", length = 100, nullable = false)
@@ -44,4 +45,7 @@ public class Role {
 
     @Column(name = "color")
     private Color color;
+
+    @ManyToMany(mappedBy = "spokenBy")
+    private List<Line> lines;
 }

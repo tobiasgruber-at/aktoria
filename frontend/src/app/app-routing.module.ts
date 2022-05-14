@@ -32,6 +32,27 @@ const routes: Routes = [
         (m) => m.ScriptsModule
       )
   },
+  {
+    path: 'verifyEmail/:token',
+    loadChildren: () =>
+      import('./modules/features/verify-email/verify-email.module').then(
+        (m) => m.VerifyEmailModule
+      )
+  },
+  {
+    path: 'password/reset',
+    loadChildren: () =>
+      import('./modules/features/password/reset-password/reset-password.module').then(
+        (m) => m.ResetPasswordModule
+      )
+  },
+  {
+    path: 'password/restore/:token',
+    loadChildren: () =>
+      import('./modules/features/password/restore-password/restore-password.module').then(
+        (m) => m.RestorePasswordModule
+      )
+  },
   // TODO: remove sometime
   {
     path: 'message',

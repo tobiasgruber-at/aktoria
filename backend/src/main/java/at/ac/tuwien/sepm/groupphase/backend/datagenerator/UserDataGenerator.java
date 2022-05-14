@@ -7,8 +7,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-
 @Slf4j
 @Profile("datagen")
 @Component
@@ -29,8 +27,7 @@ public class UserDataGenerator {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @PostConstruct
-    private void generateUser() {
+    void generateUser() {
         if (userRepository.findAll().size() > 0) {
             log.debug("users already generated");
         } else {
