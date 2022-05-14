@@ -61,7 +61,7 @@ public class ParsedScript {
     }
 
     private void indexComponents() {
-        log.trace("indexPages()");
+        log.trace("indexComponents()");
 
         pages = new LinkedList<>();
 

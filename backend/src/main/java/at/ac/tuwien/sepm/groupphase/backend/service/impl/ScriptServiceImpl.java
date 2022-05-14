@@ -159,7 +159,7 @@ public class ScriptServiceImpl implements ScriptService {
     public ScriptDto save(SimpleScriptDto simpleScriptDto) throws ServiceException {
         log.trace("save(scriptDto = {})", simpleScriptDto);
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String userEmail = "";
+        String userEmail;
         if (auth.getPrincipal() instanceof String) {
             userEmail = (String) auth.getPrincipal();
         } else {
