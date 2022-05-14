@@ -163,7 +163,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public DetailedUserDto changePassword(PasswordChangeDto passwordChangeDto, Long id) throws ServiceException, ValidationException, NotFoundException {
+    public DetailedUserDto changePassword(PasswordChangeDto passwordChangeDto, Long id) throws ServiceException, ValidationException, NotFoundException, InvalidTokenException {
         log.trace("changePassword(passwordChangeDto = {}, id = {})", passwordChangeDto, id);
 
         try {
@@ -270,7 +270,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void verifyEmail(String token) throws InvalidTokenException {
+    public void verifyEmail(String token) throws InvalidTokenException, NotFoundException {
         log.trace("verifyEmail(token = {})", token);
 
         SecureToken secureToken = secureTokenService.findByToken(token);
@@ -289,7 +289,7 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * Get the email of the logged in user, returns null if user is not logged in.
+     * Get the email of the logged-in user, returns null if user is not logged in.
      *
      * @return the email address of the current user
      */

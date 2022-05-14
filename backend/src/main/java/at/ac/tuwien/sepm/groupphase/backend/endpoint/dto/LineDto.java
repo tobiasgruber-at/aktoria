@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 /**
- * Line Data Access Object.
+ * Line Data Transfer Object.
  * <br>
  * In contrast to the simple line DTO this DTO holds references to an id,
  * the index of the line, the page it belongs to as well as an audio recording

@@ -19,12 +19,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.annotation.security.PermitAll;
@@ -104,14 +104,14 @@ public class UserEndpoint {
 
     @PostMapping(path = "/reset-password")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void forgottenPassword(@RequestBody String email) throws ServiceException {
+    public void forgottenPassword(@RequestBody String email) throws ServiceException, NotFoundException {
         log.info("POST {}/reset-password", path);
         userService.forgotPassword(email);
     }
 
     @PutMapping(path = "/change-password")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void changePassword(@RequestBody PasswordChangeDto passwordChange) throws ValidationException, ServiceException {
+    public void changePassword(@RequestBody PasswordChangeDto passwordChange) throws ValidationException, ServiceException, InvalidTokenException, NotFoundException {
         log.info("POST {}/reset-password", path);
         userService.changePassword(passwordChange, null);
     }
@@ -119,7 +119,7 @@ public class UserEndpoint {
     @PostMapping(path = "/verification")
     @ResponseStatus(HttpStatus.OK)
     @PermitAll
-    public void verifyEmailToken(@RequestBody String token) throws InvalidTokenException {
+    public void verifyEmailToken(@RequestBody String token) throws InvalidTokenException, NotFoundException {
         log.info("POST {}/verification", path);
         userService.verifyEmail(token);
     }
@@ -127,7 +127,7 @@ public class UserEndpoint {
     @PostMapping(path = "/tokens")
     @ResponseStatus(HttpStatus.OK)
     @Secured("ROLE_USER")
-    public void resendEmailVerificationToken() throws ServiceException {
+    public void resendEmailVerificationToken() throws ServiceException, NotFoundException {
         log.info("POST {}/verification", path);
         userService.resendEmailVerificationLink();
     }

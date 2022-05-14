@@ -7,6 +7,7 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.LineMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.PageMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.RoleMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.SimpleScriptMapper;
+import at.ac.tuwien.sepm.groupphase.backend.exception.IllegalFileFormatException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.service.ScriptService;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.line.Line;
@@ -63,7 +64,7 @@ class ScriptServiceImplIntegrationTest {
 
     @Test
     @DisplayName("newScript() returns the correct DTO")
-    void newScript() throws ServiceException, IOException {
+    void newScript() throws ServiceException, IOException, IllegalFileFormatException {
         final List<Line> expectedLines = new LinkedList<>();
         expectedLines.add(new LineImpl("Erster Akt", 0L));
         expectedLines.add(new LineImpl("Das ist eine Beschreibung der Örtlichkeit, wo sich der erste Akt abspielt. Diese Phrase soll keiner Rolle zugewiesen werden.", 0L));

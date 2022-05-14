@@ -41,7 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * @author Simon Josef Kreuzpointner
  */
 
-@ActiveProfiles({"test", "datagen"})
+@ActiveProfiles({ "test", "datagen" })
 @SpringBootTest
 class UserServiceUnitTest {
 
@@ -149,7 +149,7 @@ class UserServiceUnitTest {
         @Transactional
         @DisplayName("gets the correct user")
         @MethodSource("parameterizedGetUserWorksProvider")
-        void getUserWorks(String input) throws UserNotFoundException, ServiceException {
+        void getUserWorks(String input) throws UserNotFoundException, ServiceException, NotFoundException {
             assertNull(userService.findByEmail(input));
         }
     }

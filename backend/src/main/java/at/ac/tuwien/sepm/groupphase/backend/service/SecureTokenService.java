@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.groupphase.backend.service;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.SecureToken;
 import at.ac.tuwien.sepm.groupphase.backend.enums.TokenType;
+import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 
 /**
  * Service for the secure Token.
@@ -30,7 +31,7 @@ public interface SecureTokenService {
      * @param token the token string
      * @return the corresponding SecureToken
      */
-    SecureToken findByToken(String token);
+    SecureToken findByToken(String token) throws NotFoundException;
 
     /**
      * Removes the Token from the database.

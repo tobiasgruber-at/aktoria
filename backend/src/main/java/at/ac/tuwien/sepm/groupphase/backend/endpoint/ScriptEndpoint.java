@@ -39,7 +39,7 @@ public class ScriptEndpoint {
         this.scriptService = scriptService;
     }
 
-    @PostMapping(path = "/new", produces = {MediaType.APPLICATION_JSON_VALUE}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(path = "/new", produces = { MediaType.APPLICATION_JSON_VALUE }, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     @ResponseStatus(HttpStatus.OK)
     public SimpleScriptDto uploadScript(@RequestPart("file") MultipartFile multipartFile) throws ServiceException {
         log.info("POST {}/new", path);
@@ -74,5 +74,14 @@ public class ScriptEndpoint {
         log.info("GET {}/{}", path, id);
 
         return scriptService.findById(id);
+    }
+
+    @GetMapping(path = "/previews")
+    @ResponseStatus(HttpStatus.OK)
+    @Secured("ROLE_VERIFIED")
+    public Stream<ScriptPreviewDto> getPreviews() throws ServiceException {
+        log.info("GET {}/previews", path);
+
+        return scriptService.findAllPreviews();
     }
 }
