@@ -1,5 +1,4 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { ScriptService } from '../../../../core/services/script/script.service';
 
 @Component({
@@ -11,9 +10,9 @@ export class ScriptListComponent implements OnInit {
   @Input() title: string;
   @Input() hasUploadButton = false;
 
-  constructor(public service: ScriptService, private router: Router) {}
+  constructor(public scriptService: ScriptService) {}
 
   ngOnInit(): void {
-    this.service.getAll();
+    this.scriptService.getAll();
   }
 }

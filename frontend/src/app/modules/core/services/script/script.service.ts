@@ -15,19 +15,13 @@ import { tap } from 'rxjs/operators';
 })
 export class ScriptService {
   private baseUri: string = this.globals.backendUri + '/scripts';
-  private scripts: SimpleScript[] = [];
-  private scriptPreviews: ScriptPreview[] = [];
-  private scriptsSubject = new BehaviorSubject<SimpleScript[]>([]);
-  private scriptPreviewSubject = new BehaviorSubject<ScriptPreview[]>([]);
+  private scripts: ScriptPreview[] = [];
+  private scriptsSubject = new BehaviorSubject<ScriptPreview[]>([]);
 
   constructor(private http: HttpClient, private globals: Globals) {}
 
-  get $scripts(): Observable<SimpleScript[]> {
+  get $scripts(): Observable<ScriptPreview[]> {
     return this.scriptsSubject.asObservable();
-  }
-
-  get $scriptPreviews(): Observable<ScriptPreview[]> {
-    return this.scriptPreviewSubject.asObservable();
   }
 
   /**
@@ -38,8 +32,8 @@ export class ScriptService {
   getAll(): Observable<ScriptPreview[]> {
     return this.http.get<ScriptPreview[]>(this.baseUri).pipe(
       tap((scripts) => {
-        this.scriptPreviews = scripts;
-        this.scriptPreviewSubject.next(this.scriptPreviews);
+        this.scripts = scripts;
+        this.scriptsSubject.next(this.scripts);
       })
     );
   }
@@ -47,10 +41,12 @@ export class ScriptService {
   /**
    * Posts a new script
    *
-   * @param script the script to be posted
+   * @param file the script to be posted
    */
-  post(script): Observable<SimpleScript> {
-    return this.http.post<SimpleScript>(this.baseUri + '/new', script);
+  post(file: File): Observable<SimpleScript> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post<SimpleScript>(this.baseUri + '/new', formData);
   }
 
   postCorrected(script): Observable<DetailedScript> {
@@ -64,7 +60,7 @@ export class ScriptService {
    */
   delete(script: DeleteScriptRequest): Observable<void> {
     return null;
-    //TODO: find correct URL
+    // TODO: find correct URL
     // return this.http.delete<DeleteScriptRequest>(this.baseUri+)
   }
 

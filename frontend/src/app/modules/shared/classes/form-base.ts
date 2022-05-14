@@ -1,6 +1,6 @@
-import { FormGroup } from '@angular/forms';
-import { Theme } from '../enums/theme.enum';
-import { ToastService } from '../../core/services/toast/toast.service';
+import {FormGroup} from '@angular/forms';
+import {Theme} from '../enums/theme.enum';
+import {ToastService} from '../../core/services/toast/toast.service';
 
 /** @author Tobias Gruber */
 export abstract class FormBase {
@@ -38,7 +38,7 @@ export abstract class FormBase {
     console.log(error);
     let errorMessage = '';
     if (typeof error.error === 'object') {
-      errorMessage = error.error.message;
+      errorMessage = error.error?.message;
     } else {
       errorMessage = error.error;
     }

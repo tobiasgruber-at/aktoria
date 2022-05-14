@@ -1,11 +1,7 @@
 <h2>{{ title }}</h2>
 <div class="mb-5 d-flex gap-3">
   <ng-container *ngIf="hasUploadButton">
-    <button
-      class="btn btn-light p-3"
-      routerLink="/scripts/new"
-      style="width: 10rem; height: 10rem"
-    >
+    <button class="btn btn-light p-3" routerLink="/scripts/new">
       <img
         alt="Skript Zeichen mit einem Plus"
         src="../../../../../../assets/illustrations/script_plus_cropped.svg"
@@ -15,7 +11,7 @@
   </ng-container>
   <ng-content></ng-content>
   <app-script-list-item
-    *ngFor="let script of service?.$scriptPreviews | async"
+    *ngFor="let script of scriptService?.$scripts | async"
     [script]="script"
   ></app-script-list-item>
 </div>

@@ -26,8 +26,7 @@ const routes: Routes = [
   },
   {
     path: 'scripts',
-    //TODO: uncomment
-    //canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
     loadChildren: () =>
       import('./modules/features/scripts/scripts.module').then(
         (m) => m.ScriptsModule
@@ -43,25 +42,16 @@ const routes: Routes = [
   {
     path: 'password/reset',
     loadChildren: () =>
-      import('./modules/features/password/reset-password/reset-password.module').then(
-        (m) => m.ResetPasswordModule
-      )
+      import(
+        './modules/features/password/reset-password/reset-password.module'
+      ).then((m) => m.ResetPasswordModule)
   },
   {
     path: 'password/restore/:token',
     loadChildren: () =>
-      import('./modules/features/password/restore-password/restore-password.module').then(
-        (m) => m.RestorePasswordModule
-      )
-  },
-  // TODO: remove sometime
-  {
-    path: 'message',
-    canActivate: [AuthGuard],
-    loadChildren: () =>
-      import('./modules/features/message/message.module').then(
-        (m) => m.MessageModule
-      )
+      import(
+        './modules/features/password/restore-password/restore-password.module'
+      ).then((m) => m.RestorePasswordModule)
   },
   { path: '**', redirectTo: '' }
 ];

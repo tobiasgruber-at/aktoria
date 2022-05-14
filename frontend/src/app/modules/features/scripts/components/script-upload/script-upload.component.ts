@@ -41,25 +41,22 @@ export class ScriptUploadComponent extends FormBase implements OnInit {
   }
 
   protected sendSubmit() {
-    this.scriptService.post(this.form.value).subscribe({
+    const { file } = this.form.value;
+    this.scriptService.post(file).subscribe({
       next: (res) => {
-        const script = res;
+        let script = res;
         this.toastService.show({
           message: 'Datei wurde erfolgreich hochgeladen!',
           theme: Theme.primary
         });
         this.router.navigateByUrl('/scripts');
-
         // TODO: refactor
-        /*
         this.scriptService.postCorrected(res).subscribe({
           next: (detailedScript) => {
             script = detailedScript;
             console.log(script);
-            //TODO: remove console log
-          }hallihallo
+          }
         });
-         */
       },
 
       error: (err) => this.handleError(err)
