@@ -79,6 +79,7 @@ public class ParsedScript {
                 pages.add(curPage);
                 curPage = new PageImpl();
                 curPage.setIndex(curPageIndex);
+                previousPageIndex++;
             }
             curPage.add(l);
         }

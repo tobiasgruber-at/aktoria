@@ -62,6 +62,7 @@ public class ScriptEndpoint {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
+    @Secured("ROLE_VERIFIED")
     public Stream<ScriptPreviewDto> getScriptPreviews() throws ServiceException {
         log.info("GET {}", path);
 
@@ -74,14 +75,5 @@ public class ScriptEndpoint {
         log.info("GET {}/{}", path, id);
 
         return scriptService.findById(id);
-    }
-
-    @GetMapping(path = "/previews")
-    @ResponseStatus(HttpStatus.OK)
-    @Secured("ROLE_VERIFIED")
-    public Stream<ScriptPreviewDto> getPreviews() throws ServiceException {
-        log.info("GET {}/previews", path);
-
-        return scriptService.findAllPreviews();
     }
 }
