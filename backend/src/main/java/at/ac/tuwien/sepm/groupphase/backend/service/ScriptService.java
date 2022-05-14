@@ -30,7 +30,7 @@ public interface ScriptService {
      * @throws ServiceException           when an error occurs while trying to process the file
      * @throws IllegalFileFormatException when the given file is not a pdf
      */
-    SimpleScriptDto create(MultipartFile file) throws ServiceException, IllegalFileFormatException;
+    SimpleScriptDto parse(MultipartFile file) throws ServiceException, IllegalFileFormatException;
 
     /**
      * Saves a given script in the data storage.

@@ -64,7 +64,7 @@ class ScriptServiceImplIntegrationTest {
     @Test
     @DisplayName("newScript() returns the correct DTO")
     void newScript() throws ServiceException, IOException {
-        List<Line> expectedLines = new LinkedList<>();
+        final List<Line> expectedLines = new LinkedList<>();
         expectedLines.add(new LineImpl("Erster Akt", 0L));
         expectedLines.add(new LineImpl("Das ist eine Beschreibung der Örtlichkeit, wo sich der erste Akt abspielt. Diese Phrase soll keiner Rolle zugewiesen werden.", 0L));
         expectedLines.add(new LineImpl("ALICE Das ist die erste Phrase in diesem Theaterstück. Diese Phrase soll Alice zugeteilt werden.", 0L));
@@ -90,25 +90,25 @@ class ScriptServiceImplIntegrationTest {
         expectedLines.get(9).setIndex(9L);
         expectedLines.get(10).setIndex(10L);
 
-        List<Page> expectedPages = new LinkedList<>();
+        final List<Page> expectedPages = new LinkedList<>();
         expectedPages.add(new PageImpl(expectedLines, 0L));
 
-        List<String> expectedRoles = new LinkedList<>();
+        final List<String> expectedRoles = new LinkedList<>();
         expectedRoles.add("ALICE");
         expectedRoles.add("BOB");
         expectedRoles.add("MR. MISTER");
         expectedRoles.add("ANNA P.");
         expectedRoles.add("LADY MARI-MUSTER");
 
-        File f = new File("./src/test/resources/service/parsing/script/Skript_NF.pdf");
-        MultipartFile multipartFile = new MockMultipartFile("file", new FileInputStream(f));
-        ScriptService scriptService = new ScriptServiceImpl(simpleScriptMapper);
+        final File f = new File("./src/test/resources/service/parsing/script/Skript_NF.pdf");
+        final MultipartFile multipartFile = new MockMultipartFile("file", new FileInputStream(f));
+        final ScriptService scriptService = new ScriptServiceImpl(simpleScriptMapper, null, null, null, null, null, null);
 
-        List<SimplePageDto> expectedPagesDto = pageMapper.listOfPageToListOfSimplePageDto(expectedPages);
-        List<SimpleRoleDto> expectedRolesDto = roleMapper.listOfStringToListOfSimpleRoleDto(expectedRoles);
+        final List<SimplePageDto> expectedPagesDto = pageMapper.listOfPageToListOfSimplePageDto(expectedPages);
+        final List<SimpleRoleDto> expectedRolesDto = roleMapper.listOfStringToListOfSimpleRoleDto(expectedRoles);
 
-        SimpleScriptDto actual = scriptService.create(multipartFile);
-        SimpleScriptDto expected = new SimpleScriptDto(multipartFile.getName(), expectedPagesDto, expectedRolesDto);
+        final SimpleScriptDto actual = scriptService.parse(multipartFile);
+        final SimpleScriptDto expected = new SimpleScriptDto(multipartFile.getName(), expectedPagesDto, expectedRolesDto);
 
         assertEquals(expected, actual);
     }

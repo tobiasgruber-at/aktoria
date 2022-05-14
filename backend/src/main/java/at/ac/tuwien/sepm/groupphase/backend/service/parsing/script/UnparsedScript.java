@@ -14,12 +14,12 @@ import java.lang.invoke.MethodHandles;
  *
  * @author Simon Josef Kreuzpointner
  */
-public class Script {
+public class UnparsedScript {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final MultipartFile pdfFile;
 
-    public Script(MultipartFile pdfFile) {
+    public UnparsedScript(MultipartFile pdfFile) {
         this.pdfFile = pdfFile;
     }
 

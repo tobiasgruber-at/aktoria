@@ -3,10 +3,8 @@ package at.ac.tuwien.sepm.groupphase.backend.service.parsing.script;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.line.Line;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.page.Page;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.page.impl.PageImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
-import java.lang.invoke.MethodHandles;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -17,9 +15,8 @@ import java.util.StringJoiner;
  *
  * @author Simon Josef Kreuzpointner
  */
+@Slf4j
 public class ParsedScript {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final List<Line> lines;
     private final List<String> roles;
     private List<Page> pages;
@@ -64,7 +61,7 @@ public class ParsedScript {
     }
 
     private void indexComponents() {
-        LOGGER.trace("indexPages()");
+        log.trace("indexComponents()");
 
         pages = new LinkedList<>();
 
@@ -78,7 +75,7 @@ public class ParsedScript {
         for (Line l : lines) {
             l.setIndex(curLineIndex++);
             curPageIndex = l.getPage();
-            if (previousPageIndex != curPageIndex) {
+            if (!previousPageIndex.equals(curPageIndex)) {
                 pages.add(curPage);
                 curPage = new PageImpl();
                 curPage.setIndex(curPageIndex);
@@ -91,7 +88,7 @@ public class ParsedScript {
 
     @Override
     public String toString() {
-        LOGGER.trace("toString()");
+        log.trace("toString()");
 
         StringJoiner stringJoiner = new StringJoiner("\n");
 

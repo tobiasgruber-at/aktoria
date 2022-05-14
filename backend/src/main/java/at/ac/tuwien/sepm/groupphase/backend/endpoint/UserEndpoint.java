@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedUserDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordChangeDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UpdateUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserRegistrationDto;
@@ -12,6 +13,7 @@ import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -20,10 +22,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.server.ResponseStatusException;
+
+import javax.annotation.security.PermitAll;
 
 /**
  * Endpoint for user related requests.
@@ -41,14 +45,12 @@ public class UserEndpoint {
         this.userService = userService;
     }
 
-    @GetMapping(path = "/{id}")
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
-    public SimpleUserDto getUser(@PathVariable Long id) {
-        log.info("GET {}/{}", path, id);
-
+    public SimpleUserDto getUser(@RequestParam String email) {
+        log.info("GET {}/{}", path, email);
         try {
-            return userService.findById(id);
+            return userService.findByEmail(email);
         } catch (NotFoundException e) {
             log.error(e.getMessage(), e);
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
@@ -57,7 +59,6 @@ public class UserEndpoint {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @ResponseBody
     public SimpleUserDto postUser(@RequestBody UserRegistrationDto userRegistrationDto) throws ServiceException {
         log.info("POST {}", path);
 
@@ -74,7 +75,6 @@ public class UserEndpoint {
 
     @PatchMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
     public DetailedUserDto patchUser(@RequestParam Boolean passwordChange, @RequestBody UpdateUserDto updateUserDto, @PathVariable Long id) throws ServiceException {
         log.info("PATCH {}/{}", path, id);
 
@@ -102,33 +102,33 @@ public class UserEndpoint {
         }
     }
 
-    @PostMapping(path = "/forgotten-password")
-    @ResponseStatus(HttpStatus.CREATED)
-    public void forgottenPassword(@RequestBody String email) {
-        log.info("POST {}/forgotten-password", path);
-
-        try {
-            userService.forgotPassword(email);
-        } catch (NotFoundException e) {
-            log.error(e.getMessage(), e);
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
-        }
+    @PostMapping(path = "/reset-password")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void forgottenPassword(@RequestBody String email) throws ServiceException {
+        log.info("POST {}/reset-password", path);
+        userService.forgotPassword(email);
     }
 
-    @GetMapping(path = "/submitToken/{token}")
-    @ResponseStatus(HttpStatus.OK)
-    public String verifyEmailToken(@PathVariable String token) throws InvalidTokenException {
-        log.info("POST {}/submitToken/{}", path, token);
+    @PutMapping(path = "/change-password")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void changePassword(@RequestBody PasswordChangeDto passwordChange) throws ValidationException, ServiceException {
+        log.info("POST {}/reset-password", path);
+        userService.changePassword(passwordChange, null);
+    }
 
+    @PostMapping(path = "/verification")
+    @ResponseStatus(HttpStatus.OK)
+    @PermitAll
+    public void verifyEmailToken(@RequestBody String token) throws InvalidTokenException {
+        log.info("POST {}/verification", path);
         userService.verifyEmail(token);
-        return "account verified";
     }
 
-    @PostMapping(path = "/verificationToken")
+    @PostMapping(path = "/tokens")
     @ResponseStatus(HttpStatus.OK)
-    public void resendEmailVerificationToken(@RequestBody Long id) throws ServiceException {
-        log.info("POST {}/verificationToken", path);
-
-        userService.resendEmailVerificationLink(id);
+    @Secured("ROLE_USER")
+    public void resendEmailVerificationToken() throws ServiceException {
+        log.info("POST {}/verification", path);
+        userService.resendEmailVerificationLink();
     }
 }

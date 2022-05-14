@@ -7,6 +7,8 @@ import { UserRegistration } from '../../shared/dtos/user-dtos';
 import { FormBase } from '../../shared/classes/form-base';
 import { Theme } from '../../shared/enums/theme.enum';
 import { matchingPasswordsValidator } from '../../shared/validators/matching-passwords-validator';
+import {AuthRequest} from '../../shared/dtos/auth-request';
+import {AuthService} from '../../core/services/auth/auth-service';
 
 /** @author Tobias Gruber */
 @Component({
@@ -19,7 +21,8 @@ export class RegistrationComponent extends FormBase implements OnInit {
     private formBuilder: FormBuilder,
     private userService: UserService,
     private router: Router,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private authService: AuthService
   ) {
     super(toastService);
   }
@@ -46,14 +49,26 @@ export class RegistrationComponent extends FormBase implements OnInit {
       .register(new UserRegistration(firstName, lastName, email, password))
       .subscribe({
         next: (res) => {
-          this.toggleLoading(false);
-          this.router.navigateByUrl('/');
           this.toastService.show({
             message: 'Erfolgreich registriert!',
             theme: Theme.primary
           });
+          this.login(email, password);
         },
         error: (err) => this.handleError(err)
       });
+  }
+
+  private login(email: string, password: string): void {
+    this.authService.loginUser(new AuthRequest(email, password)).subscribe({
+      next: () => {
+        this.toggleLoading(false);
+        console.log('Successfully logged in user: ' + email);
+        this.router.navigateByUrl('/');
+      },
+      error: (err) => {
+        this.handleError(err);
+      }
+    });
   }
 }
