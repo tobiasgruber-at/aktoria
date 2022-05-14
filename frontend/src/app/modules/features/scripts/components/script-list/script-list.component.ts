@@ -1,6 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { SimpleScript } from '../../../../shared/dtos/script-dtos';
 import { ScriptService } from '../../../../core/services/script/script.service';
 
 @Component({
@@ -9,19 +8,12 @@ import { ScriptService } from '../../../../core/services/script/script.service';
   styleUrls: ['./script-list.component.scss']
 })
 export class ScriptListComponent implements OnInit {
-  scripts: SimpleScript[];
+  @Input() title: string;
+  @Input() hasUploadButton = false;
 
-  constructor(private service: ScriptService, private router: Router) {}
+  constructor(public service: ScriptService, private router: Router) {}
 
   ngOnInit(): void {
-    this.getAllScripts();
-  }
-
-  getAllScripts() {
-    this.service.getAll().subscribe({
-      next: (data) => {
-        this.scripts = data;
-      }
-    });
+    this.service.getAll();
   }
 }

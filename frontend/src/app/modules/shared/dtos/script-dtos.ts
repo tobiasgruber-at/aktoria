@@ -10,6 +10,16 @@ export class SimpleScript {
   protected pages: Page[];
   protected roles: Role[];
   protected name: string;
+
+  constructor(pages: Page[], roles: Role[], name: string) {
+    this.pages = pages;
+    this.roles = roles;
+    this.name = name;
+  }
+}
+
+export class ScriptPreview {
+  constructor(public readonly id: number, public readonly name: string) {}
 }
 
 export class DetailedScript extends SimpleScript {

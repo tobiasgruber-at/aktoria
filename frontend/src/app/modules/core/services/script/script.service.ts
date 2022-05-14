@@ -5,6 +5,7 @@ import { Globals } from '../../global/globals';
 import {
   DeleteScriptRequest,
   DetailedScript,
+  ScriptPreview,
   SimpleScript
 } from '../../../shared/dtos/script-dtos';
 import { tap } from 'rxjs/operators';
@@ -15,7 +16,9 @@ import { tap } from 'rxjs/operators';
 export class ScriptService {
   private baseUri: string = this.globals.backendUri + '/scripts';
   private scripts: SimpleScript[] = [];
+  private scriptPreviews: ScriptPreview[] = [];
   private scriptsSubject = new BehaviorSubject<SimpleScript[]>([]);
+  private scriptPreviewSubject = new BehaviorSubject<ScriptPreview[]>([]);
 
   constructor(private http: HttpClient, private globals: Globals) {}
 
@@ -23,16 +26,20 @@ export class ScriptService {
     return this.scriptsSubject.asObservable();
   }
 
+  get $scriptPreviews(): Observable<ScriptPreview[]> {
+    return this.scriptPreviewSubject.asObservable();
+  }
+
   /**
-   * Gets all scripts
+   * Gets all script previews
    *
-   * @return observable list of scripts
+   * @return observable list of script previews
    */
-  getAll(): Observable<SimpleScript[]> {
-    return this.http.get<SimpleScript[]>(this.baseUri).pipe(
+  getAll(): Observable<ScriptPreview[]> {
+    return this.http.get<ScriptPreview[]>(this.baseUri).pipe(
       tap((scripts) => {
-        this.scripts = scripts;
-        this.scriptsSubject.next(this.scripts);
+        this.scriptPreviews = scripts;
+        this.scriptPreviewSubject.next(this.scriptPreviews);
       })
     );
   }
