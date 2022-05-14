@@ -36,7 +36,7 @@ public class ScriptServiceImpl implements ScriptService {
     }
 
     @Override
-    public SimpleScriptDto create(MultipartFile file) throws ServiceException {
+    public SimpleScriptDto create(MultipartFile file) throws ServiceException, IllegalFileFormatException {
         log.trace("newScript(pdfScript = {})", file);
 
         boolean isPdfFile;

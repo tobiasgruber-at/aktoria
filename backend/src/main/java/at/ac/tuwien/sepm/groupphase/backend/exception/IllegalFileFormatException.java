@@ -5,7 +5,7 @@ package at.ac.tuwien.sepm.groupphase.backend.exception;
  *
  * @author Simon Josef Kreuzpointner
  */
-public class IllegalFileFormatException extends RuntimeException {
+public class IllegalFileFormatException extends Exception {
 
     public IllegalFileFormatException() {
         super();

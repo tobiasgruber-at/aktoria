@@ -44,7 +44,7 @@ public class SecureTokenServiceImpl implements SecureTokenService {
     }
 
     @Override
-    public SecureToken findByToken(String token) {
+    public SecureToken findByToken(String token) throws NotFoundException {
         Optional<SecureToken> secureTokenOptional = secureTokenRepository.findByToken(token);
         if (secureTokenOptional.isPresent()) {
             return secureTokenOptional.get();

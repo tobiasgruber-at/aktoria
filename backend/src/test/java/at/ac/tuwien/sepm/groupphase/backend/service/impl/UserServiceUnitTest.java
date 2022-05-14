@@ -149,7 +149,7 @@ class UserServiceUnitTest {
         @Transactional
         @DisplayName("gets the correct user")
         @MethodSource("parameterizedGetUserWorksProvider")
-        void getUserWorks(String input) throws UserNotFoundException, ServiceException {
+        void getUserWorks(String input) throws UserNotFoundException, ServiceException, NotFoundException {
             assertNull(userService.findByEmail(input));
         }
     }

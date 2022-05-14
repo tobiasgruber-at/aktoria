@@ -104,14 +104,14 @@ public class UserEndpoint {
 
     @PostMapping(path = "/reset-password")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void forgottenPassword(@RequestBody String email) throws ServiceException {
+    public void forgottenPassword(@RequestBody String email) throws ServiceException, NotFoundException {
         log.info("POST {}/reset-password", path);
         userService.forgotPassword(email);
     }
 
     @PutMapping(path = "/change-password")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void changePassword(@RequestBody PasswordChangeDto passwordChange) throws ValidationException, ServiceException {
+    public void changePassword(@RequestBody PasswordChangeDto passwordChange) throws ValidationException, ServiceException, InvalidTokenException, NotFoundException {
         log.info("POST {}/reset-password", path);
         userService.changePassword(passwordChange, null);
     }
@@ -119,7 +119,7 @@ public class UserEndpoint {
     @PostMapping(path = "/verification")
     @ResponseStatus(HttpStatus.OK)
     @PermitAll
-    public void verifyEmailToken(@RequestBody String token) throws InvalidTokenException {
+    public void verifyEmailToken(@RequestBody String token) throws InvalidTokenException, NotFoundException {
         log.info("POST {}/verification", path);
         userService.verifyEmail(token);
     }
@@ -127,7 +127,7 @@ public class UserEndpoint {
     @PostMapping(path = "/tokens")
     @ResponseStatus(HttpStatus.OK)
     @Secured("ROLE_USER")
-    public void resendEmailVerificationToken() throws ServiceException {
+    public void resendEmailVerificationToken() throws ServiceException, NotFoundException {
         log.info("POST {}/verification", path);
         userService.resendEmailVerificationLink();
     }
