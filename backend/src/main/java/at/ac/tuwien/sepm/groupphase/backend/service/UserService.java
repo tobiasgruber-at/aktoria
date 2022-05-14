@@ -116,4 +116,6 @@ public interface UserService extends UserDetailsService {
      * @param token the token string
      */
     void verifyEmail(String token) throws InvalidTokenException;
+
+    String getCurrentUserEmail();
 }

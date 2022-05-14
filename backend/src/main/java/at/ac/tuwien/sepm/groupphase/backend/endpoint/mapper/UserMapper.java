@@ -9,7 +9,6 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface UserMapper {
-
     User userRegistrationDtoToUser(UserRegistrationDto userRegistrationDto, Boolean verified, String passwordHash);
 
     DetailedUserDto userToDetailedUserDto(User user);
