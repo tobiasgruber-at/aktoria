@@ -158,6 +158,8 @@ public class ScriptServiceImpl implements ScriptService {
     @Transactional
     public ScriptDto save(SimpleScriptDto simpleScriptDto) throws ServiceException {
         log.trace("save(scriptDto = {})", simpleScriptDto);
+
+        // TODO: refactor
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String userEmail;
         if (auth.getPrincipal() instanceof String) {
@@ -167,56 +169,57 @@ public class ScriptServiceImpl implements ScriptService {
             userEmail = user.getUsername();
         }
         Optional<User> user = userRepository.findByEmail(userEmail);
-        Script script;
         if (user.isEmpty()) {
             throw new ServiceException("Authenticated user not found.");
-        } else {
-            script = Script.builder()
-                .name(simpleScriptDto.getName())
-                .owner(user.get())
-                .build();
-            script = scriptRepository.save(script);
-            Set<Role> roles = new HashSet<>();
-            if (simpleScriptDto.getRoles() != null) {
-                for (SimpleRoleDto roleDto : simpleScriptDto.getRoles()) {
-                    Role role = Role.builder()
-                        .script(script)
-                        .name(roleDto.getName())
-                        .color(roleDto.getColor())
-                        .build();
-                    role = roleRepository.save(role);
-                    roles.add(role);
-                }
+        }
+
+        Script script;
+        script = Script.builder()
+            .name(simpleScriptDto.getName())
+            .owner(user.get())
+            .build();
+        script = scriptRepository.save(script);
+        Set<Role> roles = new HashSet<>();
+        if (simpleScriptDto.getRoles() != null) {
+            for (SimpleRoleDto roleDto : simpleScriptDto.getRoles()) {
+                Role role = Role.builder()
+                    .script(script)
+                    .name(roleDto.getName())
+                    .color(roleDto.getColor())
+                    .build();
+                role = roleRepository.save(role);
+                roles.add(role);
             }
-            if (simpleScriptDto.getPages() != null) {
-                for (SimplePageDto pageDto : simpleScriptDto.getPages()) {
-                    Page page = Page.builder()
-                        .script(script)
-                        .index(pageDto.getIndex())
-                        .build();
-                    page = pageRepository.save(page);
-                    if (pageDto.getLines() != null) {
-                        for (SimpleLineDto lineDto : pageDto.getLines()) {
-                            Set<Role> spokenBy = new HashSet<>();
-                            if (lineDto.getRoles() != null) {
-                                for (SimpleRoleDto roleDto : lineDto.getRoles()) {
-                                    Optional<Role> role = roles.stream().filter(r -> r.getName().equals(roleDto.getName())).findFirst();
-                                    role.ifPresent(spokenBy::add);
-                                }
+        }
+        if (simpleScriptDto.getPages() != null) {
+            for (SimplePageDto pageDto : simpleScriptDto.getPages()) {
+                Page page = Page.builder()
+                    .script(script)
+                    .index(pageDto.getIndex())
+                    .build();
+                page = pageRepository.save(page);
+                if (pageDto.getLines() != null) {
+                    for (SimpleLineDto lineDto : pageDto.getLines()) {
+                        Set<Role> spokenBy = new HashSet<>();
+                        if (lineDto.getRoles() != null) {
+                            for (SimpleRoleDto roleDto : lineDto.getRoles()) {
+                                Optional<Role> role = roles.stream().filter(r -> r.getName().equals(roleDto.getName())).findFirst();
+                                role.ifPresent(spokenBy::add);
                             }
-                            Line line = Line.builder()
-                                .page(page)
-                                .index(lineDto.getIndex())
-                                .content(lineDto.getContent())
-                                .spokenBy(spokenBy)
-                                .active(lineDto.isActive())
-                                .build();
-                            lineRepository.save(line);
                         }
+                        Line line = Line.builder()
+                            .page(page)
+                            .index(lineDto.getIndex())
+                            .content(lineDto.getContent())
+                            .spokenBy(spokenBy)
+                            .active(lineDto.isActive())
+                            .build();
+                        lineRepository.save(line);
                     }
                 }
             }
         }
+
         SimpleUserDto owner = userMapper.userToSimpleUserDto(script.getOwner());
         ScriptDto scriptDto = simpleScriptMapper.simpleScriptDtoToScriptDto(simpleScriptDto, script.getId(), owner);
         return scriptDto;
@@ -226,7 +229,21 @@ public class ScriptServiceImpl implements ScriptService {
     public Stream<ScriptPreviewDto> findAllPreviews() throws ServiceException {
         log.trace("getAllPreviews()");
 
-        throw new UnsupportedOperationException();
+        // TODO: refactor
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail;
+        if (auth.getPrincipal() instanceof String) {
+            userEmail = (String) auth.getPrincipal();
+        } else {
+            org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) (auth.getPrincipal());
+            userEmail = user.getUsername();
+        }
+        Optional<User> user = userRepository.findByEmail(userEmail);
+        if (user.isEmpty()) {
+            throw new ServiceException("Authenticated user not found.");
+        }
+
+        return simpleScriptMapper.listOfScriptToListOfScriptPreviewDto(scriptRepository.getScriptByOwner(user.get())).stream();
     }
 
     @Override
