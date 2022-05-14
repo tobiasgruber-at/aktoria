@@ -128,7 +128,8 @@ public class UserServiceImpl implements UserService {
         }
 
         if (passwordChange) {
-            changePassword(new PasswordChangeDto(updateUserDto.getPasswordHash(), updateUserDto.getNewPassword()), id);
+            //TODO: is this right? with token?
+            changePassword(new PasswordChangeDto(secureTokenService.createSecureToken(TokenType.resetPassword).getToken(), updateUserDto.getPasswordHash(), updateUserDto.getNewPassword()), id);
         }
 
         if (updateUserDto.getFirstName() != null) {
