@@ -2,8 +2,8 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ScriptDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleScriptDto;
-import at.ac.tuwien.sepm.groupphase.backend.testHelpers.ScriptTestHelper;
-import at.ac.tuwien.sepm.groupphase.backend.testHelpers.UserTestHelper;
+import at.ac.tuwien.sepm.groupphase.backend.testhelpers.ScriptTestHelper;
+import at.ac.tuwien.sepm.groupphase.backend.testhelpers.UserTestHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-@ActiveProfiles({"test", "datagen"})
+@ActiveProfiles({ "test", "datagen" })
 @EnableWebMvc
 @WebAppConfiguration
 class ScriptEndpointIntegrationTest {
@@ -102,10 +102,10 @@ class ScriptEndpointIntegrationTest {
                 .perform(MockMvcRequestBuilders
                     .post(ScriptEndpoint.path)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content("{\n" +
-                        "    \"id\": 2,\n" +
-                        "    \"name\": \"Stück\",\n" +
-                        "    \"pages\": [")
+                    .content("{\n"
+                        + "    \"id\": 2,\n"
+                        + "    \"name\": \"Stück\",\n"
+                        + "    \"pages\": [")
                     .accept(MediaType.APPLICATION_JSON)
                 ).andExpect(status().is4xxClientError());
         }

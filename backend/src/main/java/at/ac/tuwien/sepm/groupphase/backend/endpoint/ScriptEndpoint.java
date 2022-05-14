@@ -81,7 +81,7 @@ public class ScriptEndpoint {
     @Secured("ROLE_VERIFIED")
     public Stream<ScriptPreviewDto> getPreviews() throws ServiceException {
         log.info("GET {}/previews", path);
-        
+
         return scriptService.findAllPreviews();
     }
 }

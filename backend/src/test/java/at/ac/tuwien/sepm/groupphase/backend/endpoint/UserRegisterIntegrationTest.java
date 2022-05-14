@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @EnableWebMvc
 @WebAppConfiguration
-public class UserLoginIntegrationTest {
+public class UserRegisterIntegrationTest {
 
     @RegisterExtension
     static GreenMailExtension greenMail = new GreenMailExtension(ServerSetupTest.SMTP)
@@ -50,8 +50,8 @@ public class UserLoginIntegrationTest {
 
     @Test
     @Transactional
-    @DisplayName("login works correctly")
-    void login() throws Exception {
+    @DisplayName("registration works correctly")
+    void register() throws Exception {
         byte[] body = mockMvc
             .perform(MockMvcRequestBuilders
                 .post("/api/v1/users")
@@ -61,27 +61,20 @@ public class UserLoginIntegrationTest {
             ).andExpect(status().isCreated())
             .andReturn().getResponse().getContentAsByteArray();
 
-        final SimpleUserDto response = objectMapper.readValue(body, SimpleUserDto.class);
+        SimpleUserDto response = objectMapper.readValue(body, SimpleUserDto.class);
         final SimpleUserDto expected = new SimpleUserDto(response.getId(), "Varok", "Saurfang", "varok.saurfang@email.com", false);
 
         assertNotNull(response);
         assertEquals(response, expected);
 
-        /*
         body = mockMvc
             .perform(MockMvcRequestBuilders
-                .post("/api/v1/authentication")
-                .accept(MediaType.APPLICATION_JSON)
-                .content("{"
-                    + "\"email\": \"varok.saurfang@email.com\","
-                    + "\"password\": \"forthehorde\""
-                    + "}")
-                .contentType(MediaType.APPLICATION_JSON)
+                .get("/api/v1/users?email=" + expected.getEmail())
             ).andExpect(status().isOk())
             .andReturn().getResponse().getContentAsByteArray();
 
-        final String token = objectMapper.readValue(body, String.class);
-        assertTrue(token.startsWith("Bearer "));
-         */
+        response = objectMapper.readValue(body, SimpleUserDto.class);
+        assertNotNull(response);
+        assertEquals(response, expected);
     }
 }
