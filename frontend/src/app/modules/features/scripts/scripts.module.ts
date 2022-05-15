@@ -7,6 +7,7 @@ import { ScriptListItemComponent } from './components/script-list-item/script-li
 import { ScriptUploadComponent } from './components/script-upload/script-upload.component';
 import { NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
 import { UploadInformationComponent } from './components/upload-information/upload-information.component';
+import { ScriptOverviewComponent } from './components/script-overview/script-overview.component';
 
 @NgModule({
   declarations: [
@@ -14,7 +15,8 @@ import { UploadInformationComponent } from './components/upload-information/uplo
     ScriptListComponent,
     ScriptListItemComponent,
     ScriptUploadComponent,
-    UploadInformationComponent
+    UploadInformationComponent,
+    ScriptOverviewComponent
   ],
   imports: [SharedModule, ScriptsRoutingModule, NgbCollapseModule]
 })

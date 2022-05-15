@@ -1,5 +1,5 @@
 <div class="d-flex flex-column min-vh-100">
-  <header *ngIf="showHeader">
+  <header *ngIf="showHeader" class="fixed-top">
     <nav class="px-5 navbar navbar-expand-lg navbar-dark bg-dark">
       <a class="navbar-brand" routerLink="">Aktoria</a>
       <button
@@ -21,6 +21,7 @@
           <li class="nav-item">
             <a
               *ngIf="authService.isLoggedIn()"
+              [routerLinkActiveOptions]="{ exact: true }"
               class="nav-link"
               routerLink="/scripts"
               routerLinkActive="active"

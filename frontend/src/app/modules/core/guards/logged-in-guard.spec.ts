@@ -1,17 +1,17 @@
 import { inject, TestBed } from '@angular/core/testing';
 
-import { AuthGuard } from './auth.guard';
+import { LoggedInGuard } from './logged-in-guard.service';
 import { SharedTestingModule } from '../../shared/shared-testing.module';
 
 describe('AuthGuard', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [AuthGuard],
+      providers: [LoggedInGuard],
       imports: [SharedTestingModule]
     });
   });
 
-  it('should ...', inject([AuthGuard], (guard: AuthGuard) => {
+  it('should ...', inject([LoggedInGuard], (guard: LoggedInGuard) => {
     expect(guard).toBeTruthy();
   }));
 });

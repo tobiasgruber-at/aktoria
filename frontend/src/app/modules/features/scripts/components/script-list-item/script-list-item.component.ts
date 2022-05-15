@@ -8,6 +8,7 @@ import { ScriptPreview } from '../../../../shared/dtos/script-dtos';
 })
 export class ScriptListItemComponent implements OnInit {
   @Input() script: ScriptPreview;
+  @Input() isCreate = false;
 
   constructor() {}
 

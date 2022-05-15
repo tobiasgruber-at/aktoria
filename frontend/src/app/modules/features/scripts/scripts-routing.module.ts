@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ScriptsComponent } from './scripts.component';
 import { ScriptUploadComponent } from './components/script-upload/script-upload.component';
+import { ScriptOverviewComponent } from './components/script-overview/script-overview.component';
 
 const routes: Routes = [
   {
@@ -11,6 +12,10 @@ const routes: Routes = [
   {
     path: 'new',
     component: ScriptUploadComponent
+  },
+  {
+    path: ':id',
+    component: ScriptOverviewComponent
   }
 ];
 

@@ -13,6 +13,6 @@ export class ScriptListComponent implements OnInit {
   constructor(public scriptService: ScriptService) {}
 
   ngOnInit(): void {
-    this.scriptService.getAll();
+    this.scriptService.getAll().subscribe();
   }
 }

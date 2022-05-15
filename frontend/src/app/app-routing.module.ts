@@ -1,32 +1,34 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { LandingComponent } from './modules/features/landing/landing.component';
-import { AuthGuard } from './modules/core/guards/auth.guard';
+import { LoggedInGuard } from './modules/core/guards/logged-in.service';
+import { LoggedOutGuard } from './modules/core/guards/logged-out-guard.service';
 
 const routes: Routes = [
-  { path: '', component: LandingComponent },
   {
-    path: 'login',
-    loadChildren: () =>
-      import('./modules/features/login/login.module').then((m) => m.LoginModule)
-  },
-  {
-    path: 'register',
-    loadChildren: () =>
-      import('./modules/features/registration/registration.module').then(
-        (m) => m.RegistrationModule
-      )
-  },
-  {
-    path: 'landing',
+    path: '',
+    canActivate: [LoggedOutGuard],
     loadChildren: () =>
       import('./modules/features/landing/landing.module').then(
         (m) => m.LandingModule
       )
   },
   {
+    path: 'login',
+    canActivate: [LoggedOutGuard],
+    loadChildren: () =>
+      import('./modules/features/login/login.module').then((m) => m.LoginModule)
+  },
+  {
+    path: 'register',
+    canActivate: [LoggedOutGuard],
+    loadChildren: () =>
+      import('./modules/features/registration/registration.module').then(
+        (m) => m.RegistrationModule
+      )
+  },
+  {
     path: 'scripts',
-    canActivate: [AuthGuard],
+    canActivate: [LoggedInGuard],
     loadChildren: () =>
       import('./modules/features/scripts/scripts.module').then(
         (m) => m.ScriptsModule

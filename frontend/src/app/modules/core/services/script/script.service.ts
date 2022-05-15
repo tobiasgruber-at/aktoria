@@ -24,6 +24,10 @@ export class ScriptService {
     return this.scriptsSubject.asObservable();
   }
 
+  getOne(id: number): Observable<DetailedScript> {
+    return this.http.get<DetailedScript>(`${this.baseUri}/${id}`);
+  }
+
   /**
    * Gets all script previews
    *
