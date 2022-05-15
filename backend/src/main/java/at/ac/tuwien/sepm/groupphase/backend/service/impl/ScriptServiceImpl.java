@@ -248,6 +248,7 @@ public class ScriptServiceImpl implements ScriptService {
     }
 
     @Override
+    @Transactional
     public ScriptDto findById(Long id) throws ServiceException, NotFoundException {
         log.trace("getById(id = {})", id);
 
