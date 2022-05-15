@@ -4,7 +4,8 @@ export class UserRegistration {
     public readonly lastName: string,
     public readonly email: string,
     public readonly password: string
-  ) {}
+  ) {
+  }
 }
 
 export class SimpleUser {
@@ -14,7 +15,8 @@ export class SimpleUser {
     public readonly lastName: string,
     public readonly email: string,
     public readonly verified: boolean
-  ) {}
+  ) {
+  }
 }
 
 export class DetailedUser extends SimpleUser {
@@ -35,5 +37,6 @@ export class PasswordChange {
   constructor(
     public readonly oldPassword: string,
     public readonly newPassword: string
-  ) {}
+  ) {
+  }
 }

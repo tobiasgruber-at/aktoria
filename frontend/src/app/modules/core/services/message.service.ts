@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Message } from '../../shared/dtos/message';
-import { Observable } from 'rxjs';
-import { Globals } from '../global/globals';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {Message} from '../../shared/dtos/message';
+import {Observable} from 'rxjs';
+import {Globals} from '../global/globals';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +10,8 @@ import { Globals } from '../global/globals';
 export class MessageService {
   private messageBaseUri: string = this.globals.backendUri + '/messages';
 
-  constructor(private httpClient: HttpClient, private globals: Globals) {}
+  constructor(private httpClient: HttpClient, private globals: Globals) {
+  }
 
   /**
    * Loads all messages from the backend

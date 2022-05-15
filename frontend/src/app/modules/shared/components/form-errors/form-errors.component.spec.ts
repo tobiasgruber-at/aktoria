@@ -1,7 +1,7 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { FormErrorsComponent } from './form-errors.component';
-import { SharedTestingModule } from '../../shared-testing.module';
+import {FormErrorsComponent} from './form-errors.component';
+import {SharedTestingModule} from '../../shared-testing.module';
 
 describe('FormErrorsComponent', () => {
   let component: FormErrorsComponent;

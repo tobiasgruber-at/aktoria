@@ -1,14 +1,9 @@
-import { Injectable } from '@angular/core';
-import {
-  HttpEvent,
-  HttpHandler,
-  HttpInterceptor,
-  HttpRequest
-} from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { Globals } from '../global/globals';
-import { AuthService } from '../services/auth/auth-service';
-import { UserService } from '../services/user/user-service';
+import {Injectable} from '@angular/core';
+import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
+import {Observable} from 'rxjs';
+import {Globals} from '../global/globals';
+import {AuthService} from '../services/auth/auth-service';
+import {UserService} from '../services/user/user-service';
 
 /** @author Tobias Gruber */
 @Injectable()
@@ -17,7 +12,8 @@ export class AuthInterceptor implements HttpInterceptor {
     private authService: AuthService,
     private userService: UserService,
     private globals: Globals
-  ) {}
+  ) {
+  }
 
   /** Intercepts outgoing http requests and adds authorizations headers if necessary. */
   intercept(

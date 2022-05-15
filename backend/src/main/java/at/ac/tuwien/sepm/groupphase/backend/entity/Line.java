@@ -43,7 +43,7 @@ public class Line {
     @Column(name = "index", nullable = false)
     private Long index;
 
-    @Column(name = "content", nullable = false)
+    @Column(name = "content", nullable = false, length = 5000)
     private String content;
 
     @Column(name = "audio")

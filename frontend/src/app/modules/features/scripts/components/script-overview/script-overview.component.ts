@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ScriptService } from '../../../../core/services/script/script.service';
-import { DetailedScript } from '../../../../shared/dtos/script-dtos';
+import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
+import {ScriptService} from '../../../../core/services/script/script.service';
+import {DetailedScript} from '../../../../shared/dtos/script-dtos';
 
 @Component({
   selector: 'app-script-overview',
@@ -17,7 +17,8 @@ export class ScriptOverviewComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private scriptService: ScriptService
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
@@ -41,5 +42,16 @@ export class ScriptOverviewComponent implements OnInit {
     });
   }
 
-  private reset(): void {}
+  deleteScript(): void {
+    this.scriptService.delete(this.script.id).subscribe({
+      next: () => {
+        this.router.navigateByUrl('/scripts');
+      },
+      error: () => {
+      }
+    });
+  }
+
+  private reset(): void {
+  }
 }

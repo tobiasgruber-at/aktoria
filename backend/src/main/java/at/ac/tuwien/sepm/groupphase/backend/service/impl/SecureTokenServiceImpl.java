@@ -2,7 +2,7 @@ package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.SecureToken;
 import at.ac.tuwien.sepm.groupphase.backend.enums.TokenType;
-import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.InvalidTokenException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.SecureTokenRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.SecureTokenService;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -44,12 +44,12 @@ public class SecureTokenServiceImpl implements SecureTokenService {
     }
 
     @Override
-    public SecureToken findByToken(String token) throws NotFoundException {
+    public SecureToken findByToken(String token) {
         Optional<SecureToken> secureTokenOptional = secureTokenRepository.findByToken(token);
         if (secureTokenOptional.isPresent()) {
             return secureTokenOptional.get();
         } else {
-            throw new NotFoundException();
+            throw new InvalidTokenException();
         }
     }
 

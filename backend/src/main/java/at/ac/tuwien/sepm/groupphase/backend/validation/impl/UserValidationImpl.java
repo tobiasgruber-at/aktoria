@@ -75,7 +75,7 @@ public class UserValidationImpl implements UserValidation {
         if (userOptional.isPresent()) {
             update = userOptional.get();
         } else {
-            throw new NotFoundException("User exisitert nicht!");
+            throw new NotFoundException("User existiert nicht!");
         }
         if (!(passwordEncoder.matches(passwordChangeDto.getOldPassword(), update.getPasswordHash()))) {
             throw new ConflictException("Das eingegebene Passwort stimmt nicht mit deinem Passwort überein.");

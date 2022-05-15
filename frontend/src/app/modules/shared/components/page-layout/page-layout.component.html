@@ -1,6 +1,10 @@
-<div class="d-flex flex-column min-vh-100">
+<div class="wrapper d-flex flex-column min-vh-100 bg-{{ theme }}">
   <header *ngIf="showHeader" class="fixed-top">
-    <nav class="px-5 navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav
+      class="px-5 navbar navbar-expand-lg navbar-dark bg-{{
+        theme === 'light' ? 'dark' : 'black'
+      }} shadow"
+    >
       <a class="navbar-brand" routerLink="">Aktoria</a>
       <button
         aria-controls="navbarSupportedContent"
@@ -25,21 +29,21 @@
               class="nav-link"
               routerLink="/scripts"
               routerLinkActive="active"
-              >Deine Skripte</a
+            >Deine Skripte</a
             >
           </li>
         </ul>
         <ul class="navbar-nav">
           <ng-container *ngIf="!authService.isLoggedIn(); else loggedIn">
             <a class="nav-link" routerLink="/login" routerLinkActive="active"
-              >Login</a
+            >Login</a
             >
             <a
               class="nav-link"
               role="button"
               routerLink="/register"
               routerLinkActive="active"
-              >Registrieren</a
+            >Registrieren</a
             >
           </ng-container>
           <ng-template #loggedIn>
@@ -70,7 +74,7 @@
                     class="nav-link"
                     ngbDropdownItem
                     routerLink="/"
-                    >Logout</a
+                  >Logout</a
                   >
                 </div>
               </div>
@@ -80,8 +84,19 @@
       </div>
     </nav>
   </header>
-  <main class="p-5 flex-grow-1 d-flex flex-column">
-    <ng-content></ng-content>
+  <main class="w-100 p-5 flex-grow-1 d-flex flex-column">
+    <div
+      *ngIf="loading"
+      @fixedAppear
+      class="fixed-top vh-100 vw-100 flex-grow-1 d-flex justify-content-center align-items-center"
+    >
+      <div class="spinner-border text-secondary" role="status">
+        <span class="sr-only"></span>
+      </div>
+    </div>
+    <div *ngIf="!loading" @fixedAppear class="flex-grow-1 d-flex flex-column">
+      <ng-content></ng-content>
+    </div>
   </main>
   <footer *ngIf="showFooter" class="px-5 bg-light"></footer>
 </div>

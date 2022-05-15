@@ -1,5 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { ScriptPreview } from '../../../../shared/dtos/script-dtos';
+import {Component, Input, OnInit} from '@angular/core';
+import {ScriptPreview} from '../../../../shared/dtos/script-dtos';
 
 @Component({
   selector: 'app-script-list-item',
@@ -10,7 +10,9 @@ export class ScriptListItemComponent implements OnInit {
   @Input() script: ScriptPreview;
   @Input() isCreate = false;
 
-  constructor() {}
+  constructor() {
+  }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+  }
 }

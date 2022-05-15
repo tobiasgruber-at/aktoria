@@ -1,9 +1,6 @@
 export class UploadScript {
-  constructor(public readonly file: File) {}
-}
-
-export class DeleteScriptRequest {
-  constructor(public readonly id: number) {}
+  constructor(public readonly file: File) {
+  }
 }
 
 export class SimpleScript {
@@ -11,11 +8,13 @@ export class SimpleScript {
     public readonly pages: Page[],
     public readonly roles: Role[],
     public readonly name: string
-  ) {}
+  ) {
+  }
 }
 
 export class ScriptPreview {
-  constructor(public readonly id: number, public readonly name: string) {}
+  constructor(public readonly id: number, public readonly name: string) {
+  }
 }
 
 export class DetailedScript extends SimpleScript {
@@ -29,20 +28,20 @@ export class DetailedScript extends SimpleScript {
   }
 }
 
-class Page {
+export class Page {
   index: number;
   lines: Line[];
 }
 
-class Line {
+export class Line {
   index: number;
-  role: Role;
+  roles: Role[];
   content: string;
   audioSnippet: AudioBuffer;
   active: boolean;
 }
 
-class Role {
+export class Role {
   id: number;
   name: string;
   color: string;

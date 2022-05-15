@@ -1,10 +1,10 @@
-import { Globals } from '../../global/globals';
-import { Observable } from 'rxjs';
-import { SimpleUser, UserRegistration } from '../../../shared/dtos/user-dtos';
-import { UserService } from './user-service';
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { ChangePassword } from 'src/app/modules/shared/dtos/password-change-dto';
+import {Globals} from '../../global/globals';
+import {Observable} from 'rxjs';
+import {SimpleUser, UserRegistration} from '../../../shared/dtos/user-dtos';
+import {UserService} from './user-service';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {ChangePassword} from 'src/app/modules/shared/dtos/password-change-dto';
 
 @Injectable()
 export class UserImplService extends UserService {
@@ -24,7 +24,7 @@ export class UserImplService extends UserService {
   }
 
   getOne(email): Observable<SimpleUser> {
-    return this.http.get<SimpleUser>(this.baseUri, { params: { email } });
+    return this.http.get<SimpleUser>(this.baseUri, {params: {email}});
   }
 
   register(req: UserRegistration): Observable<SimpleUser> {

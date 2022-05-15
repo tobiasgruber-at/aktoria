@@ -1,7 +1,7 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { CardComponent } from './card.component';
-import { SharedTestingModule } from '../../shared-testing.module';
+import {CardComponent} from './card.component';
+import {SharedTestingModule} from '../../shared-testing.module';
 
 describe('CardComponent', () => {
   let component: CardComponent;

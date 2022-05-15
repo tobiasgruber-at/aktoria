@@ -1,12 +1,12 @@
-import { NgModule } from '@angular/core';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-import { UserService } from '../core/services/user/user-service';
-import { UserMockService } from '../core/services/user/user-mock.service';
-import { ReactiveFormsModule } from '@angular/forms';
-import { AuthService } from '../core/services/auth/auth-service';
-import { AuthMockService } from '../core/services/auth/auth-mock.service';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {NgModule} from '@angular/core';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {RouterTestingModule} from '@angular/router/testing';
+import {UserService} from '../core/services/user/user-service';
+import {UserMockService} from '../core/services/user/user-mock.service';
+import {ReactiveFormsModule} from '@angular/forms';
+import {AuthService} from '../core/services/auth/auth-service';
+import {AuthMockService} from '../core/services/auth/auth-mock.service';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 const sharedImports = [
   HttpClientTestingModule,
@@ -18,10 +18,11 @@ const sharedImports = [
 @NgModule({
   declarations: [],
   providers: [
-    { provide: UserService, useClass: UserMockService },
-    { provide: AuthService, useClass: AuthMockService }
+    {provide: UserService, useClass: UserMockService},
+    {provide: AuthService, useClass: AuthMockService}
   ],
   imports: [...sharedImports],
   exports: [...sharedImports]
 })
-export class SharedTestingModule {}
+export class SharedTestingModule {
+}

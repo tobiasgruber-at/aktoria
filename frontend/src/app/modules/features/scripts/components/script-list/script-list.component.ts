@@ -1,5 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { ScriptService } from '../../../../core/services/script/script.service';
+import {Component, Input, OnInit} from '@angular/core';
+import {ScriptService} from '../../../../core/services/script/script.service';
 
 @Component({
   selector: 'app-script-list',
@@ -10,7 +10,8 @@ export class ScriptListComponent implements OnInit {
   @Input() title: string;
   @Input() hasUploadButton = false;
 
-  constructor(public scriptService: ScriptService) {}
+  constructor(public scriptService: ScriptService) {
+  }
 
   ngOnInit(): void {
     this.scriptService.getAll().subscribe();

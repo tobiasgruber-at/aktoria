@@ -1,5 +1,5 @@
-import { AuthRequest } from '../../../shared/dtos/auth-request';
-import { Observable } from 'rxjs';
+import {AuthRequest} from '../../../shared/dtos/auth-request';
+import {Observable} from 'rxjs';
 
 export abstract class AuthService {
   /** @return Observable that notifies on login-state changes. */

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormBuilder, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {ToastService} from '../../../core/services/toast/toast.service';
@@ -29,7 +29,7 @@ export class ResetPasswordComponent extends FormBase implements OnInit {
   }
 
   protected sendSubmit(): void {
-    const { email } = this.form.value;
+    const {email} = this.form.value;
     console.log('Try to reset password of user: ' + email);
     this.userService.forgotPassword(email).subscribe({
       next: () => {

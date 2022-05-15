@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { SimpleUser, UserRegistration } from '../../../shared/dtos/user-dtos';
-import { UserService } from './user-service';
-import { randomDelay } from '../../../shared/functions/random-delay';
+import {Injectable} from '@angular/core';
+import {Observable, of} from 'rxjs';
+import {SimpleUser, UserRegistration} from '../../../shared/dtos/user-dtos';
+import {UserService} from './user-service';
+import {randomDelay} from '../../../shared/functions/random-delay';
 import {ChangePassword} from '../../../shared/dtos/password-change-dto';
 
 @Injectable()
@@ -15,7 +15,8 @@ export class UserMockService extends UserService {
     return undefined;
   }
 
-  setOwnUser(user: SimpleUser): void {}
+  setOwnUser(user: SimpleUser): void {
+  }
 
   getOne(email: string): Observable<SimpleUser> {
     return of(new SimpleUser(1, 'Max', 'Patternman', 'asdf@asdf.asdf', false));

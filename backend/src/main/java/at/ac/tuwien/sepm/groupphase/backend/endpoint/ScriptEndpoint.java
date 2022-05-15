@@ -3,14 +3,12 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ScriptDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ScriptPreviewDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleScriptDto;
-import at.ac.tuwien.sepm.groupphase.backend.exception.IllegalFileFormatException;
-import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
-import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.service.ScriptService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.stream.Stream;
 
@@ -40,23 +37,17 @@ public class ScriptEndpoint {
         this.scriptService = scriptService;
     }
 
-    @PostMapping(path = "/new", produces = {MediaType.APPLICATION_JSON_VALUE}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(path = "/new", produces = { MediaType.APPLICATION_JSON_VALUE }, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     @ResponseStatus(HttpStatus.OK)
-    public SimpleScriptDto uploadScript(@RequestPart("file") MultipartFile multipartFile, @RequestPart(value = "startPage", required = false) String startPage) throws ServiceException {
+    public SimpleScriptDto uploadScript(@RequestPart("file") MultipartFile multipartFile, @RequestPart(value = "startPage", required = false) String startPage) {
         log.info("POST {}/new", path);
-
-        try {
-            return scriptService.parse(multipartFile, startPage == null ? 0 : Integer.parseInt(startPage));
-        } catch (IllegalFileFormatException e) {
-            log.error(e.getMessage(), e);
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage());
-        }
+        return scriptService.parse(multipartFile, startPage == null ? 0 : Integer.parseInt(startPage));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Secured("ROLE_USER")
-    public ScriptDto saveScript(@RequestBody SimpleScriptDto simpleScriptDto) throws ServiceException {
+    public ScriptDto saveScript(@RequestBody SimpleScriptDto simpleScriptDto) {
         log.info("POST {}", path);
         return scriptService.save(simpleScriptDto);
     }
@@ -64,21 +55,23 @@ public class ScriptEndpoint {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @Secured("ROLE_VERIFIED")
-    public Stream<ScriptPreviewDto> getScriptPreviews() throws ServiceException {
+    public Stream<ScriptPreviewDto> getScriptPreviews() {
         log.info("GET {}", path);
-
         return scriptService.findAllPreviews();
     }
 
     @GetMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ScriptDto getScriptById(@PathVariable Long id) throws ServiceException {
+    @Secured("ROLE_VERIFIED")
+    public ScriptDto getScriptById(@PathVariable Long id) {
         log.info("GET {}/{}", path, id);
-        try {
-            return scriptService.findById(id);
-        } catch (NotFoundException e) {
-            log.error(e.getMessage(), e);
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
-        }
+        return scriptService.findById(id);
+    }
+
+    @DeleteMapping(path = "/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteScript(@PathVariable Long id) {
+        log.info("DELETE {}/{}", ScriptEndpoint.path, id);
+        scriptService.delete(id);
     }
 }

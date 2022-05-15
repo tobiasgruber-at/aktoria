@@ -47,7 +47,7 @@ public class Script {
     private User owner;
 
     @OneToMany(mappedBy = "script", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @OrderBy("index desc")
+    @OrderBy("index asc")
     private List<Page> pages;
 
     @OneToMany(mappedBy = "script", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

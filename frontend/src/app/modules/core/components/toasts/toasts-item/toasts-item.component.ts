@@ -1,6 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { Toast } from '../../../../shared/interfaces/toast.interface';
-import { ToastService } from '../../../services/toast/toast.service';
+import {Component, Input, OnInit} from '@angular/core';
+import {Toast} from '../../../../shared/interfaces/toast.interface';
+import {ToastService} from '../../../services/toast/toast.service';
 
 /** @author Tobias Gruber */
 @Component({
@@ -12,7 +12,8 @@ export class ToastsItemComponent implements OnInit, OnInit {
   @Input() toast: Toast;
   private autoCloseTimeout;
 
-  constructor(private toastService: ToastService) {}
+  constructor(private toastService: ToastService) {
+  }
 
   ngOnInit(): void {
     this.autoCloseTimeout = setTimeout(() => {

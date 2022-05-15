@@ -1,5 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { Theme } from '../../enums/theme.enum';
+import {Component, Input, OnInit} from '@angular/core';
+import {Theme} from '../../enums/theme.enum';
 
 @Component({
   selector: 'app-button',
@@ -13,7 +13,9 @@ export class ButtonComponent implements OnInit {
   @Input() theme: Theme = Theme.primary;
   @Input() type: 'button' | 'submit' = 'button';
 
-  constructor() {}
+  constructor() {
+  }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+  }
 }
