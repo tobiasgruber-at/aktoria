@@ -43,38 +43,35 @@
             >
           </ng-container>
           <ng-template #loggedIn>
-            <!-- <a class="nav-link account" routerLink="/">
-               <bi class="h-100" name="person-circle"></bi>
-             </a>
-             <a (click)="logout()" class="nav-link" routerLink="/">Logout</a>-->
-            <div class="row">
-              <div class="col">
-                <div class="d-inline-block" ngbDropdown>
-                  <button
-                    class="btn btn-outline-primary"
-                    id="dropdownBasic1"
-                    ngbDropdownToggle
-                    type="button"
+            <div class="d-flex flex-column">
+              <div class="d-inline-block" display="dynamic" ngbDropdown>
+                <button
+                  class="btn btn-outline-primary"
+                  id="dropdownBasic1"
+                  ngbDropdownToggle
+                  type="button"
+                >
+                  <bi class="" name="person-circle"></bi>
+                </button>
+                <div
+                  aria-labelledby="dropdownBasic1"
+                  class="bg-dark"
+                  ngbDropdownMenu
+                >
+                  <a
+                    class="nav-link account"
+                    ngbDropdownItem
+                    routerLink="/profile"
                   >
-                    <bi class="h-100" name="person-circle"></bi>
-                  </button>
-                  <div aria-labelledby="dropdownBasic1" ngbDropdownMenu>
-                    <button
-                      class="nav-link account"
-                      ngbDropdownItem
-                      routerLink="/"
-                    >
-                      Profil
-                    </button>
-                    <button
-                      (click)="logout()"
-                      class="nav-link"
-                      ngbDropdownItem
-                      routerLink="/"
-                    >
-                      Logout
-                    </button>
-                  </div>
+                    Profil
+                  </a>
+                  <a
+                    (click)="logout()"
+                    class="nav-link"
+                    ngbDropdownItem
+                    routerLink="/"
+                    >Logout</a
+                  >
                 </div>
               </div>
             </div>

@@ -1,0 +1,15 @@
+<app-page-layout>
+  <div *ngIf="user">
+    <h1>
+      {{ user.firstName }}
+      {{ user.lastName }}
+    </h1>
+    <p>{{ user.email }}</p>
+    <button class="btn btn-outline-primary" routerLink="/">
+      Nutzerdaten Ändern
+    </button>
+    <button class="btn btn-outline-primary" routerLink="/">
+      Account Löschen
+    </button>
+  </div>
+</app-page-layout>

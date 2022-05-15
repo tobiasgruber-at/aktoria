@@ -35,6 +35,14 @@ const routes: Routes = [
       )
   },
   {
+    path: 'profile',
+    canActivate: [LoggedInGuard],
+    loadChildren: () =>
+      import('./modules/features/profile/profile.module').then(
+        (m) => m.ProfileModule
+      )
+  },
+  {
     path: 'verifyEmail/:token',
     loadChildren: () =>
       import('./modules/features/verify-email/verify-email.module').then(
