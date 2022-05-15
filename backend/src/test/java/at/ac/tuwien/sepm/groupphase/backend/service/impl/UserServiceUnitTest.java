@@ -62,10 +62,8 @@ class UserServiceUnitTest {
     @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {"USER","VERIFIED","ADMIN"})
     class ForgotPasswordTest{
 
-        @ParameterizedTest
+        @Test
         @DisplayName("forgotPassword sends email")
-        @Transactional
-        @MethodSource("parameterizedChangePasswordWorksProvider")
         void forgotPasswordSendsEmail() {
             userService.forgotPassword("test1@test.com");
 
@@ -73,10 +71,8 @@ class UserServiceUnitTest {
             assertEquals(1, receivedMessages.length);
         }
 
-        @ParameterizedTest
-        @DisplayName("404 when email does not exists")
-        @Transactional
-        @MethodSource("parameterizedChangePasswordWorksProvider")
+        @Test
+        @DisplayName("NotFoundException when email does not exists")
         void forgotPasswordEmailDoesNotExist() {
             try {
                 userService.forgotPassword("notfound@test.com");

@@ -46,6 +46,7 @@ public class UserEndpoint {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
+    @Secured("ROLE_USER")
     public SimpleUserDto getUser(@RequestParam String email) {
         log.info("GET {}/{}", path, email);
         return userService.findByEmail(email);
@@ -53,6 +54,7 @@ public class UserEndpoint {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PermitAll
     public SimpleUserDto postUser(@RequestBody UserRegistrationDto userRegistrationDto) {
         log.info("POST {}", path);
         return userService.create(userRegistrationDto);
@@ -60,6 +62,7 @@ public class UserEndpoint {
 
     @PatchMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @Secured("ROLE_USER")
     public DetailedUserDto patchUser(@RequestParam Boolean passwordChange, @RequestBody UpdateUserDto updateUserDto, @PathVariable Long id) {
         log.info("PATCH {}/{}", path, id);
         return userService.patch(updateUserDto, passwordChange, id);
@@ -67,6 +70,7 @@ public class UserEndpoint {
 
     @DeleteMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Secured("ROLE_USER")
     public void deleteUser(@PathVariable Long id) {
         log.info("DELETE {}/{}", UserEndpoint.path, id);
         userService.delete(id);
@@ -74,6 +78,7 @@ public class UserEndpoint {
 
     @PostMapping(path = "/reset-password")
     @ResponseStatus(HttpStatus.ACCEPTED)
+    @PermitAll
     public void forgottenPassword(@RequestBody String email) {
         log.info("POST {}/reset-password", path);
         userService.forgotPassword(email);
@@ -81,6 +86,7 @@ public class UserEndpoint {
 
     @PutMapping(path = "/change-password")
     @ResponseStatus(HttpStatus.ACCEPTED)
+    @PermitAll
     public void changePassword(@RequestBody PasswordChangeDto passwordChange) {
         log.info("POST {}/reset-password", path);
         userService.changePassword(passwordChange, null);
