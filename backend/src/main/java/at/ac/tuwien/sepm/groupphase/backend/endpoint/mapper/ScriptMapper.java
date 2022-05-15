@@ -20,4 +20,6 @@ public interface ScriptMapper {
     ScriptDto simpleScriptDtoToScriptDto(SimpleScriptDto simpleScriptDto, Long id, SimpleUserDto owner);
 
     List<ScriptPreviewDto> listOfScriptToListOfScriptPreviewDto(List<Script> script);
+
+    ScriptDto scriptToScriptDto(Script script);
 }
