@@ -32,8 +32,6 @@ import at.ac.tuwien.sepm.groupphase.backend.service.parsing.scriptparser.ScriptP
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.scriptparser.impl.ScriptParserImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -109,7 +107,7 @@ public class ScriptServiceImpl implements ScriptService {
         ScriptParser parser = new ScriptParserImpl(raw);
         ParsedScript parsedScript = parser.parse();
 
-        return scriptMapper.parsedScriptToSimpleScriptDto(parsedScript, file.getName());
+        return scriptMapper.parsedScriptToSimpleScriptDto(parsedScript, file.getOriginalFilename());
     }
 
     /**
@@ -225,8 +223,7 @@ public class ScriptServiceImpl implements ScriptService {
         }
 
         SimpleUserDto owner = userMapper.userToSimpleUserDto(script.getOwner());
-        ScriptDto scriptDto = scriptMapper.simpleScriptDtoToScriptDto(simpleScriptDto, script.getId(), owner);
-        return scriptDto;
+        return scriptMapper.simpleScriptDtoToScriptDto(simpleScriptDto, script.getId(), owner);
     }
 
     @Override
@@ -247,10 +244,9 @@ public class ScriptServiceImpl implements ScriptService {
         log.trace("getById(id = {})", id);
 
         Optional<Script> script = scriptRepository.findById(id);
-        if (!script.isPresent()) {
+        if (script.isEmpty()) {
             throw new NotFoundException();
         }
-        ScriptDto scriptDto = scriptMapper.scriptToScriptDto(script.get());
-        return scriptDto;
+        return scriptMapper.scriptToScriptDto(script.get());
     }
 }
