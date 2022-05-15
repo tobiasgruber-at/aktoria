@@ -133,7 +133,7 @@ public class ScriptTestHelper {
 
         final List<SimplePageDto> simplePagesDto = new LinkedList<>();
         simplePagesDto.add(new SimplePageDto(simpleLinesDto, 0L));
-        return new SimpleScriptDto("file", simplePagesDto, expectedRolesDto);
+        return new SimpleScriptDto("Skript_NF.pdf", simplePagesDto, expectedRolesDto);
     }
 
     public ScriptDto dummyScriptDto(Long id, SimpleUserDto owner) {
