@@ -14,8 +14,10 @@ import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.InvalidTokenException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.UnauthorizedException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
+import at.ac.tuwien.sepm.groupphase.backend.service.AuthorizationService;
 import at.ac.tuwien.sepm.groupphase.backend.service.MailSender;
 import at.ac.tuwien.sepm.groupphase.backend.service.SecureTokenService;
 import at.ac.tuwien.sepm.groupphase.backend.service.UserService;
@@ -55,7 +57,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final MailSender mailSender;
     private final SecureTokenService secureTokenService;
-    private final SecurityProperties securityProperties;
+    private final AuthorizationService authorizationService;
 
     @Autowired
     public UserServiceImpl(
@@ -65,7 +67,7 @@ public class UserServiceImpl implements UserService {
         UserMapper userMapper,
         MailSender mailSender,
         SecureTokenService secureTokenService,
-        SecurityProperties securityProperties
+        AuthorizationService authorizationService
     ) {
         this.userRepository = userRepository;
         this.userValidation = userValidation;
@@ -73,11 +75,11 @@ public class UserServiceImpl implements UserService {
         this.userMapper = userMapper;
         this.mailSender = mailSender;
         this.secureTokenService = secureTokenService;
-        this.securityProperties = securityProperties;
+        this.authorizationService = authorizationService;
     }
 
     @Override
-    public SimpleUserDto create(UserRegistrationDto userRegistrationDto) throws ServiceException, ValidationException, ConflictException {
+    public SimpleUserDto create(UserRegistrationDto userRegistrationDto) {
         log.trace("createUser(userRegistrationDto = {})", userRegistrationDto);
 
         try {
@@ -96,8 +98,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public SimpleUserDto findById(Long id) throws NotFoundException {
+    public SimpleUserDto findById(Long id) {
         log.trace("getUser(id = {})", id);
+
+        authorizationService.checkAuthorization(id);
 
         Optional<User> userOptional = userRepository.findById(id);
         if (userOptional.isPresent()) {
@@ -108,8 +112,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public DetailedUserDto patch(UpdateUserDto updateUserDto, Boolean passwordChange, Long id) throws ServiceException, ValidationException, ConflictException, NotFoundException {
+    public DetailedUserDto patch(UpdateUserDto updateUserDto, Boolean passwordChange, Long id) {
         log.trace("patch(updateUserDto = {}, passwordChange = {}, id = {})", updateUserDto, passwordChange, id);
+
+        authorizationService.checkAuthorization(id);
 
         try {
             userValidation.validatePatchUserInput(updateUserDto);
@@ -126,6 +132,8 @@ public class UserServiceImpl implements UserService {
     public void delete(Long id) throws ServiceException, NotFoundException {
         log.trace("deleteUser(id = {})", id);
 
+        authorizationService.checkAuthorization(id);
+
         try {
             userRepository.deleteById(id);
         } catch (EmptyResultDataAccessException e) {
@@ -134,7 +142,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void forgotPassword(String email) throws NotFoundException, ServiceException {
+    public void forgotPassword(String email) {
         log.trace("forgotPassword(email = {})", email);
 
         Optional<User> userOptional = userRepository.findByEmail(email);
@@ -163,7 +171,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public DetailedUserDto changePassword(PasswordChangeDto passwordChangeDto, Long id) throws ServiceException, ValidationException, NotFoundException, InvalidTokenException {
+    public DetailedUserDto changePassword(PasswordChangeDto passwordChangeDto, Long id) {
         log.trace("changePassword(passwordChangeDto = {}, id = {})", passwordChangeDto, id);
 
         try {
@@ -195,7 +203,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String email) {
         log.trace("loadUserByUsername(email = {})", email);
 
         try {
@@ -218,8 +226,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public SimpleUserDto findByEmail(String email) throws NotFoundException {
+    public SimpleUserDto findByEmail(String email) {
         log.trace("findUserByEmail(email = {})", email);
+
+        authorizationService.checkAuthorization(email);
 
         Optional<User> userOptional = userRepository.findByEmail(email);
         if (userOptional.isPresent()) {
@@ -230,7 +240,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void sendEmailVerificationLink(User user) throws ServiceException {
+    public void sendEmailVerificationLink(User user) {
         log.trace("sendEmailVerificationLink(user = {})", user);
 
         SecureToken secureToken = secureTokenService.createSecureToken(TokenType.verifyEmail);
@@ -256,10 +266,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void resendEmailVerificationLink() throws ServiceException, NotFoundException {
+    public void resendEmailVerificationLink() {
         log.trace("resendEmailVerificationLink()");
 
-        String email = getCurrentUserEmail();
+        User user = authorizationService.getLoggedInUser();
+        String email = user.getEmail();
 
         Optional<User> userOptional = userRepository.findByEmail(email);
         if (userOptional.isPresent()) {
@@ -270,7 +281,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void verifyEmail(String token) throws InvalidTokenException, NotFoundException {
+    public void verifyEmail(String token) {
         log.trace("verifyEmail(token = {})", token);
 
         SecureToken secureToken = secureTokenService.findByToken(token);
@@ -285,22 +296,6 @@ public class UserServiceImpl implements UserService {
             }
         } else {
             throw new InvalidTokenException();
-        }
-    }
-
-    /**
-     * Get the email of the logged-in user, returns null if user is not logged in.
-     *
-     * @return the email address of the current user
-     */
-    public String getCurrentUserEmail() {
-        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
-        if (requestAttributes instanceof ServletRequestAttributes) {
-            HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
-            String token = request.getHeader(securityProperties.getAuthHeader());
-            return (new String(Base64.decodeBase64(token.split("\\.")[1]))).split("sub\":\"")[1].split("\"")[0];
-        } else {
-            return null;
         }
     }
 }
