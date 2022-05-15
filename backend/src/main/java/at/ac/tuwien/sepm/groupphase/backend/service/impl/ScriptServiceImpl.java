@@ -243,9 +243,16 @@ public class ScriptServiceImpl implements ScriptService {
     public ScriptDto findById(Long id) {
         log.trace("getById(id = {})", id);
 
+        User user = authorizationService.getLoggedInUser();
+        if (user == null) {
+            throw new UnauthorizedException();
+        }
         Optional<Script> script = scriptRepository.findById(id);
         if (script.isEmpty()) {
             throw new NotFoundException();
+        }
+        if (!script.get().getOwner().getId().equals(user.getId())) {
+            throw new UnauthorizedException("User not permitted to open this file");
         }
         return scriptMapper.scriptToScriptDto(script.get());
     }

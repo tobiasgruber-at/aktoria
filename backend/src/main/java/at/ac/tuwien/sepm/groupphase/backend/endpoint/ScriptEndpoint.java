@@ -61,6 +61,7 @@ public class ScriptEndpoint {
 
     @GetMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @Secured("ROLE_VERIFIED")
     public ScriptDto getScriptById(@PathVariable Long id) {
         log.info("GET {}/{}", path, id);
         return scriptService.findById(id);
