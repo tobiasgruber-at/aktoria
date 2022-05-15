@@ -1,4 +1,4 @@
-<div class="d-flex flex-column min-vh-100">
+<div class="d-flex flex-column min-vh-100 bg-{{ theme }}">
   <header *ngIf="showHeader" class="fixed-top">
     <nav
       class="px-5 navbar navbar-expand-lg navbar-dark bg-{{
@@ -56,7 +56,7 @@
       </div>
     </nav>
   </header>
-  <main class="p-5 flex-grow-1 d-flex flex-column bg-{{ theme }}">
+  <main class="w-100 p-5 flex-grow-1 d-flex flex-column">
     <ng-content></ng-content>
   </main>
   <footer *ngIf="showFooter" class="px-5 bg-light"></footer>

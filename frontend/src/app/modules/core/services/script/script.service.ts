@@ -51,18 +51,29 @@ export class ScriptService {
   }
 
   /**
-   * Posts a new script
+   * Parses a new script.
    *
    * @param file the script to be posted
+   * @param startPage start page for parsing
    */
-  post(file: File): Observable<SimpleScript> {
+  parse(file: File, startPage: number): Observable<SimpleScript> {
     const formData = new FormData();
     formData.append('file', file);
+    formData.append('startPage', '' + startPage);
     return this.http.post<SimpleScript>(this.baseUri + '/new', formData);
   }
 
-  postCorrected(script): Observable<DetailedScript> {
-    return this.http.post<DetailedScript>(this.baseUri, script);
+  /**
+   * Saves a new script.
+   *
+   * @param script to be saved
+   */
+  save(script): Observable<DetailedScript> {
+    return this.http.post<DetailedScript>(this.baseUri, script).pipe(
+      tap((s: DetailedScript) => {
+        this.scripts.push(s);
+      })
+    );
   }
 
   /**
