@@ -1,5 +1,5 @@
 <div class="d-flex flex-column min-vh-100">
-  <header *ngIf="showHeader">
+  <header *ngIf="showHeader" class="fixed-top">
     <nav class="px-5 navbar navbar-expand-lg navbar-dark bg-dark">
       <a class="navbar-brand" routerLink="">Aktoria</a>
       <button
@@ -21,10 +21,11 @@
           <li class="nav-item">
             <a
               *ngIf="authService.isLoggedIn()"
+              [routerLinkActiveOptions]="{ exact: true }"
               class="nav-link"
-              routerLink="/message"
+              routerLink="/scripts"
               routerLinkActive="active"
-              >Message</a
+              >Deine Skripte</a
             >
           </li>
         </ul>
@@ -82,7 +83,7 @@
       </div>
     </nav>
   </header>
-  <main class="p-5 flex-grow-1">
+  <main class="p-5 flex-grow-1 d-flex flex-column">
     <ng-content></ng-content>
   </main>
   <footer *ngIf="showFooter" class="px-5 bg-light"></footer>

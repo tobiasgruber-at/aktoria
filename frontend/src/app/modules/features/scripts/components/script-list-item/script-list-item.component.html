@@ -1,0 +1,17 @@
+<div [routerLink]="'/scripts/' + (isCreate ? 'new' : script?.id)" role="button">
+  <div [class.bg-light]="isCreate" class="card">
+    <div class="d-flex align-items-center justify-content-center h-100 p-3">
+      <img
+        [alt]="isCreate ? 'Skript hochladen' : script.name"
+        [style.opacity]="isCreate ? 1 : 0.1"
+        class="card-img"
+        src="../../../../../../assets/illustrations/script_{{
+          isCreate ? 'plus_' : ''
+        }}cropped.svg"
+      />
+    </div>
+    <div *ngIf="!isCreate" class="card-img-overlay">
+      <h5 class="card-title text-truncate">{{ script?.name }}</h5>
+    </div>
+  </div>
+</div>

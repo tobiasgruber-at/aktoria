@@ -1,6 +1,14 @@
+:host {
+  --nav-height: 4.5rem;
+}
+
 header nav,
 footer {
-  height: 4.5rem;
+  height: var(--nav-height);
+}
+
+main {
+  margin-top: var(--nav-height);
 }
 
 ul {

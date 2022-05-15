@@ -1,0 +1,74 @@
+<app-page-layout>
+  <app-card [title]="form?.value?.file?.name || 'Keine Datei ausgewählt'">
+    <form (ngSubmit)="submit()" [formGroup]="form" class="form">
+      <div class="form-group mb-3">
+        <input
+          #fileInput
+          (change)="onFileChanged($event.target?.files?.[0])"
+          accept="application/pdf"
+          class="invisible collapse"
+          multiple="false"
+          type="file"
+        />
+        <div
+          (click)="fileInput.click()"
+          class="border border-1 p-5 mb-2 hover"
+          role="button"
+        >
+          <div class="d-flex align-items-center justify-content-center">
+            <div class="d-flex flex-column align-items-center">
+              <strong>Datei auswählen</strong>
+              <small
+                *ngIf="form?.value?.file"
+                @appear
+                class="text-center d-flex"
+              >
+                <span>
+                  Momentan hast du
+                  <em> {{ form?.value?.file?.name }} </em>
+                  ausgewählt.
+                </span>
+                <button
+                  (click)="onFileRemoved(fileInput); $event.stopPropagation()"
+                  class="btn btn-sm btn-link border-0 m-0 p-0 ms-1"
+                  type="button"
+                >
+                  Entfernen
+                </button>
+              </small>
+            </div>
+          </div>
+        </div>
+        <app-form-errors>
+          <app-form-error *ngIf="fieldHasErrors('file', 'required')"
+            >Bitte wähle eine Datei aus.
+          </app-form-error>
+        </app-form-errors>
+      </div>
+      <div class="form-group mb-3">
+        <div class="d-flex justify-content-between">
+          <button class="btn btn-secondary" routerLink="/scripts" type="button">
+            Abbrechen
+          </button>
+          <app-button
+            [disabled]="hasError()"
+            [loading]="loading"
+            label="Hochladen"
+            type="submit"
+          ></app-button>
+        </div>
+      </div>
+      <button
+        (click)="collapse.toggle()"
+        class="btn btn-link m-0 p-0"
+        role="link"
+        type="button"
+      >
+        Welche Skript Bedingungen gibt es?
+      </button>
+      <div #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsed">
+        <app-upload-information></app-upload-information>
+      </div>
+    </form>
+  </app-card>
+</app-page-layout>
