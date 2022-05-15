@@ -31,7 +31,7 @@ public interface SecureTokenService {
      * @param token the token string
      * @return the corresponding SecureToken
      */
-    SecureToken findByToken(String token) throws NotFoundException;
+    SecureToken findByToken(String token);
 
     /**
      * Removes the Token from the database.
