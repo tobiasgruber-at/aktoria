@@ -129,7 +129,8 @@ public class UserServiceImpl implements UserService {
 
         if (passwordChange) {
             try {
-                changePassword(new PasswordChangeDto(null, updateUserDto.getOldPassword(), updateUserDto.getNewPassword()), id);
+                DetailedUserDto updated = changePassword(new PasswordChangeDto(null, updateUserDto.getOldPassword(), updateUserDto.getNewPassword()), id);
+                update.setPasswordHash(updated.getPasswordHash());
             } catch (InvalidTokenException e) {
                 throw new InvalidTokenException(e.getMessage(), e);
             }
@@ -221,7 +222,6 @@ public class UserServiceImpl implements UserService {
                 if (secureToken.getExpireAt().isAfter(LocalDateTime.now())) {
                     User user = secureToken.getAccount();
                     user.setPasswordHash(passwordEncoder.encode(passwordChangeDto.getNewPassword()));
-                    user = userRepository.saveAndFlush(user);
                     return userMapper.userToDetailedUserDto(user);
                 } else {
                     throw new InvalidTokenException();
@@ -238,16 +238,7 @@ public class UserServiceImpl implements UserService {
                 throw new NotFoundException("User existiert nicht!");
             }
             update.setPasswordHash(passwordEncoder.encode(passwordChangeDto.getNewPassword()));
-            update = userRepository.saveAndFlush(update);
-
-            Optional<User> userUpdated = userRepository.findById(id);
-            User updated;
-            if (userUpdated.isPresent()) {
-                updated = userOptional.get();
-            } else {
-                throw new NotFoundException("User existiert nicht!");
-            }
-            return userMapper.userToDetailedUserDto(updated);
+            return userMapper.userToDetailedUserDto(update);
         }
     }
 
