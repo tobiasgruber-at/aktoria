@@ -5,8 +5,6 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordChangeDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UpdateUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserRegistrationDto;
-import at.ac.tuwien.sepm.groupphase.backend.entity.SecureToken;
-import at.ac.tuwien.sepm.groupphase.backend.repository.SecureTokenRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -23,9 +21,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.security.PermitAll;
-import java.util.List;
-
 /**
  * Endpoint for user related requests.
  *
@@ -37,11 +32,9 @@ import java.util.List;
 public class UserEndpoint {
     public static final String path = "/api/v1/users";
     private final UserService userService;
-    private final SecureTokenRepository secureTokenRepository;
 
-    public UserEndpoint(UserService userService, SecureTokenRepository secureTokenRepository) {
+    public UserEndpoint(UserService userService) {
         this.userService = userService;
-        this.secureTokenRepository = secureTokenRepository;
     }
 
     @GetMapping
