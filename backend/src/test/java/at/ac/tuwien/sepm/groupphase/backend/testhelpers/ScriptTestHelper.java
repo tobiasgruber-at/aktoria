@@ -6,7 +6,7 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimplePageDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleRoleDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleScriptDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.SimpleScriptMapper;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ScriptMapper;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.line.Line;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ import java.util.List;
 @Getter
 public class ScriptTestHelper {
     @Autowired
-    private SimpleScriptMapper simpleScriptMapper;
+    private ScriptMapper scriptMapper;
 
     public SimpleScriptDto dummySimpleScriptDto() {
         final List<SimpleRoleDto> expectedRolesDto = new LinkedList<>();
@@ -137,6 +137,6 @@ public class ScriptTestHelper {
     }
 
     public ScriptDto dummyScriptDto(Long id, SimpleUserDto owner) {
-        return simpleScriptMapper.simpleScriptDtoToScriptDto(dummySimpleScriptDto(), id, owner);
+        return scriptMapper.simpleScriptDtoToScriptDto(dummySimpleScriptDto(), id, owner);
     }
 }

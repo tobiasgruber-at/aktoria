@@ -13,7 +13,7 @@ import org.mapstruct.Mapping;
 import java.util.List;
 
 @Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR, uses = { RoleMapper.class, PageMapper.class })
-public interface SimpleScriptMapper {
+public interface ScriptMapper {
     SimpleScriptDto parsedScriptToSimpleScriptDto(ParsedScript parsedScript, String name);
 
     @Mapping(target = "owner", source = "owner")
