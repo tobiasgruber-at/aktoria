@@ -1,0 +1,108 @@
+<div>
+  <h2 id="format-restrictions">Formatierungsbestimmungen</h2>
+  <h3 id="roles">Rollen</h3>
+  <ul>
+    <li>Rollen werden in Großbuchstaben geschrieben</li>
+    <li>
+      Auch Rollen die nicht einer speziellen Person zugeordnet werden müssen in
+      All-Caps geschrieben sein. Beispielsweise <em>ALLE</em> oder
+      <em>STIMME</em>
+    </li>
+    <li>Rollennamen werden in einer Zeile geschrieben</li>
+    <li>Nach einer Rolle steht die Phrase, welche die Rolle spricht.</li>
+    <li>
+      Rollennamen dürfen diese Sonderzeichen enthalten:
+      <ul>
+        <li>Punkt (“.”)</li>
+        <li>Bindestrich (“-”)</li>
+        <li>Abstand (“ “)</li>
+      </ul>
+    </li>
+    <li>
+      Wenn eine Phrase von mehreren Rollen gesprochen wird, so entspricht die
+      Rolle für diese Phrase folgenden Schema. Innerhalb des Skriptes kann
+      dieses Schema gewechselt werden, da es Phrase für Phrase ausgearbeitet
+      wird. Innerhalb einer Phrase muss sich auf eines der beiden Varianten
+      festgelegt werden.
+      <ul>
+        <li><code>&lt;Rolle A&gt; UND &lt;Rolle B&gt;</code> oder</li>
+        <li><code>&lt;Rolle A&gt; / &lt;Rolle B&gt;</code></li>
+        <li><code>&lt;Rolle A&gt;/&lt;Rolle B&gt;</code></li>
+      </ul>
+    </li>
+  </ul>
+  <h3 id="phrases">Phrasen</h3>
+  <ul>
+    <li>Phrasen werden durch zwei Zeilenumbrüchen untereinander getrennt</li>
+    <li>Phrasen müssen mit einem Großbuchstaben beginnen</li>
+    <li>Phrasen müssen beendet werden</li>
+  </ul>
+  <h3 id="instructions">Instruktionen</h3>
+  <ul>
+    <li>Instruktionen sind in Klammern geschrieben</li>
+  </ul>
+  <h3 id="sentences">Sätze</h3>
+  <ul>
+    <li>
+      Ein Satz gilt als beendet wenn einer dieser Zeichen am Ende zu finden
+      sind:
+      <ul>
+        <li>Satzzeichen (“.”, “!”, “?”)</li>
+        <li>Ellipsis (“…”)</li>
+        <li>Slash (“/”)</li>
+        <li>Anführungszeichen (“””, “&quot;”)</li>
+        <li>Geschlossene runde Klammer (“)”)</li>
+      </ul>
+    </li>
+    <li>
+      Bestimmte Text-Schnippsel werden auch automatisch als vollständigen Satz
+      gesehen, auch ohne solchen Zeichen. Dazu zählen:
+      <ul>
+        <li>Aktbezeichnungen (“Erster Akt”, “Zweiter Akt”, usw.)</li>
+        <li>“Vorhang”</li>
+        <li>“Ende”</li>
+      </ul>
+    </li>
+  </ul>
+  <h3 id="pages">Seiten</h3>
+  <ul>
+    <li>Seitenzahlen verwenden arabische Zahlen</li>
+    <li>Es sind keine Kopf- oder Fußzeilen erlaubt</li>
+    <li>Die Ausrichtung ist Hochformat</li>
+    <li>Keine Spalten</li>
+  </ul>
+  <h2 id="general-restrictions">Generelle Einschränkungen</h2>
+  <ul>
+    <li>Dateityp muss PDF sein</li>
+    <li>Keine Passwortgeschützte PDF Dateien</li>
+    <li>Keine ausfüllbare Felder in PDF Dateien</li>
+    <li>Das Skript soll in Deutsch geschrieben sein</li>
+    <li>Seitenzahlen werden ignoriert</li>
+    <li>
+      Seitenzahlen sind dadurch gekennzeichnet, dass sie nur aus einer Zahl
+      bestehen
+    </li>
+    <li>
+      jegliche Formatierung sowie die Layoutierung des Skripts werden ignoriert.
+      Der Text wird zeilenweise von links nach rechts ausgelesen.
+    </li>
+    <li>
+      Text Dekorationen wie fettgedruckte oder kursive Wörter werden ignoriert
+    </li>
+    <li>Farben werden ignoriert</li>
+    <li>Bilder werden ignoriert</li>
+  </ul>
+  <h2 id="custom-rule">Eigene Regelungen</h2>
+  <ul>
+    <li>
+      Wenn eine Phrase über den Seitenumbruch fortgeführt wird, so wird der
+      zweite Teil noch dem ersten angefügt, solange der Satz nicht beendet wurde
+      davor und keine neue Rollenbezeichnung dabei steht
+    </li>
+    <li>
+      Wenn Rollen einander unterbrechen, kann dass mit einem Slash (“/”) am
+      Phrasen-Ende gekennzeichnet werden
+    </li>
+    <li>Textabschnitte ohne führende Rolle werden keiner Rolle zugewiesen</li>
+  </ul>
+</div>

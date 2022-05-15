@@ -1,11 +1,5 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  Input,
-  Output
-} from '@angular/core';
-import { appearAnimations } from '../../animations/appear-animations';
+import {ChangeDetectionStrategy, Component, EventEmitter, HostBinding, Input, Output} from '@angular/core';
+import {appearAnimations} from '../../animations/appear-animations';
 
 /** @author Tobias Gruber */
 @Component({
@@ -17,9 +11,18 @@ import { appearAnimations } from '../../animations/appear-animations';
 })
 export class AlertComponent {
   @Output() closeAlert = new EventEmitter<void>();
-  @Input() show = false;
   @Input() type: 'danger' | 'success' | 'info' = 'success';
   @Input() closeable = true;
+
+  @HostBinding('class')
+  get classes(): string {
+    return 'd-flex w-100';
+  }
+
+  @HostBinding('@appear')
+  get appearAnimation(): boolean {
+    return true;
+  }
 
   close(): void {
     this.closeAlert.emit();

@@ -30,11 +30,13 @@ class ScriptParserImplUnitTest {
         final List<Line> lines = rawLines.stream().map(line -> (Line) new LineImpl(line, 0L)).toList();
 
         Long pageIndex = 0L;
+        Long lineIndex = 0L;
         for (Line l : lines) {
             l.setPage(pageIndex);
-            if (l.getRaw().equals("\f")) {
+            if (lineIndex == 5) {
                 pageIndex++;
             }
+            lineIndex++;
         }
 
         final ScriptParserImpl parser = new ScriptParserImpl(input);

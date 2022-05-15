@@ -8,7 +8,7 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimplePageDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleRoleDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleScriptDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.SimpleScriptMapper;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ScriptMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.UserMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Line;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Page;
@@ -16,6 +16,7 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Role;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Script;
 import at.ac.tuwien.sepm.groupphase.backend.entity.User;
 import at.ac.tuwien.sepm.groupphase.backend.exception.IllegalFileFormatException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.UnauthorizedException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.LineRepository;
@@ -51,7 +52,7 @@ import java.util.stream.Stream;
 @Service
 @Slf4j
 public class ScriptServiceImpl implements ScriptService {
-    private final SimpleScriptMapper simpleScriptMapper;
+    private final ScriptMapper scriptMapper;
     private final UserMapper userMapper;
     private final ScriptRepository scriptRepository;
     private final UserRepository userRepository;
@@ -62,7 +63,7 @@ public class ScriptServiceImpl implements ScriptService {
 
     @Autowired
     public ScriptServiceImpl(
-        SimpleScriptMapper simpleScriptMapper,
+        ScriptMapper scriptMapper,
         UserMapper userMapper,
         ScriptRepository scriptRepository,
         UserRepository userRepository,
@@ -71,7 +72,7 @@ public class ScriptServiceImpl implements ScriptService {
         RoleRepository roleRepository,
         AuthorizationService authorizationService
     ) {
-        this.simpleScriptMapper = simpleScriptMapper;
+        this.scriptMapper = scriptMapper;
         this.userMapper = userMapper;
         this.scriptRepository = scriptRepository;
         this.userRepository = userRepository;
@@ -82,7 +83,7 @@ public class ScriptServiceImpl implements ScriptService {
     }
 
     @Override
-    public SimpleScriptDto parse(MultipartFile file) throws ServiceException, IllegalFileFormatException {
+    public SimpleScriptDto parse(MultipartFile file, Integer startPage) throws ServiceException, IllegalFileFormatException {
         log.trace("newScript(pdfScript = {})", file);
 
         boolean isPdfFile;
@@ -96,7 +97,7 @@ public class ScriptServiceImpl implements ScriptService {
             throw new IllegalFileFormatException("Illegales Dateiformat.");
         }
 
-        UnparsedScript s = new UnparsedScript(file);
+        UnparsedScript s = new UnparsedScript(file, startPage);
         String raw;
 
         try {
@@ -108,7 +109,7 @@ public class ScriptServiceImpl implements ScriptService {
         ScriptParser parser = new ScriptParserImpl(raw);
         ParsedScript parsedScript = parser.parse();
 
-        return simpleScriptMapper.parsedScriptToSimpleScriptDto(parsedScript, file.getName());
+        return scriptMapper.parsedScriptToSimpleScriptDto(parsedScript, file.getName());
     }
 
     /**
@@ -224,7 +225,7 @@ public class ScriptServiceImpl implements ScriptService {
         }
 
         SimpleUserDto owner = userMapper.userToSimpleUserDto(script.getOwner());
-        ScriptDto scriptDto = simpleScriptMapper.simpleScriptDtoToScriptDto(simpleScriptDto, script.getId(), owner);
+        ScriptDto scriptDto = scriptMapper.simpleScriptDtoToScriptDto(simpleScriptDto, script.getId(), owner);
         return scriptDto;
     }
 
@@ -237,13 +238,19 @@ public class ScriptServiceImpl implements ScriptService {
             throw new UnauthorizedException();
         }
 
-        return simpleScriptMapper.listOfScriptToListOfScriptPreviewDto(scriptRepository.getScriptByOwner(user)).stream();
+        return scriptMapper.listOfScriptToListOfScriptPreviewDto(scriptRepository.getScriptByOwner(user)).stream();
     }
 
     @Override
-    public ScriptDto findById(Long id) throws ServiceException {
+    @Transactional
+    public ScriptDto findById(Long id) throws ServiceException, NotFoundException {
         log.trace("getById(id = {})", id);
 
-        throw new UnsupportedOperationException();
+        Optional<Script> script = scriptRepository.findById(id);
+        if (!script.isPresent()) {
+            throw new NotFoundException();
+        }
+        ScriptDto scriptDto = scriptMapper.scriptToScriptDto(script.get());
+        return scriptDto;
     }
 }
