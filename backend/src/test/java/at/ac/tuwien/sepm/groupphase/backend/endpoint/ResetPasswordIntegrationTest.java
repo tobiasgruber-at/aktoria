@@ -1,12 +1,14 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordChangeDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserLoginDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserRegistrationDto;
+import at.ac.tuwien.sepm.groupphase.backend.entity.SecureToken;
 import at.ac.tuwien.sepm.groupphase.backend.testhelpers.UserTestHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.icegreen.greenmail.configuration.GreenMailConfiguration;
 import com.icegreen.greenmail.junit5.GreenMailExtension;
+import com.icegreen.greenmail.util.GreenMailUtil;
 import com.icegreen.greenmail.util.ServerSetupTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -25,8 +27,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
+import javax.mail.internet.MimeMessage;
+
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ActiveProfiles({ "test", "datagen" })
@@ -34,8 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @EnableWebMvc
 @WebAppConfiguration
 @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {"USER","VERIFIED","ADMIN"})
-public class UserRegisterIntegrationTest {
-
+public class ResetPasswordIntegrationTest {
     @RegisterExtension
     static GreenMailExtension greenMail = new GreenMailExtension(ServerSetupTest.SMTP)
         .withConfiguration(GreenMailConfiguration.aConfig().withUser("tester", "password"))
@@ -54,32 +58,39 @@ public class UserRegisterIntegrationTest {
 
     @Test
     @Transactional
-    @DisplayName("registration works correctly")
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { "USER", "VERIFIED", "ADMIN" })
-    void register() throws Exception {
-        byte[] body = mockMvc
+    @DisplayName("reset password works correctly")
+    void resetPassword() throws Exception {
+        //request password reset
+        mockMvc
             .perform(MockMvcRequestBuilders
-                .post("/api/v1/users")
+                .post("/api/v1/users/reset-password")
                 .accept(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(new UserRegistrationDto("Varok", "Saurfang", "varok.saurfang@email.com", "forthehorde")))
+                .content("test1@test.com")
                 .contentType(MediaType.APPLICATION_JSON)
-            ).andExpect(status().isCreated())
-            .andReturn().getResponse().getContentAsByteArray();
+            ).andExpect(status().isAccepted());
 
-        SimpleUserDto response = objectMapper.readValue(body, SimpleUserDto.class);
-        final SimpleUserDto expected = new SimpleUserDto(response.getId(), "Varok", "Saurfang", "varok.saurfang@email.com", false);
+        //check email inbox for token
+        final MimeMessage[] receivedMessages = greenMail.getReceivedMessages();
+        assertEquals(1, receivedMessages.length);
 
-        assertNotNull(response);
-        assertEquals(response, expected);
+        final MimeMessage message = receivedMessages[0];
+        assertEquals("test1@test.com", message.getAllRecipients()[0].toString());
 
-        body = mockMvc
+        String token = GreenMailUtil.getBody(message).split("restore/")[1].substring(0,23);
+        token = token.substring(0,19) + token.charAt(22);
+        //assertEquals(null, token);
+
+        //change password
+        mockMvc
             .perform(MockMvcRequestBuilders
-                .get("/api/v1/users?email=" + expected.getEmail())
-            ).andExpect(status().isOk())
-            .andReturn().getResponse().getContentAsByteArray();
-
-        response = objectMapper.readValue(body, SimpleUserDto.class);
-        assertNotNull(response);
-        assertEquals(response, expected);
+                .put("/api/v1/users/change-password")
+                .accept(MediaType.APPLICATION_JSON)
+                .content(
+                    "{" +
+                        "\"token\": \"" + token + "\"," +
+                        "\"newPassword\": \"pass1234\"" +
+                    "}")
+                .contentType(MediaType.APPLICATION_JSON)
+            ).andExpect(status().isAccepted());
     }
 }

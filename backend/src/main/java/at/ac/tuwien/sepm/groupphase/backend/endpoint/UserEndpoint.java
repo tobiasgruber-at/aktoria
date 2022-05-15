@@ -21,8 +21,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.security.PermitAll;
-
 /**
  * Endpoint for user related requests.
  *
@@ -41,6 +39,7 @@ public class UserEndpoint {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
+    @Secured("ROLE_USER")
     public SimpleUserDto getUser(@RequestParam String email) {
         log.info("GET {}/{}", path, email);
         return userService.findByEmail(email);
@@ -55,6 +54,7 @@ public class UserEndpoint {
 
     @PatchMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @Secured("ROLE_USER")
     public DetailedUserDto patchUser(@RequestParam Boolean passwordChange, @RequestBody UpdateUserDto updateUserDto, @PathVariable Long id) {
         log.info("PATCH {}/{}", path, id);
         return userService.patch(updateUserDto, passwordChange, id);
@@ -62,6 +62,7 @@ public class UserEndpoint {
 
     @DeleteMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Secured("ROLE_USER")
     public void deleteUser(@PathVariable Long id) {
         log.info("DELETE {}/{}", UserEndpoint.path, id);
         userService.delete(id);
@@ -83,7 +84,6 @@ public class UserEndpoint {
 
     @PostMapping(path = "/verification")
     @ResponseStatus(HttpStatus.OK)
-    @PermitAll
     public void verifyEmailToken(@RequestBody String token) {
         log.info("POST {}/verification", path);
         userService.verifyEmail(token);
