@@ -6,7 +6,7 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleScriptDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.LineMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.PageMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.RoleMapper;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.SimpleScriptMapper;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ScriptMapper;
 import at.ac.tuwien.sepm.groupphase.backend.exception.IllegalFileFormatException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.service.ScriptService;
@@ -38,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ScriptServiceImplIntegrationTest {
 
     @InjectMocks
-    private SimpleScriptMapper simpleScriptMapper;
+    private ScriptMapper scriptMapper;
     @InjectMocks
     private RoleMapper roleMapper;
     @InjectMocks
@@ -47,8 +47,8 @@ class ScriptServiceImplIntegrationTest {
     private LineMapper lineMapper;
 
     @Autowired
-    ScriptServiceImplIntegrationTest(SimpleScriptMapper simpleScriptMapper, RoleMapper roleMapper, PageMapper pageMapper, LineMapper lineMapper) {
-        this.simpleScriptMapper = simpleScriptMapper;
+    ScriptServiceImplIntegrationTest(ScriptMapper scriptMapper, RoleMapper roleMapper, PageMapper pageMapper, LineMapper lineMapper) {
+        this.scriptMapper = scriptMapper;
         this.roleMapper = roleMapper;
         this.pageMapper = pageMapper;
         this.lineMapper = lineMapper;
@@ -58,8 +58,8 @@ class ScriptServiceImplIntegrationTest {
     public void init() {
         ReflectionTestUtils.setField(lineMapper, "roleMapper", roleMapper);
         ReflectionTestUtils.setField(pageMapper, "lineMapper", lineMapper);
-        ReflectionTestUtils.setField(simpleScriptMapper, "pageMapper", pageMapper);
-        ReflectionTestUtils.setField(simpleScriptMapper, "roleMapper", roleMapper);
+        ReflectionTestUtils.setField(scriptMapper, "pageMapper", pageMapper);
+        ReflectionTestUtils.setField(scriptMapper, "roleMapper", roleMapper);
     }
 
     @Test
@@ -103,12 +103,12 @@ class ScriptServiceImplIntegrationTest {
 
         final File f = new File("./src/test/resources/service/parsing/script/Skript_NF.pdf");
         final MultipartFile multipartFile = new MockMultipartFile("file", new FileInputStream(f));
-        final ScriptService scriptService = new ScriptServiceImpl(simpleScriptMapper, null, null, null, null, null, null);
+        final ScriptService scriptService = new ScriptServiceImpl(scriptMapper, null, null, null, null, null, null);
 
         final List<SimplePageDto> expectedPagesDto = pageMapper.listOfPageToListOfSimplePageDto(expectedPages);
         final List<SimpleRoleDto> expectedRolesDto = roleMapper.listOfStringToListOfSimpleRoleDto(expectedRoles);
 
-        final SimpleScriptDto actual = scriptService.parse(multipartFile);
+        final SimpleScriptDto actual = scriptService.parse(multipartFile, 0);
         final SimpleScriptDto expected = new SimpleScriptDto(multipartFile.getName(), expectedPagesDto, expectedRolesDto);
 
         assertEquals(expected, actual);

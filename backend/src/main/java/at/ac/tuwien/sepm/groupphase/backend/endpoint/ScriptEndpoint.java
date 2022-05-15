@@ -41,11 +41,11 @@ public class ScriptEndpoint {
 
     @PostMapping(path = "/new", produces = { MediaType.APPLICATION_JSON_VALUE }, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     @ResponseStatus(HttpStatus.OK)
-    public SimpleScriptDto uploadScript(@RequestPart("file") MultipartFile multipartFile) throws ServiceException {
+    public SimpleScriptDto uploadScript(@RequestPart("file") MultipartFile multipartFile, @RequestPart(value = "startPage", required = false) String startPage) throws ServiceException {
         log.info("POST {}/new", path);
 
         try {
-            return scriptService.parse(multipartFile);
+            return scriptService.parse(multipartFile, startPage == null ? 0 : Integer.parseInt(startPage));
         } catch (IllegalFileFormatException e) {
             log.error(e.getMessage(), e);
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage());
@@ -62,6 +62,7 @@ public class ScriptEndpoint {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
+    @Secured("ROLE_VERIFIED")
     public Stream<ScriptPreviewDto> getScriptPreviews() throws ServiceException {
         log.info("GET {}", path);
 
@@ -74,14 +75,5 @@ public class ScriptEndpoint {
         log.info("GET {}/{}", path, id);
 
         return scriptService.findById(id);
-    }
-
-    @GetMapping(path = "/previews")
-    @ResponseStatus(HttpStatus.OK)
-    @Secured("ROLE_VERIFIED")
-    public Stream<ScriptPreviewDto> getPreviews() throws ServiceException {
-        log.info("GET {}/previews", path);
-
-        return scriptService.findAllPreviews();
     }
 }

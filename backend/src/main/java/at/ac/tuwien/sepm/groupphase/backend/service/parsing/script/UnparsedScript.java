@@ -18,9 +18,11 @@ public class UnparsedScript {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final MultipartFile pdfFile;
+    private final Integer startPage;
 
-    public UnparsedScript(MultipartFile pdfFile) {
+    public UnparsedScript(MultipartFile pdfFile, Integer startPage) {
         this.pdfFile = pdfFile;
+        this.startPage = startPage;
     }
 
     /**
@@ -45,6 +47,7 @@ public class UnparsedScript {
 
         PDFTextStripper stripper = new PDFTextStripper();
 
+        stripper.setStartPage(startPage);
         stripper.setSortByPosition(true);
         stripper.setPageEnd("\n\n\f\n");
         stripper.setParagraphStart("\n");
