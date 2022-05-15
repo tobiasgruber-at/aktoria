@@ -13,6 +13,7 @@ import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.InvalidTokenException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.UnprocessableEmailException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.AuthorizationService;
@@ -30,7 +31,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.mail.MessagingException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -122,7 +122,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void delete(Long id) throws ServiceException, NotFoundException {
+    public void delete(Long id) {
         log.trace("deleteUser(id = {})", id);
 
         authorizationService.checkBasicAuthorization(id);
@@ -139,8 +139,8 @@ public class UserServiceImpl implements UserService {
         log.trace("forgotPassword(email = {})", email);
 
         Optional<User> userOptional = userRepository.findByEmail(email);
-        if (!userOptional.isPresent()) {
-            throw new NotFoundException("Es exisitert kein User mit dieser Mail-Adresse.");
+        if (userOptional.isEmpty()) {
+            throw new NotFoundException("Es existiert kein User mit dieser Mail-Adresse.");
         }
         User user = userOptional.get();
 
@@ -158,7 +158,7 @@ public class UserServiceImpl implements UserService {
                         <a href='%s'>Passwort zurücksetzten</a>
                     """
                     .formatted(user.getFirstName(), link));
-        } catch (MessagingException e) {
+        } catch (UnprocessableEmailException e) {
             throw new ServiceException(e.getMessage(), e);
         }
     }
@@ -201,7 +201,7 @@ public class UserServiceImpl implements UserService {
 
         try {
             Optional<User> userOptional = userRepository.findByEmail(email);
-            if (!userOptional.isPresent()) {
+            if (userOptional.isEmpty()) {
                 throw new NotFoundException("Es konnte kein Benutzer gefunden werden.");
             }
             User user = userOptional.get();
@@ -253,7 +253,7 @@ public class UserServiceImpl implements UserService {
                         Wenn du dich nicht bei Aktoria registriert haben solltest, ignoriere bitte diese Mail.
                     """
                     .formatted(user.getFirstName(), link));
-        } catch (MessagingException e) {
+        } catch (UnprocessableEmailException e) {
             throw new ServiceException(e.getMessage(), e);
         }
     }

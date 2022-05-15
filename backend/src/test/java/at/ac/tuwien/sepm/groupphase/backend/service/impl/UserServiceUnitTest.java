@@ -165,7 +165,7 @@ class UserServiceUnitTest {
         @Transactional
         @DisplayName("throws ServiceException")
         @MethodSource("parameterizedGetUserExceptionProvider")
-        void getUserThrowsException(String input) throws ServiceException {
+        void getUserThrowsException(String input) {
             assertThrows(NotFoundException.class, () -> userService.findByEmail(input));
         }
 
@@ -378,7 +378,7 @@ class UserServiceUnitTest {
         @DisplayName("creates user correctly")
         @MethodSource("parameterizedUserRegistrationDtoProvider")
         @Transactional
-        void createUserIsOk(CreateUserRecord input) throws ServiceException, ValidationException, ConflictException {
+        void createUserIsOk(CreateUserRecord input) {
             SimpleUserDto actual = userService.create(input.input);
             input.expected.setId(actual.getId());
 

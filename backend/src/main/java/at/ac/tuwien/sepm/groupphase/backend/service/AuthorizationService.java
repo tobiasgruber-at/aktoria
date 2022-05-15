@@ -21,7 +21,7 @@ public interface AuthorizationService {
     boolean isLoggedInAs(String email);
 
     /**
-     * Gets the logged in user.
+     * Gets the logged-in user.
      *
      * @return a user entity, or null if not logged in
      */

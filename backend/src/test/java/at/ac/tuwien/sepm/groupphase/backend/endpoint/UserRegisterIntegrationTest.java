@@ -55,6 +55,7 @@ public class UserRegisterIntegrationTest {
     @Test
     @Transactional
     @DisplayName("registration works correctly")
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { "USER", "VERIFIED", "ADMIN" })
     void register() throws Exception {
         byte[] body = mockMvc
             .perform(MockMvcRequestBuilders
