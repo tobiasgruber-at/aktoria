@@ -5,11 +5,9 @@ import at.ac.tuwien.sepm.groupphase.backend.service.parsing.page.Page;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.page.impl.PageImpl;
 import lombok.extern.slf4j.Slf4j;
 
-import java.awt.Color;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Random;
 import java.util.StringJoiner;
 
 /**
@@ -21,15 +19,12 @@ import java.util.StringJoiner;
 public class ParsedScript {
     private final List<Line> lines;
     private final List<String> roles;
-
-    private List<Color> colors;
     private List<Page> pages;
 
     public ParsedScript(List<Line> lines, List<String> roles) {
         this.lines = lines;
         this.roles = roles;
         indexComponents();
-        colorRoles();
     }
 
     /**
@@ -65,15 +60,6 @@ public class ParsedScript {
         return pages;
     }
 
-    /**
-     * Gets the colors for each role.
-     *
-     * @return all colors
-     */
-    public List<Color> getColors() {
-        return colors;
-    }
-
     private void indexComponents() {
         log.trace("indexComponents()");
 
@@ -99,24 +85,6 @@ public class ParsedScript {
         }
 
         pages.add(curPage);
-    }
-
-    private void colorRoles() {
-        Color baseColor = new Color(160, 120, 222);
-        colors = new LinkedList<>();
-
-        for (int i = 0; i < roles.size(); i++) {
-            colors.add(getPaletteColor(baseColor));
-        }
-    }
-
-    private Color getPaletteColor(Color base) {
-        Random r = new Random();
-        return new Color(
-            Math.floorDiv((int) (base.getRed() * 0.66f + r.nextInt(200) * 0.33), 2),
-            Math.floorDiv((int) (base.getGreen() * 0.66f + r.nextInt(200) * 0.33), 2),
-            Math.floorDiv((int) (base.getBlue() * 0.66f + r.nextInt(200) * 0.33), 2)
-        );
     }
 
     @Override
