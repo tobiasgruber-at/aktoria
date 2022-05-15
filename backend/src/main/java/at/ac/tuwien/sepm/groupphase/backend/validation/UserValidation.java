@@ -35,19 +35,14 @@ public interface UserValidation {
     void validatePatchUserInput(UpdateUserDto updateUserDto) throws ValidationException, ConflictException;
 
     /**
-     * Validates if email is correct.
-     *
-     * @param email the email to send the link for the password reset
-     * @throws NotFoundException is thrown if the email does not exist in the data base
-     */
-    void validateEmailForForgottenPasswordInput(String email) throws NotFoundException;
-
-    /**
      * Validates the new password.
      *
      * @param passwordChangeDto filled with the old and new password
+     * @param id                the id of the user
      * @throws ValidationException is thrown when the new password is not valid
+     * @throws ConflictException   is thrown when the old password does not match the password stored in the data base
+     * @throws NotFoundException   is thrown if no user with such id exists
      */
-    void validateChangePasswordInput(PasswordChangeDto passwordChangeDto) throws ValidationException;
+    void validateChangePasswordInput(PasswordChangeDto passwordChangeDto, Long id) throws ValidationException, ConflictException, NotFoundException;
 
 }

@@ -13,6 +13,7 @@ import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 /**
@@ -52,7 +53,7 @@ public interface UserService extends UserDetailsService {
      * @throws ConflictException   is thrown when there is a conflict with the data base
      * @throws ValidationException is thrown when user data is not valid
      */
-    DetailedUserDto patch(UpdateUserDto updateUserDto, Boolean passwordChange, Long id) throws ServiceException, ConflictException, ValidationException, NotFoundException;
+    DetailedUserDto patch(UpdateUserDto updateUserDto, Boolean passwordChange, Long id) throws ServiceException, ConflictException, ValidationException, NotFoundException, InvalidTokenException;
 
     /**
      * Deletes a user from the system.
@@ -80,25 +81,27 @@ public interface UserService extends UserDetailsService {
      * @throws ServiceException    is thrown if the password could not be changed
      * @throws ValidationException is thrown if the new password is not valid
      * @throws NotFoundException   is thrown if the user does not exist
+     * @throws ConflictException   is thrown if the old password does not match the password stored in the data base
      */
-    DetailedUserDto changePassword(PasswordChangeDto passwordChangeDto, Long id) throws ServiceException, ValidationException, NotFoundException, InvalidTokenException;
+    DetailedUserDto changePassword(PasswordChangeDto passwordChangeDto, Long id) throws ServiceException, ValidationException, NotFoundException, InvalidTokenException, ConflictException;
 
     /**
      * Find a user in the context of Spring Security based on the email address.
      *
      * @param email the email address
      * @return a Spring Security user
-     * @throws NotFoundException is thrown if the specified user does not exist
+     * @throws UsernameNotFoundException is thrown if the specified user does not exist
      * @see <a href="https://www.baeldung.com/spring-security-authentication-with-a-database">https://www.baeldung.com/spring-security-authentication-with-a-database</a>
      */
     @Override
-    UserDetails loadUserByUsername(String email);
+    UserDetails loadUserByUsername(String email) throws UsernameNotFoundException;
 
     /**
      * Find a user based on the email address.
      *
      * @param email the email address
      * @return an application user
+     * @throws NotFoundException is thrown if no user with this email exists.
      */
     SimpleUserDto findByEmail(String email) throws NotFoundException;
 
@@ -113,7 +116,7 @@ public interface UserService extends UserDetailsService {
     /**
      * Resend an email with an email verification link to the user.
      *
-     * @throws ServiceException  is thrown when something went wrong with sending the email
+     * @throws ServiceException is thrown when something went wrong with sending the email
      */
     void resendEmailVerificationLink() throws ServiceException, NotFoundException;
 

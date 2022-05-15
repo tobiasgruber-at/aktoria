@@ -80,7 +80,7 @@ public class UserEndpoint {
 
         try {
             return userService.patch(updateUserDto, passwordChange, id);
-        } catch (ValidationException e) {
+        } catch (ValidationException | InvalidTokenException e) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage(), e);
         } catch (ConflictException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage(), e);
@@ -102,18 +102,23 @@ public class UserEndpoint {
         }
     }
 
-    @PostMapping(path = "/reset-password")
+    @PostMapping(path = "/forgot-password")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void forgottenPassword(@RequestBody String email) throws ServiceException, NotFoundException {
         log.info("POST {}/reset-password", path);
         userService.forgotPassword(email);
     }
 
-    @PutMapping(path = "/change-password")
+    @PutMapping(path = "/reset-password")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void changePassword(@RequestBody PasswordChangeDto passwordChange) throws ValidationException, ServiceException, InvalidTokenException, NotFoundException {
         log.info("POST {}/reset-password", path);
-        userService.changePassword(passwordChange, null);
+        try {
+            userService.changePassword(passwordChange, null);
+        } catch (ConflictException e) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage(), e);
+        }
+
     }
 
     @PostMapping(path = "/verification")
