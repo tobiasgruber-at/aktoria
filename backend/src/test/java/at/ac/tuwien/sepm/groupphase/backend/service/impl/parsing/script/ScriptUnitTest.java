@@ -27,7 +27,7 @@ class ScriptUnitTest {
         final String expected = Files.readString(Path.of("./src/test/resources/service/parsing/script/Skript_NF_expected.txt"));
         final MultipartFile multipartFile = new MockMultipartFile("file", new FileInputStream(inputFile));
 
-        final UnparsedScript s = new UnparsedScript(multipartFile);
+        final UnparsedScript s = new UnparsedScript(multipartFile, 0);
 
         assertThat(expected).isEqualToNormalizingNewlines(s.getFileContentsAsPlainText());
     }

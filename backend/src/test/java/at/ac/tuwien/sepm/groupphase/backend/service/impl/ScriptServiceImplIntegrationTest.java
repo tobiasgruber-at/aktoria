@@ -108,7 +108,7 @@ class ScriptServiceImplIntegrationTest {
         final List<SimplePageDto> expectedPagesDto = pageMapper.listOfPageToListOfSimplePageDto(expectedPages);
         final List<SimpleRoleDto> expectedRolesDto = roleMapper.listOfStringToListOfSimpleRoleDto(expectedRoles);
 
-        final SimpleScriptDto actual = scriptService.parse(multipartFile);
+        final SimpleScriptDto actual = scriptService.parse(multipartFile, 0);
         final SimpleScriptDto expected = new SimpleScriptDto(multipartFile.getName(), expectedPagesDto, expectedRolesDto);
 
         assertEquals(expected, actual);

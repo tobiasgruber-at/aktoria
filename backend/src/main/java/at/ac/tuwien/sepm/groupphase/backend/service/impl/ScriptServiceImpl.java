@@ -70,7 +70,7 @@ public class ScriptServiceImpl implements ScriptService {
     }
 
     @Override
-    public SimpleScriptDto parse(MultipartFile file) throws ServiceException, IllegalFileFormatException {
+    public SimpleScriptDto parse(MultipartFile file, Integer startPage) throws ServiceException, IllegalFileFormatException {
         log.trace("newScript(pdfScript = {})", file);
 
         boolean isPdfFile;
@@ -84,7 +84,7 @@ public class ScriptServiceImpl implements ScriptService {
             throw new IllegalFileFormatException("Illegales Dateiformat.");
         }
 
-        UnparsedScript s = new UnparsedScript(file);
+        UnparsedScript s = new UnparsedScript(file, startPage);
         String raw;
 
         try {
