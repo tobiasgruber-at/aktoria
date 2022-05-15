@@ -8,7 +8,7 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimplePageDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleRoleDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleScriptDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.SimpleScriptMapper;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ScriptMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.UserMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Line;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Page;
@@ -49,7 +49,7 @@ import java.util.stream.Stream;
 @Service
 @Slf4j
 public class ScriptServiceImpl implements ScriptService {
-    private final SimpleScriptMapper simpleScriptMapper;
+    private final ScriptMapper scriptMapper;
     private final UserMapper userMapper;
     private final ScriptRepository scriptRepository;
     private final UserRepository userRepository;
@@ -58,9 +58,9 @@ public class ScriptServiceImpl implements ScriptService {
     private final RoleRepository roleRepository;
 
     @Autowired
-    public ScriptServiceImpl(SimpleScriptMapper simpleScriptMapper, UserMapper userMapper, ScriptRepository scriptRepository, UserRepository userRepository, PageRepository pageRepository,
+    public ScriptServiceImpl(ScriptMapper scriptMapper, UserMapper userMapper, ScriptRepository scriptRepository, UserRepository userRepository, PageRepository pageRepository,
                              LineRepository lineRepository, RoleRepository roleRepository) {
-        this.simpleScriptMapper = simpleScriptMapper;
+        this.scriptMapper = scriptMapper;
         this.userMapper = userMapper;
         this.scriptRepository = scriptRepository;
         this.userRepository = userRepository;
@@ -70,7 +70,7 @@ public class ScriptServiceImpl implements ScriptService {
     }
 
     @Override
-    public SimpleScriptDto parse(MultipartFile file) throws ServiceException, IllegalFileFormatException {
+    public SimpleScriptDto parse(MultipartFile file, Integer startPage) throws ServiceException, IllegalFileFormatException {
         log.trace("newScript(pdfScript = {})", file);
 
         boolean isPdfFile;
@@ -84,7 +84,7 @@ public class ScriptServiceImpl implements ScriptService {
             throw new IllegalFileFormatException("Illegales Dateiformat.");
         }
 
-        UnparsedScript s = new UnparsedScript(file);
+        UnparsedScript s = new UnparsedScript(file, startPage);
         String raw;
 
         try {
@@ -96,7 +96,7 @@ public class ScriptServiceImpl implements ScriptService {
         ScriptParser parser = new ScriptParserImpl(raw);
         ParsedScript parsedScript = parser.parse();
 
-        return simpleScriptMapper.parsedScriptToSimpleScriptDto(parsedScript, file.getName());
+        return scriptMapper.parsedScriptToSimpleScriptDto(parsedScript, file.getName());
     }
 
     /**
@@ -221,7 +221,7 @@ public class ScriptServiceImpl implements ScriptService {
         }
 
         SimpleUserDto owner = userMapper.userToSimpleUserDto(script.getOwner());
-        ScriptDto scriptDto = simpleScriptMapper.simpleScriptDtoToScriptDto(simpleScriptDto, script.getId(), owner);
+        ScriptDto scriptDto = scriptMapper.simpleScriptDtoToScriptDto(simpleScriptDto, script.getId(), owner);
         return scriptDto;
     }
 
@@ -243,7 +243,7 @@ public class ScriptServiceImpl implements ScriptService {
             throw new ServiceException("Authenticated user not found.");
         }
 
-        return simpleScriptMapper.listOfScriptToListOfScriptPreviewDto(scriptRepository.getScriptByOwner(user.get())).stream();
+        return scriptMapper.listOfScriptToListOfScriptPreviewDto(scriptRepository.getScriptByOwner(user.get())).stream();
     }
 
     @Override
