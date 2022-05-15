@@ -1,6 +1,10 @@
 <div class="d-flex flex-column min-vh-100">
   <header *ngIf="showHeader" class="fixed-top">
-    <nav class="px-5 navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav
+      class="px-5 navbar navbar-expand-lg navbar-dark bg-{{
+        theme === 'light' ? 'dark' : 'black'
+      }} shadow"
+    >
       <a class="navbar-brand" routerLink="">Aktoria</a>
       <button
         aria-controls="navbarSupportedContent"
@@ -52,7 +56,7 @@
       </div>
     </nav>
   </header>
-  <main class="p-5 flex-grow-1 d-flex flex-column">
+  <main class="p-5 flex-grow-1 d-flex flex-column bg-{{ theme }}">
     <ng-content></ng-content>
   </main>
   <footer *ngIf="showFooter" class="px-5 bg-light"></footer>

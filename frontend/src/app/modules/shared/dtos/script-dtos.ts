@@ -29,20 +29,20 @@ export class DetailedScript extends SimpleScript {
   }
 }
 
-class Page {
+export class Page {
   index: number;
   lines: Line[];
 }
 
-class Line {
+export class Line {
   index: number;
-  role: Role;
+  roles: Role[];
   content: string;
   audioSnippet: AudioBuffer;
   active: boolean;
 }
 
-class Role {
+export class Role {
   id: number;
   name: string;
   color: string;

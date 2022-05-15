@@ -12,8 +12,17 @@
       <strong>Fehler!</strong> Skript wurde nicht gefunden.
     </app-alert>
     <ng-template #noError>
-      <h1 class="display-4 mb-3">{{ script?.name }}</h1>
-      ..
+      <div>
+        <div class="d-flex justify-content-between align-items-center">
+          <h1 class="display-4 mb-3">{{ script?.name }}</h1>
+          <button
+            class="btn btn-primary"
+            routerLink="/scripts/{{ script.id }}/read"
+          >
+            Skript ansehen
+          </button>
+        </div>
+      </div>
     </ng-template>
   </ng-template>
 </app-page-layout>

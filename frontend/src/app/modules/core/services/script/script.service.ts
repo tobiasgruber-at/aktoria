@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { Globals } from '../../global/globals';
 import {
   DeleteScriptRequest,
@@ -17,6 +17,7 @@ export class ScriptService {
   private baseUri: string = this.globals.backendUri + '/scripts';
   private scripts: ScriptPreview[] = [];
   private scriptsSubject = new BehaviorSubject<ScriptPreview[]>([]);
+  private fullyLoadedScripts: DetailedScript[] = [];
 
   constructor(private http: HttpClient, private globals: Globals) {}
 
@@ -25,7 +26,14 @@ export class ScriptService {
   }
 
   getOne(id: number): Observable<DetailedScript> {
-    return this.http.get<DetailedScript>(`${this.baseUri}/${id}`);
+    const loadedScript = this.fullyLoadedScripts.find((f) => f.id === id);
+    return loadedScript
+      ? of(loadedScript)
+      : this.http.get<DetailedScript>(`${this.baseUri}/${id}`).pipe(
+          tap((script) => {
+            this.fullyLoadedScripts.push(script);
+          })
+        );
   }
 
   /**
