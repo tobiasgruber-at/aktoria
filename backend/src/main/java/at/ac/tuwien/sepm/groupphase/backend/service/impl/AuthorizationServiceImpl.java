@@ -63,10 +63,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         if (user == null) {
             return false;
         }
-        if (!Objects.equals(user.getId(), id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(user.getId(), id);
     }
 
     @Override
@@ -75,10 +72,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         if (user == null) {
             return false;
         }
-        if (!Objects.equals(user.getEmail(), email)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(user.getEmail(), email);
     }
 
     @Override

@@ -156,7 +156,7 @@ class UserServiceUnitTest {
 
     @Nested
     @DisplayName("deleteUser()")
-    @WithMockUser(username = "asdfdd", password = "forthehorde", roles = {"USER","VERIFIED","ADMIN"})
+    @WithMockUser(username = "asdfdd", password = "forthehorde", roles = { "USER", "VERIFIED", "ADMIN" })
     class DeleteUserTesting {
         private static Stream<Long> parameterizedDeleteUserProvider() {
             final List<Long> temp = new LinkedList<>();
@@ -200,7 +200,7 @@ class UserServiceUnitTest {
 
     @Nested
     @DisplayName("changeUser()")
-    @WithMockUser(username = "asdfdd", password = "forthehorde", roles = {"USER","VERIFIED","ADMIN"})
+    @WithMockUser(username = "asdfdd", password = "forthehorde", roles = { "USER", "VERIFIED", "ADMIN" })
     class ChangeUserWorks {
         private static Stream<SimpleUserDto> parameterizedChangeUserProvider() {
             final List<SimpleUserDto> temp = new LinkedList<>();
