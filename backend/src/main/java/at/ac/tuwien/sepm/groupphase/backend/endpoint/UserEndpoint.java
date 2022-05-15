@@ -54,7 +54,6 @@ public class UserEndpoint {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @PermitAll
     public SimpleUserDto postUser(@RequestBody UserRegistrationDto userRegistrationDto) {
         log.info("POST {}", path);
         return userService.create(userRegistrationDto);
@@ -78,7 +77,6 @@ public class UserEndpoint {
 
     @PostMapping(path = "/reset-password")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    @PermitAll
     public void forgottenPassword(@RequestBody String email) {
         log.info("POST {}/reset-password", path);
         userService.forgotPassword(email);
@@ -86,7 +84,6 @@ public class UserEndpoint {
 
     @PutMapping(path = "/change-password")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    @PermitAll
     public void changePassword(@RequestBody PasswordChangeDto passwordChange) {
         log.info("POST {}/reset-password", path);
         userService.changePassword(passwordChange, null);
@@ -94,7 +91,6 @@ public class UserEndpoint {
 
     @PostMapping(path = "/verification")
     @ResponseStatus(HttpStatus.OK)
-    @PermitAll
     public void verifyEmailToken(@RequestBody String token) {
         log.info("POST {}/verification", path);
         userService.verifyEmail(token);
