@@ -1,13 +1,11 @@
 package at.ac.tuwien.sepm.groupphase.backend.config.datasource;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.datasource.AbstractDataSource;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 
 import javax.sql.DataSource;
-import java.lang.invoke.MethodHandles;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -16,9 +14,9 @@ import java.sql.SQLException;
  *
  * @author Marvin Flandorfer
  */
+@Slf4j
 public class RetryableDataSource extends AbstractDataSource {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final DataSource delegate;
 
     public RetryableDataSource(DataSource delegate) {
@@ -28,14 +26,14 @@ public class RetryableDataSource extends AbstractDataSource {
     @Override
     @Retryable(maxAttempts = 10, backoff = @Backoff(multiplier = 1.3, maxDelay = 30000))
     public Connection getConnection() throws SQLException {
-        LOGGER.info("getting datasource connection ...");
+        log.info("getting datasource connection ...");
         return delegate.getConnection();
     }
 
     @Override
     @Retryable(maxAttempts = 10, backoff = @Backoff(multiplier = 1.3, maxDelay = 30000))
     public Connection getConnection(String username, String password) throws SQLException {
-        LOGGER.info("getting datasource connection by username and password ...");
+        log.info("getting datasource connection by username and password ...");
         return delegate.getConnection(username, password);
     }
 }
