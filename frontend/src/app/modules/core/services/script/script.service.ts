@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { Globals } from '../../global/globals';
 import {
-  DeleteScriptRequest,
   DetailedScript,
   ScriptPreview,
   SimpleScript
@@ -25,6 +24,12 @@ export class ScriptService {
     return this.scriptsSubject.asObservable();
   }
 
+  /**
+   * Gets one script.
+   *
+   * @param id id of the script
+   * @return script the found script.
+   */
   getOne(id: number): Observable<DetailedScript> {
     const loadedScript = this.fullyLoadedScripts.find((f) => f.id === id);
     return loadedScript
@@ -42,12 +47,11 @@ export class ScriptService {
    * @return observable list of script previews
    */
   getAll(): Observable<ScriptPreview[]> {
-    return this.http.get<ScriptPreview[]>(this.baseUri).pipe(
-      tap((scripts) => {
-        this.scripts = scripts;
-        this.scriptsSubject.next(this.scripts);
-      })
-    );
+    return this.scripts?.length > 0
+      ? of(this.scripts)
+      : this.http
+          .get<ScriptPreview[]>(this.baseUri)
+          .pipe(tap((scripts) => this.updateScripts(scripts)));
   }
 
   /**
@@ -69,25 +73,29 @@ export class ScriptService {
    * @param script to be saved
    */
   save(script): Observable<DetailedScript> {
-    return this.http.post<DetailedScript>(this.baseUri, script).pipe(
-      tap((s: DetailedScript) => {
-        this.scripts.push(s);
-      })
-    );
+    return this.http
+      .post<DetailedScript>(this.baseUri, script)
+      .pipe(
+        tap((s: DetailedScript) => this.updateScripts([...this.scripts, s]))
+      );
   }
 
   /**
    * Deletes the specified script
    *
-   * @param script the script to be deleted
+   * @param id id of script to be deleted
    */
-  delete(script: DeleteScriptRequest): Observable<void> {
-    return null;
-    // TODO: find correct URL
-    // return this.http.delete<DeleteScriptRequest>(this.baseUri+)
+  delete(id: number): Observable<void> {
+    return this.http
+      .delete<void>(`${this.baseUri}/${id}`)
+      .pipe(
+        tap(() => this.updateScripts(this.scripts.filter((s) => s.id !== id)))
+      );
   }
 
+  /** Updates scripts and notifies the scripts subject. */
   private updateScripts(scripts): void {
     this.scripts = scripts;
+    this.scriptsSubject.next(this.scripts);
   }
 }
