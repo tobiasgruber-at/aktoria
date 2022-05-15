@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { LoggedInGuard } from './modules/core/guards/logged-in.service';
+import { LoggedInGuard } from './modules/core/guards/logged-in-guard.service';
 import { LoggedOutGuard } from './modules/core/guards/logged-out-guard.service';
 
 const routes: Routes = [

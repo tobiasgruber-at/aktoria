@@ -1,18 +1,16 @@
 <!-- flex box, to prevent jumping ui while animation -->
-<div *ngIf="show" @appear class="d-flex w-100">
+<div
+  class="alert alert-{{
+    type
+  }} d-flex justify-content-between align-items-center flex-grow-1"
+  role="alert"
+>
+  <span><ng-content></ng-content></span>
   <div
-    class="alert alert-{{
-      type
-    }} d-flex justify-content-between align-items-center flex-grow-1"
-    role="alert"
+    (click)="close()"
+    *ngIf="closeable"
+    class="close d-flex justify-content-center"
   >
-    <span><ng-content></ng-content></span>
-    <div
-      (click)="close()"
-      *ngIf="closeable"
-      class="close d-flex justify-content-center"
-    >
-      &times;
-    </div>
+    &times;
   </div>
 </div>

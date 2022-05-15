@@ -1,12 +1,17 @@
 <app-page-layout>
-  <h2><!--{{ title }}-->Test</h2>
   <div
     *ngIf="loading; else loaded"
     class="h-100 w-100 d-flex justify-content-center align-items-center"
-  >
-    <div class="spinner-border text-secondary" role="status">
-      <span class="sr-only"></span>
-    </div>
-  </div>
-  <ng-template #loaded> </ng-template>
+  ></div>
+  <ng-template #loaded>
+    <app-alert *ngIf="error; else noError" [closeable]="false" type="danger">
+      <strong>Fehler!</strong> Skript wurde nicht gefunden.
+    </app-alert>
+    <ng-template #noError>
+      <h1 class="display-4 mb-3">{{ script?.name }}</h1>
+      <div class="spinner-border text-secondary" role="status">
+        <span class="sr-only"></span>
+      </div>
+    </ng-template>
+  </ng-template>
 </app-page-layout>
