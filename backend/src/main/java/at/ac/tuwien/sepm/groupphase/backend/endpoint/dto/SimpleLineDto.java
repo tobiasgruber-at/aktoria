@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Simple Line UserEndpoint.path.
+ * Simple Line Data Transfer Object.
  * <br>
  * A simple line DTO only contains the role names, the content
  * a raw version as well as the conflict type.
