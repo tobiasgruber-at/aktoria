@@ -4,6 +4,7 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ScriptDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ScriptPreviewDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleScriptDto;
 import at.ac.tuwien.sepm.groupphase.backend.exception.IllegalFileFormatException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -57,4 +58,14 @@ public interface ScriptService {
      * @throws ServiceException when an error occurs while trying to get the script
      */
     ScriptDto findById(Long id) throws ServiceException;
+
+    /**
+     * Deletes script with given id from the data storage.
+     *
+     * @param id the id of the script to be deleted
+     * @throws NotFoundException if the script could not be found in the data store
+     * @throws ServiceException if an error occurs while trying to remove the script from the data store
+     * @author Marvin Flandorfer
+     */
+    void delete(Long id);
 }

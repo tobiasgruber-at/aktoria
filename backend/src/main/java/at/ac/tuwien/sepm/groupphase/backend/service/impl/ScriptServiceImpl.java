@@ -16,6 +16,7 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Role;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Script;
 import at.ac.tuwien.sepm.groupphase.backend.entity.User;
 import at.ac.tuwien.sepm.groupphase.backend.exception.IllegalFileFormatException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.LineRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.PageRepository;
@@ -251,5 +252,11 @@ public class ScriptServiceImpl implements ScriptService {
         log.trace("getById(id = {})", id);
 
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void delete(Long id) {
+        log.trace("delete(id = {})", id);
+        scriptRepository.deleteById(id);
     }
 }
