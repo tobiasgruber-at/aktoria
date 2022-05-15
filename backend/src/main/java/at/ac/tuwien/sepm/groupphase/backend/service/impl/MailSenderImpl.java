@@ -63,7 +63,7 @@ public class MailSenderImpl implements MailSender {
             message.setSubject(subject);
             message.setContent(content, "text/html; charset=utf-8");
             Transport.send(message);
-        } catch (MessagingException e){
+        } catch (MessagingException e) {
             throw new UnprocessableEmailException();
         }
 

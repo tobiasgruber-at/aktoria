@@ -172,7 +172,7 @@ public class ScriptServiceImpl implements ScriptService {
         log.trace("save(scriptDto = {})", simpleScriptDto);
 
         User user = authorizationService.getLoggedInUser();
-        if (user == null){
+        if (user == null) {
             throw new UnauthorizedException();
         }
 
@@ -233,7 +233,7 @@ public class ScriptServiceImpl implements ScriptService {
         log.trace("getAllPreviews()");
 
         User user = authorizationService.getLoggedInUser();
-        if (user == null){
+        if (user == null) {
             throw new UnauthorizedException();
         }
 

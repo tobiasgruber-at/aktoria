@@ -21,15 +21,15 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     private final UserRepository userRepository;
 
     @Autowired
-    public AuthorizationServiceImpl( UserRepository userRepository ) {
+    public AuthorizationServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
-    public void checkBasicAuthorization(Long id){
-        if (isAdmin()){
+    public void checkBasicAuthorization(Long id) {
+        if (isAdmin()) {
             return;
         }
-        if (isLoggedInAs(id)){
+        if (isLoggedInAs(id)) {
             return;
         }
         throw new UnauthorizedException();
@@ -37,10 +37,10 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 
     @Override
     public void checkBasicAuthorization(String email) {
-        if (isAdmin()){
+        if (isAdmin()) {
             return;
         }
-        if (isLoggedInAs(email)){
+        if (isLoggedInAs(email)) {
             return;
         }
         throw new UnauthorizedException();
@@ -48,22 +48,22 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 
     private boolean isAdmin() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null){
+        if (auth == null) {
             return false;
         }
         Collection<GrantedAuthority> authorities;
         authorities = (Collection<GrantedAuthority>) auth.getAuthorities();
 
-        return authorities.containsAll( AuthorityUtils.createAuthorityList("ROLE_ADMIN") );
+        return authorities.containsAll(AuthorityUtils.createAuthorityList("ROLE_ADMIN"));
     }
 
     @Override
     public boolean isLoggedInAs(Long id) {
         User user = getLoggedInUser();
-        if (user == null){
+        if (user == null) {
             return false;
         }
-        if (!Objects.equals(user.getId(), id)){
+        if (!Objects.equals(user.getId(), id)) {
             return false;
         }
         return true;
@@ -72,10 +72,10 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     @Override
     public boolean isLoggedInAs(String email) {
         User user = getLoggedInUser();
-        if (user == null){
+        if (user == null) {
             return false;
         }
-        if (!Objects.equals(user.getEmail(), email)){
+        if (!Objects.equals(user.getEmail(), email)) {
             return false;
         }
         return true;
@@ -84,7 +84,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     @Override
     public User getLoggedInUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null){
+        if (auth == null) {
             return null;
         }
         String userEmail = "";
@@ -95,7 +95,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
             userEmail = user.getUsername();
         }
         Optional<User> user = userRepository.findByEmail(userEmail);
-        if (user.isPresent()){
+        if (user.isPresent()) {
             return user.get();
         } else {
             return null;
