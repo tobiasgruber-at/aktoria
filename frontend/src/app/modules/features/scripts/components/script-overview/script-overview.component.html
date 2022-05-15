@@ -15,12 +15,15 @@
       <div>
         <div class="d-flex justify-content-between align-items-center">
           <h1 class="display-4 mb-3">{{ script?.name }}</h1>
-          <button
-            class="btn btn-primary"
-            routerLink="/scripts/{{ script.id }}/read"
-          >
-            Skript ansehen
-          </button>
+          <div>
+            <button
+              class="btn btn-primary me-3"
+              routerLink="/scripts/{{ script.id }}/read"
+            >
+              Skript ansehen
+            </button>
+            <button class="btn btn-danger">Skript löschen</button>
+          </div>
         </div>
       </div>
     </ng-template>
