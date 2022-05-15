@@ -256,4 +256,10 @@ public class ScriptServiceImpl implements ScriptService {
         }
         return scriptMapper.scriptToScriptDto(script.get());
     }
+
+    @Override
+    public void delete(Long id) {
+        log.trace("delete(id = {})", id);
+        scriptRepository.deleteById(id);
+    }
 }

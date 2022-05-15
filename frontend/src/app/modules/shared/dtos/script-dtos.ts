@@ -2,10 +2,6 @@ export class UploadScript {
   constructor(public readonly file: File) {}
 }
 
-export class DeleteScriptRequest {
-  constructor(public readonly id: number) {}
-}
-
 export class SimpleScript {
   constructor(
     public readonly pages: Page[],

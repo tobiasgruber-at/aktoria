@@ -58,4 +58,12 @@ public interface ScriptService {
      * @throws ServiceException when an error occurs while trying to get the script
      */
     ScriptDto findById(Long id);
+
+    /**
+     * Deletes script with given id from the data storage.
+     *
+     * @param id the id of the script to be deleted
+     * @author Marvin Flandorfer
+     */
+    void delete(Long id);
 }

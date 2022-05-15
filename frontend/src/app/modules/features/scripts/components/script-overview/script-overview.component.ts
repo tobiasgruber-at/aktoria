@@ -41,5 +41,14 @@ export class ScriptOverviewComponent implements OnInit {
     });
   }
 
+  deleteScript(): void {
+    this.scriptService.delete(this.script.id).subscribe({
+      next: () => {
+        this.router.navigateByUrl('/scripts');
+      },
+      error: () => {}
+    });
+  }
+
   private reset(): void {}
 }
