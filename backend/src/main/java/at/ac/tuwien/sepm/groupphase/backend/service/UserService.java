@@ -10,6 +10,7 @@ import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.InvalidTokenException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.UnauthorizedException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -41,7 +42,7 @@ public interface UserService extends UserDetailsService {
      * @return the specified user
      * @throws NotFoundException when the user could not be found
      */
-    SimpleUserDto findById(Long id) throws NotFoundException;
+    SimpleUserDto findById(Long id) throws NotFoundException, UnauthorizedException;
 
     /**
      * Changes the email/username of a user.
@@ -51,7 +52,7 @@ public interface UserService extends UserDetailsService {
      * @return the updated user
      * @throws ServiceException is thrown when the user data could not be updated
      */
-    DetailedUserDto patch(UpdateUserDto updateUserDto, Boolean passwordChange, Long id) throws ServiceException, ConflictException, ValidationException, NotFoundException;
+    DetailedUserDto patch(UpdateUserDto updateUserDto, Boolean passwordChange, Long id) throws ServiceException, ConflictException, ValidationException, NotFoundException, UnauthorizedException;
 
     /**
      * Deletes a user from the system.
@@ -116,6 +117,4 @@ public interface UserService extends UserDetailsService {
      * @param token the token string
      */
     void verifyEmail(String token) throws InvalidTokenException, NotFoundException;
-
-    String getCurrentUserEmail();
 }

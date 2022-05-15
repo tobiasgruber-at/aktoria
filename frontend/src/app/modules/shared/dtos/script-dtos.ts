@@ -7,13 +7,26 @@ export class DeleteScriptRequest {
 }
 
 export class SimpleScript {
-  protected pages: Page[];
-  protected roles: Role[];
-  protected name: string;
+  constructor(
+    public readonly pages: Page[],
+    public readonly roles: Role[],
+    public readonly name: string
+  ) {}
+}
+
+export class ScriptPreview {
+  constructor(public readonly id: number, public readonly name: string) {}
 }
 
 export class DetailedScript extends SimpleScript {
-  private id: number;
+  constructor(
+    public readonly id: number,
+    pages: Page[],
+    roles: Role[],
+    name: string
+  ) {
+    super(pages, roles, name);
+  }
 }
 
 class Page {

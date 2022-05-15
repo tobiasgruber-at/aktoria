@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
+import at.ac.tuwien.sepm.groupphase.backend.exception.UnprocessableEmailException;
 import at.ac.tuwien.sepm.groupphase.backend.service.MailSender;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -29,7 +30,7 @@ public class MailSenderImpl implements MailSender {
     @Value("${spring.mail.port}")
     private String port;
 
-    public void sendMail(String receiver, String subject, String content) throws MessagingException {
+    public void sendMail(String receiver, String subject, String content) {
         Properties properties = new Properties();
 
         properties.put("mail.transport.protocol", "smtp");
@@ -49,17 +50,22 @@ public class MailSenderImpl implements MailSender {
 
         Session mailSession = Session.getInstance(properties, auth);
 
-        Message message = new MimeMessage(mailSession);
-        InternetAddress addressTo = new InternetAddress(receiver);
-        message.setRecipient(Message.RecipientType.TO, addressTo);
         try {
-            message.setFrom(new InternetAddress(sender, "Noreply Aktoria"));
-        } catch (UnsupportedEncodingException e) {
-            throw new MessagingException();
+            Message message = new MimeMessage(mailSession);
+            InternetAddress addressTo = new InternetAddress(receiver);
+            message.setRecipient(Message.RecipientType.TO, addressTo);
+            try {
+                message.setFrom(new InternetAddress(sender, "Noreply Aktoria"));
+            } catch (UnsupportedEncodingException e) {
+                throw new MessagingException();
+            }
+
+            message.setSubject(subject);
+            message.setContent(content, "text/html; charset=utf-8");
+            Transport.send(message);
+        } catch (MessagingException e) {
+            throw new UnprocessableEmailException();
         }
 
-        message.setSubject(subject);
-        message.setContent(content, "text/html; charset=utf-8");
-        Transport.send(message);
     }
 }

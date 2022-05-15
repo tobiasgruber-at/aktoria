@@ -16,12 +16,15 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Role;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Script;
 import at.ac.tuwien.sepm.groupphase.backend.entity.User;
 import at.ac.tuwien.sepm.groupphase.backend.exception.IllegalFileFormatException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.UnauthorizedException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.LineRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.PageRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.RoleRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ScriptRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
+import at.ac.tuwien.sepm.groupphase.backend.service.AuthorizationService;
 import at.ac.tuwien.sepm.groupphase.backend.service.ScriptService;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.script.ParsedScript;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.script.UnparsedScript;
@@ -56,10 +59,19 @@ public class ScriptServiceImpl implements ScriptService {
     private final PageRepository pageRepository;
     private final LineRepository lineRepository;
     private final RoleRepository roleRepository;
+    private final AuthorizationService authorizationService;
 
     @Autowired
-    public ScriptServiceImpl(ScriptMapper scriptMapper, UserMapper userMapper, ScriptRepository scriptRepository, UserRepository userRepository, PageRepository pageRepository,
-                             LineRepository lineRepository, RoleRepository roleRepository) {
+    public ScriptServiceImpl(
+        ScriptMapper scriptMapper,
+        UserMapper userMapper,
+        ScriptRepository scriptRepository,
+        UserRepository userRepository,
+        PageRepository pageRepository,
+        LineRepository lineRepository,
+        RoleRepository roleRepository,
+        AuthorizationService authorizationService
+    ) {
         this.scriptMapper = scriptMapper;
         this.userMapper = userMapper;
         this.scriptRepository = scriptRepository;
@@ -67,6 +79,7 @@ public class ScriptServiceImpl implements ScriptService {
         this.pageRepository = pageRepository;
         this.lineRepository = lineRepository;
         this.roleRepository = roleRepository;
+        this.authorizationService = authorizationService;
     }
 
     @Override
@@ -159,24 +172,15 @@ public class ScriptServiceImpl implements ScriptService {
     public ScriptDto save(SimpleScriptDto simpleScriptDto) throws ServiceException {
         log.trace("save(scriptDto = {})", simpleScriptDto);
 
-        // TODO: refactor
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String userEmail;
-        if (auth.getPrincipal() instanceof String) {
-            userEmail = (String) auth.getPrincipal();
-        } else {
-            org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) (auth.getPrincipal());
-            userEmail = user.getUsername();
-        }
-        Optional<User> user = userRepository.findByEmail(userEmail);
-        if (user.isEmpty()) {
-            throw new ServiceException("Authenticated user not found.");
+        User user = authorizationService.getLoggedInUser();
+        if (user == null) {
+            throw new UnauthorizedException();
         }
 
         Script script;
         script = Script.builder()
             .name(simpleScriptDto.getName())
-            .owner(user.get())
+            .owner(user)
             .build();
         script = scriptRepository.save(script);
         Set<Role> roles = new HashSet<>();
@@ -229,27 +233,24 @@ public class ScriptServiceImpl implements ScriptService {
     public Stream<ScriptPreviewDto> findAllPreviews() throws ServiceException {
         log.trace("getAllPreviews()");
 
-        // TODO: refactor
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String userEmail;
-        if (auth.getPrincipal() instanceof String) {
-            userEmail = (String) auth.getPrincipal();
-        } else {
-            org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) (auth.getPrincipal());
-            userEmail = user.getUsername();
-        }
-        Optional<User> user = userRepository.findByEmail(userEmail);
-        if (user.isEmpty()) {
-            throw new ServiceException("Authenticated user not found.");
+        User user = authorizationService.getLoggedInUser();
+        if (user == null) {
+            throw new UnauthorizedException();
         }
 
-        return scriptMapper.listOfScriptToListOfScriptPreviewDto(scriptRepository.getScriptByOwner(user.get())).stream();
+        return scriptMapper.listOfScriptToListOfScriptPreviewDto(scriptRepository.getScriptByOwner(user)).stream();
     }
 
     @Override
-    public ScriptDto findById(Long id) throws ServiceException {
+    @Transactional
+    public ScriptDto findById(Long id) throws ServiceException, NotFoundException {
         log.trace("getById(id = {})", id);
 
-        throw new UnsupportedOperationException();
+        Optional<Script> script = scriptRepository.findById(id);
+        if (!script.isPresent()) {
+            throw new NotFoundException();
+        }
+        ScriptDto scriptDto = scriptMapper.scriptToScriptDto(script.get());
+        return scriptDto;
     }
 }
