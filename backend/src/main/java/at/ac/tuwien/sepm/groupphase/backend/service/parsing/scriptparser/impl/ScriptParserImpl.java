@@ -20,20 +20,17 @@ import java.util.Stack;
 public class ScriptParserImpl implements ScriptParser {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-    private static final String[] CHARACTER_LIST_KEYWORDS = new String[] {"characters", "personen", "personenverzeichnis", "rollen"};
     private final List<String> allRoles = new LinkedList<>();
     private String raw;
-    private Long curRowIndex;
+    private Long curPageIndex;
 
     public ScriptParserImpl(String raw) {
         this.raw = raw;
-        this.curRowIndex = 0L;
+        this.curPageIndex = 0L;
     }
 
     private void processLines(Line line, Stack<Line> stagedLines) {
         LOGGER.trace("processLines(line = {}, stagedLines = {})", line, stagedLines);
-
-        // TODO: exclude character list?
 
         if (line.hasRoles()) {
             for (String c : line.getRoles()) {
@@ -130,14 +127,15 @@ public class ScriptParserImpl implements ScriptParser {
 
         String[] splitContent = raw.split("\n\n");
         for (String rawLine : splitContent) {
-            Line curLine = new LineImpl(rawLine, curRowIndex);
+            Line curLine = new LineImpl(rawLine, curPageIndex);
 
             if (curLine.isEmpty()) {
                 continue;
             }
 
             if (curLine.getRaw().equals("\f")) {
-                curRowIndex++;
+                curPageIndex++;
+                continue;
             }
 
             List<Line> possibleInternalLines = curLine.getPossibleInternalLines();

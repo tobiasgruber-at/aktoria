@@ -81,7 +81,7 @@ public interface UserService extends UserDetailsService {
      * @throws ValidationException is thrown if the new password is not valid
      * @throws NotFoundException   is thrown if the user does not exist
      */
-    DetailedUserDto changePassword(PasswordChangeDto passwordChangeDto, Long id) throws ServiceException, ValidationException, NotFoundException;
+    DetailedUserDto changePassword(PasswordChangeDto passwordChangeDto, Long id) throws ServiceException, ValidationException, NotFoundException, InvalidTokenException;
 
     /**
      * Find a user in the context of Spring Security based on the email address.
@@ -92,7 +92,7 @@ public interface UserService extends UserDetailsService {
      * @see <a href="https://www.baeldung.com/spring-security-authentication-with-a-database">https://www.baeldung.com/spring-security-authentication-with-a-database</a>
      */
     @Override
-    UserDetails loadUserByUsername(String email) throws NotFoundException;
+    UserDetails loadUserByUsername(String email);
 
     /**
      * Find a user based on the email address.
@@ -115,7 +115,7 @@ public interface UserService extends UserDetailsService {
      *
      * @throws ServiceException  is thrown when something went wrong with sending the email
      */
-    void resendEmailVerificationLink() throws ServiceException;
+    void resendEmailVerificationLink() throws ServiceException, NotFoundException;
 
     /**
      * Verifies the account with the matching token.
@@ -123,5 +123,7 @@ public interface UserService extends UserDetailsService {
      * @param token the token string
      * @throws InvalidTokenException is thrown if the token already expired
      */
-    void verifyEmail(String token) throws InvalidTokenException;
+    void verifyEmail(String token) throws InvalidTokenException, NotFoundException;
+
+    String getCurrentUserEmail();
 }

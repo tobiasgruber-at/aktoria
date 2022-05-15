@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Script Preview Data Access Object.
+ * Script Preview Data Transfer Object.
  *
  * @author Simon Josef Kreuzpointner
  */

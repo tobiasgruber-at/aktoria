@@ -25,12 +25,13 @@ public interface ScriptService {
      * Throws an IllegalFileFormatException, when the raw bytes of the given file do
      * not start with the PDF header and the PDF trailer is not found at the end of the file.
      *
-     * @param file a script file
+     * @param file      a script file
+     * @param startPage the start of the play in the script
      * @return a new instance of SimpleScriptDto
      * @throws ServiceException           when an error occurs while trying to process the file
      * @throws IllegalFileFormatException when the given file is not a pdf
      */
-    SimpleScriptDto create(MultipartFile file) throws ServiceException, IllegalFileFormatException;
+    SimpleScriptDto parse(MultipartFile file, Integer startPage) throws ServiceException, IllegalFileFormatException;
 
     /**
      * Saves a given script in the data storage.

@@ -3,13 +3,13 @@ package at.ac.tuwien.sepm.groupphase.backend.service.parsing.script;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.line.Line;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.page.Page;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.page.impl.PageImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
-import java.lang.invoke.MethodHandles;
+import java.awt.Color;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 import java.util.StringJoiner;
 
 /**
@@ -17,17 +17,19 @@ import java.util.StringJoiner;
  *
  * @author Simon Josef Kreuzpointner
  */
+@Slf4j
 public class ParsedScript {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final List<Line> lines;
     private final List<String> roles;
+
+    private List<Color> colors;
     private List<Page> pages;
 
     public ParsedScript(List<Line> lines, List<String> roles) {
         this.lines = lines;
         this.roles = roles;
         indexComponents();
+        colorRoles();
     }
 
     /**
@@ -63,8 +65,17 @@ public class ParsedScript {
         return pages;
     }
 
+    /**
+     * Gets the colors for each role.
+     *
+     * @return all colors
+     */
+    public List<Color> getColors() {
+        return colors;
+    }
+
     private void indexComponents() {
-        LOGGER.trace("indexPages()");
+        log.trace("indexComponents()");
 
         pages = new LinkedList<>();
 
@@ -78,10 +89,11 @@ public class ParsedScript {
         for (Line l : lines) {
             l.setIndex(curLineIndex++);
             curPageIndex = l.getPage();
-            if (previousPageIndex != curPageIndex) {
+            if (!previousPageIndex.equals(curPageIndex)) {
                 pages.add(curPage);
                 curPage = new PageImpl();
                 curPage.setIndex(curPageIndex);
+                previousPageIndex++;
             }
             curPage.add(l);
         }
@@ -89,9 +101,27 @@ public class ParsedScript {
         pages.add(curPage);
     }
 
+    private void colorRoles() {
+        Color baseColor = new Color(160, 120, 222);
+        colors = new LinkedList<>();
+
+        for (int i = 0; i < roles.size(); i++) {
+            colors.add(getPaletteColor(baseColor));
+        }
+    }
+
+    private Color getPaletteColor(Color base) {
+        Random r = new Random();
+        return new Color(
+            Math.floorDiv((int) (base.getRed() * 0.66f + r.nextInt(200) * 0.33), 2),
+            Math.floorDiv((int) (base.getGreen() * 0.66f + r.nextInt(200) * 0.33), 2),
+            Math.floorDiv((int) (base.getBlue() * 0.66f + r.nextInt(200) * 0.33), 2)
+        );
+    }
+
     @Override
     public String toString() {
-        LOGGER.trace("toString()");
+        log.trace("toString()");
 
         StringJoiner stringJoiner = new StringJoiner("\n");
 

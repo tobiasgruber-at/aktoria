@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 /**
- * Page Data Access Object.
+ * Page Data Transfer Object.
  * <br>
  * In contrast to the simple page DTO this DTO holds a reference
  * to an id, the script it belongs to as well as the index of a page.

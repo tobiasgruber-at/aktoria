@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import java.awt.Color;
 
 /**
- * Role Data Access Object.
+ * Role Data Transfer Object.
  * <br>
  * This represents a role of a script.
  *
