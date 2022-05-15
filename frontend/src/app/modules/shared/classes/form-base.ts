@@ -38,7 +38,7 @@ export abstract class FormBase {
     console.log(error);
     let errorMessage = '';
     if (typeof error.error === 'object') {
-      errorMessage = error.error.message;
+      errorMessage = error.error?.message;
     } else {
       errorMessage = error.error;
     }
