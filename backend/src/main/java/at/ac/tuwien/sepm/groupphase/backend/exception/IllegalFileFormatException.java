@@ -1,11 +1,15 @@
 package at.ac.tuwien.sepm.groupphase.backend.exception;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
 /**
  * An extension to RuntimeException.
  *
  * @author Simon Josef Kreuzpointner
  */
-public class IllegalFileFormatException extends Exception {
+@ResponseStatus(code = HttpStatus.UNPROCESSABLE_ENTITY)
+public class IllegalFileFormatException extends RuntimeException {
 
     public IllegalFileFormatException() {
         super();
