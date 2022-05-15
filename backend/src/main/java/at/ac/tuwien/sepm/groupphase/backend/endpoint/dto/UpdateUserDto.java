@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UpdateUserDto extends DetailedUserDto {
+public class UpdateUserDto {
     private Long id;
     private String firstName;
     private String lastName;
