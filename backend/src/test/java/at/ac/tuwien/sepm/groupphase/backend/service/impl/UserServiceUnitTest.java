@@ -4,9 +4,7 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordChangeDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserRegistrationDto;
-import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
-import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.UnauthorizedException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.service.UserService;
@@ -141,7 +139,7 @@ class UserServiceUnitTest {
         @Transactional
         @DisplayName("throws ServiceException")
         @MethodSource("parameterizedGetUserExceptionProvider")
-        void getUserThrowsException(String input) throws ServiceException {
+        void getUserThrowsException(String input) {
             assertThrows(NotFoundException.class, () -> userService.findByEmail(input));
         }
 
@@ -354,7 +352,7 @@ class UserServiceUnitTest {
         @DisplayName("creates user correctly")
         @MethodSource("parameterizedUserRegistrationDtoProvider")
         @Transactional
-        void createUserIsOk(CreateUserRecord input) throws ServiceException, ValidationException, ConflictException {
+        void createUserIsOk(CreateUserRecord input) {
             SimpleUserDto actual = userService.create(input.input);
             input.expected.setId(actual.getId());
 

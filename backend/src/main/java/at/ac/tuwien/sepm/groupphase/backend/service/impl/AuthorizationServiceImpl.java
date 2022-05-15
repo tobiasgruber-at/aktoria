@@ -81,7 +81,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         if (auth == null) {
             return null;
         }
-        String userEmail = "";
+        String userEmail;
         if (auth.getPrincipal() instanceof String) {
             userEmail = (String) auth.getPrincipal();
         } else {
@@ -89,10 +89,6 @@ public class AuthorizationServiceImpl implements AuthorizationService {
             userEmail = user.getUsername();
         }
         Optional<User> user = userRepository.findByEmail(userEmail);
-        if (user.isPresent()) {
-            return user.get();
-        } else {
-            return null;
-        }
+        return user.orElse(null);
     }
 }

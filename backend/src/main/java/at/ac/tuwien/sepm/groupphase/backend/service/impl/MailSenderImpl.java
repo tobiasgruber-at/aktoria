@@ -66,6 +66,5 @@ public class MailSenderImpl implements MailSender {
         } catch (MessagingException e) {
             throw new UnprocessableEmailException();
         }
-
     }
 }

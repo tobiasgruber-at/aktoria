@@ -40,7 +40,6 @@ public class ScriptEndpoint {
     @ResponseStatus(HttpStatus.OK)
     public SimpleScriptDto uploadScript(@RequestPart("file") MultipartFile multipartFile, @RequestPart(value = "startPage", required = false) String startPage) {
         log.info("POST {}/new", path);
-
         return scriptService.parse(multipartFile, startPage == null ? 0 : Integer.parseInt(startPage));
     }
 
@@ -57,7 +56,6 @@ public class ScriptEndpoint {
     @Secured("ROLE_VERIFIED")
     public Stream<ScriptPreviewDto> getScriptPreviews() {
         log.info("GET {}", path);
-
         return scriptService.findAllPreviews();
     }
 

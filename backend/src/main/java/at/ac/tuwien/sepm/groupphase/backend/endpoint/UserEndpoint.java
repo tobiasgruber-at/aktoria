@@ -43,7 +43,6 @@ public class UserEndpoint {
     @ResponseStatus(HttpStatus.OK)
     public SimpleUserDto getUser(@RequestParam String email) {
         log.info("GET {}/{}", path, email);
-
         return userService.findByEmail(email);
     }
 
@@ -51,7 +50,6 @@ public class UserEndpoint {
     @ResponseStatus(HttpStatus.CREATED)
     public SimpleUserDto postUser(@RequestBody UserRegistrationDto userRegistrationDto) {
         log.info("POST {}", path);
-
         return userService.create(userRegistrationDto);
     }
 
@@ -59,7 +57,6 @@ public class UserEndpoint {
     @ResponseStatus(HttpStatus.OK)
     public DetailedUserDto patchUser(@RequestParam Boolean passwordChange, @RequestBody UpdateUserDto updateUserDto, @PathVariable Long id) {
         log.info("PATCH {}/{}", path, id);
-
         return userService.patch(updateUserDto, passwordChange, id);
     }
 
@@ -67,7 +64,6 @@ public class UserEndpoint {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable Long id) {
         log.info("DELETE {}/{}", UserEndpoint.path, id);
-
         userService.delete(id);
     }
 
