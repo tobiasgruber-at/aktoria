@@ -1,6 +1,5 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
-import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordChangeDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
@@ -14,7 +13,6 @@ import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.InvalidTokenException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
-import at.ac.tuwien.sepm.groupphase.backend.exception.UnauthorizedException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.AuthorizationService;
@@ -23,7 +21,6 @@ import at.ac.tuwien.sepm.groupphase.backend.service.SecureTokenService;
 import at.ac.tuwien.sepm.groupphase.backend.service.UserService;
 import at.ac.tuwien.sepm.groupphase.backend.validation.UserValidation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.core.GrantedAuthority;
@@ -32,12 +29,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.mail.MessagingException;
-import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -101,7 +94,7 @@ public class UserServiceImpl implements UserService {
     public SimpleUserDto findById(Long id) {
         log.trace("getUser(id = {})", id);
 
-        authorizationService.checkAuthorization(id);
+        authorizationService.checkBasicAuthorization(id);
 
         Optional<User> userOptional = userRepository.findById(id);
         if (userOptional.isPresent()) {
@@ -115,7 +108,7 @@ public class UserServiceImpl implements UserService {
     public DetailedUserDto patch(UpdateUserDto updateUserDto, Boolean passwordChange, Long id) {
         log.trace("patch(updateUserDto = {}, passwordChange = {}, id = {})", updateUserDto, passwordChange, id);
 
-        authorizationService.checkAuthorization(id);
+        authorizationService.checkBasicAuthorization(id);
 
         try {
             userValidation.validatePatchUserInput(updateUserDto);
@@ -132,7 +125,7 @@ public class UserServiceImpl implements UserService {
     public void delete(Long id) throws ServiceException, NotFoundException {
         log.trace("deleteUser(id = {})", id);
 
-        authorizationService.checkAuthorization(id);
+        authorizationService.checkBasicAuthorization(id);
 
         try {
             userRepository.deleteById(id);
@@ -229,7 +222,7 @@ public class UserServiceImpl implements UserService {
     public SimpleUserDto findByEmail(String email) {
         log.trace("findUserByEmail(email = {})", email);
 
-        authorizationService.checkAuthorization(email);
+        authorizationService.checkBasicAuthorization(email);
 
         Optional<User> userOptional = userRepository.findByEmail(email);
         if (userOptional.isPresent()) {

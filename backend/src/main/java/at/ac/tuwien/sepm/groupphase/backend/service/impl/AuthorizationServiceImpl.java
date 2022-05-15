@@ -12,7 +12,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -26,7 +25,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         this.userRepository = userRepository;
     }
 
-    public void checkAuthorization(Long id){
+    public void checkBasicAuthorization(Long id){
         if (isAdmin()){
             return;
         }
@@ -37,7 +36,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     }
 
     @Override
-    public void checkAuthorization(String email) {
+    public void checkBasicAuthorization(String email) {
         if (isAdmin()){
             return;
         }
