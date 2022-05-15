@@ -6,6 +6,7 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleScriptDto;
 import at.ac.tuwien.sepm.groupphase.backend.exception.IllegalFileFormatException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.UnauthorizedException;
 import at.ac.tuwien.sepm.groupphase.backend.service.ScriptService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -72,6 +73,7 @@ public class ScriptEndpoint {
 
     @GetMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @Secured("ROLE_VERIFIED")
     public ScriptDto getScriptById(@PathVariable Long id) throws ServiceException {
         log.info("GET {}/{}", path, id);
         try {
@@ -79,6 +81,8 @@ public class ScriptEndpoint {
         } catch (NotFoundException e) {
             log.error(e.getMessage(), e);
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        } catch (UnauthorizedException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage(), e);
         }
     }
 }

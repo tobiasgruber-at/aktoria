@@ -6,6 +6,7 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleScriptDto;
 import at.ac.tuwien.sepm.groupphase.backend.exception.IllegalFileFormatException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.UnauthorizedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -58,5 +59,5 @@ public interface ScriptService {
      * @return the script corresponding to the given id.
      * @throws ServiceException when an error occurs while trying to get the script
      */
-    ScriptDto findById(Long id) throws ServiceException, NotFoundException;
+    ScriptDto findById(Long id) throws ServiceException, NotFoundException, UnauthorizedException;
 }

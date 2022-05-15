@@ -18,6 +18,7 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.User;
 import at.ac.tuwien.sepm.groupphase.backend.exception.IllegalFileFormatException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.UnauthorizedException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.LineRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.PageRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.RoleRepository;
@@ -249,12 +250,28 @@ public class ScriptServiceImpl implements ScriptService {
 
     @Override
     @Transactional
-    public ScriptDto findById(Long id) throws ServiceException, NotFoundException {
+    public ScriptDto findById(Long id) throws ServiceException, NotFoundException, UnauthorizedException {
         log.trace("getById(id = {})", id);
 
+        // TODO: refactor
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail;
+        if (auth.getPrincipal() instanceof String) {
+            userEmail = (String) auth.getPrincipal();
+        } else {
+            org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) (auth.getPrincipal());
+            userEmail = user.getUsername();
+        }
+        Optional<User> user = userRepository.findByEmail(userEmail);
+        if (user.isEmpty()) {
+            throw new ServiceException("Authenticated user not found.");
+        }
         Optional<Script> script = scriptRepository.findById(id);
         if (!script.isPresent()) {
             throw new NotFoundException();
+        }
+        if (script.get().getOwner().getId() != user.get().getId()) {
+            throw new UnauthorizedException("User not permitted to open this file");
         }
         ScriptDto scriptDto = scriptMapper.scriptToScriptDto(script.get());
         return scriptDto;
