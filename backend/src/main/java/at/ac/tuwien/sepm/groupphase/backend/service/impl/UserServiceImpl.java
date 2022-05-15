@@ -103,12 +103,12 @@ public class UserServiceImpl implements UserService {
         if (userOptional.isPresent()) {
             return userMapper.userToSimpleUserDto(userOptional.get());
         } else {
-            throw new NotFoundException("Could not find User with this id");
+            throw new NotFoundException("Could not find User");
         }
     }
 
     @Override
-    public DetailedUserDto patch(UpdateUserDto updateUserDto, Boolean passwordChange, Long id) throws ServiceException, ValidationException, ConflictException, NotFoundException {
+    public DetailedUserDto patch(UpdateUserDto updateUserDto, Boolean passwordChange, Long id) throws ServiceException, ValidationException, ConflictException, NotFoundException, InvalidTokenException {
         log.trace("patch(updateUserDto = {}, passwordChange = {}, id = {})", updateUserDto, passwordChange, id);
 
         try {
@@ -119,7 +119,41 @@ public class UserServiceImpl implements UserService {
             throw new ConflictException(e.getMessage(), e);
         }
 
-        throw new UnsupportedOperationException();
+        Optional<User> userOptional = userRepository.findById(id);
+        User update;
+        if (userOptional.isPresent()) {
+            update = userOptional.get();
+        } else {
+            throw new NotFoundException("User exisitert nicht!");
+        }
+
+        if (passwordChange) {
+            try {
+                DetailedUserDto updated = changePassword(new PasswordChangeDto(null, updateUserDto.getOldPassword(), updateUserDto.getNewPassword()), id);
+                update.setPasswordHash(updated.getPasswordHash());
+            } catch (InvalidTokenException e) {
+                throw new InvalidTokenException(e.getMessage(), e);
+            }
+
+        }
+
+        if (updateUserDto.getFirstName() != null) {
+            update.setFirstName(updateUserDto.getFirstName());
+        }
+        if (updateUserDto.getLastName() != null) {
+            update.setLastName(updateUserDto.getLastName());
+        }
+        boolean emailChanged = false;
+        if (updateUserDto.getEmail() != null) {
+            update.setEmail(updateUserDto.getEmail());
+            emailChanged = true;
+        }
+
+        User patchedUser = userRepository.saveAndFlush(update);
+        if (emailChanged) {
+            sendEmailVerificationLink(patchedUser);
+        }
+        return userMapper.userToDetailedUserDto(patchedUser);
     }
 
     @Override
@@ -139,7 +173,7 @@ public class UserServiceImpl implements UserService {
 
         Optional<User> userOptional = userRepository.findByEmail(email);
         if (!userOptional.isPresent()) {
-            throw new NotFoundException("Es exisitert kein User mit dieser Mail-Adresse.");
+            throw new NotFoundException("Es existiert kein User mit dieser Mail-Adresse.");
         }
         User user = userOptional.get();
 
@@ -149,12 +183,12 @@ public class UserServiceImpl implements UserService {
 
         final String link = String.join("", "http://localhost:4200/#/password/restore/", secureToken.getToken());
         try {
-            mailSender.sendMail(user.getEmail(), "Aktoria Passwort zurücksetzten",
+            mailSender.sendMail(user.getEmail(), "Aktoria Passwort zurücksetzen",
                 """
                         <h1>Hallo %s,</h1>
                         klick auf den folgenden Link, um ein neues Passwort zu wählen.
                         <br>
-                        <a href='%s'>Passwort zurücksetzten</a>
+                        <a href='%s'>Passwort zurücksetzen</a>
                     """
                     .formatted(user.getFirstName(), link));
         } catch (MessagingException e) {
@@ -163,13 +197,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public DetailedUserDto changePassword(PasswordChangeDto passwordChangeDto, Long id) throws ServiceException, ValidationException, NotFoundException, InvalidTokenException {
-        log.trace("changePassword(passwordChangeDto = {}, id = {})", passwordChangeDto, id);
+    public DetailedUserDto changePassword(PasswordChangeDto passwordChangeDto, Long id) throws ServiceException, ValidationException, NotFoundException, InvalidTokenException, ConflictException {
+        if (id == null) {
+            log.trace("changePassword(passwordChangeDto = {}, id = {})", passwordChangeDto, secureTokenService.findByToken(passwordChangeDto.getToken()).getAccount().getId());
+        } else {
+            log.trace("changePassword(passwordChangeDto = {}, id = {})", passwordChangeDto, id);
+        }
+
 
         try {
-            userValidation.validateChangePasswordInput(passwordChangeDto);
+            userValidation.validateChangePasswordInput(passwordChangeDto, id);
         } catch (ValidationException e) {
             throw new ValidationException(e.getMessage(), e);
+        } catch (ConflictException e) {
+            throw new ConflictException(e.getMessage(), e);
         }
 
         String token = passwordChangeDto.getToken();
@@ -181,7 +222,6 @@ public class UserServiceImpl implements UserService {
                 if (secureToken.getExpireAt().isAfter(LocalDateTime.now())) {
                     User user = secureToken.getAccount();
                     user.setPasswordHash(passwordEncoder.encode(passwordChangeDto.getNewPassword()));
-                    user = userRepository.saveAndFlush(user);
                     return userMapper.userToDetailedUserDto(user);
                 } else {
                     throw new InvalidTokenException();
@@ -189,9 +229,17 @@ public class UserServiceImpl implements UserService {
             } else {
                 throw new InvalidTokenException();
             }
+        } else {
+            Optional<User> userOptional = userRepository.findById(id);
+            User update;
+            if (userOptional.isPresent()) {
+                update = userOptional.get();
+            } else {
+                throw new NotFoundException("User existiert nicht!");
+            }
+            update.setPasswordHash(passwordEncoder.encode(passwordChangeDto.getNewPassword()));
+            return userMapper.userToDetailedUserDto(update);
         }
-
-        throw new UnsupportedOperationException();
     }
 
     @Override

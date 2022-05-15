@@ -49,15 +49,18 @@ public interface UserService extends UserDetailsService {
      * @param updateUserDto filled with the user input
      * @param id            the id of the user to be changed
      * @return the updated user
-     * @throws ServiceException is thrown when the user data could not be updated
+     * @throws ServiceException    is thrown when the user data could not be updated
+     * @throws ConflictException   is thrown when there is a conflict with the data base
+     * @throws ValidationException is thrown when user data is not valid
      */
-    DetailedUserDto patch(UpdateUserDto updateUserDto, Boolean passwordChange, Long id) throws ServiceException, ConflictException, ValidationException, NotFoundException;
+    DetailedUserDto patch(UpdateUserDto updateUserDto, Boolean passwordChange, Long id) throws ServiceException, ConflictException, ValidationException, NotFoundException, InvalidTokenException;
 
     /**
      * Deletes a user from the system.
      *
      * @param id the id of the user to be deleted
-     * @throws ServiceException is thrown when the user could not be deleted
+     * @throws ServiceException  is thrown when the user could not be deleted
+     * @throws NotFoundException is thrown if the user does not exist
      */
     void delete(Long id) throws ServiceException, NotFoundException;
 
@@ -75,9 +78,12 @@ public interface UserService extends UserDetailsService {
      * @param passwordChangeDto filled with the old and new password or with a token and a new password
      * @param id                the id of the user
      * @return the user with the new password
-     * @throws ServiceException is thrown if the password could not be changed
+     * @throws ServiceException    is thrown if the password could not be changed
+     * @throws ValidationException is thrown if the new password is not valid
+     * @throws NotFoundException   is thrown if the user does not exist
+     * @throws ConflictException   is thrown if the old password does not match the password stored in the data base
      */
-    DetailedUserDto changePassword(PasswordChangeDto passwordChangeDto, Long id) throws ServiceException, ValidationException, NotFoundException, InvalidTokenException;
+    DetailedUserDto changePassword(PasswordChangeDto passwordChangeDto, Long id) throws ServiceException, ValidationException, NotFoundException, InvalidTokenException, ConflictException;
 
     /**
      * Find a user in the context of Spring Security based on the email address.
@@ -88,13 +94,14 @@ public interface UserService extends UserDetailsService {
      * @see <a href="https://www.baeldung.com/spring-security-authentication-with-a-database">https://www.baeldung.com/spring-security-authentication-with-a-database</a>
      */
     @Override
-    UserDetails loadUserByUsername(String email);
+    UserDetails loadUserByUsername(String email) throws UsernameNotFoundException;
 
     /**
-     * Find an application user based on the email address.
+     * Find a user based on the email address.
      *
      * @param email the email address
      * @return an application user
+     * @throws NotFoundException is thrown if no user with this email exists.
      */
     SimpleUserDto findByEmail(String email) throws NotFoundException;
 
@@ -102,11 +109,14 @@ public interface UserService extends UserDetailsService {
      * Send an email with an email verification link to the user.
      *
      * @param user the user
+     * @throws ServiceException is thrown when something went wrong with sending the email
      */
     void sendEmailVerificationLink(User user) throws ServiceException;
 
     /**
      * Resend an email with an email verification link to the user.
+     *
+     * @throws ServiceException is thrown when something went wrong with sending the email
      */
     void resendEmailVerificationLink() throws ServiceException, NotFoundException;
 
@@ -114,6 +124,7 @@ public interface UserService extends UserDetailsService {
      * Verifies the account with the matching token.
      *
      * @param token the token string
+     * @throws InvalidTokenException is thrown if the token already expired
      */
     void verifyEmail(String token) throws InvalidTokenException, NotFoundException;
 

@@ -7,11 +7,11 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DetailedUserDto extends SimpleUserDto {
+public class DetailedUserDto {
+    private Long id;
+    private String firstName;
+    private String lastName;
+    private String email;
     private String passwordHash;
-
-    public DetailedUserDto(Long id, String firstName, String lastName, String email, String passwordHash, Boolean verified) {
-        super(id, firstName, lastName, email, verified);
-        this.passwordHash = passwordHash;
-    }
+    private Boolean verified;
 }

@@ -11,4 +11,6 @@ public class PasswordChangeDto {
     private String token;
     private String oldPassword;
     private String newPassword;
+    
+
 }
