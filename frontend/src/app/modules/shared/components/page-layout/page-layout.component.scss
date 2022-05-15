@@ -2,6 +2,17 @@
   --nav-height: 4.5rem;
 }
 
+:host > .wrapper,
+header,
+footer {
+  transition: background-color 500ms;
+}
+
+header,
+footer {
+  z-index: 10;
+}
+
 header nav,
 footer {
   height: var(--nav-height);
