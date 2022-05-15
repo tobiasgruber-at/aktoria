@@ -4,10 +4,8 @@ import at.ac.tuwien.sepm.groupphase.backend.service.parsing.line.Line;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.line.impl.LineImpl;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.script.ParsedScript;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.scriptparser.ScriptParser;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
-import java.lang.invoke.MethodHandles;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
@@ -17,9 +15,8 @@ import java.util.Stack;
  *
  * @author Simon Josef Kreuzpointner
  */
+@Slf4j
 public class ScriptParserImpl implements ScriptParser {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final List<String> allRoles = new LinkedList<>();
     private String raw;
     private Long curPageIndex;
@@ -30,7 +27,7 @@ public class ScriptParserImpl implements ScriptParser {
     }
 
     private void processLines(Line line, Stack<Line> stagedLines) {
-        LOGGER.trace("processLines(line = {}, stagedLines = {})", line, stagedLines);
+        log.trace("processLines(line = {}, stagedLines = {})", line, stagedLines);
 
         if (line.hasRoles()) {
             for (String c : line.getRoles()) {
@@ -57,7 +54,7 @@ public class ScriptParserImpl implements ScriptParser {
     }
 
     private List<Line> handleSplitRoles(List<Line> stagedLines) {
-        LOGGER.trace("processLines(stagedLines = {})", stagedLines);
+        log.trace("processLines(stagedLines = {})", stagedLines);
 
         List<Line> handledLines = new LinkedList<>();
 
@@ -117,7 +114,7 @@ public class ScriptParserImpl implements ScriptParser {
 
     @Override
     public ParsedScript parse() {
-        LOGGER.trace("parse()");
+        log.trace("parse()");
 
         Stack<Line> stagedLines = new Stack<>();
 

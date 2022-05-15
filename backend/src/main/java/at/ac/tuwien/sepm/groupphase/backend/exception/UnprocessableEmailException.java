@@ -4,20 +4,21 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
-public class ValidationException extends RuntimeException {
-    public ValidationException() {
+public class UnprocessableEmailException extends RuntimeException {
+
+    public UnprocessableEmailException() {
         super();
     }
 
-    public ValidationException(String message) {
+    public UnprocessableEmailException(String message) {
         super(message);
     }
 
-    public ValidationException(Throwable cause) {
+    public UnprocessableEmailException(Throwable cause) {
         super(cause);
     }
 
-    public ValidationException(String message, Throwable cause) {
+    public UnprocessableEmailException(String message, Throwable cause) {
         super(message, cause);
     }
 }

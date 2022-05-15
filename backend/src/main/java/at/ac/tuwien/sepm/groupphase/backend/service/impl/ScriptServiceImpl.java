@@ -18,11 +18,13 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.User;
 import at.ac.tuwien.sepm.groupphase.backend.exception.IllegalFileFormatException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.UnauthorizedException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.LineRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.PageRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.RoleRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ScriptRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
+import at.ac.tuwien.sepm.groupphase.backend.service.AuthorizationService;
 import at.ac.tuwien.sepm.groupphase.backend.service.ScriptService;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.script.ParsedScript;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.script.UnparsedScript;
@@ -30,8 +32,6 @@ import at.ac.tuwien.sepm.groupphase.backend.service.parsing.scriptparser.ScriptP
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.scriptparser.impl.ScriptParserImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -57,10 +57,19 @@ public class ScriptServiceImpl implements ScriptService {
     private final PageRepository pageRepository;
     private final LineRepository lineRepository;
     private final RoleRepository roleRepository;
+    private final AuthorizationService authorizationService;
 
     @Autowired
-    public ScriptServiceImpl(ScriptMapper scriptMapper, UserMapper userMapper, ScriptRepository scriptRepository, UserRepository userRepository, PageRepository pageRepository,
-                             LineRepository lineRepository, RoleRepository roleRepository) {
+    public ScriptServiceImpl(
+        ScriptMapper scriptMapper,
+        UserMapper userMapper,
+        ScriptRepository scriptRepository,
+        UserRepository userRepository,
+        PageRepository pageRepository,
+        LineRepository lineRepository,
+        RoleRepository roleRepository,
+        AuthorizationService authorizationService
+    ) {
         this.scriptMapper = scriptMapper;
         this.userMapper = userMapper;
         this.scriptRepository = scriptRepository;
@@ -68,10 +77,11 @@ public class ScriptServiceImpl implements ScriptService {
         this.pageRepository = pageRepository;
         this.lineRepository = lineRepository;
         this.roleRepository = roleRepository;
+        this.authorizationService = authorizationService;
     }
 
     @Override
-    public SimpleScriptDto parse(MultipartFile file, Integer startPage) throws ServiceException, IllegalFileFormatException {
+    public SimpleScriptDto parse(MultipartFile file, Integer startPage) {
         log.trace("newScript(pdfScript = {})", file);
 
         boolean isPdfFile;
@@ -97,7 +107,7 @@ public class ScriptServiceImpl implements ScriptService {
         ScriptParser parser = new ScriptParserImpl(raw);
         ParsedScript parsedScript = parser.parse();
 
-        return scriptMapper.parsedScriptToSimpleScriptDto(parsedScript, file.getName());
+        return scriptMapper.parsedScriptToSimpleScriptDto(parsedScript, file.getOriginalFilename());
     }
 
     /**
@@ -157,27 +167,18 @@ public class ScriptServiceImpl implements ScriptService {
 
     @Override
     @Transactional
-    public ScriptDto save(SimpleScriptDto simpleScriptDto) throws ServiceException {
+    public ScriptDto save(SimpleScriptDto simpleScriptDto) {
         log.trace("save(scriptDto = {})", simpleScriptDto);
 
-        // TODO: refactor
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String userEmail;
-        if (auth.getPrincipal() instanceof String) {
-            userEmail = (String) auth.getPrincipal();
-        } else {
-            org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) (auth.getPrincipal());
-            userEmail = user.getUsername();
-        }
-        Optional<User> user = userRepository.findByEmail(userEmail);
-        if (user.isEmpty()) {
-            throw new ServiceException("Authenticated user not found.");
+        User user = authorizationService.getLoggedInUser();
+        if (user == null) {
+            throw new UnauthorizedException();
         }
 
         Script script;
         script = Script.builder()
             .name(simpleScriptDto.getName())
-            .owner(user.get())
+            .owner(user)
             .build();
         script = scriptRepository.save(script);
         Set<Role> roles = new HashSet<>();
@@ -222,42 +223,38 @@ public class ScriptServiceImpl implements ScriptService {
         }
 
         SimpleUserDto owner = userMapper.userToSimpleUserDto(script.getOwner());
-        ScriptDto scriptDto = scriptMapper.simpleScriptDtoToScriptDto(simpleScriptDto, script.getId(), owner);
-        return scriptDto;
+        return scriptMapper.simpleScriptDtoToScriptDto(simpleScriptDto, script.getId(), owner);
     }
 
     @Override
-    public Stream<ScriptPreviewDto> findAllPreviews() throws ServiceException {
+    public Stream<ScriptPreviewDto> findAllPreviews() {
         log.trace("getAllPreviews()");
 
-        // TODO: refactor
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String userEmail;
-        if (auth.getPrincipal() instanceof String) {
-            userEmail = (String) auth.getPrincipal();
-        } else {
-            org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) (auth.getPrincipal());
-            userEmail = user.getUsername();
-        }
-        Optional<User> user = userRepository.findByEmail(userEmail);
-        if (user.isEmpty()) {
-            throw new ServiceException("Authenticated user not found.");
+        User user = authorizationService.getLoggedInUser();
+        if (user == null) {
+            throw new UnauthorizedException();
         }
 
-        return scriptMapper.listOfScriptToListOfScriptPreviewDto(scriptRepository.getScriptByOwner(user.get())).stream();
+        return scriptMapper.listOfScriptToListOfScriptPreviewDto(scriptRepository.getScriptByOwner(user)).stream();
     }
 
     @Override
     @Transactional
-    public ScriptDto findById(Long id) throws ServiceException, NotFoundException {
+    public ScriptDto findById(Long id) {
         log.trace("getById(id = {})", id);
 
+        User user = authorizationService.getLoggedInUser();
+        if (user == null) {
+            throw new UnauthorizedException();
+        }
         Optional<Script> script = scriptRepository.findById(id);
-        if (!script.isPresent()) {
+        if (script.isEmpty()) {
             throw new NotFoundException();
         }
-        ScriptDto scriptDto = scriptMapper.scriptToScriptDto(script.get());
-        return scriptDto;
+        if (!script.get().getOwner().getId().equals(user.getId())) {
+            throw new UnauthorizedException("User not permitted to open this file");
+        }
+        return scriptMapper.scriptToScriptDto(script.get());
     }
 
     @Override

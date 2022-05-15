@@ -62,6 +62,9 @@ public class User {
     @OneToMany(mappedBy = "recordedBy", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Line> linesRecorded;
 
+    @OneToMany(mappedBy = "token", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<SecureToken> tokens;
+
     @ManyToMany
     @JoinTable(name = "participates_in", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "script_id"))
     private Set<Script> participatesIn;

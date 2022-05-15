@@ -8,7 +8,9 @@ footer {
 }
 
 main {
+  margin: 0 auto;
   margin-top: var(--nav-height);
+  max-width: 1200px;
 }
 
 ul {

@@ -8,6 +8,9 @@ import { ScriptUploadComponent } from './components/script-upload/script-upload.
 import { NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
 import { UploadInformationComponent } from './components/upload-information/upload-information.component';
 import { ScriptOverviewComponent } from './components/script-overview/script-overview.component';
+import { ScriptReadComponent } from './components/script-read/script-read.component';
+import { ScriptPageComponent } from './components/script-read/script-page/script-page.component';
+import { ScriptLineComponent } from './components/script-read/script-line/script-line.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +19,10 @@ import { ScriptOverviewComponent } from './components/script-overview/script-ove
     ScriptListItemComponent,
     ScriptUploadComponent,
     UploadInformationComponent,
-    ScriptOverviewComponent
+    ScriptOverviewComponent,
+    ScriptReadComponent,
+    ScriptPageComponent,
+    ScriptLineComponent
   ],
   imports: [SharedModule, ScriptsRoutingModule, NgbCollapseModule]
 })

@@ -31,7 +31,7 @@ public interface ScriptService {
      * @throws ServiceException           when an error occurs while trying to process the file
      * @throws IllegalFileFormatException when the given file is not a pdf
      */
-    SimpleScriptDto parse(MultipartFile file, Integer startPage) throws ServiceException, IllegalFileFormatException;
+    SimpleScriptDto parse(MultipartFile file, Integer startPage);
 
     /**
      * Saves a given script in the data storage.
@@ -40,7 +40,7 @@ public interface ScriptService {
      * @return the saved script
      * @throws ServiceException when an error occurs while trying to process the script
      */
-    ScriptDto save(SimpleScriptDto simpleScriptDto) throws ServiceException;
+    ScriptDto save(SimpleScriptDto simpleScriptDto);
 
     /**
      * Gets all script in the form of script preview data access objects.
@@ -48,7 +48,7 @@ public interface ScriptService {
      * @return a stream of previews
      * @throws ServiceException when an error occurs while trying to get the scripts
      */
-    Stream<ScriptPreviewDto> findAllPreviews() throws ServiceException;
+    Stream<ScriptPreviewDto> findAllPreviews();
 
     /**
      * Gets the script corresponding to the given id.
@@ -57,7 +57,7 @@ public interface ScriptService {
      * @return the script corresponding to the given id.
      * @throws ServiceException when an error occurs while trying to get the script
      */
-    ScriptDto findById(Long id) throws ServiceException;
+    ScriptDto findById(Long id);
 
     /**
      * Deletes script with given id from the data storage.
