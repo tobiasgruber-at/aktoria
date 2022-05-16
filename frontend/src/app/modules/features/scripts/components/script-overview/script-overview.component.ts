@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ScriptService } from '../../../../core/services/script/script.service';
 import { DetailedScript } from '../../../../shared/dtos/script-dtos';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-script-overview',
@@ -9,14 +10,17 @@ import { DetailedScript } from '../../../../shared/dtos/script-dtos';
   styleUrls: ['./script-overview.component.scss']
 })
 export class ScriptOverviewComponent implements OnInit {
-  loading = true;
+  getLoading = true;
+  getError = null;
+  deleteLoading = false;
+  deleteError = null;
   script: DetailedScript = null;
-  error = null;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private scriptService: ScriptService
+    private scriptService: ScriptService,
+    private modalService: NgbModal
   ) {}
 
   ngOnInit(): void {
@@ -24,8 +28,8 @@ export class ScriptOverviewComponent implements OnInit {
       this.reset();
       const id = +params.get('id');
       const handleNotFound = () => {
-        this.error = 'Skript konnte nicht gefunden werden.';
-        this.loading = false;
+        this.getError = 'Skript konnte nicht gefunden werden.';
+        this.getLoading = false;
       };
       if (isNaN(id)) {
         handleNotFound();
@@ -33,7 +37,7 @@ export class ScriptOverviewComponent implements OnInit {
         this.scriptService.getOne(id).subscribe({
           next: (script) => {
             this.script = script;
-            this.loading = false;
+            this.getLoading = false;
           },
           error: handleNotFound
         });
@@ -41,12 +45,22 @@ export class ScriptOverviewComponent implements OnInit {
     });
   }
 
-  deleteScript(): void {
+  openModal(modal: TemplateRef<any>) {
+    this.deleteError = null;
+    this.modalService.open(modal, { centered: true });
+  }
+
+  deleteScript(modal: NgbActiveModal): void {
+    this.deleteLoading = true;
     this.scriptService.delete(this.script.id).subscribe({
       next: () => {
+        modal.dismiss();
         this.router.navigateByUrl('/scripts');
       },
-      error: () => {}
+      error: (err) => {
+        this.deleteLoading = false;
+        this.deleteError = err.error?.message;
+      }
     });
   }
 
