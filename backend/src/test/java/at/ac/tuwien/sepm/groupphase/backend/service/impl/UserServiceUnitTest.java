@@ -33,7 +33,6 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Class for testing user services.
@@ -81,12 +80,7 @@ class UserServiceUnitTest {
         @Test
         @DisplayName("NotFoundException when email does not exists")
         void forgotPasswordEmailDoesNotExist() {
-            try {
-                userService.forgotPassword("notfound@test.com");
-                fail();
-            } catch (NotFoundException ignored) {
-                throw new NotFoundException("Email does not exist");
-            }
+            assertThrows(NotFoundException.class, () -> userService.forgotPassword("notfound@test.com"));
         }
     }
 
@@ -119,6 +113,7 @@ class UserServiceUnitTest {
         @Transactional
         @MethodSource("parameterizedChangePasswordWorksProvider")
         void changePasswordWorks(ChangePasswordRecord input) {
+
         }
 
         @ParameterizedTest
