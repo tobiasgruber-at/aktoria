@@ -19,6 +19,8 @@ export abstract class AuthService {
    */
   abstract isLoggedIn(): boolean;
 
+  abstract isVerified(): boolean;
+
   abstract getToken(): string;
 
   abstract getEmail(): string;

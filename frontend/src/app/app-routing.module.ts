@@ -2,11 +2,13 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LoggedInGuard } from './modules/core/guards/logged-in-guard.service';
 import { LoggedOutGuard } from './modules/core/guards/logged-out-guard.service';
+import {VerifiedGuard} from './modules/core/guards/verified.guard';
+import {NotVerifiedGuard} from './modules/core/guards/not-verified.guard';
 
 const routes: Routes = [
   {
     path: '',
-    canActivate: [LoggedOutGuard],
+    canActivate: [NotVerifiedGuard],
     loadChildren: () =>
       import('./modules/features/landing/landing.module').then(
         (m) => m.LandingModule
@@ -28,7 +30,7 @@ const routes: Routes = [
   },
   {
     path: 'scripts',
-    canActivate: [LoggedInGuard],
+    canActivate: [VerifiedGuard],
     loadChildren: () =>
       import('./modules/features/scripts/scripts.module').then(
         (m) => m.ScriptsModule

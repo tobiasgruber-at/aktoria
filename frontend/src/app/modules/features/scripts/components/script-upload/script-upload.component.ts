@@ -47,7 +47,7 @@ export class ScriptUploadComponent extends FormBase implements OnInit {
       next: (res) => {
         let script = res;
         this.toastService.show({
-          message: 'Datei wurde erfolgreich hochgeladen!',
+          message: 'Skript wurde erfolgreich hochgeladen!',
           theme: Theme.primary
         });
         this.router.navigateByUrl('/scripts');
