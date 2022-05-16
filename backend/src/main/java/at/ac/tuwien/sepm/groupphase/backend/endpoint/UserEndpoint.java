@@ -55,9 +55,9 @@ public class UserEndpoint {
     @PatchMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     @Secured("ROLE_USER")
-    public DetailedUserDto patchUser(@RequestParam Boolean passwordChange, @RequestBody UpdateUserDto updateUserDto, @PathVariable Long id) {
+    public DetailedUserDto patchUser(@RequestBody UpdateUserDto updateUserDto, @PathVariable Long id) {
         log.info("PATCH {}/{}", path, id);
-        return userService.patch(updateUserDto, passwordChange, id);
+        return userService.patch(updateUserDto, id);
     }
 
     @DeleteMapping(path = "/{id}")
@@ -71,14 +71,14 @@ public class UserEndpoint {
     @PostMapping(path = "/forgot-password")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void forgottenPassword(@RequestBody String email) {
-        log.info("POST {}/reset-password", path);
+        log.info("POST {}/forgot-password", path);
         userService.forgotPassword(email);
     }
 
     @PutMapping(path = "/reset-password")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void changePassword(@RequestBody PasswordChangeDto passwordChange) {
-        log.info("POST {}/reset-password", path);
+        log.info("PUT {}/reset-password", path);
         userService.changePassword(passwordChange, null);
     }
 

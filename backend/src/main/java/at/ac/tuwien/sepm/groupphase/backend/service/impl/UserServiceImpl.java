@@ -105,8 +105,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public DetailedUserDto patch(UpdateUserDto updateUserDto, Boolean passwordChange, Long id) {
-        log.trace("patch(updateUserDto = {}, passwordChange = {}, id = {})", updateUserDto, passwordChange, id);
+    public DetailedUserDto patch(UpdateUserDto updateUserDto, Long id) {
+        log.trace("patch(updateUserDto = {}, id = {})", updateUserDto, id);
 
         authorizationService.checkBasicAuthorization(id);
 
@@ -123,17 +123,16 @@ public class UserServiceImpl implements UserService {
         if (userOptional.isPresent()) {
             update = userOptional.get();
         } else {
-            throw new NotFoundException("User exisitert nicht!");
+            throw new NotFoundException("User existiert nicht!");
         }
 
-        if (passwordChange) {
+        if (updateUserDto.getOldPassword() != null && updateUserDto.getNewPassword() != null) {
             try {
                 DetailedUserDto updated = changePassword(new PasswordChangeDto(null, updateUserDto.getOldPassword(), updateUserDto.getNewPassword()), id);
                 update.setPasswordHash(updated.getPasswordHash());
             } catch (InvalidTokenException e) {
                 throw new InvalidTokenException(e.getMessage(), e);
             }
-
         }
 
         if (updateUserDto.getFirstName() != null) {
@@ -205,7 +204,6 @@ public class UserServiceImpl implements UserService {
         } else {
             log.trace("changePassword(passwordChangeDto = {}, id = {})", passwordChangeDto, id);
         }
-
 
         try {
             if (id != null) {

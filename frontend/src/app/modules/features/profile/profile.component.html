@@ -1,0 +1,29 @@
+<app-page-layout>
+  <div *ngIf="user">
+    <h1 class="display-1">Profil</h1>
+    <div class="d-flex justify-content-between align-items-center">
+      <h3>Deine Daten</h3>
+      <button class="btn btn-primary" routerLink="/profile/change">
+        Ändern
+      </button>
+    </div>
+
+    <div class="mb-5">
+      <div class="row mt-3 mb-3">
+        <strong class="col-sm-2 text-truncate text-end">Vorname</strong>
+        <span class="col text-truncate">{{ user.firstName }}</span>
+      </div>
+      <div class="row mt-3 mb-3">
+        <strong class="col-sm-2 text-truncate text-end">Nachname</strong>
+        <span class="col text-truncate">{{ user.lastName }}</span>
+      </div>
+      <div class="row mt-3 mb-3">
+        <strong class="col-sm-2 text-truncate text-end">E-Mail</strong>
+        <span class="col text-truncate">{{ user.email }}</span>
+      </div>
+    </div>
+    <form (ngSubmit)="submit()" [formGroup]="form" class="form">
+      <button class="btn btn-danger" type="submit">Profil Löschen</button>
+    </form>
+  </div>
+</app-page-layout>

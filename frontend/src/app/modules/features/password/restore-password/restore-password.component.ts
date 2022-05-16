@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormBuilder, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ToastService} from '../../../core/services/toast/toast.service';
@@ -31,13 +31,13 @@ export class RestorePasswordComponent extends FormBase implements OnInit {
         password: ['', [Validators.required, Validators.minLength(8)]],
         passwordConfirm: ['', [Validators.required]]
       },
-      { validators: [matchingPasswordsValidator] }
+      {validators: [matchingPasswordsValidator]}
     );
     this.token = this.route.snapshot.paramMap.get('token');
   }
 
   protected sendSubmit(): void {
-    const { password } = this.form.value;
+    const {password} = this.form.value;
     this.userService.changePassword(new ChangePassword(this.token, null, password)).subscribe({
       next: () => {
         this.toggleLoading(false);

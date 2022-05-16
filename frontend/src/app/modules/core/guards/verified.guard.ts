@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree} from '@angular/router';
-import { Observable } from 'rxjs';
-import {AuthService} from '../services/auth/auth-service';
+import { CanActivate, Router } from '@angular/router';
+import { AuthService } from '../services/auth/auth-service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,5 +18,4 @@ export class VerifiedGuard implements CanActivate {
       return false;
     }
   }
-
 }

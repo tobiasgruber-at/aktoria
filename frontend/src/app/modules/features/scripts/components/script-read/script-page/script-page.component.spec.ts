@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { ScriptPageComponent } from './script-page.component';
+import {ScriptPageComponent} from './script-page.component';
 
 describe('ScriptPageComponent', () => {
   let component: ScriptPageComponent;
@@ -8,9 +8,9 @@ describe('ScriptPageComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ScriptPageComponent ]
+      declarations: [ScriptPageComponent]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {

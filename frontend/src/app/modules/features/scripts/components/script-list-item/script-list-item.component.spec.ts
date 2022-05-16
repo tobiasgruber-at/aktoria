@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { ScriptListItemComponent } from './script-list-item.component';
+import {ScriptListItemComponent} from './script-list-item.component';
 
 describe('ScriptComponent', () => {
   let component: ScriptListItemComponent;

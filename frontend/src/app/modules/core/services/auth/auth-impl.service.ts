@@ -1,13 +1,13 @@
-import { Injectable } from '@angular/core';
-import { AuthRequest } from '../../../shared/dtos/auth-request';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
-import { tap } from 'rxjs/operators';
+import {Injectable} from '@angular/core';
+import {AuthRequest} from '../../../shared/dtos/auth-request';
+import {BehaviorSubject, Observable} from 'rxjs';
+import {HttpClient} from '@angular/common/http';
+import {tap} from 'rxjs/operators';
 // @ts-ignore
 import jwt_decode from 'jwt-decode';
-import { Globals } from '../../global/globals';
-import { AuthService } from './auth-service';
-import { DecodedToken } from '../../../shared/interfaces/decoded-token';
+import {Globals} from '../../global/globals';
+import {AuthService} from './auth-service';
+import {DecodedToken} from '../../../shared/interfaces/decoded-token';
 import {UserService} from '../user/user-service';
 
 @Injectable()
@@ -27,7 +27,7 @@ export class AuthImplService extends AuthService {
 
   loginUser(authRequest: AuthRequest): Observable<string> {
     return this.httpClient
-      .post(this.authBaseUri, authRequest, { responseType: 'text' })
+      .post(this.authBaseUri, authRequest, {responseType: 'text'})
       .pipe(
         tap((authResponse: string) => {
           this.updateLoginState(authResponse);
@@ -43,7 +43,7 @@ export class AuthImplService extends AuthService {
     return (
       !!this.getToken() &&
       this.getTokenExpirationDate(this.getToken()).valueOf() >
-        new Date().valueOf()
+      new Date().valueOf()
     );
   }
 

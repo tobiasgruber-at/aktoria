@@ -1,5 +1,5 @@
-import { Component, HostBinding, Input, OnInit } from '@angular/core';
-import { Line } from '../../../../../shared/dtos/script-dtos';
+import {Component, HostBinding, Input, OnInit} from '@angular/core';
+import {Line} from '../../../../../shared/dtos/script-dtos';
 
 @Component({
   selector: 'app-script-line',
@@ -9,7 +9,8 @@ import { Line } from '../../../../../shared/dtos/script-dtos';
 export class ScriptLineComponent implements OnInit {
   @Input() line: Line;
 
-  constructor() {}
+  constructor() {
+  }
 
   @HostBinding('class')
   get classes(): string[] {
@@ -25,5 +26,6 @@ export class ScriptLineComponent implements OnInit {
     return this.line?.roles?.length < 1;
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+  }
 }

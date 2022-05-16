@@ -1,5 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { Page } from '../../../../../shared/dtos/script-dtos';
+import {Component, Input, OnInit} from '@angular/core';
+import {Page} from '../../../../../shared/dtos/script-dtos';
 
 @Component({
   selector: 'app-script-page',
@@ -9,7 +9,9 @@ import { Page } from '../../../../../shared/dtos/script-dtos';
 export class ScriptPageComponent implements OnInit {
   @Input() page: Page;
 
-  constructor() {}
+  constructor() {
+  }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+  }
 }

@@ -7,6 +7,7 @@ import com.icegreen.greenmail.junit5.GreenMailExtension;
 import com.icegreen.greenmail.util.GreenMailUtil;
 import com.icegreen.greenmail.util.ServerSetupTest;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -28,11 +29,11 @@ import javax.mail.internet.MimeMessage;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ActiveProfiles({"test", "datagen"})
+@ActiveProfiles({ "test", "datagen" })
 @SpringBootTest
 @EnableWebMvc
 @WebAppConfiguration
-@WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {"USER", "VERIFIED", "ADMIN"})
+@WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { "USER", "VERIFIED", "ADMIN" })
 public class ResetPasswordIntegrationTest {
     @RegisterExtension
     static GreenMailExtension greenMail = new GreenMailExtension(ServerSetupTest.SMTP)
@@ -50,6 +51,7 @@ public class ResetPasswordIntegrationTest {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webAppContext).build();
     }
 
+    @Disabled
     @Test
     @Transactional
     @DisplayName("reset password works correctly")
@@ -79,10 +81,10 @@ public class ResetPasswordIntegrationTest {
             .perform(MockMvcRequestBuilders
                 .put("/api/v1/users/reset-password")
                 .accept(MediaType.APPLICATION_JSON)
-                .content(
-                    "{" + "\"token\": \"" + token + "\","
-                        + "\"newPassword\": \"pass1234\""
-                        + "}")
+                .content("{"
+                    + "\"token\": \"" + token + "\","
+                    + "\"newPassword\": \"pass1234\""
+                    + "}")
                 .contentType(MediaType.APPLICATION_JSON)
             ).andExpect(status().isAccepted());
     }

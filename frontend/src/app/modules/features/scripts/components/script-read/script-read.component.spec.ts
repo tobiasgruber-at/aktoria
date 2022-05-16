@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { ScriptReadComponent } from './script-read.component';
+import {ScriptReadComponent} from './script-read.component';
 
 describe('ScriptPlainComponent', () => {
   let component: ScriptReadComponent;

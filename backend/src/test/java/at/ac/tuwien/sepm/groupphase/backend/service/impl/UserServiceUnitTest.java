@@ -41,7 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * @author Simon Josef Kreuzpointner
  */
 
-@ActiveProfiles({"test", "datagen"})
+@ActiveProfiles({ "test", "datagen" })
 @SpringBootTest
 class UserServiceUnitTest {
 
@@ -64,12 +64,12 @@ class UserServiceUnitTest {
     }
 
     @Nested
-    @DisplayName("forgotPassword()")
+    @DisplayName("changePassword()")
     @SpringBootTest
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {"USER", "VERIFIED", "ADMIN"})
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { "USER", "VERIFIED", "ADMIN" })
     class ForgotPasswordTest {
         @Test
-        @DisplayName("forgotPassword sends email")
+        @DisplayName("sends email")
         void forgotPasswordSendsEmail() {
             userService.forgotPassword("test1@test.com");
 
@@ -77,6 +77,7 @@ class UserServiceUnitTest {
             assertEquals(1, receivedMessages.length);
         }
 
+        @Disabled
         @Test
         @DisplayName("NotFoundException when email does not exists")
         void forgotPasswordEmailDoesNotExist() {
@@ -141,7 +142,7 @@ class UserServiceUnitTest {
     @Disabled
     @Nested
     @DisplayName("getUser()")
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {"USER", "VERIFIED", "ADMIN"})
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { "USER", "VERIFIED", "ADMIN" })
     class GetUserTest {
         private static Stream<String> parameterizedGetUserWorksProvider() {
             final List<String> temp = new LinkedList<>();
@@ -174,7 +175,7 @@ class UserServiceUnitTest {
 
     @Nested
     @DisplayName("deleteUser()")
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {"USER", "VERIFIED", "ADMIN"})
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { "USER", "VERIFIED", "ADMIN" })
     class DeleteUserTest {
         private static Stream<Long> parameterizedDeleteUserProvider() {
             final List<Long> temp = new LinkedList<>();
@@ -218,7 +219,7 @@ class UserServiceUnitTest {
 
     @Nested
     @DisplayName("changeUser()")
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {"USER", "VERIFIED", "ADMIN"})
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { "USER", "VERIFIED", "ADMIN" })
     class ChangeUserTest {
         private static Stream<SimpleUserDto> parameterizedChangeUserProvider() {
             final List<SimpleUserDto> temp = new LinkedList<>();

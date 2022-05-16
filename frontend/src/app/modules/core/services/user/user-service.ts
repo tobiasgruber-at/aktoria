@@ -1,6 +1,11 @@
 import { Observable } from 'rxjs';
-import { SimpleUser, UserRegistration } from '../../../shared/dtos/user-dtos';
-import {ChangePassword} from '../../../shared/dtos/password-change-dto';
+import {
+  DetailedUser,
+  SimpleUser,
+  UpdateUser,
+  UserRegistration
+} from '../../../shared/dtos/user-dtos';
+import { ChangePassword } from '../../../shared/dtos/password-change-dto';
 
 export abstract class UserService {
   abstract getOwnUser(): SimpleUser;
@@ -11,9 +16,9 @@ export abstract class UserService {
 
   abstract register(req: UserRegistration): Observable<SimpleUser>;
 
-  abstract delete(): Observable<any>;
+  abstract delete(id: number): Observable<void>;
 
-  abstract update(): Observable<any>;
+  abstract update(user: UpdateUser): Observable<DetailedUser>;
 
   abstract resendVerificationEmail(): Observable<void>;
 

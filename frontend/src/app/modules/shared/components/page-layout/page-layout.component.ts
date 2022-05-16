@@ -22,9 +22,11 @@ export class PageLayoutComponent implements OnInit {
     public authService: AuthService,
     private router: Router,
     private toastService: ToastService
-  ) {}
+  ) {
+  }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+  }
 
   logout(): void {
     this.authService.logoutUser();

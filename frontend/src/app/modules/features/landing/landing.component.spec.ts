@@ -1,7 +1,7 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
-import { LandingComponent } from './landing.component';
-import { SharedTestingModule } from '../../shared/shared-testing.module';
+import {LandingComponent} from './landing.component';
+import {SharedTestingModule} from '../../shared/shared-testing.module';
 
 describe('LandingComponent', () => {
   let component: LandingComponent;

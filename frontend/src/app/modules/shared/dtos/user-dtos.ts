@@ -31,9 +31,14 @@ export class DetailedUser extends SimpleUser {
   }
 }
 
-export class PasswordChange {
+export class UpdateUser {
   constructor(
+    public readonly id: number,
+    public readonly firstName: string,
+    public readonly lastName: string,
+    public readonly email: string,
     public readonly oldPassword: string,
-    public readonly newPassword: string
+    public readonly newPassword: string,
+    public readonly verified: boolean
   ) {}
 }

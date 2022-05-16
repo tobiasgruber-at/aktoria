@@ -1,13 +1,9 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { Globals } from '../../global/globals';
-import {
-  DetailedScript,
-  ScriptPreview,
-  SimpleScript
-} from '../../../shared/dtos/script-dtos';
-import { tap } from 'rxjs/operators';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {BehaviorSubject, Observable, of} from 'rxjs';
+import {Globals} from '../../global/globals';
+import {DetailedScript, ScriptPreview, SimpleScript} from '../../../shared/dtos/script-dtos';
+import {tap} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +14,8 @@ export class ScriptService {
   private scriptsSubject = new BehaviorSubject<ScriptPreview[]>([]);
   private fullyLoadedScripts: DetailedScript[] = [];
 
-  constructor(private http: HttpClient, private globals: Globals) {}
+  constructor(private http: HttpClient, private globals: Globals) {
+  }
 
   get $scripts(): Observable<ScriptPreview[]> {
     return this.scriptsSubject.asObservable();
@@ -35,10 +32,10 @@ export class ScriptService {
     return loadedScript
       ? of(loadedScript)
       : this.http.get<DetailedScript>(`${this.baseUri}/${id}`).pipe(
-          tap((script) => {
-            this.fullyLoadedScripts.push(script);
-          })
-        );
+        tap((script) => {
+          this.fullyLoadedScripts.push(script);
+        })
+      );
   }
 
   /**
@@ -50,8 +47,8 @@ export class ScriptService {
     return this.scripts?.length > 0
       ? of(this.scripts)
       : this.http
-          .get<ScriptPreview[]>(this.baseUri)
-          .pipe(tap((scripts) => this.updateScripts(scripts)));
+        .get<ScriptPreview[]>(this.baseUri)
+        .pipe(tap((scripts) => this.updateScripts(scripts)));
   }
 
   /**

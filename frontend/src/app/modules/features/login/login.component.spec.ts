@@ -1,7 +1,7 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
-import { LoginComponent } from './login.component';
-import { SharedTestingModule } from '../../shared/shared-testing.module';
+import {LoginComponent} from './login.component';
+import {SharedTestingModule} from '../../shared/shared-testing.module';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
