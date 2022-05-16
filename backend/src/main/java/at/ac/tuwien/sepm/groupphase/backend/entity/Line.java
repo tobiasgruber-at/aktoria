@@ -56,8 +56,6 @@ public class Line {
     @JoinColumn(name = "recorded_by")
     private User recordedBy;
 
-    @ManyToMany
-    @JoinTable(name = "spoken_by", joinColumns = @JoinColumn(name = "line_id"),
-        inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @ManyToMany(mappedBy = "lines")
     private Set<Role> spokenBy;
 }
