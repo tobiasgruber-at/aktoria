@@ -11,6 +11,7 @@ import at.ac.tuwien.sepm.groupphase.backend.service.parsing.script.ParsedScript;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
 
 import java.util.List;
 
@@ -18,7 +19,10 @@ import java.util.List;
 public interface ScriptMapper {
     SimpleScriptDto parsedScriptToSimpleScriptDto(ParsedScript parsedScript, String name);
 
-    @Mapping(target = "owner", source = "owner")
+    @Mappings({
+        @Mapping(target = "owner", source = "owner"),
+        @Mapping(target = "id", source = "id")
+    })
     ScriptDto simpleScriptDtoToScriptDto(SimpleScriptDto simpleScriptDto, Long id, SimpleUserDto owner);
 
     List<ScriptPreviewDto> listOfScriptToListOfScriptPreviewDto(List<Script> script);
