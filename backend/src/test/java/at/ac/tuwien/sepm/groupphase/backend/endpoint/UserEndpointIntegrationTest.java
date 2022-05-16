@@ -239,7 +239,7 @@ class UserEndpointIntegrationTest {
         void patchUserAndPassword() throws Exception {
             byte[] body = mockMvc
                 .perform(MockMvcRequestBuilders
-                    .patch("/api/v1/users/{id}?passwordChange=true", -1L)
+                    .patch("/api/v1/users/{id}", -1L)
                     .accept(MediaType.APPLICATION_JSON)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsBytes(new UpdateUserDto(-1L, "NewFirstName", "newLastName", "new@email.com", "oldPassword", "newPassword", true)))
@@ -260,7 +260,7 @@ class UserEndpointIntegrationTest {
         @DisplayName("returns BadRequest on empty body")
         void patchUserBodyNull() throws Exception {
             mockMvc.perform(MockMvcRequestBuilders
-                .patch("/api/v1/users/-1?passwordChange=true")
+                .patch("/api/v1/users/-1")
                 .accept(MediaType.APPLICATION_JSON)
             ).andExpect(status().isBadRequest()); //Spring automatically throws 400 Bad Request when Request Body is empty
         }
@@ -271,7 +271,7 @@ class UserEndpointIntegrationTest {
         @DisplayName("returns NotFound on non existing user")
         void patchNonexistentUser() throws Exception {
             mockMvc.perform(MockMvcRequestBuilders
-                .patch("/api/v1/users/0?passwordChange=true")
+                .patch("/api/v1/users/0")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(new UpdateUserDto(0L, "NewName", "newWow", "admin@email.com", "oldPassword", "newPassword", true)))
@@ -284,7 +284,7 @@ class UserEndpointIntegrationTest {
         @MethodSource("updateUserDtoProvider")
         void patchUserInvalidEmail(UpdateUserDto input) throws Exception {
             mockMvc.perform(MockMvcRequestBuilders
-                .patch("/api/v1/users/{id}?passwordChange=true", -1L)
+                .patch("/api/v1/users/{id}", -1L)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(input))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -298,7 +298,7 @@ class UserEndpointIntegrationTest {
         void patchUserEdgeCase() throws Exception {
             String name = "a".repeat(100);
             byte[] body = mockMvc.perform(MockMvcRequestBuilders
-                    .patch("/api/v1/users/{id}?passwordChange=false", -1L)
+                    .patch("/api/v1/users/{id}", -1L)
                     .accept(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsBytes(new UpdateUserDto(-1L, name, name, "admin@email.com", null, null, true)))
                     .contentType(MediaType.APPLICATION_JSON)

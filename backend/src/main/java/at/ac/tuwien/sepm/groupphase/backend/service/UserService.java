@@ -52,7 +52,7 @@ public interface UserService extends UserDetailsService {
      * @throws ConflictException   is thrown when there is a conflict with the data base
      * @throws ValidationException is thrown when user data is not valid
      */
-    DetailedUserDto patch(UpdateUserDto updateUserDto, Boolean passwordChange, Long id);
+    DetailedUserDto patch(UpdateUserDto updateUserDto, Long id);
 
     /**
      * Deletes a user from the system.

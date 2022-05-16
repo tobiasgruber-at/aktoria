@@ -55,9 +55,9 @@ public class UserEndpoint {
     @PatchMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     @Secured("ROLE_USER")
-    public DetailedUserDto patchUser(@RequestParam Boolean passwordChange, @RequestBody UpdateUserDto updateUserDto, @PathVariable Long id) {
+    public DetailedUserDto patchUser(@RequestBody UpdateUserDto updateUserDto, @PathVariable Long id) {
         log.info("PATCH {}/{}", path, id);
-        return userService.patch(updateUserDto, passwordChange, id);
+        return userService.patch(updateUserDto, id);
     }
 
     @DeleteMapping(path = "/{id}")
