@@ -1,0 +1,12 @@
+<h1 class="display-3 mb-3">{{ title }}</h1>
+<div class="mb-5 d-flex flex-wrap gap-4">
+  <app-script-list-item
+    *ngIf="hasUploadButton"
+    [isCreate]="true"
+  ></app-script-list-item>
+  <ng-content></ng-content>
+  <app-script-list-item
+    *ngFor="let script of scriptService?.$scripts | async"
+    [script]="script"
+  ></app-script-list-item>
+</div>

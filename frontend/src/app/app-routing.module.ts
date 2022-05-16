@@ -1,36 +1,47 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { LandingComponent } from './modules/features/landing/landing.component';
-import { AuthGuard } from './modules/core/guards/auth.guard';
-import {VerifyEmailModule} from './modules/features/verify-email/verify-email.module';
+import { LoggedInGuard } from './modules/core/guards/logged-in-guard.service';
+import { LoggedOutGuard } from './modules/core/guards/logged-out-guard.service';
+import { VerifiedGuard } from './modules/core/guards/verified.guard';
+import { NotVerifiedGuard } from './modules/core/guards/not-verified.guard';
 
 const routes: Routes = [
-  { path: '', component: LandingComponent },
   {
-    path: 'login',
-    loadChildren: () =>
-      import('./modules/features/login/login.module').then((m) => m.LoginModule)
-  },
-  {
-    path: 'register',
-    loadChildren: () =>
-      import('./modules/features/registration/registration.module').then(
-        (m) => m.RegistrationModule
-      )
-  },
-  {
-    path: 'landing',
+    path: '',
+    canActivate: [NotVerifiedGuard],
     loadChildren: () =>
       import('./modules/features/landing/landing.module').then(
         (m) => m.LandingModule
       )
   },
   {
+    path: 'login',
+    canActivate: [LoggedOutGuard],
+    loadChildren: () =>
+      import('./modules/features/login/login.module').then((m) => m.LoginModule)
+  },
+  {
+    path: 'register',
+    canActivate: [LoggedOutGuard],
+    loadChildren: () =>
+      import('./modules/features/registration/registration.module').then(
+        (m) => m.RegistrationModule
+      )
+  },
+  {
     path: 'scripts',
-    canActivate: [AuthGuard],
+    canActivate: [VerifiedGuard],
     loadChildren: () =>
       import('./modules/features/scripts/scripts.module').then(
         (m) => m.ScriptsModule
+      )
+  },
+  {
+    path: 'profile',
+    canActivate: [LoggedInGuard],
+    loadChildren: () =>
+      import('./modules/features/profile/profile.module').then(
+        (m) => m.ProfileModule
       )
   },
   {
@@ -40,14 +51,19 @@ const routes: Routes = [
         (m) => m.VerifyEmailModule
       )
   },
-  // TODO: remove sometime
   {
-    path: 'message',
-    canActivate: [AuthGuard],
+    path: 'password/reset',
     loadChildren: () =>
-      import('./modules/features/message/message.module').then(
-        (m) => m.MessageModule
-      )
+      import(
+        './modules/features/password/reset-password/reset-password.module'
+      ).then((m) => m.ResetPasswordModule)
+  },
+  {
+    path: 'password/restore/:token',
+    loadChildren: () =>
+      import(
+        './modules/features/password/restore-password/restore-password.module'
+      ).then((m) => m.RestorePasswordModule)
   },
   { path: '**', redirectTo: '' }
 ];

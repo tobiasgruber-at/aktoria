@@ -1,0 +1,42 @@
+<app-page-layout [loading]="getLoading">
+  <app-alert *ngIf="getError; else noError" [closeable]="false" type="danger">
+    <strong>Fehler!</strong> Skript wurde nicht gefunden.
+  </app-alert>
+  <ng-template #noError>
+    <div>
+      <div class="d-flex justify-content-between align-items-center">
+        <h1 class="display-3 mb-3 text-truncate">{{ script?.name }}</h1>
+        <div>
+          <button
+            class="btn btn-primary me-3"
+            routerLink="/scripts/{{ script?.id }}/read"
+          >
+            Skript ansehen
+          </button>
+          <button (click)="openModal(deleteModal)" class="btn btn-danger">
+            Skript löschen
+          </button>
+          <ng-template #deleteModal let-modal>
+            <app-modal
+              (confirm)="deleteScript(modal)"
+              (decline)="modal.dismiss()"
+              [loading]="deleteLoading"
+              confirmBtnLabel="Löschen"
+              title="Skript löschen"
+            >
+              <app-alert
+                *ngIf="deleteError"
+                [closeable]="false"
+                type="danger"
+                >{{ this.deleteError }}</app-alert
+              >
+              Sicher, dass du
+              <strong class="text-primary">{{ script?.name }}</strong>
+              unwiderruflich löschen möchtest möchtest?
+            </app-modal>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</app-page-layout>

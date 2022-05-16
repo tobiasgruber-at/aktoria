@@ -3,13 +3,17 @@ package at.ac.tuwien.sepm.groupphase.backend.validation.impl;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordChangeDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UpdateUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserRegistrationDto;
+import at.ac.tuwien.sepm.groupphase.backend.entity.User;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
+import at.ac.tuwien.sepm.groupphase.backend.service.SecureTokenService;
 import at.ac.tuwien.sepm.groupphase.backend.validation.UserValidation;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,9 +26,12 @@ import java.util.regex.Pattern;
 @Component
 public class UserValidationImpl implements UserValidation {
     UserRepository userRepository;
+    PasswordEncoder passwordEncoder;
+    SecureTokenService secureTokenService;
 
-    public UserValidationImpl(UserRepository userRepository) {
+    public UserValidationImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -58,20 +65,27 @@ public class UserValidationImpl implements UserValidation {
     }
 
     @Override
-    public void validateEmailForForgottenPasswordInput(String email) throws NotFoundException {
-        if ((userRepository.findByEmail(email)).isEmpty()) {
-            throw new NotFoundException("Email existiert nicht!");
-        }
-    }
-
-    @Override
-    public void validateChangePasswordInput(PasswordChangeDto passwordChangeDto) throws ValidationException {
+    public void validateChangePasswordInput(PasswordChangeDto passwordChangeDto, Long id) throws ValidationException, ConflictException, NotFoundException {
         try {
             validatePassword(passwordChangeDto.getNewPassword());
         } catch (ValidationException e) {
             throw new ValidationException(e.getMessage(), e);
         }
+
+        Optional<User> userOptional = userRepository.findById(id);
+        User update;
+        if (userOptional.isPresent()) {
+            update = userOptional.get();
+        } else {
+            throw new NotFoundException("User existiert nicht!");
+        }
+        if (passwordChangeDto.getToken() == null) {
+            if (!(passwordEncoder.matches(passwordChangeDto.getOldPassword(), update.getPasswordHash()))) {
+                throw new ConflictException("Das eingegebene Passwort stimmt nicht mit deinem Passwort überein.");
+            }
+        }
     }
+
 
     private void validatePassword(String password) throws ValidationException {
         try {

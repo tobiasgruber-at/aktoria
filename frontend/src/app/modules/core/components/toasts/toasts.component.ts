@@ -10,5 +10,6 @@ import {lightAppearAnimations} from '../../../shared/animations/light-appear.ani
   animations: [lightAppearAnimations]
 })
 export class ToastsComponent {
-  constructor(public toastService: ToastService) {}
+  constructor(public toastService: ToastService) {
+  }
 }

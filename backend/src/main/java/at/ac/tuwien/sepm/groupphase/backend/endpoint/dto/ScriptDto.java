@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 /**
- * Script Data Access Object.
+ * Script Data Transfer Object.
  * <br>
  * In contrast to the simple script DTO this DTO is intended
  * for already stored scripts.

@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import {VerifyEmailComponent} from './verify-email.component';
+import { VerifyEmailComponent } from './verify-email.component';
 
 const routes: Routes = [
   {

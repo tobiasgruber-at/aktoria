@@ -1,35 +1,47 @@
 export class UploadScript {
-  constructor(public readonly file: File) {}
-}
-
-export class DeleteScriptRequest {
-  constructor(public readonly id: number) {}
+  constructor(public readonly file: File) {
+  }
 }
 
 export class SimpleScript {
-  protected pages: Page[];
-  protected roles: Role[];
-  protected name: string;
+  constructor(
+    public readonly pages: Page[],
+    public readonly roles: Role[],
+    public readonly name: string
+  ) {
+  }
+}
+
+export class ScriptPreview {
+  constructor(public readonly id: number, public readonly name: string) {
+  }
 }
 
 export class DetailedScript extends SimpleScript {
-  private id: number;
+  constructor(
+    public readonly id: number,
+    pages: Page[],
+    roles: Role[],
+    name: string
+  ) {
+    super(pages, roles, name);
+  }
 }
 
-class Page {
+export class Page {
   index: number;
   lines: Line[];
 }
 
-class Line {
+export class Line {
   index: number;
-  role: Role;
+  roles: Role[];
   content: string;
   audioSnippet: AudioBuffer;
   active: boolean;
 }
 
-class Role {
+export class Role {
   id: number;
   name: string;
   color: string;

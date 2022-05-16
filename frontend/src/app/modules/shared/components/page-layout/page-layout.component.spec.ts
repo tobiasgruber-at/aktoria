@@ -1,7 +1,7 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { PageLayoutComponent } from './page-layout.component';
-import { SharedTestingModule } from '../../shared-testing.module';
+import {PageLayoutComponent} from './page-layout.component';
+import {SharedTestingModule} from '../../shared-testing.module';
 
 describe('PageLayoutComponent', () => {
   let component: PageLayoutComponent;

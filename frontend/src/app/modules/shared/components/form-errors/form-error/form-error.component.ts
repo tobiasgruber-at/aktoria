@@ -1,5 +1,5 @@
-import { Component, HostBinding, OnInit } from '@angular/core';
-import { appearAnimations } from '../../../animations/appear-animations';
+import {Component, HostBinding, OnInit} from '@angular/core';
+import {appearAnimations} from '../../../animations/appear-animations';
 
 @Component({
   selector: 'app-form-error',
@@ -8,12 +8,14 @@ import { appearAnimations } from '../../../animations/appear-animations';
   animations: [appearAnimations]
 })
 export class FormErrorComponent implements OnInit {
-  constructor() {}
+  constructor() {
+  }
 
   @HostBinding('@appear')
   get appearAnimation(): boolean {
     return true;
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+  }
 }

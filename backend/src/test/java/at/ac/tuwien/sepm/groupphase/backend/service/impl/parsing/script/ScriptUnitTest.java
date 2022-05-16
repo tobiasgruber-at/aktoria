@@ -1,6 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl.parsing.script;
 
-import at.ac.tuwien.sepm.groupphase.backend.service.parsing.script.Script;
+import at.ac.tuwien.sepm.groupphase.backend.service.parsing.script.UnparsedScript;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,7 +27,7 @@ class ScriptUnitTest {
         final String expected = Files.readString(Path.of("./src/test/resources/service/parsing/script/Skript_NF_expected.txt"));
         final MultipartFile multipartFile = new MockMultipartFile("file", new FileInputStream(inputFile));
 
-        final Script s = new Script(multipartFile);
+        final UnparsedScript s = new UnparsedScript(multipartFile, 0);
 
         assertThat(expected).isEqualToNormalizingNewlines(s.getFileContentsAsPlainText());
     }

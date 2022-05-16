@@ -1,6 +1,5 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
-import at.ac.tuwien.sepm.groupphase.backend.config.properties.SecurityProperties;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordChangeDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
@@ -14,14 +13,15 @@ import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.InvalidTokenException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.UnprocessableEmailException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
+import at.ac.tuwien.sepm.groupphase.backend.service.AuthorizationService;
 import at.ac.tuwien.sepm.groupphase.backend.service.MailSender;
 import at.ac.tuwien.sepm.groupphase.backend.service.SecureTokenService;
 import at.ac.tuwien.sepm.groupphase.backend.service.UserService;
 import at.ac.tuwien.sepm.groupphase.backend.validation.UserValidation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.core.GrantedAuthority;
@@ -30,12 +30,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.mail.MessagingException;
-import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -55,7 +50,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final MailSender mailSender;
     private final SecureTokenService secureTokenService;
-    private final SecurityProperties securityProperties;
+    private final AuthorizationService authorizationService;
 
     @Autowired
     public UserServiceImpl(
@@ -65,7 +60,7 @@ public class UserServiceImpl implements UserService {
         UserMapper userMapper,
         MailSender mailSender,
         SecureTokenService secureTokenService,
-        SecurityProperties securityProperties
+        AuthorizationService authorizationService
     ) {
         this.userRepository = userRepository;
         this.userValidation = userValidation;
@@ -73,11 +68,11 @@ public class UserServiceImpl implements UserService {
         this.userMapper = userMapper;
         this.mailSender = mailSender;
         this.secureTokenService = secureTokenService;
-        this.securityProperties = securityProperties;
+        this.authorizationService = authorizationService;
     }
 
     @Override
-    public SimpleUserDto create(UserRegistrationDto userRegistrationDto) throws ServiceException, ValidationException, ConflictException {
+    public SimpleUserDto create(UserRegistrationDto userRegistrationDto) {
         log.trace("createUser(userRegistrationDto = {})", userRegistrationDto);
 
         try {
@@ -96,20 +91,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public SimpleUserDto findById(Long id) throws NotFoundException {
+    public SimpleUserDto findById(Long id) {
         log.trace("getUser(id = {})", id);
+
+        authorizationService.checkBasicAuthorization(id);
 
         Optional<User> userOptional = userRepository.findById(id);
         if (userOptional.isPresent()) {
             return userMapper.userToSimpleUserDto(userOptional.get());
         } else {
-            throw new NotFoundException("Could not find User with this id");
+            throw new NotFoundException("Could not find User");
         }
     }
 
     @Override
-    public DetailedUserDto patch(UpdateUserDto updateUserDto, Boolean passwordChange, Long id) throws ServiceException, ValidationException, ConflictException, NotFoundException {
-        log.trace("patch(updateUserDto = {}, passwordChange = {}, id = {})", updateUserDto, passwordChange, id);
+    public DetailedUserDto patch(UpdateUserDto updateUserDto, Long id) {
+        log.trace("patch(updateUserDto = {}, id = {})", updateUserDto, id);
+
+        authorizationService.checkBasicAuthorization(id);
 
         try {
             userValidation.validatePatchUserInput(updateUserDto);
@@ -119,12 +118,48 @@ public class UserServiceImpl implements UserService {
             throw new ConflictException(e.getMessage(), e);
         }
 
-        throw new UnsupportedOperationException();
+        Optional<User> userOptional = userRepository.findById(id);
+        User update;
+        if (userOptional.isPresent()) {
+            update = userOptional.get();
+        } else {
+            throw new NotFoundException("User existiert nicht!");
+        }
+
+        if (updateUserDto.getOldPassword() != null && updateUserDto.getNewPassword() != null) {
+            try {
+                DetailedUserDto updated = changePassword(new PasswordChangeDto(null, updateUserDto.getOldPassword(), updateUserDto.getNewPassword()), id);
+                update.setPasswordHash(updated.getPasswordHash());
+            } catch (InvalidTokenException e) {
+                throw new InvalidTokenException(e.getMessage(), e);
+            }
+        }
+
+        if (updateUserDto.getFirstName() != null) {
+            update.setFirstName(updateUserDto.getFirstName());
+        }
+        if (updateUserDto.getLastName() != null) {
+            update.setLastName(updateUserDto.getLastName());
+        }
+        boolean emailChanged = false;
+        if (updateUserDto.getEmail() != null) {
+            update.setEmail(updateUserDto.getEmail());
+            emailChanged = true;
+            update.setVerified(false);
+        }
+
+        User patchedUser = userRepository.saveAndFlush(update);
+        if (emailChanged) {
+            sendEmailVerificationLink(patchedUser);
+        }
+        return userMapper.userToDetailedUserDto(patchedUser);
     }
 
     @Override
-    public void delete(Long id) throws ServiceException, NotFoundException {
+    public void delete(Long id) {
         log.trace("deleteUser(id = {})", id);
+
+        authorizationService.checkBasicAuthorization(id);
 
         try {
             userRepository.deleteById(id);
@@ -134,32 +169,93 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void forgotPassword(String email) throws NotFoundException {
+    public void forgotPassword(String email) {
         log.trace("forgotPassword(email = {})", email);
 
-        throw new UnsupportedOperationException();
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        if (userOptional.isEmpty()) {
+            throw new NotFoundException("Es existiert kein User mit dieser Mail-Adresse.");
+        }
+        User user = userOptional.get();
+
+        SecureToken secureToken = secureTokenService.createSecureToken(TokenType.resetPassword);
+        secureToken.setAccount(user);
+        secureTokenService.saveSecureToken(secureToken);
+
+        final String link = String.join("", "http://localhost:4200/#/password/restore/", secureToken.getToken());
+        try {
+            mailSender.sendMail(user.getEmail(), "Aktoria Passwort zurücksetzen",
+                """
+                        <h1>Hallo %s,</h1>
+                        klick auf den folgenden Link, um ein neues Passwort zu wählen.
+                        <br>
+                        <a href='%s'>Passwort zurücksetzen</a>
+                    """
+                    .formatted(user.getFirstName(), link));
+        } catch (UnprocessableEmailException e) {
+            throw new ServiceException(e.getMessage(), e);
+        }
     }
 
     @Override
-    public DetailedUserDto changePassword(PasswordChangeDto passwordChangeDto, Long id) throws ServiceException, ValidationException, NotFoundException {
-        log.trace("changePassword(passwordChangeDto = {}, id = {})", passwordChangeDto, id);
-
-        try {
-            userValidation.validateChangePasswordInput(passwordChangeDto);
-        } catch (ValidationException e) {
-            throw new ValidationException(e.getMessage(), e);
+    public DetailedUserDto changePassword(PasswordChangeDto passwordChangeDto, Long id) {
+        if (id == null) {
+            log.trace("changePassword(passwordChangeDto = {}, id = {})", passwordChangeDto, secureTokenService.findByToken(passwordChangeDto.getToken()).getAccount().getId());
+        } else {
+            log.trace("changePassword(passwordChangeDto = {}, id = {})", passwordChangeDto, id);
         }
 
-        throw new UnsupportedOperationException();
+        try {
+            if (id != null) {
+                userValidation.validateChangePasswordInput(passwordChangeDto, id);
+            } else {
+                userValidation.validateChangePasswordInput(passwordChangeDto, secureTokenService.findByToken(passwordChangeDto.getToken()).getId());
+            }
+        } catch (ValidationException e) {
+            throw new ValidationException(e.getMessage(), e);
+        } catch (ConflictException e) {
+            throw new ConflictException(e.getMessage(), e);
+        }
+
+        String token = passwordChangeDto.getToken();
+
+        if (token != null) {
+            SecureToken secureToken = secureTokenService.findByToken(token);
+            secureTokenService.removeToken(token);
+            if (secureToken.getType() == TokenType.resetPassword) {
+                if (secureToken.getExpireAt().isAfter(LocalDateTime.now())) {
+                    User user = secureToken.getAccount();
+                    user.setPasswordHash(passwordEncoder.encode(passwordChangeDto.getNewPassword()));
+                    return userMapper.userToDetailedUserDto(user);
+                } else {
+                    throw new InvalidTokenException();
+                }
+            } else {
+                throw new InvalidTokenException();
+            }
+        } else {
+            Optional<User> userOptional = userRepository.findById(id);
+            User update;
+            if (userOptional.isPresent()) {
+                update = userOptional.get();
+            } else {
+                throw new NotFoundException("User existiert nicht!");
+            }
+            update.setPasswordHash(passwordEncoder.encode(passwordChangeDto.getNewPassword()));
+            return userMapper.userToDetailedUserDto(update);
+        }
     }
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String email) {
         log.trace("loadUserByUsername(email = {})", email);
 
         try {
-            User user = findByEmail(email);
-
+            Optional<User> userOptional = userRepository.findByEmail(email);
+            if (userOptional.isEmpty()) {
+                throw new NotFoundException("Es konnte kein Benutzer gefunden werden.");
+            }
+            User user = userOptional.get();
             List<GrantedAuthority> grantedAuthorities;
             if (user.getVerified()) {
                 grantedAuthorities = AuthorityUtils.createAuthorityList("ROLE_VERIFIED", "ROLE_USER");
@@ -174,19 +270,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findByEmail(String email) throws NotFoundException {
+    public SimpleUserDto findByEmail(String email) {
         log.trace("findUserByEmail(email = {})", email);
+
+        authorizationService.checkBasicAuthorization(email);
 
         Optional<User> userOptional = userRepository.findByEmail(email);
         if (userOptional.isPresent()) {
-            return userOptional.get();
+            return userMapper.userToSimpleUserDto(userOptional.get());
         } else {
             throw new NotFoundException("Es konnte kein Benutzer gefunden werden.");
         }
     }
 
     @Override
-    public void sendEmailVerificationLink(User user) throws ServiceException {
+    public void sendEmailVerificationLink(User user) {
         log.trace("sendEmailVerificationLink(user = {})", user);
 
         SecureToken secureToken = secureTokenService.createSecureToken(TokenType.verifyEmail);
@@ -198,7 +296,7 @@ public class UserServiceImpl implements UserService {
             mailSender.sendMail(user.getEmail(), "Aktoria Verifikationslink",
                 """
                         <h1>Hallo %s,</h1>
-                        klick auf den folgenden Link um deine Mailadresse zu bestätigen.
+                        klick auf den folgenden Link, um deine Mailadresse zu bestätigen.
                         <br>
                         <a href='%s'>Email Adresse bestätigen</a>
                         <br>
@@ -206,16 +304,17 @@ public class UserServiceImpl implements UserService {
                         Wenn du dich nicht bei Aktoria registriert haben solltest, ignoriere bitte diese Mail.
                     """
                     .formatted(user.getFirstName(), link));
-        } catch (MessagingException e) {
+        } catch (UnprocessableEmailException e) {
             throw new ServiceException(e.getMessage(), e);
         }
     }
 
     @Override
-    public void resendEmailVerificationLink() throws ServiceException, NotFoundException {
+    public void resendEmailVerificationLink() {
         log.trace("resendEmailVerificationLink()");
 
-        String email = getCurrentUserEmail();
+        User user = authorizationService.getLoggedInUser();
+        String email = user.getEmail();
 
         Optional<User> userOptional = userRepository.findByEmail(email);
         if (userOptional.isPresent()) {
@@ -226,7 +325,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void verifyEmail(String token) throws InvalidTokenException {
+    public void verifyEmail(String token) {
         log.trace("verifyEmail(token = {})", token);
 
         SecureToken secureToken = secureTokenService.findByToken(token);
@@ -241,22 +340,6 @@ public class UserServiceImpl implements UserService {
             }
         } else {
             throw new InvalidTokenException();
-        }
-    }
-
-    /**
-     * Get the email of the logged in user, returns null if user is not logged in.
-     *
-     * @return the email address of the current user
-     */
-    public String getCurrentUserEmail() {
-        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
-        if (requestAttributes instanceof ServletRequestAttributes) {
-            HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
-            String token = request.getHeader(securityProperties.getAuthHeader());
-            return (new String(Base64.decodeBase64(token.split("\\.")[1]))).split("sub\":\"")[1].split("\"")[0];
-        } else {
-            return null;
         }
     }
 }

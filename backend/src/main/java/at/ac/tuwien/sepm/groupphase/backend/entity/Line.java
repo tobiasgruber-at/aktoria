@@ -1,7 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
-import at.ac.tuwien.sepm.groupphase.backend.entity.id.LineId;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,11 +12,11 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
+import java.util.Set;
 
 /**
  * Entity class for lines.
@@ -25,9 +25,9 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "line")
-@IdClass(LineId.class)
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Line {
@@ -36,22 +36,25 @@ public class Line {
     private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @PrimaryKeyJoinColumn
+    @JoinColumn(name = "page", nullable = false)
     private Page page;
 
     @Column(name = "index", nullable = false)
     private Long index;
 
-    @Column(name = "content", nullable = false)
+    @Column(name = "content", nullable = false, length = 5000)
     private String content;
 
     @Column(name = "audio")
     private String audio;
 
     @Column(name = "active", nullable = false, columnDefinition = "boolean default true")
-    private boolean active;
+    private boolean active = true;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "recorded_by")
     private User recordedBy;
+
+    @ManyToMany(mappedBy = "lines")
+    private Set<Role> spokenBy;
 }

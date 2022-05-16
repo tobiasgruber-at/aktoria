@@ -1,7 +1,7 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { ScriptsComponent } from './scripts.component';
-import { SharedTestingModule } from '../../shared/shared-testing.module';
+import {ScriptsComponent} from './scripts.component';
+import {SharedTestingModule} from '../../shared/shared-testing.module';
 
 describe('ScriptsComponent', () => {
   let component: ScriptsComponent;

@@ -12,7 +12,8 @@ export class ToastsItemComponent implements OnInit, OnInit {
   @Input() toast: Toast;
   private autoCloseTimeout;
 
-  constructor(private toastService: ToastService) {}
+  constructor(private toastService: ToastService) {
+  }
 
   ngOnInit(): void {
     this.autoCloseTimeout = setTimeout(() => {

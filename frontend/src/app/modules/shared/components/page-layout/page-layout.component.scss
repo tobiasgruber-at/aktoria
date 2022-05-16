@@ -1,6 +1,27 @@
+:host {
+  --nav-height: 4.5rem;
+}
+
+:host > .wrapper,
+header,
+footer {
+  transition: background-color 500ms;
+}
+
+header,
+footer {
+  z-index: 10;
+}
+
 header nav,
 footer {
-  height: 4.5rem;
+  height: var(--nav-height);
+}
+
+main {
+  margin: 0 auto;
+  margin-top: var(--nav-height);
+  max-width: 1200px;
 }
 
 ul {
@@ -10,4 +31,8 @@ ul {
   a.nav-link.account {
     height: 3rem;
   }
+}
+
+bi {
+  height: 2rem;
 }

@@ -10,6 +10,8 @@ import { PersonCircle } from 'ng-bootstrap-icons/icons';
 import { BootstrapIconsModule } from 'ng-bootstrap-icons';
 import { FormErrorComponent } from './components/form-errors/form-error/form-error.component';
 import { FormErrorsComponent } from './components/form-errors/form-errors.component';
+import { ModalComponent } from './components/modal/modal.component';
+import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 
 const icons = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -21,7 +23,8 @@ const sharedDeclarations = [
   CardComponent,
   ButtonComponent,
   FormErrorComponent,
-  FormErrorsComponent
+  FormErrorsComponent,
+  ModalComponent
 ];
 const sharedImports = [
   CommonModule,
@@ -32,7 +35,11 @@ const sharedImports = [
 
 @NgModule({
   declarations: [...sharedDeclarations],
-  imports: [...sharedImports, BootstrapIconsModule.pick(icons)],
+  imports: [
+    ...sharedImports,
+    BootstrapIconsModule.pick(icons),
+    NgbDropdownModule
+  ],
   exports: [...sharedImports, ...sharedDeclarations, BootstrapIconsModule]
 })
 export class SharedModule {}

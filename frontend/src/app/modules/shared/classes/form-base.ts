@@ -8,7 +8,8 @@ export abstract class FormBase {
   submitted = false;
   loading = false;
 
-  protected constructor(private ts: ToastService) {}
+  protected constructor(private ts: ToastService) {
+  }
 
   /**
    * Form validation will start after the method is called, additionally an AuthRequest will be sent
@@ -38,7 +39,7 @@ export abstract class FormBase {
     console.log(error);
     let errorMessage = '';
     if (typeof error.error === 'object') {
-      errorMessage = error.error.message;
+      errorMessage = error.error?.message;
     } else {
       errorMessage = error.error;
     }

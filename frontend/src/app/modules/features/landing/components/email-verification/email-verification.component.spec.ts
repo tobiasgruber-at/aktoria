@@ -1,7 +1,7 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { EmailVerificationComponent } from './email-verification.component';
-import { SharedTestingModule } from '../../../../shared/shared-testing.module';
+import {EmailVerificationComponent} from './email-verification.component';
+import {SharedTestingModule} from '../../../../shared/shared-testing.module';
 
 describe('EmailVerificationComponent', () => {
   let component: EmailVerificationComponent;

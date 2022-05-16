@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { VerifyEmailComponent } from './verify-email.component';
+import { SharedTestingModule } from '../../shared/shared-testing.module';
 
 describe('VerifyEmailComponent', () => {
   let component: VerifyEmailComponent;
@@ -8,9 +8,9 @@ describe('VerifyEmailComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ VerifyEmailComponent ]
-    })
-    .compileComponents();
+      imports: [SharedTestingModule],
+      declarations: [VerifyEmailComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

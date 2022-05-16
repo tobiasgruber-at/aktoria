@@ -1,19 +1,22 @@
 <app-page-layout>
   <div *ngIf="!authService.isLoggedIn(); else loggedIn" class="jumbotron mt-5">
-    <h1 class="display-4">Willkommen zu Aktoria!</h1>
+    <h1 class="display-4 mb-3">Willkommen zu Aktoria!</h1>
     <p class="lead">Deine App um jederzeit, alleine Skripten zu üben.</p>
-    <hr class="my-4" />
+    <hr class="my-4"/>
     <div class="flex-row">
       <a class="btn btn-primary btn-lg me-3" role="button" routerLink="/login"
-        >Login</a
+      >Login</a
       >
-      <a class="btn btn-primary btn-lg" role="button" routerLink="/register"
-        >Registrieren</a
+      <a
+        class="btn btn-primary btn-lg me-3"
+        role="button"
+        routerLink="/register"
+      >Registrieren</a
       >
     </div>
   </div>
   <ng-template #loggedIn>
-    <div *ngIf="authService.isVerifiedEmail(); else emailVerification">
+    <div *ngIf="userService.getOwnUser()?.verified; else emailVerification">
       Logged in
     </div>
     <ng-template #emailVerification>

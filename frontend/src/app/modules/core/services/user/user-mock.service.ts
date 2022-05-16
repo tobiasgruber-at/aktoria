@@ -1,16 +1,25 @@
-import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { SimpleUser, UserRegistration } from '../../../shared/dtos/user-dtos';
-import { UserService } from './user-service';
-import { randomDelay } from '../../../shared/functions/random-delay';
-import { AuthService } from '../auth/auth-service';
+import {Injectable} from '@angular/core';
+import {Observable, of} from 'rxjs';
+import {SimpleUser, UserRegistration} from '../../../shared/dtos/user-dtos';
+import {UserService} from './user-service';
+import {randomDelay} from '../../../shared/functions/random-delay';
+import {ChangePassword} from '../../../shared/dtos/password-change-dto';
 
 @Injectable()
 export class UserMockService extends UserService {
-  readonly mockedToken: string = 'test';
-
-  constructor(private authService: AuthService) {
+  constructor() {
     super();
+  }
+
+  getOwnUser(): SimpleUser {
+    return undefined;
+  }
+
+  setOwnUser(user: SimpleUser): void {
+  }
+
+  getOne(email: string): Observable<SimpleUser> {
+    return of(new SimpleUser(1, 'Max', 'Patternman', 'asdf@asdf.asdf', false));
   }
 
   delete(): Observable<any> {
@@ -29,5 +38,16 @@ export class UserMockService extends UserService {
 
   resendVerificationEmail(): Observable<void> {
     return of(null).pipe(randomDelay());
+  }
+
+  changePassword(password: ChangePassword): Observable<void> {
+    return undefined;
+  }
+
+  forgotPassword(email: string): Observable<void> {
+    return undefined;
+  }
+
+  submitEmailToken(token: string): any {
   }
 }

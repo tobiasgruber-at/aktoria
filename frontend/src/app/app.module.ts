@@ -9,7 +9,6 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { SharedModule } from './modules/shared/shared.module';
 import { CoreModule } from './modules/core/core.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { VerifyEmailComponent } from './modules/features/verify-email/verify-email.component';
 
 @NgModule({
   declarations: [AppComponent],

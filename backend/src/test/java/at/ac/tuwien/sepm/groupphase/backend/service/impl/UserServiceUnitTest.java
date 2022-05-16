@@ -4,13 +4,11 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordChangeDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserRegistrationDto;
-import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
-import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.UnauthorizedException;
-import at.ac.tuwien.sepm.groupphase.backend.exception.UserNotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.service.UserService;
+import at.ac.tuwien.sepm.groupphase.backend.testhelpers.UserTestHelper;
 import com.icegreen.greenmail.configuration.GreenMailConfiguration;
 import com.icegreen.greenmail.junit5.GreenMailExtension;
 import com.icegreen.greenmail.util.ServerSetupTest;
@@ -23,9 +21,11 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.mail.internet.MimeMessage;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -54,11 +54,6 @@ class UserServiceUnitTest {
     UserService userService;
 
     @Test
-    @DisplayName("forgotPassword()")
-    void forgotPassword() {
-    }
-
-    @Test
     @DisplayName("loadUserByUsername()")
     void loadUserByUsername() {
     }
@@ -68,10 +63,32 @@ class UserServiceUnitTest {
     void findUserByEmail() {
     }
 
+    @Nested
+    @DisplayName("changePassword()")
+    @SpringBootTest
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { "USER", "VERIFIED", "ADMIN" })
+    class ForgotPasswordTest {
+        @Test
+        @DisplayName("sends email")
+        void forgotPasswordSendsEmail() {
+            userService.forgotPassword("test1@test.com");
+
+            final MimeMessage[] receivedMessages = greenMail.getReceivedMessages();
+            assertEquals(1, receivedMessages.length);
+        }
+
+        @Disabled
+        @Test
+        @DisplayName("NotFoundException when email does not exists")
+        void forgotPasswordEmailDoesNotExist() {
+            assertThrows(NotFoundException.class, () -> userService.forgotPassword("notfound@test.com"));
+        }
+    }
+
     @Disabled
     @Nested
     @DisplayName("changePassword()")
-    class ChangePasswordTesting {
+    class ChangePasswordTest {
 
         private static Stream<ChangePasswordRecord> parameterizedChangePasswordWorksProvider() {
             final List<ChangePasswordRecord> temp = new LinkedList<>();
@@ -97,6 +114,7 @@ class UserServiceUnitTest {
         @Transactional
         @MethodSource("parameterizedChangePasswordWorksProvider")
         void changePasswordWorks(ChangePasswordRecord input) {
+
         }
 
         @ParameterizedTest
@@ -124,15 +142,16 @@ class UserServiceUnitTest {
     @Disabled
     @Nested
     @DisplayName("getUser()")
-    class GetUserTesting {
-        private static Stream<Long> parameterizedGetUserWorksProvider() {
-            final List<Long> temp = new LinkedList<>();
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { "USER", "VERIFIED", "ADMIN" })
+    class GetUserTest {
+        private static Stream<String> parameterizedGetUserWorksProvider() {
+            final List<String> temp = new LinkedList<>();
             //needed datagen for valid ids
             return temp.stream();
         }
 
-        private static Stream<Long> parameterizedGetUserExceptionProvider() {
-            final List<Long> temp = new LinkedList<>();
+        private static Stream<String> parameterizedGetUserExceptionProvider() {
+            final List<String> temp = new LinkedList<>();
             //needed datagen to know which ids are invalid for this test
             return temp.stream();
         }
@@ -141,22 +160,23 @@ class UserServiceUnitTest {
         @Transactional
         @DisplayName("throws ServiceException")
         @MethodSource("parameterizedGetUserExceptionProvider")
-        void getUserThrowsException(Long input) throws ServiceException {
-            assertThrows(NotFoundException.class, () -> userService.findById(input));
+        void getUserThrowsException(String input) {
+            assertThrows(NotFoundException.class, () -> userService.findByEmail(input));
         }
 
         @ParameterizedTest
         @Transactional
         @DisplayName("gets the correct user")
         @MethodSource("parameterizedGetUserWorksProvider")
-        void getUserWorks(Long input) throws UserNotFoundException, ServiceException {
-            assertNull(userService.findById(input));
+        void getUserWorks(String input) {
+            assertNull(userService.findByEmail(input));
         }
     }
 
     @Nested
     @DisplayName("deleteUser()")
-    class DeleteUserTesting {
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { "USER", "VERIFIED", "ADMIN" })
+    class DeleteUserTest {
         private static Stream<Long> parameterizedDeleteUserProvider() {
             final List<Long> temp = new LinkedList<>();
             //needed datagen
@@ -199,7 +219,8 @@ class UserServiceUnitTest {
 
     @Nested
     @DisplayName("changeUser()")
-    class ChangeUserWorks {
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { "USER", "VERIFIED", "ADMIN" })
+    class ChangeUserTest {
         private static Stream<SimpleUserDto> parameterizedChangeUserProvider() {
             final List<SimpleUserDto> temp = new LinkedList<>();
             //needed datagen
@@ -218,8 +239,8 @@ class UserServiceUnitTest {
     @Nested
     @DisplayName("createUser()")
     @SpringBootTest
-    class CreateUser {
-        
+    class CreateUserTest {
+
         private static Stream<UserRegistrationDto> parameterizedCreateUserThrowsExceptionProvider() {
             final List<UserRegistrationDto> temp = new LinkedList<>();
             temp.add(new UserRegistrationDto(null, "Lastname", "name@mail.com", "password"));
@@ -352,7 +373,7 @@ class UserServiceUnitTest {
         @DisplayName("creates user correctly")
         @MethodSource("parameterizedUserRegistrationDtoProvider")
         @Transactional
-        void createUserIsOk(CreateUserRecord input) throws ServiceException, ValidationException, ConflictException {
+        void createUserIsOk(CreateUserRecord input) {
             SimpleUserDto actual = userService.create(input.input);
             input.expected.setId(actual.getId());
 
