@@ -1,5 +1,5 @@
 <app-page-layout>
-  <app-card title="Registrieren">
+  <app-card title="Profildaten ändern">
     <span class="anchor" id="formLogin"></span>
     <form (ngSubmit)="submit()" [formGroup]="form" class="form">
       <div class="form-group mb-3">
@@ -65,16 +65,16 @@
         <label for="input-password-old">Altes Passwort</label>
         <input
           class="form-control"
-          formControlName="password"
+          formControlName="oldPassword"
           id="input-password-old"
           placeholder="Dein altes Passwort"
           type="password"
         />
         <app-form-errors>
-          <app-form-error *ngIf="fieldHasErrors('password', 'required')"
+          <app-form-error *ngIf="fieldHasErrors('oldPassword', 'required')"
             >Bitte gib dein Passwort ein.
           </app-form-error>
-          <app-form-error *ngIf="fieldHasErrors('password', 'minlength')"
+          <app-form-error *ngIf="fieldHasErrors('oldPassword', 'minlength')"
             >Dein Passwort muss mindestens 8 Zeichen lang sein.
           </app-form-error>
         </app-form-errors>
@@ -115,11 +115,14 @@
           </app-form-error>
         </app-form-errors>
       </div>
+      <button class="btn btn-secondary" routerLink="/profile" type="button">
+        Abbrechen
+      </button>
       <app-button
         [disabled]="hasError()"
         [loading]="loading"
         class="float-end"
-        label="Registrieren"
+        label="Ändern"
         type="submit"
       ></app-button>
     </form>

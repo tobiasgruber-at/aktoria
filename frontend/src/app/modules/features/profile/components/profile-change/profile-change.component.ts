@@ -8,12 +8,14 @@ import { FormBase } from '../../../../shared/classes/form-base';
 import { matchingPasswordsValidator } from '../../../../shared/validators/matching-passwords-validator';
 import { Theme } from '../../../../shared/enums/theme.enum';
 import { SimpleUser, UpdateUser } from '../../../../shared/dtos/user-dtos';
+import { appearAnimations } from '../../../../shared/animations/appear-animations';
 
 /** @author Simon Josef Kreuzpointner */
 @Component({
   selector: 'app-profile-change',
   templateUrl: './profile-change.component.html',
-  styleUrls: ['./profile-change.component.scss']
+  styleUrls: ['./profile-change.component.scss'],
+  animations: [appearAnimations]
 })
 export class ProfileChangeComponent extends FormBase implements OnInit {
   user: SimpleUser;
@@ -33,20 +35,15 @@ export class ProfileChangeComponent extends FormBase implements OnInit {
 
     this.form = this.formBuilder.group(
       {
-        firstName: ['', [Validators.required, Validators.maxLength(100)]],
-        lastName: ['', [Validators.required, Validators.maxLength(100)]],
-        email: [
-          '',
-          [Validators.required, Validators.maxLength(100), Validators.email]
-        ],
-        oldPassword: ['', [Validators.minLength(8)]],
-        newPassword: ['', [Validators.minLength(8)]],
-        passwordConfirm: ['', []]
+        firstName: [null, [Validators.maxLength(100)]],
+        lastName: [null, [Validators.maxLength(100)]],
+        email: [null, [Validators.maxLength(100), Validators.email]],
+        oldPassword: [null, [Validators.minLength(8)]],
+        password: [null, [Validators.minLength(8)]],
+        passwordConfirm: [null, []]
       },
       { validators: [matchingPasswordsValidator] }
     );
-
-    this.form.patchValue(this.user);
   }
 
   getUser() {
@@ -58,7 +55,7 @@ export class ProfileChangeComponent extends FormBase implements OnInit {
   }
 
   protected sendSubmit() {
-    const { firstName, lastName, email, oldPassword, newPassword } =
+    const { firstName, lastName, email, oldPassword, password } =
       this.form.value;
     this.userService
       .update(
@@ -68,7 +65,7 @@ export class ProfileChangeComponent extends FormBase implements OnInit {
           lastName,
           email,
           oldPassword,
-          newPassword,
+          password,
           null
         )
       )
@@ -78,7 +75,7 @@ export class ProfileChangeComponent extends FormBase implements OnInit {
             message: 'Erfolgreich geändert!',
             theme: Theme.primary
           });
-          this.router.navigateByUrl('/profile');
+          this.router.navigateByUrl('/profile').then();
         },
         error: (err) => this.handleError(err)
       });
