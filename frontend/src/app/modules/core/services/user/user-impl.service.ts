@@ -53,10 +53,10 @@ export class UserImplService extends UserService {
   }
 
   forgotPassword(email: string): Observable<void> {
-    return this.http.post<void>(this.baseUri + '/reset-password', email);
+    return this.http.post<void>(this.baseUri + '/forgot-password', email);
   }
 
   changePassword(password: ChangePassword): Observable<void> {
-    return this.http.put<void>(this.baseUri + '/change-password', password);
+    return this.http.put<void>(this.baseUri + '/reset-password', password);
   }
 }

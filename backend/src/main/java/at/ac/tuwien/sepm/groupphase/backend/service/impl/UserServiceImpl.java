@@ -204,7 +204,7 @@ public class UserServiceImpl implements UserService {
         } else {
             log.trace("changePassword(passwordChangeDto = {}, id = {})", passwordChangeDto, id);
         }
-        
+
         try {
             if (id != null) {
                 userValidation.validateChangePasswordInput(passwordChangeDto, id);
