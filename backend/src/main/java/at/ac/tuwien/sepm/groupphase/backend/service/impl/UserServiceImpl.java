@@ -145,6 +145,7 @@ public class UserServiceImpl implements UserService {
         if (updateUserDto.getEmail() != null) {
             update.setEmail(updateUserDto.getEmail());
             emailChanged = true;
+            update.setVerified(false);
         }
 
         User patchedUser = userRepository.saveAndFlush(update);
@@ -203,9 +204,13 @@ public class UserServiceImpl implements UserService {
         } else {
             log.trace("changePassword(passwordChangeDto = {}, id = {})", passwordChangeDto, id);
         }
-
+        
         try {
-            userValidation.validateChangePasswordInput(passwordChangeDto, id);
+            if (id != null) {
+                userValidation.validateChangePasswordInput(passwordChangeDto, id);
+            } else {
+                userValidation.validateChangePasswordInput(passwordChangeDto, secureTokenService.findByToken(passwordChangeDto.getToken()).getId());
+            }
         } catch (ValidationException e) {
             throw new ValidationException(e.getMessage(), e);
         } catch (ConflictException e) {

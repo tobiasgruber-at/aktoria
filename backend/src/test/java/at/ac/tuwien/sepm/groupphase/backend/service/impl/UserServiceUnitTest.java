@@ -41,7 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * @author Simon Josef Kreuzpointner
  */
 
-@ActiveProfiles({ "test", "datagen" })
+@ActiveProfiles({"test", "datagen"})
 @SpringBootTest
 class UserServiceUnitTest {
 
@@ -68,7 +68,6 @@ class UserServiceUnitTest {
     @SpringBootTest
     @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { "USER", "VERIFIED", "ADMIN" })
     class ForgotPasswordTest {
-
         @Test
         @DisplayName("sends email")
         void forgotPasswordSendsEmail() {
@@ -82,13 +81,7 @@ class UserServiceUnitTest {
         @Test
         @DisplayName("NotFoundException when email does not exists")
         void forgotPasswordEmailDoesNotExist() {
-            /*
-            try {
-                userService.forgotPassword("notfound@test.com");
-                fail();
-            } catch (NotFoundException ignored) {
-            }
-             */
+            assertThrows(NotFoundException.class, () -> userService.forgotPassword("notfound@test.com"));
         }
     }
 
@@ -121,6 +114,7 @@ class UserServiceUnitTest {
         @Transactional
         @MethodSource("parameterizedChangePasswordWorksProvider")
         void changePasswordWorks(ChangePasswordRecord input) {
+
         }
 
         @ParameterizedTest

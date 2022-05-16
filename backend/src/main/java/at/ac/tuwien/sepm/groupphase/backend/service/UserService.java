@@ -49,9 +49,7 @@ public interface UserService extends UserDetailsService {
      * @param updateUserDto filled with the user input
      * @param id            the id of the user to be changed
      * @return the updated user
-     * @throws ServiceException    is thrown when the user data could not be updated
-     * @throws ConflictException   is thrown when there is a conflict with the data base
-     * @throws ValidationException is thrown when user data is not valid
+     * @throws ServiceException is thrown when the user data could not be updated
      */
     DetailedUserDto patch(UpdateUserDto updateUserDto, Long id);
 
@@ -59,8 +57,7 @@ public interface UserService extends UserDetailsService {
      * Deletes a user from the system.
      *
      * @param id the id of the user to be deleted
-     * @throws ServiceException  is thrown when the user could not be deleted
-     * @throws NotFoundException is thrown if the user does not exist
+     * @throws ServiceException is thrown when the user could not be deleted
      */
     void delete(Long id);
 
@@ -78,10 +75,7 @@ public interface UserService extends UserDetailsService {
      * @param passwordChangeDto filled with the old and new password or with a token and a new password
      * @param id                the id of the user
      * @return the user with the new password
-     * @throws ServiceException    is thrown if the password could not be changed
-     * @throws ValidationException is thrown if the new password is not valid
-     * @throws NotFoundException   is thrown if the user does not exist
-     * @throws ConflictException   is thrown if the old password does not match the password stored in the data base
+     * @throws ServiceException is thrown if the password could not be changed
      */
     DetailedUserDto changePassword(PasswordChangeDto passwordChangeDto, Long id);
 
@@ -101,7 +95,6 @@ public interface UserService extends UserDetailsService {
      *
      * @param email the email address
      * @return an application user
-     * @throws NotFoundException is thrown if no user with this email exists.
      */
     SimpleUserDto findByEmail(String email);
 
@@ -109,14 +102,11 @@ public interface UserService extends UserDetailsService {
      * Send an email with an email verification link to the user.
      *
      * @param user the user
-     * @throws ServiceException is thrown when something went wrong with sending the email
      */
     void sendEmailVerificationLink(User user);
 
     /**
      * Resend an email with an email verification link to the user.
-     *
-     * @throws ServiceException is thrown when something went wrong with sending the email
      */
     void resendEmailVerificationLink();
 
@@ -124,7 +114,6 @@ public interface UserService extends UserDetailsService {
      * Verifies the account with the matching token.
      *
      * @param token the token string
-     * @throws InvalidTokenException is thrown if the token already expired
      */
     void verifyEmail(String token);
 }
