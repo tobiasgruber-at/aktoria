@@ -40,8 +40,8 @@ export class UserImplService extends UserService {
     return this.http.patch<DetailedUser>(this.baseUri + '/' + user.id, user);
   }
 
-  delete(): Observable<any> {
-    return null;
+  delete(id: number): Observable<void> {
+    return this.http.delete<void>(this.baseUri + '/' + id);
   }
 
   resendVerificationEmail(): Observable<void> {

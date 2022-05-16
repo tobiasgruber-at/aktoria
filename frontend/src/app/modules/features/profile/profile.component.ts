@@ -3,6 +3,7 @@ import { UserService } from '../../core/services/user/user-service';
 import { SimpleUser } from '../../shared/dtos/user-dtos';
 import { AuthService } from '../../core/services/auth/auth-service';
 import { appearAnimations } from '../../shared/animations/appear-animations';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-profile',
@@ -15,7 +16,8 @@ export class ProfileComponent implements OnInit {
 
   constructor(
     private userService: UserService,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -30,5 +32,9 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  onDelete() {}
+  onDelete() {
+    this.userService
+      .delete(this.user.id)
+      .subscribe(() => this.router.navigateByUrl('/login'));
+  }
 }

@@ -16,7 +16,7 @@ export abstract class UserService {
 
   abstract register(req: UserRegistration): Observable<SimpleUser>;
 
-  abstract delete(): Observable<any>;
+  abstract delete(id: number): Observable<void>;
 
   abstract update(user: UpdateUser): Observable<DetailedUser>;
 
