@@ -1,0 +1,11 @@
+<app-page-layout [loading]="loading" theme="dark">
+  <app-alert *ngIf="error; else noError" [closeable]="false" type="danger">
+    <strong>Fehler!</strong> Skript wurde nicht gefunden.
+  </app-alert>
+  <ng-template #noError>
+    <app-script-page
+      *ngFor="let page of script?.pages"
+      [page]="page"
+    ></app-script-page>
+  </ng-template>
+</app-page-layout>

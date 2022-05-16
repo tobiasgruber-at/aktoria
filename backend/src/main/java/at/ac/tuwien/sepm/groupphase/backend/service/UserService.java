@@ -7,10 +7,8 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UpdateUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserRegistrationDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.User;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
-import at.ac.tuwien.sepm.groupphase.backend.exception.InvalidTokenException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
-import at.ac.tuwien.sepm.groupphase.backend.exception.UnauthorizedException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -33,7 +31,7 @@ public interface UserService extends UserDetailsService {
      * @throws ValidationException is thrown when user data is not valid
      * @throws ConflictException   is thrown when there is a conflict with the data storage
      */
-    SimpleUserDto create(UserRegistrationDto userRegistrationDto) throws ServiceException, ValidationException, ConflictException;
+    SimpleUserDto create(UserRegistrationDto userRegistrationDto);
 
     /**
      * Returns a user.
@@ -42,7 +40,7 @@ public interface UserService extends UserDetailsService {
      * @return the specified user
      * @throws NotFoundException when the user could not be found
      */
-    SimpleUserDto findById(Long id) throws NotFoundException, UnauthorizedException;
+    SimpleUserDto findById(Long id);
 
     /**
      * Changes the email/username of a user.
@@ -50,20 +48,17 @@ public interface UserService extends UserDetailsService {
      * @param updateUserDto filled with the user input
      * @param id            the id of the user to be changed
      * @return the updated user
-     * @throws ServiceException    is thrown when the user data could not be updated
-     * @throws ConflictException   is thrown when there is a conflict with the data base
-     * @throws ValidationException is thrown when user data is not valid
+     * @throws ServiceException is thrown when the user data could not be updated
      */
-    DetailedUserDto patch(UpdateUserDto updateUserDto, Boolean passwordChange, Long id) throws ServiceException, ConflictException, ValidationException, NotFoundException, UnauthorizedException;
+    DetailedUserDto patch(UpdateUserDto updateUserDto, Boolean passwordChange, Long id);
 
     /**
      * Deletes a user from the system.
      *
      * @param id the id of the user to be deleted
-     * @throws ServiceException  is thrown when the user could not be deleted
-     * @throws NotFoundException is thrown if the user does not exist
+     * @throws ServiceException is thrown when the user could not be deleted
      */
-    void delete(Long id) throws ServiceException, NotFoundException;
+    void delete(Long id);
 
     /**
      * Sends an email to the user to set a new password.
@@ -71,7 +66,7 @@ public interface UserService extends UserDetailsService {
      * @param email the email of the user
      * @throws NotFoundException is thrown if the user does not exist
      */
-    void forgotPassword(String email) throws NotFoundException, ServiceException;
+    void forgotPassword(String email);
 
     /**
      * Changes the password of a user.
@@ -79,12 +74,9 @@ public interface UserService extends UserDetailsService {
      * @param passwordChangeDto filled with the old and new password or with a token and a new password
      * @param id                the id of the user
      * @return the user with the new password
-     * @throws ServiceException    is thrown if the password could not be changed
-     * @throws ValidationException is thrown if the new password is not valid
-     * @throws NotFoundException   is thrown if the user does not exist
-     * @throws ConflictException   is thrown if the old password does not match the password stored in the data base
+     * @throws ServiceException is thrown if the password could not be changed
      */
-    DetailedUserDto changePassword(PasswordChangeDto passwordChangeDto, Long id) throws ServiceException, ValidationException, NotFoundException, InvalidTokenException, ConflictException;
+    DetailedUserDto changePassword(PasswordChangeDto passwordChangeDto, Long id);
 
     /**
      * Find a user in the context of Spring Security based on the email address.
@@ -95,37 +87,32 @@ public interface UserService extends UserDetailsService {
      * @see <a href="https://www.baeldung.com/spring-security-authentication-with-a-database">https://www.baeldung.com/spring-security-authentication-with-a-database</a>
      */
     @Override
-    UserDetails loadUserByUsername(String email) throws UsernameNotFoundException;
+    UserDetails loadUserByUsername(String email);
 
     /**
      * Find a user based on the email address.
      *
      * @param email the email address
      * @return an application user
-     * @throws NotFoundException is thrown if no user with this email exists.
      */
-    SimpleUserDto findByEmail(String email) throws NotFoundException;
+    SimpleUserDto findByEmail(String email);
 
     /**
      * Send an email with an email verification link to the user.
      *
      * @param user the user
-     * @throws ServiceException is thrown when something went wrong with sending the email
      */
-    void sendEmailVerificationLink(User user) throws ServiceException;
+    void sendEmailVerificationLink(User user);
 
     /**
      * Resend an email with an email verification link to the user.
-     *
-     * @throws ServiceException is thrown when something went wrong with sending the email
      */
-    void resendEmailVerificationLink() throws ServiceException, NotFoundException;
+    void resendEmailVerificationLink();
 
     /**
      * Verifies the account with the matching token.
      *
      * @param token the token string
-     * @throws InvalidTokenException is thrown if the token already expired
      */
-    void verifyEmail(String token) throws InvalidTokenException, NotFoundException;
+    void verifyEmail(String token);
 }

@@ -1,22 +1,19 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.parsing.script;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.lang.invoke.MethodHandles;
 
 /**
  * An unparsed PDF script.
  *
  * @author Simon Josef Kreuzpointner
  */
+@Slf4j
 public class UnparsedScript {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private final MultipartFile pdfFile;
     private final Integer startPage;
 
@@ -37,7 +34,7 @@ public class UnparsedScript {
      * @throws IOException if the pdf file is corrupted or encrypted
      */
     public String getFileContentsAsPlainText() throws IOException {
-        LOGGER.trace("getFileContentsAsPlainText()");
+        log.trace("getFileContentsAsPlainText()");
 
         PDDocument document = PDDocument.load(pdfFile.getBytes());
 

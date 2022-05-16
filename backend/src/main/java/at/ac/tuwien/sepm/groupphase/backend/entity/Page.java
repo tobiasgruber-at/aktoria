@@ -45,6 +45,6 @@ public class Page {
     private Long index;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "page")
-    @OrderBy("index desc")
+    @OrderBy("index asc")
     private List<Line> lines;
 }

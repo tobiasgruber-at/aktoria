@@ -32,8 +32,6 @@ import at.ac.tuwien.sepm.groupphase.backend.service.parsing.scriptparser.ScriptP
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.scriptparser.impl.ScriptParserImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -83,7 +81,7 @@ public class ScriptServiceImpl implements ScriptService {
     }
 
     @Override
-    public SimpleScriptDto parse(MultipartFile file, Integer startPage) throws ServiceException, IllegalFileFormatException {
+    public SimpleScriptDto parse(MultipartFile file, Integer startPage) {
         log.trace("newScript(pdfScript = {})", file);
 
         boolean isPdfFile;
@@ -109,7 +107,7 @@ public class ScriptServiceImpl implements ScriptService {
         ScriptParser parser = new ScriptParserImpl(raw);
         ParsedScript parsedScript = parser.parse();
 
-        return scriptMapper.parsedScriptToSimpleScriptDto(parsedScript, file.getName());
+        return scriptMapper.parsedScriptToSimpleScriptDto(parsedScript, file.getOriginalFilename());
     }
 
     /**
@@ -169,7 +167,7 @@ public class ScriptServiceImpl implements ScriptService {
 
     @Override
     @Transactional
-    public ScriptDto save(SimpleScriptDto simpleScriptDto) throws ServiceException {
+    public ScriptDto save(SimpleScriptDto simpleScriptDto) {
         log.trace("save(scriptDto = {})", simpleScriptDto);
 
         User user = authorizationService.getLoggedInUser();
@@ -225,12 +223,11 @@ public class ScriptServiceImpl implements ScriptService {
         }
 
         SimpleUserDto owner = userMapper.userToSimpleUserDto(script.getOwner());
-        ScriptDto scriptDto = scriptMapper.simpleScriptDtoToScriptDto(simpleScriptDto, script.getId(), owner);
-        return scriptDto;
+        return scriptMapper.simpleScriptDtoToScriptDto(simpleScriptDto, script.getId(), owner);
     }
 
     @Override
-    public Stream<ScriptPreviewDto> findAllPreviews() throws ServiceException {
+    public Stream<ScriptPreviewDto> findAllPreviews() {
         log.trace("getAllPreviews()");
 
         User user = authorizationService.getLoggedInUser();
@@ -243,14 +240,26 @@ public class ScriptServiceImpl implements ScriptService {
 
     @Override
     @Transactional
-    public ScriptDto findById(Long id) throws ServiceException, NotFoundException {
+    public ScriptDto findById(Long id) {
         log.trace("getById(id = {})", id);
 
+        User user = authorizationService.getLoggedInUser();
+        if (user == null) {
+            throw new UnauthorizedException();
+        }
         Optional<Script> script = scriptRepository.findById(id);
-        if (!script.isPresent()) {
+        if (script.isEmpty()) {
             throw new NotFoundException();
         }
-        ScriptDto scriptDto = scriptMapper.scriptToScriptDto(script.get());
-        return scriptDto;
+        if (!script.get().getOwner().getId().equals(user.getId())) {
+            throw new UnauthorizedException("User not permitted to open this file");
+        }
+        return scriptMapper.scriptToScriptDto(script.get());
+    }
+
+    @Override
+    public void delete(Long id) {
+        log.trace("delete(id = {})", id);
+        scriptRepository.deleteById(id);
     }
 }

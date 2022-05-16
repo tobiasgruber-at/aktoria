@@ -27,7 +27,8 @@ export class ScriptUploadComponent extends FormBase implements OnInit {
 
   ngOnInit(): void {
     this.form = this.formBuilder.group({
-      file: [null, [Validators.required, Validators.maxLength(1)]]
+      file: [null, [Validators.required, Validators.maxLength(1)]],
+      startPage: [0, [Validators.required, Validators.maxLength(10)]]
     });
   }
 
@@ -41,17 +42,17 @@ export class ScriptUploadComponent extends FormBase implements OnInit {
   }
 
   protected sendSubmit() {
-    const { file } = this.form.value;
-    this.scriptService.post(file).subscribe({
+    const { file, startPage } = this.form.value;
+    this.scriptService.parse(file, startPage).subscribe({
       next: (res) => {
         let script = res;
         this.toastService.show({
-          message: 'Datei wurde erfolgreich hochgeladen!',
+          message: 'Skript wurde erfolgreich hochgeladen!',
           theme: Theme.primary
         });
         this.router.navigateByUrl('/scripts');
         // TODO: refactor
-        this.scriptService.postCorrected(res).subscribe({
+        this.scriptService.save(res).subscribe({
           next: (detailedScript) => {
             script = detailedScript;
             console.log(script);
