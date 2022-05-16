@@ -33,6 +33,8 @@ export class ProfileComponent implements OnInit {
   }
 
   onDelete() {
+    // TODO: log the user out
+
     this.userService
       .delete(this.user.id)
       .subscribe(() => this.router.navigateByUrl('/login'));
