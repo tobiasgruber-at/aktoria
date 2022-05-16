@@ -57,7 +57,7 @@ public class ResetPasswordIntegrationTest {
         //request password reset
         mockMvc
             .perform(MockMvcRequestBuilders
-                .post("/api/v1/users/reset-password")
+                .post("/api/v1/users/forgot-password")
                 .accept(MediaType.APPLICATION_JSON)
                 .content("test1@test.com")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -77,7 +77,7 @@ public class ResetPasswordIntegrationTest {
         //change password
         mockMvc
             .perform(MockMvcRequestBuilders
-                .put("/api/v1/users/change-password")
+                .put("/api/v1/users/reset-password")
                 .accept(MediaType.APPLICATION_JSON)
                 .content(
                     "{" + "\"token\": \"" + token + "\","

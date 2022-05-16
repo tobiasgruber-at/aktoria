@@ -207,7 +207,11 @@ public class UserServiceImpl implements UserService {
 
 
         try {
-            userValidation.validateChangePasswordInput(passwordChangeDto, id);
+            if (id != null) {
+                userValidation.validateChangePasswordInput(passwordChangeDto, id);
+            } else {
+                userValidation.validateChangePasswordInput(passwordChangeDto, secureTokenService.findByToken(passwordChangeDto.getToken()).getId());
+            }
         } catch (ValidationException e) {
             throw new ValidationException(e.getMessage(), e);
         } catch (ConflictException e) {
