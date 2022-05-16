@@ -68,14 +68,14 @@ public class UserEndpoint {
         userService.delete(id);
     }
 
-    @PostMapping(path = "/reset-password")
+    @PostMapping(path = "/forgot-password")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void forgottenPassword(@RequestBody String email) {
         log.info("POST {}/reset-password", path);
         userService.forgotPassword(email);
     }
 
-    @PutMapping(path = "/change-password")
+    @PutMapping(path = "/reset-password")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void changePassword(@RequestBody PasswordChangeDto passwordChange) {
         log.info("POST {}/reset-password", path);

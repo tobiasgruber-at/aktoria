@@ -90,7 +90,7 @@ public interface UserService extends UserDetailsService {
     UserDetails loadUserByUsername(String email);
 
     /**
-     * Find an application user based on the email address.
+     * Find a user based on the email address.
      *
      * @param email the email address
      * @return an application user

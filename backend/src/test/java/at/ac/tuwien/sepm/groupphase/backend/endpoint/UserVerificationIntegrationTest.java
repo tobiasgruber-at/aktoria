@@ -31,11 +31,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ActiveProfiles({ "test", "datagen" })
+@ActiveProfiles({"test", "datagen"})
 @SpringBootTest
 @EnableWebMvc
 @WebAppConfiguration
-@WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {"USER","VERIFIED","ADMIN"})
+@WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {"USER", "VERIFIED", "ADMIN"})
 public class UserVerificationIntegrationTest {
     @RegisterExtension
     static GreenMailExtension greenMail = new GreenMailExtension(ServerSetupTest.SMTP)
@@ -92,7 +92,7 @@ public class UserVerificationIntegrationTest {
         final MimeMessage message = receivedMessages[0];
         assertEquals("varok.saurfang@email.com", message.getAllRecipients()[0].toString());
 
-        String token = GreenMailUtil.getBody(message).split("verifyEmail/")[1].split("\'>Em=")[0];
+        String token = GreenMailUtil.getBody(message).split("verifyEmail/")[1].split("'>Em=")[0];
 
         //send token for verification
         mockMvc

@@ -1,9 +1,5 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordChangeDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserRegistrationDto;
-import at.ac.tuwien.sepm.groupphase.backend.entity.SecureToken;
 import at.ac.tuwien.sepm.groupphase.backend.testhelpers.UserTestHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.icegreen.greenmail.configuration.GreenMailConfiguration;
@@ -29,16 +25,14 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.mail.internet.MimeMessage;
 
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ActiveProfiles({ "test", "datagen" })
+@ActiveProfiles({"test", "datagen"})
 @SpringBootTest
 @EnableWebMvc
 @WebAppConfiguration
-@WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {"USER","VERIFIED","ADMIN"})
+@WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {"USER", "VERIFIED", "ADMIN"})
 public class ResetPasswordIntegrationTest {
     @RegisterExtension
     static GreenMailExtension greenMail = new GreenMailExtension(ServerSetupTest.SMTP)
@@ -63,7 +57,7 @@ public class ResetPasswordIntegrationTest {
         //request password reset
         mockMvc
             .perform(MockMvcRequestBuilders
-                .post("/api/v1/users/reset-password")
+                .post("/api/v1/users/forgot-password")
                 .accept(MediaType.APPLICATION_JSON)
                 .content("test1@test.com")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -76,20 +70,19 @@ public class ResetPasswordIntegrationTest {
         final MimeMessage message = receivedMessages[0];
         assertEquals("test1@test.com", message.getAllRecipients()[0].toString());
 
-        String token = GreenMailUtil.getBody(message).split("restore/")[1].substring(0,23);
-        token = token.substring(0,19) + token.charAt(22);
+        String token = GreenMailUtil.getBody(message).split("restore/")[1].substring(0, 23);
+        token = token.substring(0, 19) + token.charAt(22);
         //assertEquals(null, token);
 
         //change password
         mockMvc
             .perform(MockMvcRequestBuilders
-                .put("/api/v1/users/change-password")
+                .put("/api/v1/users/reset-password")
                 .accept(MediaType.APPLICATION_JSON)
                 .content(
-                    "{" +
-                        "\"token\": \"" + token + "\"," +
-                        "\"newPassword\": \"pass1234\"" +
-                    "}")
+                    "{" + "\"token\": \"" + token + "\","
+                        + "\"newPassword\": \"pass1234\""
+                        + "}")
                 .contentType(MediaType.APPLICATION_JSON)
             ).andExpect(status().isAccepted());
     }

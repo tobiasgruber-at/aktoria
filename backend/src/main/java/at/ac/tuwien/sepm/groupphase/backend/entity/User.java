@@ -62,7 +62,7 @@ public class User {
     @OneToMany(mappedBy = "recordedBy", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Line> linesRecorded;
 
-    @OneToMany(mappedBy = "token", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<SecureToken> tokens;
 
     @ManyToMany
