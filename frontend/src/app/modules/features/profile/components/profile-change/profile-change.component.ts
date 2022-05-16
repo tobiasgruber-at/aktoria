@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { UserService } from '../../core/services/user/user-service';
+import { UserService } from '../../../../core/services/user/user-service';
 import { Router } from '@angular/router';
-import { ToastService } from '../../core/services/toast/toast.service';
-import { AuthService } from '../../core/services/auth/auth-service';
-import { FormBase } from '../../shared/classes/form-base';
-import { matchingPasswordsValidator } from '../../shared/validators/matching-passwords-validator';
-import { Theme } from '../../shared/enums/theme.enum';
-import { SimpleUser, UpdateUser } from '../../shared/dtos/user-dtos';
+import { ToastService } from '../../../../core/services/toast/toast.service';
+import { AuthService } from '../../../../core/services/auth/auth-service';
+import { FormBase } from '../../../../shared/classes/form-base';
+import { matchingPasswordsValidator } from '../../../../shared/validators/matching-passwords-validator';
+import { Theme } from '../../../../shared/enums/theme.enum';
+import { SimpleUser, UpdateUser } from '../../../../shared/dtos/user-dtos';
 
 /** @author Simon Josef Kreuzpointner */
 @Component({
