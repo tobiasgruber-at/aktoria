@@ -22,6 +22,8 @@
         <span class="col text-truncate">{{ user.email }}</span>
       </div>
     </div>
-    <button (click)="onDelete()" class="btn btn-danger">Profil Löschen</button>
+    <form (ngSubmit)="submit()" [formGroup]="form" class="form">
+      <button class="btn btn-danger" type="submit">Profil Löschen</button>
+    </form>
   </div>
 </app-page-layout>
