@@ -1,0 +1,23 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-title">{{ title }}</h4>
+  <div (click)="onDecline()" class="btn btn-close"></div>
+</div>
+<div class="modal-body">
+  <ng-content></ng-content>
+</div>
+<div class="modal-footer">
+  <button
+    (click)="onDecline()"
+    [disabled]="loading"
+    class="btn btn-outline-secondary"
+    type="button"
+  >
+    Abbrechen
+  </button>
+  <app-button
+    (click)="onConfirm()"
+    [label]="confirmBtnLabel || 'Ok'"
+    [loading]="loading"
+    [theme]="theme.danger"
+  ></app-button>
+</div>
