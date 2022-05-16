@@ -146,6 +146,7 @@ public class UserServiceImpl implements UserService {
         if (updateUserDto.getEmail() != null) {
             update.setEmail(updateUserDto.getEmail());
             emailChanged = true;
+            update.setVerified(false);
         }
 
         User patchedUser = userRepository.saveAndFlush(update);
