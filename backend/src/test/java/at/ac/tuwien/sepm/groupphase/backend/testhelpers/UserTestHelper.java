@@ -9,6 +9,6 @@ public class UserTestHelper {
     public static final String dummyUserPassword = "password1";
 
     public SimpleUserDto dummyUserDto() {
-        return new SimpleUserDto(2L, "firstName1", "lastName1", dummyUserEmail, false);
+        return new SimpleUserDto(1L, "testFirst1", "testLast1", dummyUserEmail, false);
     }
 }

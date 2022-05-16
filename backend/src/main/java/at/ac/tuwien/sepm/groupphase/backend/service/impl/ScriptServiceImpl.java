@@ -252,14 +252,24 @@ public class ScriptServiceImpl implements ScriptService {
             throw new NotFoundException();
         }
         if (!script.get().getOwner().getId().equals(user.getId())) {
-            throw new UnauthorizedException("User not permitted to open this file");
+            throw new UnauthorizedException("User is not permitted to open this file");
         }
         return scriptMapper.scriptToScriptDto(script.get());
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
         log.trace("delete(id = {})", id);
+
+        User user = authorizationService.getLoggedInUser();
+        if (user == null) {
+            throw new UnauthorizedException();
+        }
+        Optional<Script> script = scriptRepository.findById(id);
+        if (script.isPresent() && !script.get().getOwner().getId().equals(user.getId())) {
+            throw new UnauthorizedException("User is not permitted to delete this file");
+        }
         scriptRepository.deleteById(id);
     }
 }
