@@ -4,9 +4,7 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordChangeDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserRegistrationDto;
-import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
-import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.UnauthorizedException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.service.UserService;
@@ -44,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.fail;
  * @author Simon Josef Kreuzpointner
  */
 
-@ActiveProfiles({ "test", "datagen" })
+@ActiveProfiles({"test", "datagen"})
 @SpringBootTest
 class UserServiceUnitTest {
 
@@ -56,12 +54,21 @@ class UserServiceUnitTest {
     @Autowired
     UserService userService;
 
+    @Test
+    @DisplayName("loadUserByUsername()")
+    void loadUserByUsername() {
+    }
+
+    @Test
+    @DisplayName("findUserByEmail()")
+    void findUserByEmail() {
+    }
+
     @Nested
     @DisplayName("forgotPassword()")
     @SpringBootTest
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {"USER","VERIFIED","ADMIN"})
-    class ForgotPasswordTest{
-
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {"USER", "VERIFIED", "ADMIN"})
+    class ForgotPasswordTest {
         @Test
         @DisplayName("forgotPassword sends email")
         void forgotPasswordSendsEmail() {
@@ -77,18 +84,10 @@ class UserServiceUnitTest {
             try {
                 userService.forgotPassword("notfound@test.com");
                 fail();
-            } catch (NotFoundException ignored){}
+            } catch (NotFoundException ignored) {
+                throw new NotFoundException("Email does not exist");
+            }
         }
-    }
-
-    @Test
-    @DisplayName("loadUserByUsername()")
-    void loadUserByUsername() {
-    }
-
-    @Test
-    @DisplayName("findUserByEmail()")
-    void findUserByEmail() {
     }
 
     @Disabled
@@ -147,7 +146,7 @@ class UserServiceUnitTest {
     @Disabled
     @Nested
     @DisplayName("getUser()")
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {"USER","VERIFIED","ADMIN"})
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {"USER", "VERIFIED", "ADMIN"})
     class GetUserTest {
         private static Stream<String> parameterizedGetUserWorksProvider() {
             final List<String> temp = new LinkedList<>();
@@ -180,7 +179,7 @@ class UserServiceUnitTest {
 
     @Nested
     @DisplayName("deleteUser()")
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {"USER","VERIFIED","ADMIN"})
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {"USER", "VERIFIED", "ADMIN"})
     class DeleteUserTest {
         private static Stream<Long> parameterizedDeleteUserProvider() {
             final List<Long> temp = new LinkedList<>();
@@ -224,7 +223,7 @@ class UserServiceUnitTest {
 
     @Nested
     @DisplayName("changeUser()")
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {"USER","VERIFIED","ADMIN"})
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {"USER", "VERIFIED", "ADMIN"})
     class ChangeUserTest {
         private static Stream<SimpleUserDto> parameterizedChangeUserProvider() {
             final List<SimpleUserDto> temp = new LinkedList<>();

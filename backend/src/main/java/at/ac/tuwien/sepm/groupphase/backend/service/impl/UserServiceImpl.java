@@ -173,7 +173,7 @@ public class UserServiceImpl implements UserService {
         log.trace("forgotPassword(email = {})", email);
 
         Optional<User> userOptional = userRepository.findByEmail(email);
-        if (!userOptional.isPresent()) {
+        if (userOptional.isEmpty()) {
             throw new NotFoundException("Es existiert kein User mit dieser Mail-Adresse.");
         }
         User user = userOptional.get();
