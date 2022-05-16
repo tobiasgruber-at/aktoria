@@ -1,27 +1,13 @@
 <div class="wrapper d-flex flex-column min-vh-100 bg-{{ theme }}">
   <header *ngIf="showHeader" class="fixed-top">
     <nav
-      class="px-5 navbar navbar-expand-lg navbar-dark bg-{{
+      class="px-5 navbar navbar-expand navbar-dark bg-{{
         theme === 'light' ? 'dark' : 'black'
       }} shadow"
     >
-      <a class="navbar-brand" routerLink="">Aktoria</a>
-      <button
-        aria-controls="navbarSupportedContent"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-        class="navbar-toggler ml-5"
-        data-target="#navbarSupportedContent"
-        data-toggle="collapse"
-        type="button"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div
-        class="collapse navbar-collapse d-flex justify-content-between"
-        id="navbarSupportedContent"
-      >
-        <ul class="navbar-nav">
+      <div class="container-fluid">
+        <a class="navbar-brand" routerLink="">Aktoria</a>
+        <ul class="navbar-nav me-auto mb-lg-0">
           <li class="nav-item">
             <a
               *ngIf="authService.isLoggedIn()"
@@ -29,58 +15,65 @@
               class="nav-link"
               routerLink="/scripts"
               routerLinkActive="active"
-            >Deine Skripte</a
-            >
+              >Deine Skripte
+            </a>
           </li>
         </ul>
-        <ul class="navbar-nav">
+        <div>
           <ng-container *ngIf="!authService.isLoggedIn(); else loggedIn">
-            <a class="nav-link" routerLink="/login" routerLinkActive="active"
-            >Login</a
-            >
-            <a
-              class="nav-link"
-              role="button"
-              routerLink="/register"
-              routerLinkActive="active"
-            >Registrieren</a
-            >
+            <div class="navbar-nav me-auto mb-lg-0">
+              <a class="nav-link" routerLink="/login" routerLinkActive="active"
+                >Login</a
+              >
+              <a
+                class="nav-link"
+                role="button"
+                routerLink="/register"
+                routerLinkActive="active"
+                >Registrieren</a
+              >
+            </div>
           </ng-container>
           <ng-template #loggedIn>
-            <div class="d-flex flex-column">
-              <div class="d-inline-block" display="dynamic" ngbDropdown>
-                <button
-                  class="btn btn-outline-primary"
-                  id="dropdownBasic1"
-                  ngbDropdownToggle
+            <div class="d-inline-block" display="dynamic" ngbDropdown>
+              <button
+                class="btn btn-primary bg-transparent border-0 shadow-none d-inline-flex align-items-center"
+                id="dropdown"
+                ngbDropdownToggle
+                type="button"
+              >
+                <span class="">
+                  <bi class="" name="person-circle"></bi>
+                </span>
+              </button>
+              <div
+                @appear
+                aria-labelledby="dropdown"
+                class="dropdown-menu dropdown-menu-dark bg-dark shadow-lg"
+                ngbDropdownMenu
+              >
+                <a
+                  class="dropdown-item nav-link"
+                  ngbDropdownItem
+                  routerLink="/profile"
                   type="button"
                 >
-                  <bi class="" name="person-circle"></bi>
-                </button>
-                <div
-                  aria-labelledby="dropdownBasic1"
-                  class="bg-dark"
-                  ngbDropdownMenu
+                  Profil
+                </a>
+                <hr class="dropdown-divider" />
+                <a
+                  (click)="logout()"
+                  class="dropdown-item nav-link"
+                  ngbDropdownItem
+                  routerLink="/"
+                  type="button"
                 >
-                  <a
-                    class="nav-link account"
-                    ngbDropdownItem
-                    routerLink="/profile"
-                  >
-                    Profil
-                  </a>
-                  <a
-                    (click)="logout()"
-                    class="nav-link"
-                    ngbDropdownItem
-                    routerLink="/"
-                  >Logout</a
-                  >
-                </div>
+                  Logout
+                </a>
               </div>
             </div>
           </ng-template>
-        </ul>
+        </div>
       </div>
     </nav>
   </header>
