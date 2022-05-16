@@ -8,6 +8,7 @@ import jwt_decode from 'jwt-decode';
 import { Globals } from '../../global/globals';
 import { AuthService } from './auth-service';
 import { DecodedToken } from '../../../shared/interfaces/decoded-token';
+import {UserService} from '../user/user-service';
 
 @Injectable()
 export class AuthImplService extends AuthService {
@@ -16,7 +17,7 @@ export class AuthImplService extends AuthService {
   private readonly tokenLSKey = 'authToken';
   private loginChangesSubject = new BehaviorSubject<boolean>(this.isLoggedIn());
 
-  constructor(private httpClient: HttpClient, private globals: Globals) {
+  constructor(private httpClient: HttpClient, private globals: Globals, private userService: UserService) {
     super();
   }
 
@@ -46,6 +47,11 @@ export class AuthImplService extends AuthService {
     );
   }
 
+  isVerified(): boolean {
+    const role = this.getRole();
+    return ((role === 'ADMIN') || (role === 'VERIFIED')) || (this.userService.getOwnUser()?.verified);
+  }
+
   getToken() {
     return localStorage.getItem('authToken');
   }
@@ -61,6 +67,8 @@ export class AuthImplService extends AuthService {
       const authInfo = decoded.rol;
       if (authInfo.includes('ROLE_ADMIN')) {
         return 'ADMIN';
+      } else if (authInfo.includes('ROLE_VERIFIED')) {
+        return 'VERIFIED';
       } else if (authInfo.includes('ROLE_USER')) {
         return 'USER';
       }
