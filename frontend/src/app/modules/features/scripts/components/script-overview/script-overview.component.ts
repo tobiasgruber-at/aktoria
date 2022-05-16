@@ -3,6 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ScriptService } from '../../../../core/services/script/script.service';
 import { DetailedScript } from '../../../../shared/dtos/script-dtos';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ToastService } from '../../../../core/services/toast/toast.service';
+import { Theme } from '../../../../shared/enums/theme.enum';
 
 @Component({
   selector: 'app-script-overview',
@@ -20,6 +22,7 @@ export class ScriptOverviewComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private scriptService: ScriptService,
+    private toastService: ToastService,
     private modalService: NgbModal
   ) {}
 
@@ -56,6 +59,10 @@ export class ScriptOverviewComponent implements OnInit {
       next: () => {
         modal.dismiss();
         this.router.navigateByUrl('/scripts');
+        this.toastService.show({
+          message: 'Skript erfolgreich gelöscht.',
+          theme: Theme.primary
+        });
       },
       error: (err) => {
         this.deleteLoading = false;
