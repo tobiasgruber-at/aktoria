@@ -29,7 +29,7 @@ import javax.mail.internet.MimeMessage;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ActiveProfiles({"test", "datagen"})
+@ActiveProfiles({ "test", "datagen" })
 @SpringBootTest
 @EnableWebMvc
 @WebAppConfiguration
@@ -84,7 +84,7 @@ public class ResetPasswordIntegrationTest {
                 .content("{"
                     + "\"token\": \"" + token + "\","
                     + "\"newPassword\": \"pass1234\""
-                        + "}")
+                    + "}")
                 .contentType(MediaType.APPLICATION_JSON)
             ).andExpect(status().isAccepted());
     }
