@@ -1,7 +1,8 @@
-import {Component, OnInit, TemplateRef} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {ScriptService} from '../../../../core/services/script/script.service';
-import {DetailedScript} from '../../../../shared/dtos/script-dtos';import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Component, OnInit, TemplateRef } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ScriptService } from '../../../../core/services/script/script.service';
+import { DetailedScript } from '../../../../shared/dtos/script-dtos';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastService } from '../../../../core/services/toast/toast.service';
 import { Theme } from '../../../../shared/enums/theme.enum';
 
@@ -23,8 +24,7 @@ export class ScriptOverviewComponent implements OnInit {
     private scriptService: ScriptService,
     private toastService: ToastService,
     private modalService: NgbModal
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
@@ -71,6 +71,5 @@ export class ScriptOverviewComponent implements OnInit {
     });
   }
 
-  private reset(): void {
-  }
+  private reset(): void {}
 }

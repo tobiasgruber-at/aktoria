@@ -2,8 +2,8 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LoggedInGuard } from './modules/core/guards/logged-in-guard.service';
 import { LoggedOutGuard } from './modules/core/guards/logged-out-guard.service';
-import {VerifiedGuard} from './modules/core/guards/verified.guard';
-import {NotVerifiedGuard} from './modules/core/guards/not-verified.guard';
+import { VerifiedGuard } from './modules/core/guards/verified.guard';
+import { NotVerifiedGuard } from './modules/core/guards/not-verified.guard';
 
 const routes: Routes = [
   {
