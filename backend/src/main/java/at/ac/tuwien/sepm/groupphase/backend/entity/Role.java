@@ -13,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -46,6 +47,8 @@ public class Role {
     @Column(name = "color")
     private Color color;
 
-    @ManyToMany(mappedBy = "spokenBy")
+    @ManyToMany
+    @JoinTable(name = "spoken_by", joinColumns = @JoinColumn(name = "role_id"),
+        inverseJoinColumns = @JoinColumn(name = "line_id"))
     private List<Line> lines;
 }

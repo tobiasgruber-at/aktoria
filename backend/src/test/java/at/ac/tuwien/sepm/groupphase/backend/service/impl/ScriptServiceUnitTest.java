@@ -4,6 +4,7 @@ import at.ac.tuwien.sepm.groupphase.backend.datagenerator.ScriptDataGenerator;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Script;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ScriptRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.ScriptService;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -38,6 +39,7 @@ public class ScriptServiceUnitTest {
 
     @Test
     @Transactional
+    @Disabled
     public void deleteScriptIsOk() {
         List<Script> data = scriptRepository.findAll();
         for (Script script : data) {

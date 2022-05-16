@@ -70,6 +70,7 @@ public class ScriptEndpoint {
 
     @DeleteMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Secured("ROLE_VERIFIED")
     public void deleteScript(@PathVariable Long id) {
         log.info("DELETE {}/{}", ScriptEndpoint.path, id);
         scriptService.delete(id);
