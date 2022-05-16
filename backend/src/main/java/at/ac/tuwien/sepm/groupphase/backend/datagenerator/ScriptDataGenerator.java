@@ -116,7 +116,7 @@ public class ScriptDataGenerator {
 
     @Transactional
     public void generateSpokenBy() {
-        if(scriptRepository.findAll().size() > 0){
+        if (scriptRepository.findAll().size() > 0) {
             log.debug("spoken_by already generated");
         } else {
             List<Line> lines = lineRepository.findAll();

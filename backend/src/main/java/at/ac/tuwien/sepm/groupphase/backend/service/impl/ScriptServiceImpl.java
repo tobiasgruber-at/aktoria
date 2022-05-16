@@ -263,11 +263,11 @@ public class ScriptServiceImpl implements ScriptService {
         log.trace("delete(id = {})", id);
 
         User user = authorizationService.getLoggedInUser();
-        if(user == null) {
+        if (user == null) {
             throw new UnauthorizedException();
         }
         Optional<Script> script = scriptRepository.findById(id);
-        if(script.isPresent() && !script.get().getOwner().getId().equals(user.getId())) {
+        if (script.isPresent() && !script.get().getOwner().getId().equals(user.getId())) {
             throw new UnauthorizedException("User is not permitted to delete this file");
         }
         scriptRepository.deleteById(id);
