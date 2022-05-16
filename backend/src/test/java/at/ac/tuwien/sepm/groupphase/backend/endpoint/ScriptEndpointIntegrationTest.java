@@ -90,7 +90,7 @@ class ScriptEndpointIntegrationTest {
                 .andReturn().getResponse().getContentAsByteArray();
             ScriptDto savedScript = objectMapper.readValue(body, ScriptDto.class);
             ScriptDto expected = scriptTestHelper.dummyScriptDto(savedScript.getId(), userTestHelper.dummyUserDto());
-            assertEquals(savedScript, expected);
+            assertEquals(expected, savedScript);
         }
 
         @Test
