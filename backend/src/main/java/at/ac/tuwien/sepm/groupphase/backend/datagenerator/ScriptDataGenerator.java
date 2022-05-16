@@ -13,6 +13,7 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.awt.Color;
 import java.util.HashSet;
@@ -28,6 +29,14 @@ import java.util.Set;
 @Profile("datagen")
 @Component
 public class ScriptDataGenerator {
+
+    /*
+    Script test data is built in accord with the following schema:
+    Script (name = "Script <i>", owner = <i % [number_of_users] + 1>)
+    Page (script = <script_id>, index = <i>)
+    Line (page = <page_id>, index = <i>, content = "Lorem ipsum dolor [...]", active = true)
+    Role (script = <script_id>, name = "Role <i>", color = Color.CYAN)
+     */
 
     private static final int NUMBER_OF_SCRIPTS_TO_GENERATE = 5;
     private static final int NUMBER_OF_PAGES_PER_SCRIPT = 10;
@@ -56,14 +65,15 @@ public class ScriptDataGenerator {
         this.roleRepository = roleRepository;
     }
 
-    void generateScript() {
+    @Transactional
+    public void generateScript() {
         if (scriptRepository.findAll().size() > 0) {
             log.debug("scripts already generated");
         } else {
             log.debug("generating {} script entries", NUMBER_OF_SCRIPTS_TO_GENERATE);
             List<User> users = userRepository.findAll();
             int usersSize = users.size();
-            for (int i = 0; i < NUMBER_OF_SCRIPTS_TO_GENERATE; i++) {
+            for (int i = 1; i <= NUMBER_OF_SCRIPTS_TO_GENERATE; i++) {
                 Script script = Script.builder().name(TEST_SCRIPT_NAME + " " + i)
                     .owner(users.get(i % usersSize)).build();
                 log.debug("saving script {}", script);
@@ -76,7 +86,7 @@ public class ScriptDataGenerator {
 
     private void generatePage(Script script) {
         log.debug("generating {} page entries for script {}", NUMBER_OF_PAGES_PER_SCRIPT, script);
-        for (int i = 0; i < NUMBER_OF_PAGES_PER_SCRIPT; i++) {
+        for (int i = 1; i <= NUMBER_OF_PAGES_PER_SCRIPT; i++) {
             Page page = Page.builder().script(script).index((long) i).build();
             log.debug("saving page {}", page);
             pageRepository.save(page);
@@ -86,7 +96,7 @@ public class ScriptDataGenerator {
 
     private void generateLine(Page page) {
         log.debug("generating {} line entries for page {}", NUMBER_OF_LINES_PER_PAGE, page);
-        for (int i = 0; i < NUMBER_OF_LINES_PER_PAGE; i++) {
+        for (int i = 1; i <= NUMBER_OF_LINES_PER_PAGE; i++) {
             Line line = Line.builder().page(page).index((long) i)
                 .content(TEST_LINE_CONTENT).active(true).build();
             log.debug("saving line {}", line);
@@ -104,19 +114,24 @@ public class ScriptDataGenerator {
         }
     }
 
-    void generateSpokenBy() {
-        List<Line> lines = lineRepository.findAll();
-        List<Role> roles = roleRepository.findAll();
-        int linesSize = lines.size();
-        int rolesSize = roles.size();
-        log.debug("generating {} spoken by entries", linesSize);
-        for (int i = 0; i < linesSize; i++) {
-            Set<Role> spokenBy = new HashSet<>();
-            spokenBy.add(roles.get(i % rolesSize));
-            Line line = lines.get(i);
-            line.setSpokenBy(spokenBy);
-            log.debug("updating line {}", line);
-            lineRepository.save(line);
+    @Transactional
+    public void generateSpokenBy() {
+        if(scriptRepository.findAll().size() > 0){
+            log.debug("spoken_by already generated");
+        } else {
+            List<Line> lines = lineRepository.findAll();
+            List<Role> roles = roleRepository.findAll();
+            int linesSize = lines.size();
+            int rolesSize = roles.size();
+            log.debug("generating {} spoken by entries", linesSize);
+            for (int i = 1; i <= linesSize; i++) {
+                Set<Role> spokenBy = new HashSet<>();
+                spokenBy.add(roles.get(i % rolesSize));
+                Line line = lines.get(i);
+                line.setSpokenBy(spokenBy);
+                log.debug("updating line {}", line);
+                lineRepository.save(line);
+            }
         }
     }
 }
