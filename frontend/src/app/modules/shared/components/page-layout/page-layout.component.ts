@@ -4,13 +4,14 @@ import {Theme} from '../../enums/theme.enum';
 import {ToastService} from '../../../core/services/toast/toast.service';
 import {AuthService} from '../../../core/services/auth/auth-service';
 import {fixedAppearAnimations} from '../../animations/fixed-appear-animations';
+import {appearAnimations} from '../../animations/appear-animations';
 
 /** @author Tobias Gruber */
 @Component({
   selector: 'app-page-layout',
   templateUrl: './page-layout.component.html',
   styleUrls: ['./page-layout.component.scss'],
-  animations: [fixedAppearAnimations]
+  animations: [fixedAppearAnimations, appearAnimations]
 })
 export class PageLayoutComponent implements OnInit {
   @Input() showHeader = true;
@@ -22,11 +23,9 @@ export class PageLayoutComponent implements OnInit {
     public authService: AuthService,
     private router: Router,
     private toastService: ToastService
-  ) {
-  }
+  ) {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   logout(): void {
     this.authService.logoutUser();

@@ -1,5 +1,5 @@
 import { Globals } from '../../global/globals';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import {
   DetailedUser,
   SimpleUser,
@@ -15,9 +15,14 @@ import { ChangePassword } from 'src/app/modules/shared/dtos/password-change-dto'
 export class UserImplService extends UserService {
   private baseUri: string = this.globals.backendUri + '/users';
   private ownUser: SimpleUser = null;
+  private ownUserSubject = new BehaviorSubject<SimpleUser>(null);
 
   constructor(private globals: Globals, private http: HttpClient) {
     super();
+  }
+
+  $ownUser(): Observable<SimpleUser> {
+    return this.ownUserSubject.asObservable();
   }
 
   getOwnUser(): SimpleUser {
@@ -26,6 +31,7 @@ export class UserImplService extends UserService {
 
   setOwnUser(user: SimpleUser): void {
     this.ownUser = user;
+    this.ownUserSubject.next(user);
   }
 
   getOne(email): Observable<SimpleUser> {

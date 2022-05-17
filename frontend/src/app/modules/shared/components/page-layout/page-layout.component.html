@@ -10,7 +10,7 @@
         <ul class="navbar-nav me-auto mb-lg-0">
           <li class="nav-item">
             <a
-              *ngIf="authService.isLoggedIn()"
+              *ngIf="authService.isLoggedIn() && authService.isVerified()"
               [routerLinkActiveOptions]="{ exact: true }"
               class="nav-link"
               routerLink="/scripts"
@@ -42,8 +42,8 @@
                 ngbDropdownToggle
                 type="button"
               >
-                <span class="">
-                  <bi class="" name="person-circle"></bi>
+                <span>
+                  <bi name="person-circle"></bi>
                 </span>
               </button>
               <div

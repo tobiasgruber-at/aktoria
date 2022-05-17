@@ -1,6 +1,6 @@
 <app-page-layout>
   <app-card title="Registrieren">
-    <span class="anchor" id="formLogin"></span>
+    <span class="anchor" id="formRegistration"></span>
     <form (ngSubmit)="submit()" [formGroup]="form" class="form">
       <div class="form-group mb-3">
         <label class="test" for="input-firstname">Vorname</label>
@@ -14,10 +14,10 @@
         />
         <app-form-errors>
           <app-form-error *ngIf="fieldHasErrors('firstName', 'required')"
-          >Bitte gib deinen Vornamen an.
+            >Bitte gib deinen Vornamen an.
           </app-form-error>
           <app-form-error *ngIf="fieldHasErrors('firstName', 'maxlength')"
-          >Vorname zu lange.
+            >Vorname zu lange.
           </app-form-error>
         </app-form-errors>
       </div>
@@ -33,10 +33,10 @@
         />
         <app-form-errors>
           <app-form-error *ngIf="fieldHasErrors('lastName', 'required')"
-          >Bitte gib deinen Nachnamen an.
+            >Bitte gib deinen Nachnamen an.
           </app-form-error>
           <app-form-error *ngIf="fieldHasErrors('lastName', 'maxlength')"
-          >Nachname zu lange.
+            >Nachname zu lange.
           </app-form-error>
         </app-form-errors>
       </div>
@@ -51,13 +51,13 @@
         />
         <app-form-errors>
           <app-form-error *ngIf="fieldHasErrors('email', 'required')"
-          >Bitte gib deine Email Adresse ein.
+            >Bitte gib deine Email Adresse ein.
           </app-form-error>
           <app-form-error *ngIf="fieldHasErrors('email', 'email')"
-          >Bitte gib eine gültige Email Adresse ein.
+            >Bitte gib eine gültige Email Adresse ein.
           </app-form-error>
           <app-form-error *ngIf="fieldHasErrors('email', 'maxlength')"
-          >Email zu lange.
+            >Email zu lange.
           </app-form-error>
         </app-form-errors>
       </div>
@@ -72,10 +72,10 @@
         />
         <app-form-errors>
           <app-form-error *ngIf="fieldHasErrors('password', 'required')"
-          >Bitte gib dein Passwort ein.
+            >Bitte gib dein Passwort ein.
           </app-form-error>
           <app-form-error *ngIf="fieldHasErrors('password', 'minlength')"
-          >Dein Passwort muss mindestens 8 Zeichen lang sein.
+            >Dein Passwort muss mindestens 8 Zeichen lang sein.
           </app-form-error>
         </app-form-errors>
       </div>
@@ -90,10 +90,10 @@
         />
         <app-form-errors>
           <app-form-error *ngIf="fieldHasErrors('passwordConfirm', 'required')"
-          >Bitte wiederhole dein Passwort.
+            >Bitte wiederhole dein Passwort.
           </app-form-error>
           <app-form-error *ngIf="hasError('passwordsNotMatching')"
-          >Deine Passwörter stimmen nicht überein.
+            >Deine Passwörter stimmen nicht überein.
           </app-form-error>
         </app-form-errors>
       </div>

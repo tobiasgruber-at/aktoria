@@ -1,29 +1,54 @@
-<app-page-layout>
-  <div *ngIf="user">
-    <h1 class="display-1">Profil</h1>
+<app-page-layout [loading]="!user">
+  <ng-container *ngIf="user">
     <div class="d-flex justify-content-between align-items-center">
-      <h3>Deine Daten</h3>
-      <button class="btn btn-primary" routerLink="/profile/change">
-        Ändern
-      </button>
+      <h1 class="display-1">Profil</h1>
+      <div>
+        <button (click)="openModal(deleteModal)" class="btn btn-danger">
+          Konto Löschen
+        </button>
+        <ng-template #deleteModal let-modal>
+          <app-modal
+            (confirm)="deleteUser(modal)"
+            (decline)="modal.dismiss()"
+            [loading]="deleteLoading"
+            confirmBtnLabel="Löschen"
+            title="Nutzer löschen"
+          >
+            <app-alert *ngIf="deleteError" [closeable]="false" type="danger">{{
+              this.deleteError
+            }}</app-alert>
+            Sicher, dass du dein Konto
+            <strong class="text-primary">unwiderruflich löschen</strong>
+            möchtest möchtest?
+          </app-modal>
+        </ng-template>
+        <button
+          *ngIf="authService.isVerified()"
+          class="btn btn-primary ms-3"
+          routerLink="/profile/change"
+        >
+          Ändern
+        </button>
+      </div>
     </div>
 
-    <div class="mb-5">
-      <div class="row mt-3 mb-3">
-        <strong class="col-sm-2 text-truncate text-end">Vorname</strong>
-        <span class="col text-truncate">{{ user.firstName }}</span>
+    <div class="mb-5 mt-4 d-flex gap-5">
+      <div class="d-flex flex-column">
+        <h3 class="text-truncate">Vorname</h3>
+        <span class="text-secondary value text-truncate">{{
+          user.firstName
+        }}</span>
       </div>
-      <div class="row mt-3 mb-3">
-        <strong class="col-sm-2 text-truncate text-end">Nachname</strong>
-        <span class="col text-truncate">{{ user.lastName }}</span>
+      <div class="d-flex flex-column">
+        <h3 class="text-truncate">Nachname</h3>
+        <span class="text-secondary value text-truncate">{{
+          user.lastName
+        }}</span>
       </div>
-      <div class="row mt-3 mb-3">
-        <strong class="col-sm-2 text-truncate text-end">E-Mail</strong>
-        <span class="col text-truncate">{{ user.email }}</span>
+      <div class="d-flex flex-column">
+        <h3 class="text-truncate">E-Mail</h3>
+        <span class="text-secondary value text-truncate">{{ user.email }}</span>
       </div>
     </div>
-    <form (ngSubmit)="submit()" [formGroup]="form" class="form">
-      <button class="btn btn-danger" type="submit">Profil Löschen</button>
-    </form>
-  </div>
+  </ng-container>
 </app-page-layout>
