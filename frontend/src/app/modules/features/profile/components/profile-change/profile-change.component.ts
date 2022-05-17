@@ -71,6 +71,13 @@ export class ProfileChangeComponent
       });
   }
 
+  /**
+   * Toggles whether the change-password part of the form is shown.
+   *
+   * @description If it should collapse, the form fields are cleared and cached,
+   * so that validation is ignored until it's shown again, where the cached data
+   * will be filled out again.
+   */
   toggleShowPasswordChange(): void {
     this.showPasswordChange = !this.showPasswordChange;
     if (!this.showPasswordChange) {
@@ -95,8 +102,10 @@ export class ProfileChangeComponent
     this.$destroy.complete();
   }
 
+  /** Submits only the changed data. */
   protected sendSubmit() {
-    let { firstName, lastName, email, oldPassword, password } = this.form.value;
+    let { firstName, lastName, email } = this.form.value;
+    const { oldPassword, password } = this.form.value;
     if (firstName === this.user.firstName) {
       firstName = null;
     }
@@ -105,10 +114,6 @@ export class ProfileChangeComponent
     }
     if (email === this.user.email) {
       email = null;
-    }
-    if (!this.showPasswordChange) {
-      oldPassword = null;
-      password = null;
     }
     this.userService
       .update(

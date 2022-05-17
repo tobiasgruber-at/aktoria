@@ -1,7 +1,7 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {ScriptService} from '../../../../core/services/script/script.service';
-import {DetailedScript} from '../../../../shared/dtos/script-dtos';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ScriptService } from '../../../../core/services/script/script.service';
+import { DetailedScript } from '../../../../shared/dtos/script-dtos';
 
 @Component({
   selector: 'app-script-read',
@@ -17,12 +17,10 @@ export class ScriptReadComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private scriptService: ScriptService
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
-      this.reset();
       const id = +params.get('id');
       const handleNotFound = () => {
         this.error = 'Skript konnte nicht gefunden werden.';
@@ -41,8 +39,5 @@ export class ScriptReadComponent implements OnInit {
         });
       }
     });
-  }
-
-  private reset(): void {
   }
 }

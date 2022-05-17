@@ -1,11 +1,11 @@
-import {Component, OnInit} from '@angular/core';
-import {FormBuilder, Validators} from '@angular/forms';
-import {FormBase} from '../../../../shared/classes/form-base';
-import {Router} from '@angular/router';
-import {ToastService} from '../../../../core/services/toast/toast.service';
-import {ScriptService} from '../../../../core/services/script/script.service';
-import {Theme} from '../../../../shared/enums/theme.enum';
-import {appearAnimations} from '../../../../shared/animations/appear-animations';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
+import { FormBase } from '../../../../shared/classes/form-base';
+import { Router } from '@angular/router';
+import { ToastService } from '../../../../core/services/toast/toast.service';
+import { ScriptService } from '../../../../core/services/script/script.service';
+import { Theme } from '../../../../shared/enums/theme.enum';
+import { appearAnimations } from '../../../../shared/animations/appear-animations';
 
 @Component({
   selector: 'app-script-upload',
@@ -33,7 +33,7 @@ export class ScriptUploadComponent extends FormBase implements OnInit {
   }
 
   onFileChanged(file: File) {
-    this.form.patchValue({file});
+    this.form.patchValue({ file });
   }
 
   onFileRemoved(fileInputNode) {
@@ -42,7 +42,7 @@ export class ScriptUploadComponent extends FormBase implements OnInit {
   }
 
   protected sendSubmit() {
-    const {file, startPage} = this.form.value;
+    const { file, startPage } = this.form.value;
     this.scriptService.parse(file, startPage).subscribe({
       next: (res) => {
         let script = res;
@@ -51,7 +51,7 @@ export class ScriptUploadComponent extends FormBase implements OnInit {
           theme: Theme.primary
         });
         this.router.navigateByUrl('/scripts');
-        // TODO: refactor
+        // TODO: refactor, so that the script is saved after a review by the user
         this.scriptService.save(res).subscribe({
           next: (detailedScript) => {
             script = detailedScript;

@@ -1,6 +1,7 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Theme } from '../../enums/theme.enum';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Theme} from '../../enums/theme.enum';
 
+/** Common modal. */
 @Component({
   selector: 'app-modal',
   templateUrl: 'modal.component.html',
@@ -14,6 +15,7 @@ export class ModalComponent {
   @Input() loading = false;
   readonly theme = Theme;
 
+  /** If modal is declined. */
   onDecline(): void {
     if (this.loading) {
       return;
@@ -21,6 +23,7 @@ export class ModalComponent {
     this.decline.emit();
   }
 
+  /** If modal is confirmed. */
   onConfirm(): void {
     if (this.loading) {
       return;

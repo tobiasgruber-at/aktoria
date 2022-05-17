@@ -8,8 +8,7 @@ export abstract class FormBase {
   submitted = false;
   loading = false;
 
-  protected constructor(private ts: ToastService) {
-  }
+  protected constructor(private ts: ToastService) {}
 
   /**
    * Form validation will start after the method is called, additionally an AuthRequest will be sent
@@ -24,6 +23,7 @@ export abstract class FormBase {
     }
   }
 
+  /** Toggles the loading state. */
   toggleLoading(loading: boolean = !this.loading): void {
     this.loading = loading;
     if (this.loading) {
@@ -33,6 +33,7 @@ export abstract class FormBase {
     }
   }
 
+  /** Handles common errors by notifying the user. */
   handleError(error): void {
     this.toggleLoading(false);
     console.log('Could not log in due to:');
@@ -67,5 +68,6 @@ export abstract class FormBase {
     );
   }
 
+  /** Sends the submitted value, after the form is validated. */
   protected abstract sendSubmit(): void;
 }

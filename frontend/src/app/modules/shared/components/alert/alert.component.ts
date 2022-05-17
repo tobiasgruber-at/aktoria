@@ -1,7 +1,11 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, HostBinding, Input, Output} from '@angular/core';
 import {appearAnimations} from '../../animations/appear-animations';
 
-/** @author Tobias Gruber */
+/**
+ * Common alert.
+ *
+ * @author Tobias Gruber
+ */
 @Component({
   selector: 'app-alert',
   templateUrl: './alert.component.html',
@@ -24,6 +28,7 @@ export class AlertComponent {
     return true;
   }
 
+  /** Closes the alert. */
   close(): void {
     this.closeAlert.emit();
   }

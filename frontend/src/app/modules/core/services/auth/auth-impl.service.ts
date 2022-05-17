@@ -1,14 +1,14 @@
-import {Injectable} from '@angular/core';
-import {AuthRequest} from '../../../shared/dtos/auth-request';
-import {BehaviorSubject, Observable} from 'rxjs';
-import {HttpClient} from '@angular/common/http';
-import {tap} from 'rxjs/operators';
+import { Injectable } from '@angular/core';
+import { AuthRequest } from '../../../shared/dtos/auth-request';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { tap } from 'rxjs/operators';
 // @ts-ignore
 import jwt_decode from 'jwt-decode';
-import {Globals} from '../../global/globals';
-import {AuthService} from './auth-service';
-import {DecodedToken} from '../../../shared/interfaces/decoded-token';
-import {UserService} from '../user/user-service';
+import { Globals } from '../../global/globals';
+import { AuthService } from './auth-service';
+import { DecodedToken } from '../../../shared/interfaces/decoded-token';
+import { UserService } from '../user/user-service';
 
 @Injectable()
 export class AuthImplService extends AuthService {
@@ -17,7 +17,11 @@ export class AuthImplService extends AuthService {
   private readonly tokenLSKey = 'authToken';
   private loginChangesSubject = new BehaviorSubject<boolean>(this.isLoggedIn());
 
-  constructor(private httpClient: HttpClient, private globals: Globals, private userService: UserService) {
+  constructor(
+    private httpClient: HttpClient,
+    private globals: Globals,
+    private userService: UserService
+  ) {
     super();
   }
 
@@ -25,9 +29,10 @@ export class AuthImplService extends AuthService {
     return this.loginChangesSubject.asObservable();
   }
 
+  /** Logs the user in and stores the jwt on success. */
   loginUser(authRequest: AuthRequest): Observable<string> {
     return this.httpClient
-      .post(this.authBaseUri, authRequest, {responseType: 'text'})
+      .post(this.authBaseUri, authRequest, { responseType: 'text' })
       .pipe(
         tap((authResponse: string) => {
           this.updateLoginState(authResponse);
@@ -35,6 +40,7 @@ export class AuthImplService extends AuthService {
       );
   }
 
+  /** Logs the user out, by removing the jwt. */
   logoutUser() {
     this.updateLoginState();
   }
@@ -43,13 +49,17 @@ export class AuthImplService extends AuthService {
     return (
       !!this.getToken() &&
       this.getTokenExpirationDate(this.getToken()).valueOf() >
-      new Date().valueOf()
+        new Date().valueOf()
     );
   }
 
   isVerified(): boolean {
     const role = this.getRole();
-    return ((role === 'ADMIN') || (role === 'VERIFIED')) || (this.userService.getOwnUser()?.verified);
+    return (
+      role === 'ADMIN' ||
+      role === 'VERIFIED' ||
+      this.userService.getOwnUser()?.verified
+    );
   }
 
   getToken() {
