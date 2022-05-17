@@ -28,7 +28,6 @@ export class ScriptOverviewComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
-      this.reset();
       const id = +params.get('id');
       const handleNotFound = () => {
         this.getError = 'Skript konnte nicht gefunden werden.';
@@ -70,6 +69,4 @@ export class ScriptOverviewComponent implements OnInit {
       }
     });
   }
-
-  private reset(): void {}
 }

@@ -28,7 +28,12 @@ export class AppComponent implements OnInit, OnDestroy {
     this.$destroy.complete();
   }
 
-  /** Handles own-user by fetching the data once logged in. */
+  /**
+   * Gets the own user.
+   *
+   * @description Checks if the user is logged in. If so, it extracts the user's email out of the jwt token and
+   * fetches the corresponding user from the backend.
+   */
   private handleOwnUser(): void {
     this.authService
       .$loginChanges()
