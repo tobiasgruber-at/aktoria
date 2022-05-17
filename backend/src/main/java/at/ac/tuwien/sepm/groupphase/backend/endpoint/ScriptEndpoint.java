@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ScriptDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ScriptPreviewDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleScriptDto;
+import at.ac.tuwien.sepm.groupphase.backend.enums.Permission;
 import at.ac.tuwien.sepm.groupphase.backend.service.ScriptService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -39,6 +40,7 @@ public class ScriptEndpoint {
 
     @PostMapping(path = "/new", produces = { MediaType.APPLICATION_JSON_VALUE }, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     @ResponseStatus(HttpStatus.OK)
+    @Secured(Permission.verified)
     public SimpleScriptDto uploadScript(@RequestPart("file") MultipartFile multipartFile, @RequestPart(value = "startPage", required = false) String startPage) {
         log.info("POST {}/new", path);
         return scriptService.parse(multipartFile, startPage == null ? 0 : Integer.parseInt(startPage));
@@ -46,7 +48,7 @@ public class ScriptEndpoint {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @Secured("ROLE_USER")
+    @Secured(Permission.verified)
     public ScriptDto saveScript(@RequestBody SimpleScriptDto simpleScriptDto) {
         log.info("POST {}", path);
         return scriptService.save(simpleScriptDto);
@@ -54,7 +56,7 @@ public class ScriptEndpoint {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    @Secured("ROLE_VERIFIED")
+    @Secured(Permission.verified)
     public Stream<ScriptPreviewDto> getScriptPreviews() {
         log.info("GET {}", path);
         return scriptService.findAllPreviews();
@@ -62,7 +64,7 @@ public class ScriptEndpoint {
 
     @GetMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @Secured("ROLE_VERIFIED")
+    @Secured(Permission.verified)
     public ScriptDto getScriptById(@PathVariable Long id) {
         log.info("GET {}/{}", path, id);
         return scriptService.findById(id);
@@ -70,7 +72,7 @@ public class ScriptEndpoint {
 
     @DeleteMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @Secured("ROLE_VERIFIED")
+    @Secured(Permission.verified)
     public void deleteScript(@PathVariable Long id) {
         log.info("DELETE {}/{}", ScriptEndpoint.path, id);
         scriptService.delete(id);

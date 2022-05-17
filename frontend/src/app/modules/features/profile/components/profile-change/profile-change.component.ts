@@ -1,14 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
-import { UserService } from '../../../../core/services/user/user-service';
-import { Router } from '@angular/router';
-import { ToastService } from '../../../../core/services/toast/toast.service';
-import { AuthService } from '../../../../core/services/auth/auth-service';
-import { FormBase } from '../../../../shared/classes/form-base';
-import { matchingPasswordsValidator } from '../../../../shared/validators/matching-passwords-validator';
-import { Theme } from '../../../../shared/enums/theme.enum';
-import { SimpleUser, UpdateUser } from '../../../../shared/dtos/user-dtos';
-import { appearAnimations } from '../../../../shared/animations/appear-animations';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {FormBuilder, Validators} from '@angular/forms';
+import {UserService} from '../../../../core/services/user/user-service';
+import {Router} from '@angular/router';
+import {ToastService} from '../../../../core/services/toast/toast.service';
+import {FormBase} from '../../../../shared/classes/form-base';
+import {matchingPasswordsValidator} from '../../../../shared/validators/matching-passwords-validator';
+import {Theme} from '../../../../shared/enums/theme.enum';
+import {SimpleUser, UpdateUser} from '../../../../shared/dtos/user-dtos';
+import {appearAnimations} from '../../../../shared/animations/appear-animations';
+import {Subject, takeUntil} from 'rxjs';
 
 /** @author Simon Josef Kreuzpointner */
 @Component({
@@ -17,22 +17,38 @@ import { appearAnimations } from '../../../../shared/animations/appear-animation
   styleUrls: ['./profile-change.component.scss'],
   animations: [appearAnimations]
 })
-export class ProfileChangeComponent extends FormBase implements OnInit {
+export class ProfileChangeComponent
+  extends FormBase
+  implements OnInit, OnDestroy {
   user: SimpleUser;
+  showPasswordChange = false;
+  private $destroy = new Subject<void>();
+  /**
+   * Cached password-change form-data.
+   *
+   * @description In case the user toggles the show-password section,
+   * this part of the form should either be cleared or refilled.
+   */
+  private cachedPasswordChangeData: {
+    oldPassword: string;
+    password: string;
+    passwordConfirm: string;
+  } = {
+    oldPassword: null,
+    password: null,
+    passwordConfirm: null
+  };
 
   constructor(
     private formBuilder: FormBuilder,
-    private userService: UserService,
+    public userService: UserService,
     private router: Router,
-    private toastService: ToastService,
-    private authService: AuthService
+    private toastService: ToastService
   ) {
     super(toastService);
   }
 
   ngOnInit(): void {
-    this.getUser();
-
     this.form = this.formBuilder.group(
       {
         firstName: [null, [Validators.maxLength(100)]],
@@ -40,23 +56,60 @@ export class ProfileChangeComponent extends FormBase implements OnInit {
         email: [null, [Validators.maxLength(100), Validators.email]],
         oldPassword: [null, [Validators.minLength(8)]],
         password: [null, [Validators.minLength(8)]],
-        passwordConfirm: [null, []]
+        passwordConfirm: [null]
       },
-      { validators: [matchingPasswordsValidator] }
+      { validators: [matchingPasswordsValidator(true)] }
     );
+    this.userService
+      .$ownUser()
+      .pipe(takeUntil(this.$destroy))
+      .subscribe((user) => {
+        this.user = user;
+        if (this.user) {
+          this.initForm();
+        }
+      });
   }
 
-  getUser() {
-    this.authService.$loginChanges().subscribe((loggedIn) => {
-      if (loggedIn) {
-        this.user = this.userService.getOwnUser();
-      }
-    });
+  toggleShowPasswordChange(): void {
+    this.showPasswordChange = !this.showPasswordChange;
+    if (!this.showPasswordChange) {
+      const { oldPassword, password, passwordConfirm } = this.form.value;
+      this.cachedPasswordChangeData = {
+        oldPassword,
+        password,
+        passwordConfirm
+      };
+      this.form.patchValue({
+        oldPassword: null,
+        password: null,
+        passwordConfirm: null
+      });
+    } else {
+      this.form.patchValue(this.cachedPasswordChangeData);
+    }
+  }
+
+  ngOnDestroy() {
+    this.$destroy.next();
+    this.$destroy.complete();
   }
 
   protected sendSubmit() {
-    const { firstName, lastName, email, oldPassword, password } =
-      this.form.value;
+    let { firstName, lastName, email, oldPassword, password } = this.form.value;
+    if (firstName === this.user.firstName) {
+      firstName = null;
+    }
+    if (lastName === this.user.lastName) {
+      lastName = null;
+    }
+    if (email === this.user.email) {
+      email = null;
+    }
+    if (!this.showPasswordChange) {
+      oldPassword = null;
+      password = null;
+    }
     this.userService
       .update(
         new UpdateUser(
@@ -71,6 +124,7 @@ export class ProfileChangeComponent extends FormBase implements OnInit {
       )
       .subscribe({
         next: (res) => {
+          this.userService.setOwnUser(res);
           this.toastService.show({
             message: 'Erfolgreich geändert!',
             theme: Theme.primary
@@ -79,5 +133,13 @@ export class ProfileChangeComponent extends FormBase implements OnInit {
         },
         error: (err) => this.handleError(err)
       });
+  }
+
+  private initForm(): void {
+    this.form.patchValue({
+      firstName: this.user.firstName,
+      lastName: this.user.lastName,
+      email: this.user.email
+    });
   }
 }

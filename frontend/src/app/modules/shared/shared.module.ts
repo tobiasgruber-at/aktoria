@@ -11,7 +11,10 @@ import { BootstrapIconsModule } from 'ng-bootstrap-icons';
 import { FormErrorComponent } from './components/form-errors/form-error/form-error.component';
 import { FormErrorsComponent } from './components/form-errors/form-errors.component';
 import { ModalComponent } from './components/modal/modal.component';
-import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
+import {
+  NgbCollapseModule,
+  NgbDropdownModule
+} from '@ng-bootstrap/ng-bootstrap';
 
 const icons = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -30,7 +33,8 @@ const sharedImports = [
   CommonModule,
   FormsModule,
   ReactiveFormsModule,
-  RouterModule
+  RouterModule,
+  NgbCollapseModule
 ];
 
 @NgModule({

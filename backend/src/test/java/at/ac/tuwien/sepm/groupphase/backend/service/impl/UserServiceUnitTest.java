@@ -4,6 +4,7 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordChangeDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserRegistrationDto;
+import at.ac.tuwien.sepm.groupphase.backend.enums.Role;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.UnauthorizedException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
@@ -66,7 +67,7 @@ class UserServiceUnitTest {
     @Nested
     @DisplayName("changePassword()")
     @SpringBootTest
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { "USER", "VERIFIED", "ADMIN" })
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user, Role.verified, Role.admin })
     class ForgotPasswordTest {
         @Test
         @DisplayName("sends email")
@@ -142,7 +143,7 @@ class UserServiceUnitTest {
     @Disabled
     @Nested
     @DisplayName("getUser()")
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { "USER", "VERIFIED", "ADMIN" })
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user, Role.verified, Role.admin })
     class GetUserTest {
         private static Stream<String> parameterizedGetUserWorksProvider() {
             final List<String> temp = new LinkedList<>();
@@ -175,7 +176,7 @@ class UserServiceUnitTest {
 
     @Nested
     @DisplayName("deleteUser()")
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { "USER", "VERIFIED", "ADMIN" })
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user, Role.verified, Role.admin })
     class DeleteUserTest {
         private static Stream<Long> parameterizedDeleteUserProvider() {
             final List<Long> temp = new LinkedList<>();
@@ -219,7 +220,7 @@ class UserServiceUnitTest {
 
     @Nested
     @DisplayName("changeUser()")
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { "USER", "VERIFIED", "ADMIN" })
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user, Role.verified, Role.admin })
     class ChangeUserTest {
         private static Stream<SimpleUserDto> parameterizedChangeUserProvider() {
             final List<SimpleUserDto> temp = new LinkedList<>();

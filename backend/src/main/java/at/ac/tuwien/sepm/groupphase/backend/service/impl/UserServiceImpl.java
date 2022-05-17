@@ -8,6 +8,7 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserRegistrationDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.UserMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.SecureToken;
 import at.ac.tuwien.sepm.groupphase.backend.entity.User;
+import at.ac.tuwien.sepm.groupphase.backend.enums.Permission;
 import at.ac.tuwien.sepm.groupphase.backend.enums.TokenType;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.InvalidTokenException;
@@ -258,9 +259,9 @@ public class UserServiceImpl implements UserService {
             User user = userOptional.get();
             List<GrantedAuthority> grantedAuthorities;
             if (user.getVerified()) {
-                grantedAuthorities = AuthorityUtils.createAuthorityList("ROLE_VERIFIED", "ROLE_USER");
+                grantedAuthorities = AuthorityUtils.createAuthorityList(Permission.user, Permission.verified);
             } else {
-                grantedAuthorities = AuthorityUtils.createAuthorityList("ROLE_USER");
+                grantedAuthorities = AuthorityUtils.createAuthorityList(Permission.user);
             }
 
             return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPasswordHash(), grantedAuthorities);

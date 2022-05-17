@@ -8,6 +8,8 @@ import {
 import { ChangePassword } from '../../../shared/dtos/password-change-dto';
 
 export abstract class UserService {
+  abstract $ownUser(): Observable<SimpleUser>;
+
   abstract getOwnUser(): SimpleUser;
 
   abstract setOwnUser(user: SimpleUser): void;

@@ -10,3 +10,7 @@ a {
 form .form-control {
   transition: background-color 200ms;
 }
+
+.dropdown-toggle::after {
+  display: none !important;
+}

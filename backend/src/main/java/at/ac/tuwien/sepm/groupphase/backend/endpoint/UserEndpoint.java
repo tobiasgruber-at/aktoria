@@ -5,6 +5,7 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordChangeDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UpdateUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserRegistrationDto;
+import at.ac.tuwien.sepm.groupphase.backend.enums.Permission;
 import at.ac.tuwien.sepm.groupphase.backend.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -39,7 +40,7 @@ public class UserEndpoint {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    @Secured("ROLE_USER")
+    @Secured(Permission.user)
     public SimpleUserDto getUser(@RequestParam String email) {
         log.info("GET {}/{}", path, email);
         return userService.findByEmail(email);
@@ -54,7 +55,7 @@ public class UserEndpoint {
 
     @PatchMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @Secured("ROLE_USER")
+    @Secured(Permission.verified)
     public DetailedUserDto patchUser(@RequestBody UpdateUserDto updateUserDto, @PathVariable Long id) {
         log.info("PATCH {}/{}", path, id);
         return userService.patch(updateUserDto, id);
@@ -62,7 +63,7 @@ public class UserEndpoint {
 
     @DeleteMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @Secured("ROLE_USER")
+    @Secured(Permission.user)
     public void deleteUser(@PathVariable Long id) {
         log.info("DELETE {}/{}", UserEndpoint.path, id);
         userService.delete(id);
@@ -91,7 +92,7 @@ public class UserEndpoint {
 
     @PostMapping(path = "/tokens")
     @ResponseStatus(HttpStatus.OK)
-    @Secured("ROLE_USER")
+    @Secured(Permission.user)
     public void resendEmailVerificationToken() {
         log.info("POST {}/verification", path);
         userService.resendEmailVerificationLink();
