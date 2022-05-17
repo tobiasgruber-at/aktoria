@@ -4,6 +4,7 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UpdateUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserRegistrationDto;
+import at.ac.tuwien.sepm.groupphase.backend.enums.Role;
 import at.ac.tuwien.sepm.groupphase.backend.testhelpers.UserTestHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.icegreen.greenmail.configuration.GreenMailConfiguration;
@@ -221,7 +222,7 @@ class UserEndpointIntegrationTest {
     //TESTING PATCH
     @Nested
     @DisplayName("patchUser()")
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { "USER", "VERIFIED", "ADMIN" })
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user, Role.verified, Role.admin })
     class PatchUser {
         private static Stream<UpdateUserDto> updateUserDtoProvider() {
             final List<UpdateUserDto> temp = new LinkedList<>();
@@ -318,7 +319,7 @@ class UserEndpointIntegrationTest {
     //TESTING DELETE
     @Nested
     @DisplayName("deleteUser()")
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { "USER", "VERIFIED", "ADMIN" })
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user, Role.verified, Role.admin })
     class DeleteUser {
 
         @Disabled

@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ScriptDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleScriptDto;
+import at.ac.tuwien.sepm.groupphase.backend.enums.Role;
 import at.ac.tuwien.sepm.groupphase.backend.testhelpers.ScriptTestHelper;
 import at.ac.tuwien.sepm.groupphase.backend.testhelpers.UserTestHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -78,7 +79,7 @@ class ScriptEndpointIntegrationTest {
         @Test
         @Transactional
         @DisplayName("returns the saved script")
-        @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = "USER")
+        @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = Role.verified)
         void saveScriptReturnsCorrectly() throws Exception {
             byte[] body = mockMvc
                 .perform(MockMvcRequestBuilders
@@ -96,7 +97,7 @@ class ScriptEndpointIntegrationTest {
         @Test
         @Transactional
         @DisplayName("returns correct status code for invalid body")
-        @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = "USER")
+        @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = Role.user)
         void saveScriptReturnsCorrectStatusCodeForInvalidInputs() throws Exception {
             mockMvc
                 .perform(MockMvcRequestBuilders
@@ -117,6 +118,7 @@ class ScriptEndpointIntegrationTest {
         @Test
         @Transactional
         @DisplayName("returns the correctly parsed script")
+        @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = Role.verified)
         void uploadScriptReturnsCorrectly() throws Exception {
             final SimpleScriptDto expected = scriptTestHelper.dummySimpleScriptDto();
 
@@ -141,6 +143,7 @@ class ScriptEndpointIntegrationTest {
         @Test
         @DisplayName("returns correct status code for corrupted files")
         @Transactional
+        @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = Role.verified)
         void uploadScriptReturnsCorrectStatusCodeForCorruptedFiles() throws Exception {
             final File pdf = new File("./src/test/resources/service/parsing/script/Skript_NF_CORRUPTED.pdf");
             final MockMultipartFile multipartFile = new MockMultipartFile("file", pdf.getName(), MediaType.APPLICATION_PDF_VALUE, new FileInputStream(pdf));

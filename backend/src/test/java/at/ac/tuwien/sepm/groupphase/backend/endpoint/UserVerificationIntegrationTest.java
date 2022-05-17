@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserRegistrationDto;
+import at.ac.tuwien.sepm.groupphase.backend.enums.Role;
 import at.ac.tuwien.sepm.groupphase.backend.testhelpers.UserTestHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.icegreen.greenmail.configuration.GreenMailConfiguration;
@@ -35,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @EnableWebMvc
 @WebAppConfiguration
-@WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { "USER", "VERIFIED", "ADMIN" })
+@WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user, Role.verified, Role.admin })
 public class UserVerificationIntegrationTest {
     @RegisterExtension
     static GreenMailExtension greenMail = new GreenMailExtension(ServerSetupTest.SMTP)
