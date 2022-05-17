@@ -1,15 +1,27 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
 import at.ac.tuwien.sepm.groupphase.backend.enums.AssessmentType;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "sessions")
+@Table(name = "session")
 @Getter
 @Setter
 @Builder
@@ -21,10 +33,10 @@ public class Session {
     private Long id;
 
     @CreationTimestamp
-    @Column(name = "start", updatable = false, columnDefinition = "datetime default current_timestamp")
+    @Column(name = "start_time", updatable = false, columnDefinition = "timestamp without time zone default current_timestamp")
     private Timestamp start;
 
-    @Column(name = "end", updatable = false)
+    @Column(name = "end_time", updatable = false)
     private LocalDateTime end;
 
     @Column(name = "self_assessement")
