@@ -28,11 +28,11 @@ export class PageLayoutComponent implements OnInit {
   ngOnInit(): void {}
 
   logout(): void {
-    this.authService.logoutUser();
     this.router.navigateByUrl('/login');
     this.toastService.show({
       message: 'Erfolgreich ausgeloggt!',
       theme: Theme.primary
     });
+    this.authService.logoutUser();
   }
 }
