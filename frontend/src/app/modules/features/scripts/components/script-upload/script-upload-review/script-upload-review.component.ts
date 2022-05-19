@@ -7,6 +7,7 @@ import { Theme } from '../../../../../shared/enums/theme.enum';
 import { FormBase } from '../../../../../shared/classes/form-base';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ScriptViewerService } from '../../../services/script-viewer.service';
+import { SimpleScript } from '../../../../../shared/dtos/script-dtos';
 
 @Component({
   selector: 'app-script-upload-review',
@@ -18,6 +19,7 @@ export class ScriptUploadReviewComponent
   extends FormBase
   implements OnInit, OnDestroy {
   getLoading = true;
+  script: SimpleScript = null;
   private $destroy = new Subject<void>();
 
   constructor(
@@ -34,6 +36,11 @@ export class ScriptUploadReviewComponent
     this.form = this.formBuilder.group({
       scriptName: ['', [Validators.required, Validators.maxLength(100)]]
     });
+    this.scriptViewerService.$script
+      .pipe(takeUntil(this.$destroy))
+      .subscribe((script) => {
+        this.script = script;
+      });
     const handleNoStagedScript = () => {
       this.router.navigateByUrl('/scripts');
       this.toastService.show({
@@ -63,5 +70,21 @@ export class ScriptUploadReviewComponent
     this.$destroy.complete();
   }
 
-  protected sendSubmit(): void {}
+  protected sendSubmit(): void {
+    const { scriptName } = this.form.value;
+    const script = {
+      ...this.script,
+      name: scriptName
+    };
+    this.scriptService.save(script).subscribe({
+      next: (detailedScript) => {
+        this.router.navigateByUrl(`/scripts/${detailedScript.id}`);
+        this.toastService.show({
+          message: 'Skript wurde erfolgreich hochgeladen!',
+          theme: Theme.primary
+        });
+      },
+      error: (err) => this.handleError(err)
+    });
+  }
 }

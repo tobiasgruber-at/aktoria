@@ -46,21 +46,7 @@ export class ScriptUploadComponent extends FormBase implements OnInit {
       next: (script) => {
         this.scriptService.setStagedScript(script);
         this.router.navigateByUrl('/scripts/upload/review');
-        // TODO: refactor, so that the script is saved after a review by the user
-        /*
-        this.toastService.show({
-          message: 'Skript wurde erfolgreich hochgeladen!',
-          theme: Theme.primary
-        });
-        this.scriptService.save(res).subscribe({
-           next: (detailedScript) => {
-             script = detailedScript;
-             console.log(script);
-           }
-         });
-         */
       },
-
       error: (err) => this.handleError(err)
     });
   }

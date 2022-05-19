@@ -29,7 +29,7 @@
       <h3>Rollen</h3>
       <app-script-roles-list
         (roleClicked)="scriptViewerService.setSelectedRole($event)"
-        [roles]="(scriptViewerService.$script | async).roles"
+        [roles]="script.roles"
         [selectedRole]="scriptViewerService.$selectedRole | async"
       ></app-script-roles-list>
     </div>

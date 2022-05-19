@@ -1,5 +1,5 @@
 <app-script-page
-  *ngFor="let page of (scriptViewerService.$script | async).pages"
+  *ngFor="let page of (scriptViewerService.$script | async)?.pages"
   [page]="page"
   class="d-flex flex-column"
 ></app-script-page>

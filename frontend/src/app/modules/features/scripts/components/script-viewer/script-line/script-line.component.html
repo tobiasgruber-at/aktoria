@@ -44,7 +44,7 @@
       >
         <app-script-roles-list
           (roleClicked)="changeRoles($event)"
-          [roles]="(scriptViewerService.$script | async).roles"
+          [roles]="(scriptViewerService.$script | async)?.roles"
           [selectedRoles]="line.roles"
         ></app-script-roles-list>
       </app-modal>
