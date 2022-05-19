@@ -1,10 +1,13 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
+import at.ac.tuwien.sepm.groupphase.backend.datagenerator.UserDataGenerator;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UpdateUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserRegistrationDto;
+import at.ac.tuwien.sepm.groupphase.backend.entity.User;
 import at.ac.tuwien.sepm.groupphase.backend.enums.Role;
+import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import at.ac.tuwien.sepm.groupphase.backend.testhelpers.UserTestHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.icegreen.greenmail.configuration.GreenMailConfiguration;
@@ -21,6 +24,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -37,6 +41,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ActiveProfiles({ "test", "datagen" })
@@ -54,11 +59,18 @@ class UserEndpointIntegrationTest {
     ObjectMapper objectMapper;
     @Autowired
     private WebApplicationContext webAppContext;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     private MockMvc mockMvc;
+    private List<User> userList;
 
     @BeforeEach
     public void setup() {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(webAppContext).build();
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(webAppContext).apply(springSecurity()).build();
+        this.userList = userRepository.findAll();
     }
 
     //TESTING POST
@@ -186,34 +198,37 @@ class UserEndpointIntegrationTest {
     }
 
     //TESTING GET
-    @Disabled
     @Nested
     @DisplayName("getUser()")
     class GetUser {
         @Test
         @Transactional
         @DisplayName("gets a user correctly")
+        @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user })
         void getUserSuccessful() throws Exception {
+            User input = userList.get(0);
+
             byte[] body = mockMvc
                 .perform(MockMvcRequestBuilders
-                    .get("/api/v1/users/-1")
+                    .get("/api/v1/users?email=" + input.getEmail())
                     .accept(MediaType.APPLICATION_JSON)
                 ).andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsByteArray();
 
-            SimpleUserDto userResult = objectMapper.readValue(body, SimpleUserDto.class);
+            SimpleUserDto actual = objectMapper.readValue(body, SimpleUserDto.class);
+            SimpleUserDto expected = objectMapper.readValue(objectMapper.writeValueAsBytes(input), SimpleUserDto.class);
 
-            assertNotNull(userResult);
-            assertEquals(-1L, userResult.getId());
-            // TODO: add missing assertions
+            assertNotNull(actual);
+            assertEquals(expected, actual);
         }
 
         @Test
         @Transactional
         @DisplayName("returns NotFound on non existing user")
+        @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user })
         void getNonexistentUser() throws Exception {
             mockMvc.perform(MockMvcRequestBuilders
-                .get("/api/v1/users/0")
+                .get("/api/v1/users?email=someobscureemailthatwillneverbeused@email.com")
                 .accept(MediaType.APPLICATION_JSON)
             ).andExpect(status().isNotFound());
         }
@@ -224,36 +239,43 @@ class UserEndpointIntegrationTest {
     @DisplayName("patchUser()")
     @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user, Role.verified, Role.admin })
     class PatchUser {
-        private static Stream<UpdateUserDto> updateUserDtoProvider() {
+        private static Stream<UpdateUserDto> invalidUpdateUserDtoProvider() {
             final List<UpdateUserDto> temp = new LinkedList<>();
-            temp.add(new UpdateUserDto(-1L, "NewName", "newLastName", "a".repeat(101) + "@mail.com", "PASSWORD", "PASSWORD", true));
-            temp.add(new UpdateUserDto(-1L, "a".repeat(101), "a".repeat(101), "admin@email.com", "PASSWORD", "", true));
-            temp.add(new UpdateUserDto(-1L, "", "", "admin@email.com", "PASSWORD", "", true));
-            temp.add(new UpdateUserDto(-1L, "   ", "   ", "admin@email.com", "PASSWORD", "", true));
+            temp.add(new UpdateUserDto(1L, "NewName", "newLastName", "a".repeat(101) + "@mail.com", "PASSWORD", "PASSWORD", true));
+            temp.add(new UpdateUserDto(1L, "a".repeat(101), "a".repeat(101), "admin@email.com", "PASSWORD", "", true));
+            temp.add(new UpdateUserDto(1L, "", "", "admin@email.com", "PASSWORD", "", true));
+            temp.add(new UpdateUserDto(1L, "   ", "   ", "admin@email.com", "PASSWORD", "", true));
             return temp.stream();
         }
 
-        @Disabled
         @Test
         @Transactional
         @DisplayName("changes user and password correctly")
         void patchUserAndPassword() throws Exception {
+            User u = userList.get(0);
+            UpdateUserDto input = new UpdateUserDto(
+                u.getId(),
+                "NewName",
+                "newLastName",
+                "a".repeat(50) + "@mail.com",
+                UserDataGenerator.TEST_USER_PASSWORD + u.getId(),
+                "PASSWORD",
+                true
+            );
+
             byte[] body = mockMvc
                 .perform(MockMvcRequestBuilders
-                    .patch("/api/v1/users/{id}", -1L)
+                    .patch("/api/v1/users/" + input.getId())
                     .accept(MediaType.APPLICATION_JSON)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsBytes(new UpdateUserDto(-1L, "NewFirstName", "newLastName", "new@email.com", "oldPassword", "newPassword", true)))
+                    .content(objectMapper.writeValueAsBytes(input))
                 ).andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsByteArray();
-            DetailedUserDto userResult = objectMapper.readValue(body, DetailedUserDto.class);
+            DetailedUserDto actual = objectMapper.readValue(body, DetailedUserDto.class);
+            DetailedUserDto expected = objectMapper.readValue(objectMapper.writeValueAsBytes(u), DetailedUserDto.class);
 
-            assertNotNull(userResult);
-            assertEquals("NewFirstName", userResult.getFirstName());
-            assertEquals("newLastName", userResult.getLastName());
-            assertEquals("new@email.com", userResult.getEmail());
-            assertEquals("newPassword", userResult.getPasswordHash());
-            assertEquals(true, userResult.getVerified());
+            assertNotNull(actual);
+            assertEquals(expected, actual);
         }
 
         @Test
@@ -266,7 +288,6 @@ class UserEndpointIntegrationTest {
             ).andExpect(status().isBadRequest()); //Spring automatically throws 400 Bad Request when Request Body is empty
         }
 
-        @Disabled
         @Test
         @Transactional
         @DisplayName("returns NotFound on non existing user")
@@ -282,7 +303,7 @@ class UserEndpointIntegrationTest {
         @ParameterizedTest
         @Transactional
         @DisplayName("returns UnprocessableEntity")
-        @MethodSource("updateUserDtoProvider")
+        @MethodSource("invalidUpdateUserDtoProvider")
         void patchUserInvalidEmail(UpdateUserDto input) throws Exception {
             mockMvc.perform(MockMvcRequestBuilders
                 .patch("/api/v1/users/{id}", -1L)
@@ -322,21 +343,20 @@ class UserEndpointIntegrationTest {
     @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user, Role.verified, Role.admin })
     class DeleteUser {
 
-        @Disabled
         @Test
         @Transactional
         @DisplayName("deletes a user correctly")
         void deleteUserSuccessful() throws Exception {
             mockMvc
                 .perform(MockMvcRequestBuilders
-                    .delete("/api/v1/users/-1")
+                    .delete("/api/v1/users/" + userList.get(0).getId())
                     .accept(MediaType.APPLICATION_JSON)
                     .contentType(MediaType.APPLICATION_JSON)
                 ).andExpect(status().isNoContent());
 
             mockMvc
                 .perform(MockMvcRequestBuilders
-                    .delete("/api/v1/users/-1")
+                    .delete("/api/v1/users/" + userList.get(0).getId())
                     .accept(MediaType.APPLICATION_JSON)
                     .contentType(MediaType.APPLICATION_JSON)
                 ).andExpect(status().isNotFound());
