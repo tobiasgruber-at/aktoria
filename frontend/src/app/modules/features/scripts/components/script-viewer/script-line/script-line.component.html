@@ -1,0 +1,53 @@
+<div class="position-relative mb-1">
+  <div
+    (openChange)="setIsActive($event)"
+    class="d-flex px-5"
+    ngbDropdown
+    placement="bottom-end top-end bottom-start top-start"
+  >
+    <div *ngIf="!isInstruction" class="roles px-1">
+      <span
+        *ngFor="let role of line?.roles; let i = index"
+        class="d-inline-block"
+        >{{ role.name }}{{ i < line?.roles.length - 1 ? ', ' : '' }}</span
+      >
+    </div>
+    <p
+      [class.fst-italic]="isInstruction"
+      [class.highlighted]="
+        isHighlighted(scriptViewerService.$selectedRole | async)
+      "
+      [class.text-secondary]="isInstruction"
+      ngbDropdownToggle
+    >
+      {{ line?.content }}
+    </p>
+    <div *ngIf="isEditing" class="my-1" ngbDropdownMenu>
+      <button (click)="toggleModal(changeRolesModal)" ngbDropdownItem>
+        Rollen {{ line.roles?.length > 0 ? 'ändern' : 'zuweisen' }}
+      </button>
+      <button
+        (click)="removeRoles()"
+        *ngIf="line.roles.length > 0"
+        ngbDropdownItem
+      >
+        Als Instruktion markieren
+      </button>
+    </div>
+    <ng-template #changeRolesModal let-modal>
+      <app-modal
+        (confirm)="modal.dismiss()"
+        (decline)="modal.dismiss()"
+        [showDecline]="false"
+        confirmBtnLabel="Fertig"
+        title="Rollen {{ line.roles?.length > 0 ? 'ändern' : 'zuweisen' }}"
+      >
+        <app-script-roles-list
+          (roleClicked)="changeRoles($event)"
+          [roles]="(scriptViewerService.$script | async)?.roles"
+          [selectedRoles]="line.roles"
+        ></app-script-roles-list>
+      </app-modal>
+    </ng-template>
+  </div>
+</div>

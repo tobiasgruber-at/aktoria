@@ -20,6 +20,7 @@ import {appearAnimations} from '../../animations/appear-animations';
 export class PageLayoutComponent implements OnInit {
   @Input() showHeader = true;
   @Input() showFooter = false;
+  @Input() showSidebar = false;
   @Input() theme: 'light' | 'dark' = 'light';
   @Input() loading = false;
 

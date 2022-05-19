@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ScriptReadComponent } from './script-read.component';
+import { ScriptRolesListComponent } from './script-roles-list.component';
 
-describe('ScriptReadComponent', () => {
-  let component: ScriptReadComponent;
-  let fixture: ComponentFixture<ScriptReadComponent>;
+describe('ScriptRolesListComponent', () => {
+  let component: ScriptRolesListComponent;
+  let fixture: ComponentFixture<ScriptRolesListComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ScriptReadComponent ]
+      declarations: [ ScriptRolesListComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ScriptReadComponent);
+    fixture = TestBed.createComponent(ScriptRolesListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
