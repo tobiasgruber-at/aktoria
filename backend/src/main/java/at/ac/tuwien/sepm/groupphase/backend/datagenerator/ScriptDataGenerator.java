@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.awt.Color;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -116,21 +117,25 @@ public class ScriptDataGenerator {
 
     @Transactional
     public void generateSpokenBy() {
-        if (scriptRepository.findAll().size() > 0) {
-            log.debug("spoken_by already generated");
+        List<Script> scripts = scriptRepository.findAll();
+        if (scripts.isEmpty()) {
+            log.debug("cannot generate spoken-by entries without scripts");
         } else {
-            List<Line> lines = lineRepository.findAll();
-            List<Role> roles = roleRepository.findAll();
-            int linesSize = lines.size();
-            int rolesSize = roles.size();
-            log.debug("generating {} spoken by entries", linesSize);
-            for (int i = 1; i <= linesSize; i++) {
-                Set<Role> spokenBy = new HashSet<>();
-                spokenBy.add(roles.get(i % rolesSize));
-                Line line = lines.get(i);
-                line.setSpokenBy(spokenBy);
-                log.debug("updating line {}", line);
-                lineRepository.save(line);
+            log.debug("generating spoken-by entries");
+            for (Script script : scripts) {
+                List<Role> roles = script.getRoles().stream().toList();
+                List<Page> pages = script.getPages();
+                for (Page page : pages) {
+                    List<Line> lines = page.getLines();
+                    for (int i = 0; i < lines.size(); i++) {
+                        Set<Role> spokenBy = new HashSet<>();
+                        spokenBy.add(roles.get(i % roles.size()));
+                        Line line = lines.get(i);
+                        line.setSpokenBy(spokenBy);
+                        log.debug("update line {}", line);
+                        lineRepository.save(line);
+                    }
+                }
             }
         }
     }
