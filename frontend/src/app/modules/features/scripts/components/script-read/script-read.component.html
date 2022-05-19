@@ -3,9 +3,6 @@
     <strong>Fehler!</strong> Skript wurde nicht gefunden.
   </app-alert>
   <ng-template #noError>
-    <app-script-page
-      *ngFor="let page of script?.pages"
-      [page]="page"
-    ></app-script-page>
+    <app-script-viewer></app-script-viewer>
   </ng-template>
 </app-page-layout>

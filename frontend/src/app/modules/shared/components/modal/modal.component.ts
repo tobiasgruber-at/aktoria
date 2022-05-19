@@ -11,9 +11,10 @@ export class ModalComponent {
   @Output() decline = new EventEmitter<void>();
   @Output() confirm = new EventEmitter<void>();
   @Input() title: string;
+  @Input() theme: Theme = Theme.primary;
   @Input() confirmBtnLabel: string;
   @Input() loading = false;
-  readonly theme = Theme;
+  @Input() showDecline = true;
 
   /** If modal is declined. */
   onDecline(): void {

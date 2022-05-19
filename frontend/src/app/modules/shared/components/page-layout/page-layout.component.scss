@@ -1,5 +1,14 @@
 :host {
   --nav-height: 4.5rem;
+  --sidebar-width: 23rem;
+
+  & > .wrapper {
+    padding-top: var(--nav-height);
+
+    &.sidebar-gap {
+      padding-right: var(--sidebar-width);
+    }
+  }
 }
 
 :host > .wrapper,
@@ -10,7 +19,7 @@ footer {
 
 header,
 footer {
-  z-index: 10;
+  z-index: 10000; // bigger than bootstrap dropdowns
 }
 
 header nav,
@@ -20,8 +29,15 @@ footer {
 
 main {
   margin: 0 auto;
-  margin-top: var(--nav-height);
   max-width: 1200px;
+}
+
+aside {
+  height: calc(100vh - var(--nav-height));
+  width: var(--sidebar-width);
+  top: var(--nav-height);
+  right: 0;
+  z-index: 10;
 }
 
 ul {

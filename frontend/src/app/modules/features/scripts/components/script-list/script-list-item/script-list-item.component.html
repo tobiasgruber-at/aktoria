@@ -1,4 +1,7 @@
-<div [routerLink]="'/scripts/' + (isCreate ? 'new' : script?.id)" role="button">
+<div
+  [routerLink]="'/scripts/' + (isCreate ? 'upload' : script?.id)"
+  role="button"
+>
   <div [class.bg-light]="isCreate" class="card">
     <div class="d-flex align-items-center justify-content-center h-100 p-3">
       <img

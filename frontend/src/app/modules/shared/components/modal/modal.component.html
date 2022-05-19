@@ -8,6 +8,7 @@
 <div class="modal-footer">
   <button
     (click)="onDecline()"
+    *ngIf="showDecline"
     [disabled]="loading"
     class="btn btn-outline-secondary"
     type="button"
@@ -18,6 +19,6 @@
     (click)="onConfirm()"
     [label]="confirmBtnLabel || 'Ok'"
     [loading]="loading"
-    [theme]="theme.danger"
+    [theme]="theme"
   ></app-button>
 </div>
