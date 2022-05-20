@@ -17,9 +17,11 @@ import { Subject, takeUntil } from 'rxjs';
 })
 export class ScriptLineComponent implements OnInit, OnDestroy {
   @Input() line: Line;
+  @Input() prevLine: Line;
   isEditing = false;
-  isActive = false;
-  isModalOpened = false;
+  /** Indicates whether the user is actively interacting with this line. */
+  private isInteracting = false;
+  private isModalOpened = false;
   private $destroy = new Subject<void>();
 
   constructor(
@@ -30,21 +32,33 @@ export class ScriptLineComponent implements OnInit, OnDestroy {
   @HostBinding('class')
   get classes(): string[] {
     const classes = [];
-    if (this.isInstruction) {
-      classes.push('py-2');
-    }
     if (this.isEditing) {
       classes.push('is-editing');
     }
-    if (this.isActive || this.isModalOpened) {
-      classes.push('is-active');
+    if (!this.line.active) {
+      classes.push('is-hidden');
+    }
+    if (this.isInteracting || this.isModalOpened) {
+      classes.push('is-interacting');
     }
     return classes;
   }
 
   /** @return Whether this line is an instruction, or a spoken line. */
   get isInstruction() {
-    return !this.line?.roles || this.line?.roles?.length < 1;
+    return !this.line.roles || this.line.roles?.length < 1;
+  }
+
+  /** @return Whether this line has exactly the same authors assigned as the prev line. */
+  get sameRolesAsPrevLine(): boolean {
+    return (
+      this.prevLine?.roles &&
+      this.line.roles?.length > 0 &&
+      this.line.roles.length === this.prevLine.roles.length &&
+      this.line.roles.every((a) =>
+        this.prevLine.roles.some((b) => b.name === a.name)
+      )
+    );
   }
 
   ngOnInit() {
@@ -58,6 +72,7 @@ export class ScriptLineComponent implements OnInit, OnDestroy {
       });
   }
 
+  /** @return Whether a line is highlighted. */
   isHighlighted(selectedRole: Role): boolean {
     return this.line.roles?.some((r) => r.name === selectedRole?.name);
   }
@@ -80,8 +95,14 @@ export class ScriptLineComponent implements OnInit, OnDestroy {
     this.line.roles.push(toggledRole);
   }
 
+  /** Clears all roles of this line. */
   removeRoles(): void {
     this.line.roles = [];
+  }
+
+  /** Toggles whether this line is active. */
+  toggleLineActive(): void {
+    this.line.active = !this.line.active;
   }
 
   ngOnDestroy() {
@@ -90,6 +111,6 @@ export class ScriptLineComponent implements OnInit, OnDestroy {
   }
 
   setIsActive(isActive: boolean) {
-    this.isActive = isActive;
+    this.isInteracting = isActive;
   }
 }

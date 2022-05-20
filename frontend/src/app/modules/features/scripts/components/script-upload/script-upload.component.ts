@@ -27,7 +27,10 @@ export class ScriptUploadComponent extends FormBase implements OnInit {
   ngOnInit(): void {
     this.form = this.formBuilder.group({
       file: [null, [Validators.required, Validators.maxLength(1)]],
-      startPage: [0, [Validators.required, Validators.maxLength(10)]]
+      startPage: [
+        0,
+        [Validators.required, Validators.min(0), Validators.maxLength(10)]
+      ]
     });
   }
 

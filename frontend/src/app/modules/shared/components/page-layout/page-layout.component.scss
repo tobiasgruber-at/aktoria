@@ -28,8 +28,31 @@ footer {
 }
 
 main {
+  // 'height' must be specifically defined, as it has 'overflow: auto' and is not scrollable otherwise
+  height: calc(100vh - var(--nav-height));
   margin: 0 auto;
-  max-width: 1200px;
+  overflow-y: scroll;
+
+  & > .wrapper {
+    margin: 0 auto;
+    max-width: 1200px;
+  }
+
+  &.is-dark-theme::-webkit-scrollbar-thumb {
+    background: rgb(33, 37, 41);
+  }
+
+  &:not(.is-dark-theme)::-webkit-scrollbar-thumb {
+    background: rgb(33 37 41 / 15%);
+  }
+
+  &::-webkit-scrollbar {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 2ex;
+  }
 }
 
 aside {

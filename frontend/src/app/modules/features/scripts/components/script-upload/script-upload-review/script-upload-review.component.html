@@ -1,5 +1,26 @@
 <app-page-layout [loading]="getLoading" [showSidebar]="true" theme="dark">
   <app-script-viewer></app-script-viewer>
+  <ng-template #tutorialModal let-modal>
+    <app-modal
+      (confirm)="modal.dismiss()"
+      (decline)="modal.dismiss()"
+      [showDecline]="false"
+      confirmBtnLabel="Weiter"
+      title="Skript überprüfen"
+    >
+      <p>Bitte überprüfe, ob dein Skript richtig verarbeitet wurde.<br /></p>
+      <p>
+        Sollten Rollen den falschen Texten zugewiesen sein, kannst du auf den
+        Text klicken und die
+        <strong class="text-primary">Rollen ändern</strong>.
+      </p>
+      <p>
+        Wurden Rollen mehrfach erkannt, so kannst du auf der rechten
+        Seitenleiste
+        <strong class="text-primary">Rollen vereinigen</strong>.
+      </p>
+    </app-modal>
+  </ng-template>
   <form
     (ngSubmit)="submit()"
     [formGroup]="form"
@@ -34,7 +55,29 @@
       ></app-script-roles-list>
     </div>
     <div class="flex-grow-1"></div>
-    <div class="d-flex justify-content-center">
+    <div class="d-flex justify-content-between">
+      <button
+        (click)="openCancelUploadModal(cancelUploadModal)"
+        class="btn btn-outline-secondary"
+        type="button"
+      >
+        Abbrechen
+      </button>
+      <ng-template #cancelUploadModal let-modal>
+        <app-modal
+          (confirm)="cancelUpload(modal)"
+          (decline)="modal.dismiss()"
+          confirmBtnLabel="Verwerfen"
+          title="Skript verwerfen"
+        >
+          <p>
+            Sicher, dass du
+            <i>{{ form.value.scriptName }} </i>
+            <strong class="text-primary">verwerfen</strong>
+            möchtest?
+          </p>
+        </app-modal>
+      </ng-template>
       <app-button
         [disabled]="hasError()"
         [loading]="loading"

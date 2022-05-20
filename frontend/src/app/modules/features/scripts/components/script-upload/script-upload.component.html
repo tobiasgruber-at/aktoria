@@ -41,7 +41,7 @@
         </div>
         <app-form-errors>
           <app-form-error *ngIf="fieldHasErrors('file', 'required')"
-          >Bitte wähle eine Datei aus.
+            >Bitte wähle eine Datei aus.
           </app-form-error>
         </app-form-errors>
       </div>
@@ -59,10 +59,13 @@
         </div>
         <app-form-errors>
           <app-form-error *ngIf="fieldHasErrors('startPage', 'required')"
-          >Bitte gib die Startseite an.
+            >Bitte gib die Startseite an.
+          </app-form-error>
+          <app-form-error *ngIf="fieldHasErrors('startPage', 'min')"
+            >Die Startseite kann nicht negativ sein.
           </app-form-error>
           <app-form-error *ngIf="fieldHasErrors('startPage', 'maxlength')"
-          >Startseite zu groß.
+            >Die Startseite zu groß.
           </app-form-error>
         </app-form-errors>
       </div>

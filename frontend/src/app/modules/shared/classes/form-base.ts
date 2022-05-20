@@ -62,7 +62,8 @@ export abstract class FormBase {
   fieldHasErrors(fieldName: string, errorName?: string): boolean {
     const field = this.form.get(fieldName);
     return (
-      (this.submitted || field.touched) &&
+      this.submitted &&
+      field.touched &&
       field.invalid &&
       (errorName ? field.errors[errorName] : true)
     );
