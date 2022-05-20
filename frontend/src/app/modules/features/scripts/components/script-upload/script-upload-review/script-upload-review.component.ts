@@ -1,4 +1,11 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  ViewChild
+} from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { ScriptService } from '../../../../../core/services/script/script.service';
 import { Router } from '@angular/router';
@@ -8,6 +15,7 @@ import { FormBase } from '../../../../../shared/classes/form-base';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ScriptViewerService } from '../../../services/script-viewer.service';
 import { SimpleScript } from '../../../../../shared/dtos/script-dtos';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-script-upload-review',
@@ -17,7 +25,8 @@ import { SimpleScript } from '../../../../../shared/dtos/script-dtos';
 })
 export class ScriptUploadReviewComponent
   extends FormBase
-  implements OnInit, OnDestroy {
+  implements OnInit, OnDestroy, AfterViewInit {
+  @ViewChild('tutorialModal') tutorialModal: ElementRef;
   getLoading = true;
   script: SimpleScript = null;
   private $destroy = new Subject<void>();
@@ -27,7 +36,8 @@ export class ScriptUploadReviewComponent
     private scriptService: ScriptService,
     private router: Router,
     private toastService: ToastService,
-    public scriptViewerService: ScriptViewerService
+    public scriptViewerService: ScriptViewerService,
+    private modalService: NgbModal
   ) {
     super(toastService);
   }
@@ -63,6 +73,10 @@ export class ScriptUploadReviewComponent
       },
       error: handleNoStagedScript
     });
+  }
+
+  ngAfterViewInit() {
+    this.modalService.open(this.tutorialModal, { centered: true });
   }
 
   ngOnDestroy() {
