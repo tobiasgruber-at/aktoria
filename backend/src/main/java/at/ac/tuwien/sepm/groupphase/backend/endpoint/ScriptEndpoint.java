@@ -38,7 +38,7 @@ public class ScriptEndpoint {
         this.scriptService = scriptService;
     }
 
-    @PostMapping(path = "/new", produces = { MediaType.APPLICATION_JSON_VALUE }, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    @PostMapping(path = "/new", produces = {MediaType.APPLICATION_JSON_VALUE}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @ResponseStatus(HttpStatus.OK)
     @Secured(Permission.verified)
     public SimpleScriptDto uploadScript(@RequestPart("file") MultipartFile multipartFile, @RequestPart(value = "startPage", required = false) String startPage) {
@@ -76,5 +76,10 @@ public class ScriptEndpoint {
     public void deleteScript(@PathVariable Long id) {
         log.info("DELETE {}/{}", ScriptEndpoint.path, id);
         scriptService.delete(id);
+    }
+
+    public ScriptDto patchScript(@RequestBody ScriptDto scriptDto, @PathVariable Long id) {
+        log.info("PATCH {}/{}", path, id);
+        return scriptService.patch(scriptDto, id);
     }
 }

@@ -272,4 +272,18 @@ public class ScriptServiceImpl implements ScriptService {
         }
         scriptRepository.deleteById(id);
     }
+
+    @Override
+    @Transactional
+    public ScriptDto patch(ScriptDto scriptDto, Long id) {
+        log.trace("patch(id = {})", id);
+
+        User user = authorizationService.getLoggedInUser();
+        if (user == null) {
+            throw new UnauthorizedException();
+        }
+        Optional<Script> script = scriptRepository.findById(id);
+        //TODO: fertig machen
+        return null;
+    }
 }
