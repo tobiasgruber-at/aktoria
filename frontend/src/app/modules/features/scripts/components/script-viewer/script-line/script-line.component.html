@@ -6,11 +6,13 @@
     placement="bottom-end top-end bottom-start top-start"
   >
     <div *ngIf="!isInstruction" class="roles px-1">
-      <span
-        *ngFor="let role of line?.roles; let i = index"
-        class="d-inline-block"
-        >{{ role.name }}{{ i < line?.roles.length - 1 ? ', ' : '' }}</span
-      >
+      <ng-container *ngIf="!sameRolesAsPrevLine">
+        <span
+          *ngFor="let role of line?.roles; let i = index"
+          class="d-inline-block"
+          >{{ role.name }}{{ i < line?.roles.length - 1 ? ', ' : '' }}</span
+        >
+      </ng-container>
     </div>
     <p
       [class.fst-italic]="isInstruction"
@@ -18,6 +20,7 @@
         isHighlighted(scriptViewerService.$selectedRole | async)
       "
       [class.text-secondary]="isInstruction"
+      class="w-100"
       ngbDropdownToggle
     >
       {{ line?.content }}
