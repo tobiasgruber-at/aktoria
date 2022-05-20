@@ -1,4 +1,8 @@
-<div class="position-relative mb-1">
+<div
+  *ngIf="isEditing || line.active"
+  [class.py-2]="isInstruction"
+  class="position-relative mb-1"
+>
   <div
     (openChange)="setIsActive($event)"
     class="d-flex px-5"
@@ -35,6 +39,9 @@
         ngbDropdownItem
       >
         Als Instruktion markieren
+      </button>
+      <button (click)="toggleLineActive()" ngbDropdownItem>
+        Text {{ line.active ? 'ausblenden' : 'einblenden' }}
       </button>
     </div>
     <ng-template #changeRolesModal let-modal>

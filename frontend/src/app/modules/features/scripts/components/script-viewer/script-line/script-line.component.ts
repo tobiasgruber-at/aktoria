@@ -20,8 +20,8 @@ export class ScriptLineComponent implements OnInit, OnDestroy {
   @Input() prevLine: Line;
   isEditing = false;
   /** Indicates whether the user is actively interacting with this line. */
-  isActive = false;
-  isModalOpened = false;
+  private isInteracting = false;
+  private isModalOpened = false;
   private $destroy = new Subject<void>();
 
   constructor(
@@ -32,14 +32,14 @@ export class ScriptLineComponent implements OnInit, OnDestroy {
   @HostBinding('class')
   get classes(): string[] {
     const classes = [];
-    if (this.isInstruction) {
-      classes.push('py-2');
-    }
     if (this.isEditing) {
       classes.push('is-editing');
     }
-    if (this.isActive || this.isModalOpened) {
-      classes.push('is-active');
+    if (!this.line.active) {
+      classes.push('is-hidden');
+    }
+    if (this.isInteracting || this.isModalOpened) {
+      classes.push('is-interacting');
     }
     return classes;
   }
@@ -100,12 +100,17 @@ export class ScriptLineComponent implements OnInit, OnDestroy {
     this.line.roles = [];
   }
 
+  /** Toggles whether this line is active. */
+  toggleLineActive(): void {
+    this.line.active = !this.line.active;
+  }
+
   ngOnDestroy() {
     this.$destroy.next();
     this.$destroy.complete();
   }
 
   setIsActive(isActive: boolean) {
-    this.isActive = isActive;
+    this.isInteracting = isActive;
   }
 }
