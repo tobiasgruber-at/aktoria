@@ -19,6 +19,7 @@ export class ScriptLineComponent implements OnInit, OnDestroy {
   @Input() line: Line;
   @Input() prevLine: Line;
   isEditing = false;
+  /** Indicates whether the user is actively interacting with this line. */
   isActive = false;
   isModalOpened = false;
   private $destroy = new Subject<void>();
@@ -71,6 +72,7 @@ export class ScriptLineComponent implements OnInit, OnDestroy {
       });
   }
 
+  /** @return Whether a line is highlighted. */
   isHighlighted(selectedRole: Role): boolean {
     return this.line.roles?.some((r) => r.name === selectedRole?.name);
   }
@@ -93,6 +95,7 @@ export class ScriptLineComponent implements OnInit, OnDestroy {
     this.line.roles.push(toggledRole);
   }
 
+  /** Clears all roles of this line. */
   removeRoles(): void {
     this.line.roles = [];
   }

@@ -4,6 +4,7 @@ import {
   ElementRef,
   OnDestroy,
   OnInit,
+  TemplateRef,
   ViewChild
 } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
@@ -15,7 +16,7 @@ import { FormBase } from '../../../../../shared/classes/form-base';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ScriptViewerService } from '../../../services/script-viewer.service';
 import { SimpleScript } from '../../../../../shared/dtos/script-dtos';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-script-upload-review',
@@ -72,6 +73,19 @@ export class ScriptUploadReviewComponent
         });
       },
       error: handleNoStagedScript
+    });
+  }
+
+  openCancelUploadModal(modalRef: TemplateRef<void>): void {
+    this.modalService.open(modalRef, { centered: true });
+  }
+
+  cancelUpload(modal: NgbActiveModal): void {
+    this.router.navigateByUrl('/scripts');
+    modal.dismiss();
+    this.toastService.show({
+      message: 'Skript Upload abgebrochen.',
+      theme: Theme.primary
     });
   }
 
