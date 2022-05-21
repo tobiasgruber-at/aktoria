@@ -75,7 +75,7 @@ public class ScriptDataGenerator {
             int usersSize = users.size();
             for (int i = 1; i <= NUMBER_OF_SCRIPTS_TO_GENERATE; i++) {
                 Script script = Script.builder().name(TEST_SCRIPT_NAME + " " + i)
-                    .owner(users.get(i % usersSize)).build();
+                    .owner(users.get(1)).build();
                 log.debug("saving script {}", script);
                 scriptRepository.save(script);
                 generatePage(script);

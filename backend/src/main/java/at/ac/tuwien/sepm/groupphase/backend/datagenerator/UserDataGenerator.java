@@ -49,7 +49,7 @@ public class UserDataGenerator {
                     .lastName(TEST_USER_LAST_NAME + i)
                     .email(TEST_USER_EMAIL_LOCAL + i + TEST_USER_EMAIL_DOMAIN)
                     .passwordHash(passwordEncoder.encode(TEST_USER_PASSWORD + i))
-                    .verified(false).build();
+                    .verified(true).build();
                 log.debug("saving user {}", user);
                 userRepository.save(user);
             }

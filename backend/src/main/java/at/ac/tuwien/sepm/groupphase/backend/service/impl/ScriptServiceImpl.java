@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.InvitationDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.JoinDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ScriptDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ScriptPreviewDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleLineDto;
@@ -19,14 +20,18 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.SecureToken;
 import at.ac.tuwien.sepm.groupphase.backend.entity.User;
 import at.ac.tuwien.sepm.groupphase.backend.enums.TokenType;
 import at.ac.tuwien.sepm.groupphase.backend.exception.IllegalFileFormatException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.InvalidTokenException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.UnauthorizedException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.UnprocessableEmailException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.LineRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.PageRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.RoleRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ScriptRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.AuthorizationService;
+import at.ac.tuwien.sepm.groupphase.backend.service.MailSender;
 import at.ac.tuwien.sepm.groupphase.backend.service.ScriptService;
 import at.ac.tuwien.sepm.groupphase.backend.service.SecureTokenService;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.script.ParsedScript;
@@ -41,7 +46,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -57,34 +65,39 @@ public class ScriptServiceImpl implements ScriptService {
     private final ScriptMapper scriptMapper;
     private final UserMapper userMapper;
     private final ScriptRepository scriptRepository;
+    private final UserRepository userRepository;
     private final PageRepository pageRepository;
     private final LineRepository lineRepository;
     private final RoleRepository roleRepository;
     private final AuthorizationService authorizationService;
     private final UserValidation userValidation;
     private final SecureTokenService secureTokenService;
+    private final MailSender mailSender;
 
     @Autowired
     public ScriptServiceImpl(
         ScriptMapper scriptMapper,
         UserMapper userMapper,
         ScriptRepository scriptRepository,
-        PageRepository pageRepository,
+        UserRepository userRepository, PageRepository pageRepository,
         LineRepository lineRepository,
         RoleRepository roleRepository,
         AuthorizationService authorizationService,
         UserValidation userValidation,
-        SecureTokenService secureTokenService
+        SecureTokenService secureTokenService,
+        MailSender mailSender
     ) {
         this.scriptMapper = scriptMapper;
         this.userMapper = userMapper;
         this.scriptRepository = scriptRepository;
+        this.userRepository = userRepository;
         this.pageRepository = pageRepository;
         this.lineRepository = lineRepository;
         this.roleRepository = roleRepository;
         this.authorizationService = authorizationService;
         this.userValidation = userValidation;
         this.secureTokenService = secureTokenService;
+        this.mailSender = mailSender;
     }
 
     @Override
@@ -234,15 +247,20 @@ public class ScriptServiceImpl implements ScriptService {
     }
 
     @Override
-    public Stream<ScriptPreviewDto> findAllPreviews() {
-        log.trace("getAllPreviews()");
+    @Transactional
+    public Stream<ScriptPreviewDto> findAllPreviews(String permission) {
+        log.trace("getAllPreviews({})",permission);
 
         User user = authorizationService.getLoggedInUser();
         if (user == null) {
             throw new UnauthorizedException();
         }
 
-        return scriptMapper.listOfScriptToListOfScriptPreviewDto(scriptRepository.getScriptByOwner(user)).stream();
+        if (permission.equals("owner")){
+            return scriptMapper.listOfScriptToListOfScriptPreviewDto(scriptRepository.getScriptByOwner(user)).stream();
+        } else {
+            return scriptMapper.listOfScriptToListOfScriptPreviewDto(scriptRepository.getScriptByParticipant(user)).stream();
+        }
     }
 
     @Override
@@ -288,7 +306,59 @@ public class ScriptServiceImpl implements ScriptService {
 
         //TODO: VALIDATION
 
-        SecureToken secureToken = secureTokenService.createSecureToken(TokenType.inviteParticipant, 1440);
+        Optional<Script> script = scriptRepository.findById(invitationDto.getId_script());
+        if (script.isPresent()){
+            SecureToken secureToken = secureTokenService.createSecureToken(TokenType.inviteParticipant, 1440);
+            secureToken.setScript(script.get());
+            secureTokenService.saveSecureToken(secureToken);
 
+            final String link = "http://localhost:4200/scripts/" + script.get().getId() + "/join/" + secureToken.getToken();
+            try {
+                mailSender.sendMail(invitationDto.getEmail(), "Aktoria Passwort zurücksetzen",
+                    """
+                            <h1>Hallo,</h1>
+                            %s lädt dich ein bei dem Aktoria Skript "%s" mitzulernen.
+                            <br>
+                            klick auf den folgenden Link, um dem Projekt beizutreten.
+                            <br>
+                            <a href='%s'>Beitreten</a>
+                        """
+                        .formatted(script.get().getOwner().getFirstName(), script.get().getName(), link));
+            } catch (UnprocessableEmailException e) {
+                throw new ServiceException(e.getMessage(), e);
+            }
+
+        } else {
+            throw new NotFoundException();
+        }
+    }
+
+    @Override
+    @Transactional
+    public void joinScript(JoinDto joinDto) {
+        log.trace("joinScript(joinDto = {})", joinDto);
+
+        authorizationService.checkBasicAuthorization(joinDto.getId());
+
+        SecureToken secureToken = secureTokenService.findByToken(joinDto.getToken());
+        secureTokenService.removeToken(joinDto.getToken());
+        if (secureToken.getType() == TokenType.inviteParticipant) {
+            if (secureToken.getExpireAt().isAfter(LocalDateTime.now())) {
+
+                Optional<User> optionalUser = userRepository.findById(joinDto.getId());
+                if (optionalUser.isPresent()){
+                    User user = optionalUser.get();
+                    Script script = secureToken.getScript();
+                    Set<Script> scripts = user.getParticipatesIn();
+                    scripts.add(script);
+                    user.setParticipatesIn(scripts);
+
+                    userRepository.saveAndFlush(user);
+                    return;
+                }
+                throw new NotFoundException();
+            }
+        }
+        throw new InvalidTokenException();
     }
 }

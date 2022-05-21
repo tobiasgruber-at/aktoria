@@ -62,13 +62,15 @@ export class ScriptService {
   /**
    * Gets all script previews
    *
+   *
    * @return observable list of script previews
    */
-  getAll(): Observable<ScriptPreview[]> {
+  getAll(permission: string): Observable<ScriptPreview[]> {
+    const uri = this.baseUri + '?permission=' + permission;
     return this.scripts?.length > 0
       ? of(this.scripts)
       : this.http
-          .get<ScriptPreview[]>(this.baseUri)
+          .get<ScriptPreview[]>(uri)
           .pipe(tap((scripts) => this.setScripts(scripts)));
   }
 

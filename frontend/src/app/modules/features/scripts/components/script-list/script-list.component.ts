@@ -1,5 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {ScriptService} from '../../../../core/services/script/script.service';
+import {Theme} from '../../../../shared/enums/theme.enum';
+import {ScriptPreview} from '../../../../shared/dtos/script-dtos';
 
 @Component({
   selector: 'app-script-list',
@@ -9,11 +11,20 @@ import {ScriptService} from '../../../../core/services/script/script.service';
 export class ScriptListComponent implements OnInit {
   @Input() title: string;
   @Input() hasUploadButton = false;
+  @Input() permission: string;
+  scriptPreviews: ScriptPreview[];
 
   constructor(public scriptService: ScriptService) {
   }
 
   ngOnInit(): void {
-    this.scriptService.getAll().subscribe();
+    this.scriptService.getAll(this.permission).subscribe({
+      next: (res) => {
+        this.scriptPreviews = res;
+      },
+      error: (err) => {
+        console.log(err);
+      }
+    });
   }
 }

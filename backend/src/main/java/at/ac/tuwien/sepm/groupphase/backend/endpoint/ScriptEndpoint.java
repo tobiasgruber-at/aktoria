@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.InvitationDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.JoinDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ScriptDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ScriptPreviewDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleScriptDto;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -58,9 +60,9 @@ public class ScriptEndpoint {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @Secured(Permission.verified)
-    public Stream<ScriptPreviewDto> getScriptPreviews() {
+    public Stream<ScriptPreviewDto> getScriptPreviews(@RequestParam("permission") String permission) {
         log.info("GET {}", path);
-        return scriptService.findAllPreviews();
+        return scriptService.findAllPreviews(permission);
     }
 
     @GetMapping(path = "/{id}")
@@ -81,8 +83,17 @@ public class ScriptEndpoint {
 
     @PostMapping(path="/invitation")
     @ResponseStatus(HttpStatus.OK)
+    @Secured(Permission.verified)
     public void inviteUser(@RequestBody InvitationDto invitationDto){
         log.info("POST /invitation");
         scriptService.invite(invitationDto);
+    }
+
+    @PostMapping(path="/participants")
+    @ResponseStatus(HttpStatus.OK)
+    @Secured(Permission.verified)
+    public void joinScript(@RequestBody JoinDto joinDto){
+        log.info("POST /participants");
+        scriptService.joinScript(joinDto);
     }
 }

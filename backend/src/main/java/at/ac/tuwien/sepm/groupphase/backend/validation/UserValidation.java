@@ -46,6 +46,4 @@ public interface UserValidation {
     void validateChangePasswordInput(PasswordChangeDto passwordChangeDto, Long id) throws ValidationException, ConflictException, NotFoundException;
 
     void validateEmail(String email);
-
-    void validateChangePasswordInput(PasswordChangeDto passwordChangeDto) throws ValidationException;
 }

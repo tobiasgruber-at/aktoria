@@ -5,16 +5,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Invitaion Data Transfer Object.
+ * Join Data Transfer Object.
  * <br>
- * This represents an invitation to participate of a script.
+ * This represents joining a script.
  *
  * @author Nikolaus Peter
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class InvitationDto {
-    private Long id_script;
-    private String email;
+public class JoinDto {
+    Long id;
+    String token;
 }

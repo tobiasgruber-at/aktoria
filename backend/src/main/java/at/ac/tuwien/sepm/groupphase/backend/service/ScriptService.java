@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.service;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.InvitationDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.JoinDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ScriptDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ScriptPreviewDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleScriptDto;
@@ -49,7 +50,7 @@ public interface ScriptService {
      * @return a stream of previews
      * @throws ServiceException when an error occurs while trying to get the scripts
      */
-    Stream<ScriptPreviewDto> findAllPreviews();
+    Stream<ScriptPreviewDto> findAllPreviews(String permission);
 
     /**
      * Gets the script corresponding to the given id.
@@ -74,4 +75,11 @@ public interface ScriptService {
      * @param invitationDto the invitation
      */
     void invite(InvitationDto invitationDto);
+
+    /**
+     * Accepts an invitaion and add user to participants
+     *
+     * @param joinDto the join data
+     */
+    void joinScript(JoinDto joinDto);
 }
