@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
-import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree} from '@angular/router';
-import { Observable } from 'rxjs';
+import {Injectable} from '@angular/core';
+import {CanActivate, Router} from '@angular/router';
 import {AuthService} from '../services/auth/auth-service';
 
+/** Guard to ensure that the user is not verified. */
 @Injectable({
   providedIn: 'root'
 })
@@ -18,5 +18,4 @@ export class NotVerifiedGuard implements CanActivate {
       return false;
     }
   }
-
 }

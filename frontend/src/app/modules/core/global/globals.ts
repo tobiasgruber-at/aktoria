@@ -6,6 +6,7 @@ import { Injectable } from '@angular/core';
 export class Globals {
   readonly backendUri: string = this.findBackendUrl();
 
+  /** Finds backend url, based on the environment. */
   private findBackendUrl(): string {
     if (window.location.port === '4200') {
       // local `ng serve`, backend at localhost:8080

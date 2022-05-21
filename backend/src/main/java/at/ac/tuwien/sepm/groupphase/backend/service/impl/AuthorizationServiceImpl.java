@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Script;
 import at.ac.tuwien.sepm.groupphase.backend.entity.User;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
+import at.ac.tuwien.sepm.groupphase.backend.enums.Permission;
 import at.ac.tuwien.sepm.groupphase.backend.exception.UnauthorizedException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ScriptRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
@@ -76,7 +77,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         Collection<GrantedAuthority> authorities;
         authorities = (Collection<GrantedAuthority>) auth.getAuthorities();
 
-        return authorities.containsAll(AuthorityUtils.createAuthorityList("ROLE_ADMIN"));
+        return authorities.containsAll(AuthorityUtils.createAuthorityList(Permission.admin));
     }
 
     @Override

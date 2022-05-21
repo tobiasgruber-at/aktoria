@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../../core/services/auth/auth-service';
-import { UserService } from '../../core/services/user/user-service';
+import {Component} from '@angular/core';
+import {AuthService} from '../../core/services/auth/auth-service';
+import {UserService} from '../../core/services/user/user-service';
 
 /** @author Tobias Gruber */
 @Component({
@@ -8,11 +8,9 @@ import { UserService } from '../../core/services/user/user-service';
   templateUrl: './landing.component.html',
   styleUrls: ['./landing.component.scss']
 })
-export class LandingComponent implements OnInit {
+export class LandingComponent {
   constructor(
     public authService: AuthService,
     public userService: UserService
   ) {}
-
-  ngOnInit() {}
 }

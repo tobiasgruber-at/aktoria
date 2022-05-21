@@ -1,7 +1,7 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
-import { AlertComponent } from './alert.component';
-import { SharedTestingModule } from '../../shared-testing.module';
+import {AlertComponent} from './alert.component';
+import {SharedTestingModule} from '../../shared-testing.module';
 
 describe('AlertComponent', () => {
   let component: AlertComponent;

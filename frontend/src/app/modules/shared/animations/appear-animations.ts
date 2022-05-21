@@ -17,6 +17,7 @@ const transitionDuration = 250;
 const transitionCurve = 'cubic-bezier(.42, 0, .09, 1)';
 const transitionDelay = 0;
 
+/** Animations, that an element fades in and scales up out of nowhere. */
 export const appearAnimations: AnimationTriggerMetadata = trigger('appear', [
   state('void', style(voidStyles)),
 

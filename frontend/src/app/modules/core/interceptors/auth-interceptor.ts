@@ -1,23 +1,23 @@
-import { Injectable } from '@angular/core';
-import {
-  HttpEvent,
-  HttpHandler,
-  HttpInterceptor,
-  HttpRequest
-} from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { Globals } from '../global/globals';
-import { AuthService } from '../services/auth/auth-service';
-import { UserService } from '../services/user/user-service';
+import {Injectable} from '@angular/core';
+import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
+import {Observable} from 'rxjs';
+import {Globals} from '../global/globals';
+import {AuthService} from '../services/auth/auth-service';
+import {UserService} from '../services/user/user-service';
 
-/** @author Tobias Gruber */
+/**
+ * Interceptor, that automatically appends authentication header information.
+ *
+ * @author Tobias Gruber
+ */
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
   constructor(
     private authService: AuthService,
     private userService: UserService,
     private globals: Globals
-  ) {}
+  ) {
+  }
 
   /** Intercepts outgoing http requests and adds authorizations headers if necessary. */
   intercept(
@@ -48,9 +48,9 @@ export class AuthInterceptor implements HttpInterceptor {
     } else if (req.method === 'POST') {
       blacklistedEndpoints.push('/users');
       blacklistedEndpoints.push('/users/verification');
-      blacklistedEndpoints.push('/users/reset-password');
+      blacklistedEndpoints.push('/users/forgot-password');
     } else if (req.method === 'PUT') {
-      blacklistedEndpoints.push('/users/change-password');
+      blacklistedEndpoints.push('/users/reset-password');
     }
     return blacklistedEndpoints.some(
       (e) => req.url === this.globals.backendUri + e

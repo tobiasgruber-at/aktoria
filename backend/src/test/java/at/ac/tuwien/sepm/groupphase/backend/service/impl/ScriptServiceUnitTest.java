@@ -1,23 +1,16 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
-import at.ac.tuwien.sepm.groupphase.backend.datagenerator.ScriptDataGenerator;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Script;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ScriptRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.ScriptService;
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import javax.transaction.Transactional;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -27,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  *
  * @author Marvin Flandorfer
  */
-@ActiveProfiles({"test", "datagen"})
+@ActiveProfiles({ "test", "datagen" })
 @SpringBootTest
 public class ScriptServiceUnitTest {
 

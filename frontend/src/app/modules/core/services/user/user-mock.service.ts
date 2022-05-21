@@ -3,12 +3,16 @@ import { Observable, of } from 'rxjs';
 import { SimpleUser, UserRegistration } from '../../../shared/dtos/user-dtos';
 import { UserService } from './user-service';
 import { randomDelay } from '../../../shared/functions/random-delay';
-import {ChangePassword} from '../../../shared/dtos/password-change-dto';
+import { ChangePassword } from '../../../shared/dtos/password-change-dto';
 
 @Injectable()
 export class UserMockService extends UserService {
   constructor() {
     super();
+  }
+
+  $ownUser(): Observable<SimpleUser> {
+    return undefined;
   }
 
   getOwnUser(): SimpleUser {
@@ -47,6 +51,5 @@ export class UserMockService extends UserService {
     return undefined;
   }
 
-  submitEmailToken(token: string): any {
-  }
+  submitEmailToken(token: string): any {}
 }

@@ -9,7 +9,7 @@
         <div>
           <button
             class="btn btn-primary me-3"
-            routerLink="/scripts/{{ script?.id }}/read"
+            routerLink="/scripts/{{ script?.id }}/view"
           >
             Skript ansehen
           </button>
@@ -21,6 +21,7 @@
               (confirm)="deleteScript(modal)"
               (decline)="modal.dismiss()"
               [loading]="deleteLoading"
+              [theme]="theme.danger"
               confirmBtnLabel="Löschen"
               title="Skript löschen"
             >
@@ -31,8 +32,9 @@
                 >{{ this.deleteError }}</app-alert
               >
               Sicher, dass du
-              <strong class="text-primary">{{ script?.name }}</strong>
-              unwiderruflich löschen möchtest möchtest?
+              <i>{{ script?.name }} </i>
+              <strong class="text-primary">unwiderruflich löschen</strong>
+              möchtest möchtest?
             </app-modal>
           </ng-template>
         </div>

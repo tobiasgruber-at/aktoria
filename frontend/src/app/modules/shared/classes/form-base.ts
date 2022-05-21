@@ -23,6 +23,7 @@ export abstract class FormBase {
     }
   }
 
+  /** Toggles the loading state. */
   toggleLoading(loading: boolean = !this.loading): void {
     this.loading = loading;
     if (this.loading) {
@@ -32,6 +33,7 @@ export abstract class FormBase {
     }
   }
 
+  /** Handles common errors by notifying the user. */
   handleError(error): void {
     this.toggleLoading(false);
     console.log('Could not log in due to:');
@@ -60,11 +62,13 @@ export abstract class FormBase {
   fieldHasErrors(fieldName: string, errorName?: string): boolean {
     const field = this.form.get(fieldName);
     return (
-      (this.submitted || field.touched) &&
+      this.submitted &&
+      field.touched &&
       field.invalid &&
       (errorName ? field.errors[errorName] : true)
     );
   }
 
+  /** Sends the submitted value, after the form is validated. */
   protected abstract sendSubmit(): void;
 }

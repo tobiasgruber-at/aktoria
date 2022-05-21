@@ -1,7 +1,7 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { ToastsItemComponent } from './toasts-item.component';
-import { SharedTestingModule } from '../../../../shared/shared-testing.module';
+import {ToastsItemComponent} from './toasts-item.component';
+import {SharedTestingModule} from '../../../../shared/shared-testing.module';
 
 describe('ToastsItemComponent', () => {
   let component: ToastsItemComponent;

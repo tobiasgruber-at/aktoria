@@ -1,12 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { ToastService } from '../../core/services/toast/toast.service';
-import { UserService } from '../../core/services/user/user-service';
-import { UserRegistration } from '../../shared/dtos/user-dtos';
-import { FormBase } from '../../shared/classes/form-base';
-import { Theme } from '../../shared/enums/theme.enum';
-import { matchingPasswordsValidator } from '../../shared/validators/matching-passwords-validator';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, Validators} from '@angular/forms';
+import {Router} from '@angular/router';
+import {ToastService} from '../../core/services/toast/toast.service';
+import {UserService} from '../../core/services/user/user-service';
+import {UserRegistration} from '../../shared/dtos/user-dtos';
+import {FormBase} from '../../shared/classes/form-base';
+import {Theme} from '../../shared/enums/theme.enum';
+import {matchingPasswordsValidator} from '../../shared/validators/matching-passwords-validator';
 import {AuthRequest} from '../../shared/dtos/auth-request';
 import {AuthService} from '../../core/services/auth/auth-service';
 
@@ -39,7 +39,7 @@ export class RegistrationComponent extends FormBase implements OnInit {
         password: ['', [Validators.required, Validators.minLength(8)]],
         passwordConfirm: ['', [Validators.required]]
       },
-      { validators: [matchingPasswordsValidator] }
+      { validators: [matchingPasswordsValidator()] }
     );
   }
 
@@ -59,6 +59,7 @@ export class RegistrationComponent extends FormBase implements OnInit {
       });
   }
 
+  /** Logs the user in. */
   private login(email: string, password: string): void {
     this.authService.loginUser(new AuthRequest(email, password)).subscribe({
       next: () => {

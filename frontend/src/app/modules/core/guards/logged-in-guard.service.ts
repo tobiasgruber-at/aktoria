@@ -1,7 +1,8 @@
-import { Injectable } from '@angular/core';
-import { CanActivate, Router } from '@angular/router';
-import { AuthService } from '../services/auth/auth-service';
+import {Injectable} from '@angular/core';
+import {CanActivate, Router} from '@angular/router';
+import {AuthService} from '../services/auth/auth-service';
 
+/** Guard to ensure that the user is logged in. */
 @Injectable({
   providedIn: 'root'
 })

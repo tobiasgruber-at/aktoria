@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserRegistrationDto;
+import at.ac.tuwien.sepm.groupphase.backend.enums.Role;
 import at.ac.tuwien.sepm.groupphase.backend.testhelpers.UserTestHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.icegreen.greenmail.configuration.GreenMailConfiguration;
@@ -35,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @EnableWebMvc
 @WebAppConfiguration
-@WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {"USER","VERIFIED","ADMIN"})
+@WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user, Role.verified, Role.admin })
 public class UserVerificationIntegrationTest {
     @RegisterExtension
     static GreenMailExtension greenMail = new GreenMailExtension(ServerSetupTest.SMTP)
@@ -92,7 +93,7 @@ public class UserVerificationIntegrationTest {
         final MimeMessage message = receivedMessages[0];
         assertEquals("varok.saurfang@email.com", message.getAllRecipients()[0].toString());
 
-        String token = GreenMailUtil.getBody(message).split("verifyEmail/")[1].split("\'>Em=")[0];
+        String token = GreenMailUtil.getBody(message).split("verifyEmail/")[1].split("'>Em=")[0];
 
         //send token for verification
         mockMvc

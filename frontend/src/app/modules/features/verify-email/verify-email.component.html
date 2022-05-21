@@ -1,5 +1,13 @@
 <app-page-layout>
-  <app-card [title]="status">
-    {{ content }}
+  <app-card *ngIf="successful === null" title="...">...</app-card>
+  <app-card
+    *ngIf="successful === false"
+    title="Emailverifikation fehlgeschlagen"
+    >Der übertragene Token ist abgelaufen oder ungültig.
+  </app-card>
+  <app-card *ngIf="successful === true" title="Emailverifikation erfolgreich"
+    >Deine Emailadresse wurde bestätigt.<br />
+    Bitte
+    <a routerLink="/login">melde dich erneut an</a>, um Aktoria zu verwenden.
   </app-card>
 </app-page-layout>

@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 
+/** Common form errors. */
 @Component({
   selector: 'app-form-errors',
   templateUrl: './form-errors.component.html',
