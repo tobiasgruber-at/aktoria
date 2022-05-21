@@ -17,5 +17,7 @@ public interface UserValidation {
 
     void validateEmailForForgottenPasswordInput(String email) throws NotFoundException;
 
+    void validateEmail(String email);
+
     void validateChangePasswordInput(PasswordChangeDto passwordChangeDto) throws ValidationException;
 }

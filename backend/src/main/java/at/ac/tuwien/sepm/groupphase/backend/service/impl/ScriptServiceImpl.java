@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
 
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.InvitationDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ScriptDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ScriptPreviewDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleLineDto;
@@ -14,7 +15,9 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Line;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Page;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Role;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Script;
+import at.ac.tuwien.sepm.groupphase.backend.entity.SecureToken;
 import at.ac.tuwien.sepm.groupphase.backend.entity.User;
+import at.ac.tuwien.sepm.groupphase.backend.enums.TokenType;
 import at.ac.tuwien.sepm.groupphase.backend.exception.IllegalFileFormatException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
@@ -26,10 +29,12 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.ScriptRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.AuthorizationService;
 import at.ac.tuwien.sepm.groupphase.backend.service.ScriptService;
+import at.ac.tuwien.sepm.groupphase.backend.service.SecureTokenService;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.script.ParsedScript;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.script.UnparsedScript;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.scriptparser.ScriptParser;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.scriptparser.impl.ScriptParserImpl;
+import at.ac.tuwien.sepm.groupphase.backend.validation.UserValidation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -58,6 +63,8 @@ public class ScriptServiceImpl implements ScriptService {
     private final LineRepository lineRepository;
     private final RoleRepository roleRepository;
     private final AuthorizationService authorizationService;
+    private final UserValidation userValidation;
+    private final SecureTokenService secureTokenService;
 
     @Autowired
     public ScriptServiceImpl(
@@ -68,7 +75,9 @@ public class ScriptServiceImpl implements ScriptService {
         PageRepository pageRepository,
         LineRepository lineRepository,
         RoleRepository roleRepository,
-        AuthorizationService authorizationService
+        AuthorizationService authorizationService,
+        UserValidation userValidation,
+        SecureTokenService secureTokenService
     ) {
         this.scriptMapper = scriptMapper;
         this.userMapper = userMapper;
@@ -78,6 +87,8 @@ public class ScriptServiceImpl implements ScriptService {
         this.lineRepository = lineRepository;
         this.roleRepository = roleRepository;
         this.authorizationService = authorizationService;
+        this.userValidation = userValidation;
+        this.secureTokenService = secureTokenService;
     }
 
     @Override
@@ -271,5 +282,17 @@ public class ScriptServiceImpl implements ScriptService {
             throw new UnauthorizedException("User is not permitted to delete this file");
         }
         scriptRepository.deleteById(id);
+    }
+
+    @Override
+    public void invite(InvitationDto invitationDto) {
+        log.trace("invite(invitationDto = {})", invitationDto);
+
+        authorizationService.isOwnerOfScript(invitationDto.getId_script());
+
+        //TODO: VALIDATION
+
+        SecureToken secureToken = secureTokenService.createSecureToken(TokenType.inviteParticipant, 1440);
+
     }
 }

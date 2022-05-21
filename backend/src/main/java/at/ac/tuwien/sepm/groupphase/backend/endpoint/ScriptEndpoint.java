@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.InvitationDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ScriptDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ScriptPreviewDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleScriptDto;
@@ -74,5 +75,12 @@ public class ScriptEndpoint {
     public void deleteScript(@PathVariable Long id) {
         log.info("DELETE {}/{}", ScriptEndpoint.path, id);
         scriptService.delete(id);
+    }
+
+    @PostMapping(path="/invitation")
+    @ResponseStatus(HttpStatus.OK)
+    public void inviteUser(@RequestBody InvitationDto invitationDto){
+        log.info("POST /invitation");
+        scriptService.invite(invitationDto);
     }
 }

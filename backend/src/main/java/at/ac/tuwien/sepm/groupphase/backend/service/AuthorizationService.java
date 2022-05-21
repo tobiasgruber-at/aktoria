@@ -38,10 +38,18 @@ public interface AuthorizationService {
 
     /**
      * Checks if the client is logged in as the user with the given id,
-     * or is an Admin.
+     * or is an admin.
      *
      * @param id the user id
      * @throws UnauthorizedException if not logged in as that user or admin
      */
     void checkBasicAuthorization(Long id);
+
+    /**
+     * Checks if the client is logged in as the owner of the given script,
+     * or is an admin.
+     *
+     * @param id_script
+     */
+    void isOwnerOfScript(Long id_script);
 }

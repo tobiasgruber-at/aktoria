@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.service;
 
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.InvitationDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ScriptDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ScriptPreviewDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleScriptDto;
@@ -66,4 +67,11 @@ public interface ScriptService {
      * @author Marvin Flandorfer
      */
     void delete(Long id);
+
+    /**
+     * Sends an invitation to join the script as participant
+     *
+     * @param invitationDto the invitation
+     */
+    void invite(InvitationDto invitationDto);
 }

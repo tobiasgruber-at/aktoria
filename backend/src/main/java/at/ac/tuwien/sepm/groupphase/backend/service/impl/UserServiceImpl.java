@@ -144,7 +144,7 @@ public class UserServiceImpl implements UserService {
         }
         User user = userOptional.get();
 
-        SecureToken secureToken = secureTokenService.createSecureToken(TokenType.resetPassword);
+        SecureToken secureToken = secureTokenService.createSecureToken(TokenType.resetPassword, 15);
         secureToken.setAccount(user);
         secureTokenService.saveSecureToken(secureToken);
 
@@ -236,7 +236,7 @@ public class UserServiceImpl implements UserService {
     public void sendEmailVerificationLink(User user) {
         log.trace("sendEmailVerificationLink(user = {})", user);
 
-        SecureToken secureToken = secureTokenService.createSecureToken(TokenType.verifyEmail);
+        SecureToken secureToken = secureTokenService.createSecureToken(TokenType.verifyEmail, 15);
         secureToken.setAccount(user);
         secureTokenService.saveSecureToken(secureToken);
 

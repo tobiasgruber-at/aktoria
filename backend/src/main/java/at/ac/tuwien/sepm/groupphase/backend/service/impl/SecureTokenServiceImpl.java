@@ -28,12 +28,12 @@ public class SecureTokenServiceImpl implements SecureTokenService {
     }
 
     @Override
-    public SecureToken createSecureToken(TokenType type) {
+    public SecureToken createSecureToken(TokenType type, int expirationTime) {
         String tokenValue = Base64.encodeBase64URLSafeString(DEFAULT_TOKEN_GENERATOR.generateKey());
         SecureToken secureToken = new SecureToken();
         secureToken.setToken(tokenValue);
         secureToken.setType(type);
-        secureToken.setExpireAt(LocalDateTime.now().plusMinutes(15));
+        secureToken.setExpireAt(LocalDateTime.now().plusMinutes(expirationTime));
         return secureToken;
     }
 

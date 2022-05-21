@@ -1,7 +1,10 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
+import at.ac.tuwien.sepm.groupphase.backend.entity.Script;
 import at.ac.tuwien.sepm.groupphase.backend.entity.User;
+import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.UnauthorizedException;
+import at.ac.tuwien.sepm.groupphase.backend.repository.ScriptRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.AuthorizationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +22,12 @@ import java.util.Optional;
 public class AuthorizationServiceImpl implements AuthorizationService {
 
     private final UserRepository userRepository;
+    private final ScriptRepository scriptRepository;
 
     @Autowired
-    public AuthorizationServiceImpl(UserRepository userRepository) {
+    public AuthorizationServiceImpl(UserRepository userRepository, ScriptRepository scriptRepository) {
         this.userRepository = userRepository;
+        this.scriptRepository = scriptRepository;
     }
 
     public void checkBasicAuthorization(Long id) {
@@ -33,6 +38,23 @@ public class AuthorizationServiceImpl implements AuthorizationService {
             return;
         }
         throw new UnauthorizedException();
+    }
+
+    @Override
+    public void isOwnerOfScript(Long id_script) {
+        if (isAdmin()) {
+            return;
+        }
+        Optional<Script> scriptOptional = scriptRepository.findById(id_script);
+        if (scriptOptional.isPresent()){
+            Long owner_id = scriptOptional.get().getOwner().getId();
+            if (isLoggedInAs(owner_id)) {
+                return;
+            }
+            throw new UnauthorizedException();
+
+        }
+        throw new NotFoundException("Skript existiert nicht");
     }
 
     @Override
