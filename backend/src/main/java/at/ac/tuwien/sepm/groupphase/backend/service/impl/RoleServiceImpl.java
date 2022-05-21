@@ -5,9 +5,12 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.RoleDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.RoleMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Line;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Role;
+import at.ac.tuwien.sepm.groupphase.backend.entity.User;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.UnauthorizedException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.LineRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.RoleRepository;
+import at.ac.tuwien.sepm.groupphase.backend.service.AuthorizationService;
 import at.ac.tuwien.sepm.groupphase.backend.service.RoleService;
 import at.ac.tuwien.sepm.groupphase.backend.validation.RoleValidation;
 import lombok.extern.slf4j.Slf4j;
@@ -26,18 +29,27 @@ public class RoleServiceImpl implements RoleService {
     private final RoleValidation roleValidation;
     private final LineRepository lineRepository;
     private final RoleMapper roleMapper;
+    private final AuthorizationService authorizationService;
 
-    public RoleServiceImpl(RoleRepository roleRepository, RoleValidation roleValidation, LineRepository lineRepository, RoleMapper roleMapper) {
+    public RoleServiceImpl(RoleRepository roleRepository, RoleValidation roleValidation, LineRepository lineRepository, RoleMapper roleMapper, AuthorizationService authorizationService) {
         this.roleRepository = roleRepository;
         this.roleValidation = roleValidation;
         this.lineRepository = lineRepository;
         this.roleMapper = roleMapper;
+        this.authorizationService = authorizationService;
     }
 
     @Override
     @Transactional
     public RoleDto mergeRoles(MergeRolesDto mergeRolesDto, Long id) {
         log.trace("merge roles into {}", id);
+
+        User user = authorizationService.getLoggedInUser();
+        if (user == null) {
+            throw new UnauthorizedException();
+        }
+        //TODO: check if owner of script
+
         //get role to keep
         Optional<Role> keepOptional = roleRepository.findById(id);
         Role keep;
