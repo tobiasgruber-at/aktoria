@@ -6,7 +6,6 @@ import at.ac.tuwien.sepm.groupphase.backend.enums.Role;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ScriptRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.ScriptService;
 import at.ac.tuwien.sepm.groupphase.backend.testhelpers.UserTestHelper;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -18,7 +17,6 @@ import org.springframework.test.context.ActiveProfiles;
 import javax.transaction.Transactional;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -40,16 +38,17 @@ public class ScriptServiceUnitTest {
     @Nested
     @DisplayName("deleteScript()")
     class DeleteScript {
-        @Disabled
+
         @Test
         @Transactional
         @DisplayName("is ok")
-        @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "1" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "1", roles = { Role.user, Role.verified, Role.admin })
+        @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "2" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "2", roles = { Role.user, Role.verified, Role.admin })
         public void deleteScriptIsOk() {
             Optional<Script> data = scriptRepository.findById(1L);
             assertTrue(data.isPresent());
             scriptService.delete(data.get().getId());
-            assertEquals(0, scriptRepository.findAll().size());
+            data = scriptRepository.findById(1L);
+            assertTrue(data.isEmpty());
         }
 
         @Test
