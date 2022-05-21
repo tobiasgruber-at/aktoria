@@ -4,7 +4,6 @@ import { FormBase } from '../../../../shared/classes/form-base';
 import { Router } from '@angular/router';
 import { ToastService } from '../../../../core/services/toast/toast.service';
 import { ScriptService } from '../../../../core/services/script/script.service';
-import { Theme } from '../../../../shared/enums/theme.enum';
 import { appearAnimations } from '../../../../shared/animations/appear-animations';
 
 @Component({
@@ -28,7 +27,10 @@ export class ScriptUploadComponent extends FormBase implements OnInit {
   ngOnInit(): void {
     this.form = this.formBuilder.group({
       file: [null, [Validators.required, Validators.maxLength(1)]],
-      startPage: [0, [Validators.required, Validators.maxLength(10)]]
+      startPage: [
+        0,
+        [Validators.required, Validators.min(0), Validators.maxLength(10)]
+      ]
     });
   }
 
@@ -44,22 +46,10 @@ export class ScriptUploadComponent extends FormBase implements OnInit {
   protected sendSubmit() {
     const { file, startPage } = this.form.value;
     this.scriptService.parse(file, startPage).subscribe({
-      next: (res) => {
-        let script = res;
-        this.toastService.show({
-          message: 'Skript wurde erfolgreich hochgeladen!',
-          theme: Theme.primary
-        });
-        this.router.navigateByUrl('/scripts');
-        // TODO: refactor, so that the script is saved after a review by the user
-        this.scriptService.save(res).subscribe({
-          next: (detailedScript) => {
-            script = detailedScript;
-            console.log(script);
-          }
-        });
+      next: (script) => {
+        this.scriptService.setStagedScript(script);
+        this.router.navigateByUrl('/scripts/upload/review');
       },
-
       error: (err) => this.handleError(err)
     });
   }

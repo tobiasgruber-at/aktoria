@@ -1,6 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 body {
   background-color: whitesmoke;
+  overflow: hidden;
 }
 
 a {
@@ -13,4 +14,13 @@ form .form-control {
 
 .dropdown-toggle::after {
   display: none !important;
+}
+
+.bg-lighter-dark {
+  background-color: hsl(210deg 11% 21%) !important;
+}
+
+.badge.badge-lg {
+  font-size: 1em;
+  font-weight: 500;
 }

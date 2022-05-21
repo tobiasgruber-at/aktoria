@@ -1,22 +1,23 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ScriptService } from '../../../../core/services/script/script.service';
-import { DetailedScript } from '../../../../shared/dtos/script-dtos';
+import { ScriptViewerService } from '../../services/script-viewer.service';
 
 @Component({
   selector: 'app-script-read',
   templateUrl: './script-read.component.html',
-  styleUrls: ['./script-read.component.scss']
+  styleUrls: ['./script-read.component.scss'],
+  providers: [ScriptViewerService]
 })
 export class ScriptReadComponent implements OnInit {
   loading = true;
-  script: DetailedScript = null;
   error = null;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private scriptService: ScriptService
+    private scriptService: ScriptService,
+    private scriptViewerService: ScriptViewerService
   ) {}
 
   ngOnInit(): void {
@@ -31,8 +32,7 @@ export class ScriptReadComponent implements OnInit {
       } else {
         this.scriptService.getOne(id).subscribe({
           next: (script) => {
-            this.script = script;
-            console.log(2, this.script);
+            this.scriptViewerService.setScript(script);
             this.loading = false;
           },
           error: handleNotFound

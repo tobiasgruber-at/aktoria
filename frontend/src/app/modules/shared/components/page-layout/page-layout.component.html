@@ -1,95 +1,113 @@
-<div class="wrapper d-flex flex-column min-vh-100 bg-{{ theme }}">
+<div
+  [class.sidebar-gap]="showSidebar"
+  class="wrapper bg-{{ theme === 'light' ? 'light' : 'lighter-dark' }}
+  "
+>
   <header *ngIf="showHeader" class="fixed-top">
-    <nav
-      class="px-5 navbar navbar-expand navbar-dark bg-{{
-        theme === 'light' ? 'dark' : 'black'
-      }} shadow"
-    >
-      <div class="container-fluid">
-        <a class="navbar-brand" routerLink="">Aktoria</a>
-        <ul class="navbar-nav me-auto mb-lg-0">
-          <li class="nav-item">
+    <nav class="px-5 navbar navbar-expand navbar-dark bg-dark shadow">
+      <a class="navbar-brand" routerLink="">Aktoria</a>
+      <ul class="navbar-nav me-auto mb-lg-0">
+        <li class="nav-item">
+          <a
+            *ngIf="authService.isLoggedIn() && authService.isVerified()"
+            [routerLinkActiveOptions]="{ exact: true }"
+            class="nav-link"
+            routerLink="/scripts"
+            routerLinkActive="active"
+            >Deine Skripte
+          </a>
+        </li>
+      </ul>
+      <div>
+        <ng-container *ngIf="!authService.isLoggedIn(); else loggedIn">
+          <div class="navbar-nav me-auto mb-lg-0">
+            <a class="nav-link" routerLink="/login" routerLinkActive="active"
+              >Login</a
+            >
             <a
-              *ngIf="authService.isLoggedIn() && authService.isVerified()"
-              [routerLinkActiveOptions]="{ exact: true }"
               class="nav-link"
-              routerLink="/scripts"
+              role="button"
+              routerLink="/register"
               routerLinkActive="active"
-              >Deine Skripte
-            </a>
-          </li>
-        </ul>
-        <div>
-          <ng-container *ngIf="!authService.isLoggedIn(); else loggedIn">
-            <div class="navbar-nav me-auto mb-lg-0">
-              <a class="nav-link" routerLink="/login" routerLinkActive="active"
-                >Login</a
-              >
+              >Registrieren</a
+            >
+          </div>
+        </ng-container>
+        <ng-template #loggedIn>
+          <div class="d-inline-block" display="dynamic" ngbDropdown>
+            <button
+              class="btn btn-primary bg-transparent border-0 shadow-none d-inline-flex align-items-center"
+              id="dropdown"
+              ngbDropdownToggle
+              type="button"
+            >
+              <span>
+                <bi name="person-circle"></bi>
+              </span>
+            </button>
+            <div
+              @appear
+              aria-labelledby="dropdown"
+              class="dropdown-menu dropdown-menu-dark bg-dark shadow-lg"
+              ngbDropdownMenu
+            >
               <a
-                class="nav-link"
-                role="button"
-                routerLink="/register"
-                routerLinkActive="active"
-                >Registrieren</a
-              >
-            </div>
-          </ng-container>
-          <ng-template #loggedIn>
-            <div class="d-inline-block" display="dynamic" ngbDropdown>
-              <button
-                class="btn btn-primary bg-transparent border-0 shadow-none d-inline-flex align-items-center"
-                id="dropdown"
-                ngbDropdownToggle
+                class="dropdown-item nav-link"
+                ngbDropdownItem
+                routerLink="/profile"
                 type="button"
               >
-                <span>
-                  <bi name="person-circle"></bi>
-                </span>
-              </button>
-              <div
-                @appear
-                aria-labelledby="dropdown"
-                class="dropdown-menu dropdown-menu-dark bg-dark shadow-lg"
-                ngbDropdownMenu
+                Profil
+              </a>
+              <hr class="dropdown-divider" />
+              <a
+                (click)="logout()"
+                class="dropdown-item nav-link"
+                ngbDropdownItem
+                routerLink="/"
+                type="button"
               >
-                <a
-                  class="dropdown-item nav-link"
-                  ngbDropdownItem
-                  routerLink="/profile"
-                  type="button"
-                >
-                  Profil
-                </a>
-                <hr class="dropdown-divider" />
-                <a
-                  (click)="logout()"
-                  class="dropdown-item nav-link"
-                  ngbDropdownItem
-                  routerLink="/"
-                  type="button"
-                >
-                  Logout
-                </a>
-              </div>
+                Logout
+              </a>
             </div>
-          </ng-template>
-        </div>
+          </div>
+        </ng-template>
       </div>
     </nav>
   </header>
-  <main class="w-100 p-5 flex-grow-1 d-flex flex-column">
-    <div
-      *ngIf="loading"
-      @fixedAppear
-      class="fixed-top vh-100 vw-100 flex-grow-1 d-flex justify-content-center align-items-center"
-    >
-      <div class="spinner-border text-secondary" role="status">
-        <span class="sr-only"></span>
+  <!--
+    Main has 'overflow: scroll', so that opening modal don't always collapse the ui (since they apply
+    'overflow: hidden' on the root element).
+  -->
+  <main
+    [class.is-dark-theme]="theme === 'dark'"
+    class="w-100 p-5 d-flex flex-column"
+  >
+    <!--
+      Additonal wrapper, as 'max-width' cannot be applied on 'main'.
+      This is because '.main' has a scrollbar, and if it also has a 'max-width', the scroll-bar wouldn't stick
+      on the outern edge.
+    -->
+    <div class="wrapper w-100 d-flex flex-column flex-grow-1">
+      <div
+        *ngIf="loading"
+        @fixedAppear
+        class="fixed-top vh-100 vw-100 flex-grow-1 d-flex justify-content-center align-items-center"
+      >
+        <div class="spinner-border text-secondary" role="status">
+          <span class="sr-only"></span>
+        </div>
+      </div>
+      <div *ngIf="!loading" @fixedAppear class="flex-grow-1 d-flex flex-column">
+        <ng-content></ng-content>
       </div>
     </div>
-    <div *ngIf="!loading" @fixedAppear class="flex-grow-1 d-flex flex-column">
-      <ng-content></ng-content>
-    </div>
   </main>
+  <aside
+    *ngIf="showSidebar"
+    class="position-fixed bg-light p-5 d-flex flex-column flex-grow-1"
+  >
+    <ng-content select="[role=sidebar]"></ng-content>
+  </aside>
   <footer *ngIf="showFooter" class="px-5 bg-light"></footer>
 </div>

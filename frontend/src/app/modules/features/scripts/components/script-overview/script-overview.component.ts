@@ -17,6 +17,7 @@ export class ScriptOverviewComponent implements OnInit {
   deleteLoading = false;
   deleteError = null;
   script: DetailedScript = null;
+  readonly theme = Theme;
 
   constructor(
     private route: ActivatedRoute,

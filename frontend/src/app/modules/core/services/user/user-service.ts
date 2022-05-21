@@ -48,4 +48,7 @@ export abstract class UserService {
 
   /** Changes the user password. */
   abstract changePassword(password: ChangePassword): Observable<void>;
+
+  /** Resets the state of this service. */
+  abstract resetState(): void;
 }

@@ -20,6 +20,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   user: SimpleUser;
   deleteLoading = false;
   deleteError = null;
+  readonly theme = Theme;
   private $destroy = new Subject<void>();
 
   constructor(
