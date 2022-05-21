@@ -1,8 +1,10 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.LineDto;
+import at.ac.tuwien.sepm.groupphase.backend.enums.Permission;
 import at.ac.tuwien.sepm.groupphase.backend.service.LineService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +23,7 @@ public class LineEndpoint {
     }
 
     @PutMapping("/{id}")
+    @Secured(Permission.verified)
     public LineDto updateLine(@RequestBody String content, @PathVariable Long id) {
         log.info("PUT {}/{}", path, id);
         return lineService.update(content, id);

@@ -9,6 +9,7 @@ import at.ac.tuwien.sepm.groupphase.backend.service.LineService;
 import at.ac.tuwien.sepm.groupphase.backend.validation.LineValidation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -31,6 +32,7 @@ public class LineServiceImpl implements LineService {
         this.lineValidation = lineValidation;
     }
 
+    @Transactional
     @Override
     public LineDto update(String content, Long id) {
         log.trace("update(content = {}, id = {})", content, id);
@@ -44,6 +46,8 @@ public class LineServiceImpl implements LineService {
             throw new NotFoundException("Zeile existiert nicht!");
         }
         line.setContent(content);
+        // TODO: delete all affected sessions
+        // TODO: check if the user is the owner of the script with this line in it
         return lineMapper.lineToLineDto(lineRepository.save(line));
     }
 }
