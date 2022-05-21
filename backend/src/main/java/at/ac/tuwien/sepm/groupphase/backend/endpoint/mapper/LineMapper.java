@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper;
 
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.LineDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleLineDto;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.line.Line;
 import org.mapstruct.InjectionStrategy;
@@ -18,4 +19,6 @@ public interface LineMapper {
     SimpleLineDto lineToSimpleLineDto(Line line);
 
     List<SimpleLineDto> listOfLinetoListOfSimpleLineDto(List<Line> lines);
+
+    LineDto lineToLineDto(at.ac.tuwien.sepm.groupphase.backend.entity.Line line);
 }
