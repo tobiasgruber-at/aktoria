@@ -77,9 +77,4 @@ public class ScriptEndpoint {
         log.info("DELETE {}/{}", ScriptEndpoint.path, id);
         scriptService.delete(id);
     }
-
-    public ScriptDto patchScript(@RequestBody ScriptDto scriptDto, @PathVariable Long id) {
-        log.info("PATCH {}/{}", path, id);
-        return scriptService.patch(scriptDto, id);
-    }
 }

@@ -101,7 +101,7 @@ public class UserServiceImpl implements UserService {
         if (userOptional.isPresent()) {
             return userMapper.userToSimpleUserDto(userOptional.get());
         } else {
-            throw new NotFoundException("Could not find User");
+            throw new NotFoundException("User existiert nicht!");
         }
     }
 

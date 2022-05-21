@@ -279,6 +279,9 @@ public class ScriptServiceImpl implements ScriptService {
             throw new UnauthorizedException();
         }
         Optional<Script> script = scriptRepository.findById(id);
+        if (script.isEmpty()) {
+            throw new NotFoundException();
+        }
         //TODO: fertig machen
         return null;
     }

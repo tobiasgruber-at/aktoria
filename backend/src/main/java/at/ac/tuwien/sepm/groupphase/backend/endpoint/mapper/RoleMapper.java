@@ -1,6 +1,8 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper;
 
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.RoleDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleRoleDto;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Role;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -14,4 +16,6 @@ public interface RoleMapper {
 
     @Mapping(target = "name", source = "roleNames")
     List<SimpleRoleDto> listOfStringToListOfSimpleRoleDto(List<String> roleNames);
+
+    RoleDto roleToRoleDto(Role role);
 }
