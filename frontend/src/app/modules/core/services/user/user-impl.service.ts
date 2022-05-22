@@ -65,4 +65,8 @@ export class UserImplService extends UserService {
   changePassword(password: ChangePassword): Observable<void> {
     return this.http.put<void>(this.baseUri + '/reset-password', password);
   }
+
+  resetState(): void {
+    this.setOwnUser(null);
+  }
 }

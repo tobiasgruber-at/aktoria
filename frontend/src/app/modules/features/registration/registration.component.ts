@@ -59,6 +59,7 @@ export class RegistrationComponent extends FormBase implements OnInit {
       });
   }
 
+  /** Logs the user in. */
   private login(email: string, password: string): void {
     this.authService.loginUser(new AuthRequest(email, password)).subscribe({
       next: () => {

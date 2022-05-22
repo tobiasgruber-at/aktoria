@@ -1,11 +1,10 @@
-<div
-  class="page bg-light col-12 col-md-11 col-xl-8 mx-auto rounded py-5 px-5 d-flex flex-column"
->
+<div class="page bg-light mx-auto rounded py-5 d-flex flex-column">
   <div class="d-flex flex-column flex-grow-1 justify-content-between">
     <div class="wrapper">
       <app-script-line
-        *ngFor="let line of page?.lines"
+        *ngFor="let line of page?.lines; let i = index"
         [line]="line"
+        [prevLine]="page?.lines[i - 1]"
       ></app-script-line>
     </div>
     <div class="d-flex justify-content-center mt-3">{{ page?.index }}</div>

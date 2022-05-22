@@ -20,6 +20,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   user: SimpleUser;
   deleteLoading = false;
   deleteError = null;
+  readonly theme = Theme;
   private $destroy = new Subject<void>();
 
   constructor(
@@ -41,7 +42,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
       });
   }
 
-  openModal(modal: TemplateRef<any>) {
+  openDeleteModal(modal: TemplateRef<any>) {
     this.deleteError = null;
     this.modalService.open(modal, { centered: true });
   }

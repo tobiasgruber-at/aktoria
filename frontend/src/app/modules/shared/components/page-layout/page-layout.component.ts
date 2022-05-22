@@ -6,7 +6,11 @@ import {AuthService} from '../../../core/services/auth/auth-service';
 import {fixedAppearAnimations} from '../../animations/fixed-appear-animations';
 import {appearAnimations} from '../../animations/appear-animations';
 
-/** @author Tobias Gruber */
+/**
+ * Common page layout, including header and footer.
+ *
+ * @author Tobias Gruber
+ */
 @Component({
   selector: 'app-page-layout',
   templateUrl: './page-layout.component.html',
@@ -16,6 +20,7 @@ import {appearAnimations} from '../../animations/appear-animations';
 export class PageLayoutComponent implements OnInit {
   @Input() showHeader = true;
   @Input() showFooter = false;
+  @Input() showSidebar = false;
   @Input() theme: 'light' | 'dark' = 'light';
   @Input() loading = false;
 

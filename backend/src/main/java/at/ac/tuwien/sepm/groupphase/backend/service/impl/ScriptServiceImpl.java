@@ -23,7 +23,6 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.LineRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.PageRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.RoleRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ScriptRepository;
-import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.AuthorizationService;
 import at.ac.tuwien.sepm.groupphase.backend.service.ScriptService;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.script.ParsedScript;
@@ -53,7 +52,6 @@ public class ScriptServiceImpl implements ScriptService {
     private final ScriptMapper scriptMapper;
     private final UserMapper userMapper;
     private final ScriptRepository scriptRepository;
-    private final UserRepository userRepository;
     private final PageRepository pageRepository;
     private final LineRepository lineRepository;
     private final RoleRepository roleRepository;
@@ -64,7 +62,6 @@ public class ScriptServiceImpl implements ScriptService {
         ScriptMapper scriptMapper,
         UserMapper userMapper,
         ScriptRepository scriptRepository,
-        UserRepository userRepository,
         PageRepository pageRepository,
         LineRepository lineRepository,
         RoleRepository roleRepository,
@@ -73,7 +70,6 @@ public class ScriptServiceImpl implements ScriptService {
         this.scriptMapper = scriptMapper;
         this.userMapper = userMapper;
         this.scriptRepository = scriptRepository;
-        this.userRepository = userRepository;
         this.pageRepository = pageRepository;
         this.lineRepository = lineRepository;
         this.roleRepository = roleRepository;

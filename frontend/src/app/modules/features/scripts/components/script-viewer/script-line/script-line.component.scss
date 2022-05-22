@@ -1,0 +1,57 @@
+:host {
+  display: block;
+  --text-padding: 0.5em;
+
+  &.is-editing {
+    p:hover,
+    &.is-interacting p {
+      background-color: rgb(0 0 0 / 5%);
+
+      &.highlighted {
+        background-color: rgb(255 255 0 / 50%);
+      }
+    }
+
+    p {
+      cursor: pointer;
+    }
+  }
+
+  &.is-hidden {
+    .roles span,
+    p {
+      text-decoration: line-through;
+    }
+  }
+}
+
+.roles {
+  --width: 20%;
+  padding: var(--text-padding);
+  min-width: var(--width);
+  max-width: var(--width);
+
+  span {
+    font-weight: 500;
+    text-transform: uppercase;
+
+    &:not(:last-of-type) {
+      margin-right: 0.5em;
+    }
+  }
+}
+
+p {
+  transition: background-color 250ms;
+  border-radius: 6px;
+  padding: var(--text-padding);
+  white-space: normal !important;
+
+  &:last-of-type {
+    margin-bottom: 0;
+  }
+
+  &.highlighted {
+    background-color: rgb(255 255 0 / 30%);
+  }
+}

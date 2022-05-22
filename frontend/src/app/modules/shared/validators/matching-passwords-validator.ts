@@ -1,5 +1,11 @@
-import { AbstractControl, ValidationErrors } from '@angular/forms';
+import {AbstractControl, ValidationErrors} from '@angular/forms';
 
+/**
+ * Checks if passwords match.
+ *
+ * @description If the user is resetting a password, it also handles, that the old- and new passwords have
+ * to be filled out and are not equal.
+ */
 export const matchingPasswordsValidator =
   (isResetting = false) =>
   (group: AbstractControl): ValidationErrors | null => {
