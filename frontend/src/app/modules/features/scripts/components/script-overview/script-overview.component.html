@@ -8,6 +8,12 @@
         <h1 class="display-3 mb-3 text-truncate">{{ script?.name }}</h1>
         <div>
           <button
+            class="btn btn-outline-secondary me-3"
+            routerLink="/scripts/{{ script?.id }}/invite"
+          >
+            Mitglied einladen
+          </button>
+          <button
             class="btn btn-primary me-3"
             routerLink="/scripts/{{ script?.id }}/view"
           >

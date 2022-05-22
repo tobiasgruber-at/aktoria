@@ -111,6 +111,11 @@ export class ScriptService {
       );
   }
 
+  inviteParticipant(email: string, scriptId: string): Observable<void> {
+    return this.http
+      .post<void>(this.baseUri + '/' + scriptId + '/invitations', email);
+  }
+
   /** Resets the state of this service. */
   resetState(): void {
     this.setScripts([]);

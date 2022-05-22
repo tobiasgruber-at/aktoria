@@ -1,7 +1,5 @@
 package at.ac.tuwien.sepm.groupphase.backend.service;
 
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.InvitationDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.JoinDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ScriptDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ScriptPreviewDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleScriptDto;
@@ -74,12 +72,12 @@ public interface ScriptService {
      *
      * @param invitationDto the invitation
      */
-    void invite(InvitationDto invitationDto);
+    void invite(Long script_id, String email);
 
     /**
      * Accepts an invitaion and add user to participants
      *
-     * @param joinDto the join data
+     * @param participantDto the new participant
      */
-    void joinScript(JoinDto joinDto);
+    void addParticipant(Long id, String token);
 }

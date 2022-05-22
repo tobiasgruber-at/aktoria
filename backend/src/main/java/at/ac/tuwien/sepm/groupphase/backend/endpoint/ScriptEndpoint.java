@@ -1,7 +1,5 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.InvitationDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.JoinDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ScriptDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ScriptPreviewDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleScriptDto;
@@ -81,19 +79,19 @@ public class ScriptEndpoint {
         scriptService.delete(id);
     }
 
-    @PostMapping(path="/invitation")
+    @PostMapping(path="/{id}/invitations")
     @ResponseStatus(HttpStatus.OK)
     @Secured(Permission.verified)
-    public void inviteUser(@RequestBody InvitationDto invitationDto){
+    public void inviteUser(@PathVariable Long id, @RequestBody String email){
         log.info("POST /invitation");
-        scriptService.invite(invitationDto);
+        scriptService.invite(id, email);
     }
 
-    @PostMapping(path="/participants")
+    @PostMapping(path="/{id}/participants")
     @ResponseStatus(HttpStatus.OK)
     @Secured(Permission.verified)
-    public void joinScript(@RequestBody JoinDto joinDto){
+    public void addParticipant(@PathVariable Long id, @RequestBody String token){
         log.info("POST /participants");
-        scriptService.joinScript(joinDto);
+        scriptService.addParticipant(id, token);
     }
 }

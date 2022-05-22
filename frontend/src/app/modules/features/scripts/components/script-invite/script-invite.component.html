@@ -1,0 +1,35 @@
+
+<app-page-layout>
+  <app-card title="Einladung">
+    <form (ngSubmit)="submit()" [formGroup]="form" class="form">
+      Sende eine Einladung direkt per Mail
+      <br /><br />
+      <div class="form-group mb-3">
+        <label for="input-email">Email</label>
+        <input
+          class="form-control"
+          formControlName="email"
+          id="input-email"
+          name="email"
+          placeholder="Email Adresse"
+          type="text"
+        />
+        <app-form-errors>
+          <app-form-error *ngIf="fieldHasErrors('email', 'required')"
+          >Bitte gib eine Email Adresse ein.
+          </app-form-error>
+          <app-form-error *ngIf="fieldHasErrors('email', 'email')"
+          >Bitte gib eine gültige Email Adresse ein.
+          </app-form-error>
+        </app-form-errors>
+      </div>
+      <app-button
+        [disabled]="hasError()"
+        [loading]="loading"
+        class="float-end"
+        label="Einladung senden"
+        type="submit"
+      ></app-button>
+    </form>
+  </app-card>
+</app-page-layout>

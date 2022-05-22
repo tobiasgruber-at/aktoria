@@ -1,8 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
 
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.InvitationDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.JoinDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ScriptDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ScriptPreviewDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleLineDto;
@@ -47,9 +45,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -299,14 +295,12 @@ public class ScriptServiceImpl implements ScriptService {
     }
 
     @Override
-    public void invite(InvitationDto invitationDto) {
-        log.trace("invite(invitationDto = {})", invitationDto);
+    public void invite(Long script_id, String email) {
+        log.trace("invite(script_id = {}, email = {})", script_id, email);
 
-        authorizationService.isOwnerOfScript(invitationDto.getId_script());
+        authorizationService.isOwnerOfScript(script_id);
 
-        //TODO: VALIDATION
-
-        Optional<Script> script = scriptRepository.findById(invitationDto.getId_script());
+        Optional<Script> script = scriptRepository.findById(script_id);
         if (script.isPresent()){
             SecureToken secureToken = secureTokenService.createSecureToken(TokenType.inviteParticipant, 1440);
             secureToken.setScript(script.get());
@@ -314,7 +308,7 @@ public class ScriptServiceImpl implements ScriptService {
 
             final String link = "http://localhost:4200/scripts/" + script.get().getId() + "/join/" + secureToken.getToken();
             try {
-                mailSender.sendMail(invitationDto.getEmail(), "Aktoria Passwort zurücksetzen",
+                mailSender.sendMail(email, "Aktoria Passwort zurücksetzen",
                     """
                             <h1>Hallo,</h1>
                             %s lädt dich ein bei dem Aktoria Skript "%s" mitzulernen.
@@ -335,17 +329,17 @@ public class ScriptServiceImpl implements ScriptService {
 
     @Override
     @Transactional
-    public void joinScript(JoinDto joinDto) {
-        log.trace("joinScript(joinDto = {})", joinDto);
+    public void addParticipant(Long id, String token) {
+        log.trace("joinScript(id = {}, token = {})", id, token);
 
-        authorizationService.checkBasicAuthorization(joinDto.getId());
+        authorizationService.checkBasicAuthorization(id);
 
-        SecureToken secureToken = secureTokenService.findByToken(joinDto.getToken());
-        secureTokenService.removeToken(joinDto.getToken());
+        SecureToken secureToken = secureTokenService.findByToken(token);
+        secureTokenService.removeToken(token);
         if (secureToken.getType() == TokenType.inviteParticipant) {
             if (secureToken.getExpireAt().isAfter(LocalDateTime.now())) {
 
-                Optional<User> optionalUser = userRepository.findById(joinDto.getId());
+                Optional<User> optionalUser = userRepository.findById(id);
                 if (optionalUser.isPresent()){
                     User user = optionalUser.get();
                     Script script = secureToken.getScript();

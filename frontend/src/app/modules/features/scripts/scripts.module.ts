@@ -13,6 +13,8 @@ import { ScriptLineComponent } from './components/script-viewer/script-line/scri
 import { ScriptPageComponent } from './components/script-viewer/script-page/script-page.component';
 import { ScriptViewerComponent } from './components/script-viewer/script-viewer.component';
 import { ScriptRolesListComponent } from './components/script-roles-list/script-roles-list.component';
+import { ScriptInviteComponent } from './components/script-invite/script-invite.component';
+import { ScriptInviteAcceptComponent } from './components/script-invite-accept/script-invite-accept.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +29,9 @@ import { ScriptRolesListComponent } from './components/script-roles-list/script-
     ScriptLineComponent,
     ScriptReadComponent,
     ScriptUploadReviewComponent,
-    ScriptRolesListComponent
+    ScriptRolesListComponent,
+    ScriptInviteComponent,
+    ScriptInviteAcceptComponent
   ],
   imports: [SharedModule, ScriptsRoutingModule]
 })
