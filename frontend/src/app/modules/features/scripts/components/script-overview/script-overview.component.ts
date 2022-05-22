@@ -5,6 +5,7 @@ import { DetailedScript } from '../../../../shared/dtos/script-dtos';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastService } from '../../../../core/services/toast/toast.service';
 import { Theme } from '../../../../shared/enums/theme.enum';
+import {SimpleUser} from '../../../../shared/dtos/user-dtos';
 
 @Component({
   selector: 'app-script-overview',
@@ -17,6 +18,7 @@ export class ScriptOverviewComponent implements OnInit {
   deleteLoading = false;
   deleteError = null;
   script: DetailedScript = null;
+  members: SimpleUser[];
   readonly theme = Theme;
 
   constructor(
@@ -40,6 +42,9 @@ export class ScriptOverviewComponent implements OnInit {
         this.scriptService.getOne(id).subscribe({
           next: (script) => {
             this.script = script;
+            this.members = [];
+            this.members.push(script.owner);
+            Array.prototype.push.apply(this.members, script.participants);
             this.getLoading = false;
           },
           error: handleNotFound

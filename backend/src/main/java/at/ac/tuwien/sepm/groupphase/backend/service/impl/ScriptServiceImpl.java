@@ -46,6 +46,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -273,7 +274,9 @@ public class ScriptServiceImpl implements ScriptService {
             throw new NotFoundException();
         }
         if (!script.get().getOwner().getId().equals(user.getId())) {
-            throw new UnauthorizedException("User is not permitted to open this file");
+            if (!script.get().getParticipants().contains(user)) {
+                throw new UnauthorizedException("User is not permitted to open this file");
+            }
         }
         return scriptMapper.scriptToScriptDto(script.get());
     }
@@ -306,7 +309,7 @@ public class ScriptServiceImpl implements ScriptService {
             secureToken.setScript(script.get());
             secureTokenService.saveSecureToken(secureToken);
 
-            final String link = "http://localhost:4200/scripts/" + script.get().getId() + "/join/" + secureToken.getToken();
+            final String link = "http://localhost:4200/#/scripts/" + script.get().getId() + "/join/" + secureToken.getToken();
             try {
                 mailSender.sendMail(email, "Aktoria Passwort zurücksetzen",
                     """
@@ -330,27 +333,29 @@ public class ScriptServiceImpl implements ScriptService {
     @Override
     @Transactional
     public void addParticipant(Long id, String token) {
-        log.trace("joinScript(id = {}, token = {})", id, token);
+        log.trace("addParticipant(id = {}, token = {})", id, token);
 
-        authorizationService.checkBasicAuthorization(id);
+        User user = authorizationService.getLoggedInUser();
+        if (user == null){
+            throw new UnauthorizedException();
+        }
 
         SecureToken secureToken = secureTokenService.findByToken(token);
         secureTokenService.removeToken(token);
         if (secureToken.getType() == TokenType.inviteParticipant) {
             if (secureToken.getExpireAt().isAfter(LocalDateTime.now())) {
 
-                Optional<User> optionalUser = userRepository.findById(id);
-                if (optionalUser.isPresent()){
-                    User user = optionalUser.get();
-                    Script script = secureToken.getScript();
-                    Set<Script> scripts = user.getParticipatesIn();
-                    scripts.add(script);
-                    user.setParticipatesIn(scripts);
-
-                    userRepository.saveAndFlush(user);
-                    return;
+                Script script = secureToken.getScript();
+                if (!Objects.equals(script.getId(), id)){
+                    throw new UnauthorizedException();
                 }
-                throw new NotFoundException();
+
+                Set<Script> scripts = user.getParticipatesIn();
+                scripts.add(script);
+                user.setParticipatesIn(scripts);
+
+                userRepository.saveAndFlush(user);
+                return;
             }
         }
         throw new InvalidTokenException();

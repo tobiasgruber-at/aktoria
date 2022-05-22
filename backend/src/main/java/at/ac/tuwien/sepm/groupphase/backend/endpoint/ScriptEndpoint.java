@@ -91,7 +91,7 @@ public class ScriptEndpoint {
     @ResponseStatus(HttpStatus.OK)
     @Secured(Permission.verified)
     public void addParticipant(@PathVariable Long id, @RequestBody String token){
-        log.info("POST /participants");
+        log.info("POST /{}/participants", id);
         scriptService.addParticipant(id, token);
     }
 }

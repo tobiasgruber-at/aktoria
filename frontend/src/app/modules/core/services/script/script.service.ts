@@ -111,9 +111,26 @@ export class ScriptService {
       );
   }
 
+  /**
+   * Sends an invite to join the script.
+   *
+   * @param email the email the invite is sent to
+   * @param scriptId the scriptId of the invitation
+   */
   inviteParticipant(email: string, scriptId: string): Observable<void> {
     return this.http
       .post<void>(this.baseUri + '/' + scriptId + '/invitations', email);
+  }
+
+  /**
+   * Adds a new participant to the script
+   *
+   * @param token token of invitation
+   * @param scriptId id of the script
+   */
+  addParticipant(token: string, scriptId: string): Observable<void> {
+    return this.http
+      .post<void>(this.baseUri + '/' + scriptId + '/participants', token);
   }
 
   /** Resets the state of this service. */

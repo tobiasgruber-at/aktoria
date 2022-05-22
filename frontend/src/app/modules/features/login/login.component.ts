@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, Validators} from '@angular/forms';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {AuthRequest} from '../../shared/dtos/auth-request';
 import {ToastService} from '../../core/services/toast/toast.service';
 import {FormBase} from '../../shared/classes/form-base';
@@ -12,11 +12,15 @@ import {AuthService} from '../../core/services/auth/auth-service';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent extends FormBase implements OnInit {
+
+  returnTo: string;
+
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    toastService: ToastService
+    toastService: ToastService,
+    private activatedRoute: ActivatedRoute
   ) {
     super(toastService);
   }
@@ -26,6 +30,7 @@ export class LoginComponent extends FormBase implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(8)]]
     });
+    this.returnTo = this.activatedRoute.snapshot.queryParamMap.get('returnTo') || '/scripts';
   }
 
   /**
@@ -39,7 +44,7 @@ export class LoginComponent extends FormBase implements OnInit {
       next: () => {
         this.toggleLoading(false);
         console.log('Successfully logged in user: ' + email);
-        this.router.navigateByUrl('/');
+        this.router.navigateByUrl(this.returnTo);
       },
       error: (err) => this.handleError(err)
     });

@@ -15,6 +15,7 @@ import { ScriptViewerComponent } from './components/script-viewer/script-viewer.
 import { ScriptRolesListComponent } from './components/script-roles-list/script-roles-list.component';
 import { ScriptInviteComponent } from './components/script-invite/script-invite.component';
 import { ScriptInviteAcceptComponent } from './components/script-invite-accept/script-invite-accept.component';
+import { ScriptMembersComponent } from './components/script-overview/script-members/script-members.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { ScriptInviteAcceptComponent } from './components/script-invite-accept/s
     ScriptUploadReviewComponent,
     ScriptRolesListComponent,
     ScriptInviteComponent,
-    ScriptInviteAcceptComponent
+    ScriptInviteAcceptComponent,
+    ScriptMembersComponent
   ],
   imports: [SharedModule, ScriptsRoutingModule]
 })
