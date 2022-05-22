@@ -50,7 +50,7 @@ public interface UserService extends UserDetailsService {
      * @return the updated user
      * @throws ServiceException is thrown when the user data could not be updated
      */
-    DetailedUserDto patch(UpdateUserDto updateUserDto, Long id);
+    SimpleUserDto patch(UpdateUserDto updateUserDto, Long id);
 
     /**
      * Deletes a user from the system.
