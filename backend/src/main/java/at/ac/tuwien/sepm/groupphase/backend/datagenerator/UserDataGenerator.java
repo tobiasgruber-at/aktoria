@@ -20,7 +20,7 @@ public class UserDataGenerator {
 
     /*
     User test data is built in accord to the following schema:
-    User (firstName = "testFirst<i>", lastName = "testLast<i>", email = "test<i>@test.com", password = "password<i>", verified = false)
+    User (firstName = "testFirst<i>", lastName = "testLast<i>", email = "test<i>@test.com", password = "password<i>", verified = true)
      */
 
     private static final int NUMBER_OF_USERS_TO_GENERATE = 20;
@@ -49,7 +49,7 @@ public class UserDataGenerator {
                     .lastName(TEST_USER_LAST_NAME + i)
                     .email(TEST_USER_EMAIL_LOCAL + i + TEST_USER_EMAIL_DOMAIN)
                     .passwordHash(passwordEncoder.encode(TEST_USER_PASSWORD + i))
-                    .verified(false).build();
+                    .verified(true).build();
                 log.debug("saving user {}", user);
                 userRepository.save(user);
             }
