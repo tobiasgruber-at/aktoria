@@ -66,10 +66,10 @@ class UserServiceUnitTest {
 
     @Nested
     @DisplayName("changePassword()")
-    @SpringBootTest
     @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user, Role.verified, Role.admin })
     class ForgotPasswordTest {
         @Test
+        @Transactional
         @DisplayName("sends email")
         void forgotPasswordSendsEmail() {
             userService.forgotPassword("test1@test.com");
@@ -80,6 +80,7 @@ class UserServiceUnitTest {
 
         @Disabled
         @Test
+        @Transactional
         @DisplayName("NotFoundException when email does not exists")
         void forgotPasswordEmailDoesNotExist() {
             assertThrows(NotFoundException.class, () -> userService.forgotPassword("notfound@test.com"));
@@ -111,16 +112,16 @@ class UserServiceUnitTest {
 
         @Disabled
         @ParameterizedTest
-        @DisplayName("changes the password correctly")
         @Transactional
+        @DisplayName("changes the password correctly")
         @MethodSource("parameterizedChangePasswordWorksProvider")
         void changePasswordWorks(ChangePasswordRecord input) {
 
         }
 
         @ParameterizedTest
-        @DisplayName("throws UnauthorizedException")
         @Transactional
+        @DisplayName("throws UnauthorizedException")
         @MethodSource("parameterizedChangePasswordThrowsUnauthorizedExceptionProvider")
         void changePasswordThrowsUnauthorizedException(ChangePasswordRecord input) {
             //test if entered old password matches current password
@@ -128,8 +129,8 @@ class UserServiceUnitTest {
         }
 
         @ParameterizedTest
-        @DisplayName("throws ValidationException")
         @Transactional
+        @DisplayName("throws ValidationException")
         @MethodSource("parameterizedChangePasswordThrowsValidationExceptionProvider")
         void changePasswordThrowsValidationException(ChangePasswordRecord input) {
             //test if new password is a valid password
@@ -201,16 +202,16 @@ class UserServiceUnitTest {
         }
 
         @Disabled
-        @Transactional
         @ParameterizedTest
+        @Transactional
         @DisplayName("deletes user correctly")
         @MethodSource("parameterizedDeleteUserProvider")
         void deleteUserWorks(SimpleUserDto input) {
             //delete users and check for no errors and void return. then check if user doesn't exist anymore
         }
 
-        @Transactional
         @ParameterizedTest
+        @Transactional
         @DisplayName("throws NotFoundException")
         @MethodSource("parameterizedDeleteUserExceptionProvider")
         void deleteUserThrowsException(Long input) {
@@ -230,8 +231,8 @@ class UserServiceUnitTest {
 
         @Disabled
         @ParameterizedTest
-        @DisplayName("changes the user data correctly")
         @Transactional
+        @DisplayName("changes the user data correctly")
         @MethodSource("parameterizedChangeUserProvider")
         void changeUserDataIsOk(SimpleUserDto input) {
         }
@@ -362,18 +363,18 @@ class UserServiceUnitTest {
         }
 
         @ParameterizedTest
+        @Transactional
         @DisplayName("throws ValidationException")
         @MethodSource("parameterizedCreateUserThrowsExceptionProvider")
-        @Transactional
         void createUserThrowsException(UserRegistrationDto input) {
             //test for whitespaces, null and too long inputs
             assertThrows(ValidationException.class, () -> userService.create(input));
         }
 
         @ParameterizedTest
+        @Transactional
         @DisplayName("creates user correctly")
         @MethodSource("parameterizedUserRegistrationDtoProvider")
-        @Transactional
         void createUserIsOk(CreateUserRecord input) {
             SimpleUserDto actual = userService.create(input.input);
             input.expected.setId(actual.getId());

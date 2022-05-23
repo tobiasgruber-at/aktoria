@@ -47,7 +47,7 @@ public class LineValidationImpl implements LineValidation {
             char firstChar = content.charAt(0);
             if (Character.isLowerCase(firstChar)) {
                 throw new ValidationException("Zeileninhalt darf nicht mit einem Kleinbuchstaben beginnen.");
-            } else {
+            } else if (!Character.isUpperCase(firstChar)) {
                 boolean hasCorrectStart = false;
                 for (String s : LineImpl.SPECIAL_SENTENCE_STARTERS) {
                     if (s.equals(Character.toString(firstChar))) {
@@ -65,13 +65,14 @@ public class LineValidationImpl implements LineValidation {
 
             boolean isCompleted = false;
             for (String delimiter : LineImpl.SENTENCE_DELIMITERS) {
-                if (content.substring(0, content.length() - 1).equals(delimiter)) {
+                final String lastChar = content.substring(content.length() - 1);
+                if (lastChar.equals(delimiter)) {
                     isCompleted = true;
                     break;
                 }
             }
             if (!isCompleted) {
-                throw new ValidationException("Zeileninhalt muss ein korrekt beendet werden.");
+                throw new ValidationException("Zeileninhalt muss korrekt beendet werden.");
             }
         }
     }

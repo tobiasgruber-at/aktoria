@@ -47,7 +47,9 @@ public class LineServiceImpl implements LineService {
     public LineDto update(UpdateLineDto updateLineDto, Long sid, Long id) {
         log.trace("update(updateLineDto = {}, sid = {}, id = {})", updateLineDto, sid, id);
 
-        lineValidation.validateContentInput(updateLineDto.getContent());
+        if (updateLineDto.getContent() != null) {
+            lineValidation.validateContentInput(updateLineDto.getContent());
+        }
 
         User user = authorizationService.getLoggedInUser();
         if (user == null) {
@@ -90,6 +92,12 @@ public class LineServiceImpl implements LineService {
         if (script.isPresent() && !script.get().getOwner().getId().equals(user.getId())) {
             throw new UnauthorizedException("Der Nutzer darf diese Zeile nicht löschen.");
         }
+        Optional<Line> line = lineRepository.findById(id);
+        if (line.isEmpty()) {
+            throw new NotFoundException("Zeile existiert nicht!");
+        }
+
+        // TODO: delete all affected sessions
 
         lineRepository.deleteById(id);
     }
