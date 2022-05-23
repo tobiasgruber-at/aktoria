@@ -20,6 +20,6 @@ public interface PageMapper {
 
     @Mapping(target = "scriptId", source = "script.id")
     PageDto pageToPageDto(at.ac.tuwien.sepm.groupphase.backend.entity.Page page);
-    
+
     List<PageDto> listOfPageToListOfPageDto(List<at.ac.tuwien.sepm.groupphase.backend.entity.Page> pages);
 }

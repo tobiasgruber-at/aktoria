@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.testhelpers;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ScriptDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleColorDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleLineDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimplePageDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleRoleDto;
@@ -12,6 +13,7 @@ import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.awt.Color;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -21,13 +23,21 @@ public class ScriptTestHelper {
     @Autowired
     private ScriptMapper scriptMapper;
 
+    public SimpleScriptDto dummySimpleScriptDtoWithoutColors() {
+        return dummySimpleScriptDto(null);
+    }
+
     public SimpleScriptDto dummySimpleScriptDto() {
+        return dummySimpleScriptDto(Color.MAGENTA);
+    }
+
+    public SimpleScriptDto dummySimpleScriptDto(Color color) {
         final List<SimpleRoleDto> expectedRolesDto = new LinkedList<>();
-        expectedRolesDto.add(new SimpleRoleDto("ALICE", null));
-        expectedRolesDto.add(new SimpleRoleDto("BOB", null));
-        expectedRolesDto.add(new SimpleRoleDto("MR. MISTER", null));
-        expectedRolesDto.add(new SimpleRoleDto("ANNA P.", null));
-        expectedRolesDto.add(new SimpleRoleDto("LADY MARI-MUSTER", null));
+        expectedRolesDto.add(new SimpleRoleDto("ALICE", new SimpleColorDto(color)));
+        expectedRolesDto.add(new SimpleRoleDto("BOB", new SimpleColorDto(color)));
+        expectedRolesDto.add(new SimpleRoleDto("MR. MISTER", new SimpleColorDto(color)));
+        expectedRolesDto.add(new SimpleRoleDto("ANNA P.", new SimpleColorDto(color)));
+        expectedRolesDto.add(new SimpleRoleDto("LADY MARI-MUSTER", new SimpleColorDto(color)));
 
         final List<SimpleLineDto> simpleLinesDto = new LinkedList<>();
         simpleLinesDto.add(
@@ -49,7 +59,7 @@ public class ScriptTestHelper {
         simpleLinesDto.add(
             new SimpleLineDto(
                 2L,
-                List.of(new SimpleRoleDto[] { new SimpleRoleDto("ALICE", null) }),
+                List.of(expectedRolesDto.get(0)),
                 "Das ist die erste Phrase in diesem Theaterstück. Diese Phrase soll Alice zugeteilt werden.",
                 true,
                 null)
@@ -57,7 +67,7 @@ public class ScriptTestHelper {
         simpleLinesDto.add(
             new SimpleLineDto(
                 3L,
-                List.of(new SimpleRoleDto[] { new SimpleRoleDto("BOB", null) }),
+                List.of(expectedRolesDto.get(1)),
                 "Hallo Alice! Wie geht’s dir so? (Schaut Alice in die Augen)",
                 true,
                 null
@@ -65,7 +75,7 @@ public class ScriptTestHelper {
         simpleLinesDto.add(
             new SimpleLineDto(
                 4L,
-                List.of(new SimpleRoleDto[] { new SimpleRoleDto("MR. MISTER", null) }),
+                List.of(expectedRolesDto.get(2)),
                 "Bla Bla Bla.",
                 true,
                 null
@@ -81,7 +91,7 @@ public class ScriptTestHelper {
         simpleLinesDto.add(
             new SimpleLineDto(
                 6L,
-                List.of(new SimpleRoleDto[] { new SimpleRoleDto("ANNA P.", null) }),
+                List.of(expectedRolesDto.get(3)),
                 "(fröhlich) Halli-hallöchen!",
                 true,
                 null
@@ -89,7 +99,7 @@ public class ScriptTestHelper {
         simpleLinesDto.add(
             new SimpleLineDto(
                 7L,
-                List.of(new SimpleRoleDto[] { new SimpleRoleDto("LADY MARI-MUSTER", null) }),
+                List.of(expectedRolesDto.get(4)),
                 "O man. Ich brauch‘ erst mal einen Kaffee.",
                 true,
                 Line.ConflictType.VERIFICATION_REQUIRED
@@ -97,7 +107,7 @@ public class ScriptTestHelper {
         simpleLinesDto.add(
             new SimpleLineDto(
                 8L,
-                List.of(new SimpleRoleDto[] { new SimpleRoleDto("ANNA P.", null), new SimpleRoleDto("BOB", null) }),
+                List.of(expectedRolesDto.get(3), expectedRolesDto.get(1)),
                 "(gleichzeitig.) Ich auch!",
                 true,
                 null

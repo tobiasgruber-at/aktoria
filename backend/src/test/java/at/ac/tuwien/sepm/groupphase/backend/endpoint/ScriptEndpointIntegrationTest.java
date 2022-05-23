@@ -120,7 +120,7 @@ class ScriptEndpointIntegrationTest {
         @DisplayName("returns the correctly parsed script")
         @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = Role.verified)
         void uploadScriptReturnsCorrectly() throws Exception {
-            final SimpleScriptDto expected = scriptTestHelper.dummySimpleScriptDto();
+            final SimpleScriptDto expected = scriptTestHelper.dummySimpleScriptDtoWithoutColors();
 
             final File pdf = new File("./src/test/resources/service/parsing/script/Skript_NF.pdf");
             final MockMultipartFile multipartFile = new MockMultipartFile("file", pdf.getName(), MediaType.APPLICATION_PDF_VALUE, new FileInputStream(pdf));
@@ -135,6 +135,8 @@ class ScriptEndpointIntegrationTest {
                 .getContentAsByteArray();
 
             final SimpleScriptDto response = objectMapper.readValue(body, SimpleScriptDto.class);
+
+            expected.setRoles(expected.getRoles().stream().peek((x) -> x.setColor(null)).toList());
 
             assertNotNull(response);
             assertEquals(expected, response);
