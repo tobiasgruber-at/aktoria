@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.MergeRolesDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.RoleDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.RoleMapper;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.UserMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Line;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Role;
 import at.ac.tuwien.sepm.groupphase.backend.entity.User;
@@ -12,6 +13,7 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.LineRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.RoleRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.AuthorizationService;
 import at.ac.tuwien.sepm.groupphase.backend.service.RoleService;
+import at.ac.tuwien.sepm.groupphase.backend.service.ScriptService;
 import at.ac.tuwien.sepm.groupphase.backend.validation.RoleValidation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -30,27 +32,33 @@ public class RoleServiceImpl implements RoleService {
     private final LineRepository lineRepository;
     private final RoleMapper roleMapper;
     private final AuthorizationService authorizationService;
+    private final ScriptService scriptService;
+    private final UserMapper userMapper;
 
-    public RoleServiceImpl(RoleRepository roleRepository, RoleValidation roleValidation, LineRepository lineRepository, RoleMapper roleMapper, AuthorizationService authorizationService) {
+    public RoleServiceImpl(RoleRepository roleRepository, RoleValidation roleValidation, LineRepository lineRepository, RoleMapper roleMapper, AuthorizationService authorizationService,
+                           ScriptService scriptService, UserMapper userMapper) {
         this.roleRepository = roleRepository;
         this.roleValidation = roleValidation;
         this.lineRepository = lineRepository;
         this.roleMapper = roleMapper;
         this.authorizationService = authorizationService;
+        this.scriptService = scriptService;
+        this.userMapper = userMapper;
     }
 
     @Override
     @Transactional
-    public RoleDto mergeRoles(MergeRolesDto mergeRolesDto, Long id) {
+    public RoleDto mergeRoles(MergeRolesDto mergeRolesDto, Long id, Long sid) {
         log.trace("merge roles into {}", id);
 
         User user = authorizationService.getLoggedInUser();
         if (user == null) {
             throw new UnauthorizedException();
         }
-        //TODO: check if owner of script
+        if (!(userMapper.userToSimpleUserDto(user).equals(scriptService.findById(sid).getOwner()))) {
+            throw new UnauthorizedException("Dieser User ist nicht berechtigt diese Datei zu bearbeiten");
+        }
 
-        //get role to keep
         Optional<Role> keepOptional = roleRepository.findById(id);
         Role keep;
         if (keepOptional.isPresent()) {

@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(path = RoleEndpoint.path)
 @Slf4j
 public class RoleEndpoint {
-    public static final String path = "/api/v1/roles";
+    public static final String path = "/api/v1/scripts/{sid}/roles";
     private final RoleService roleService;
 
     public RoleEndpoint(RoleService roleService) {
@@ -27,8 +27,8 @@ public class RoleEndpoint {
     }
 
     @PatchMapping(path = "/{id}")
-    public RoleDto mergeRoles(@RequestBody MergeRolesDto mergeRolesDto, @PathVariable Long id) {
+    public RoleDto mergeRoles(@RequestBody MergeRolesDto mergeRolesDto, @PathVariable Long id, @PathVariable Long sid) {
         log.info("PATCH {}/{}", path, id);
-        return roleService.mergeRoles(mergeRolesDto, id);
+        return roleService.mergeRoles(mergeRolesDto, id, sid);
     }
 }
