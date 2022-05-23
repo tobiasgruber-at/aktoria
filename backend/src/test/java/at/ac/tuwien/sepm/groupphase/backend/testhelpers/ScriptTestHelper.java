@@ -33,11 +33,11 @@ public class ScriptTestHelper {
 
     public SimpleScriptDto dummySimpleScriptDto(Color color) {
         final List<SimpleRoleDto> expectedRolesDto = new LinkedList<>();
-        expectedRolesDto.add(new SimpleRoleDto("ALICE", new SimpleColorDto(color)));
-        expectedRolesDto.add(new SimpleRoleDto("BOB", new SimpleColorDto(color)));
-        expectedRolesDto.add(new SimpleRoleDto("MR. MISTER", new SimpleColorDto(color)));
-        expectedRolesDto.add(new SimpleRoleDto("ANNA P.", new SimpleColorDto(color)));
-        expectedRolesDto.add(new SimpleRoleDto("LADY MARI-MUSTER", new SimpleColorDto(color)));
+        expectedRolesDto.add(new SimpleRoleDto("ALICE", color == null ? null : new SimpleColorDto(color)));
+        expectedRolesDto.add(new SimpleRoleDto("BOB", color == null ? null : new SimpleColorDto(color)));
+        expectedRolesDto.add(new SimpleRoleDto("MR. MISTER", color == null ? null : new SimpleColorDto(color)));
+        expectedRolesDto.add(new SimpleRoleDto("ANNA P.", color == null ? null : new SimpleColorDto(color)));
+        expectedRolesDto.add(new SimpleRoleDto("LADY MARI-MUSTER", color == null ? null : new SimpleColorDto(color)));
 
         final List<SimpleLineDto> simpleLinesDto = new LinkedList<>();
         simpleLinesDto.add(

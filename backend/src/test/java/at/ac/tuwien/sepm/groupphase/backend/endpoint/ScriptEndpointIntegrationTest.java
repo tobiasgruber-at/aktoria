@@ -135,9 +135,7 @@ class ScriptEndpointIntegrationTest {
                 .getContentAsByteArray();
 
             final SimpleScriptDto response = objectMapper.readValue(body, SimpleScriptDto.class);
-
-            expected.setRoles(expected.getRoles().stream().peek((x) -> x.setColor(null)).toList());
-
+            
             assertNotNull(response);
             assertEquals(expected, response);
         }

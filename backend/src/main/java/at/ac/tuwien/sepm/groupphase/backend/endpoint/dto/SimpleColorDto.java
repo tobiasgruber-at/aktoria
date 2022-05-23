@@ -23,9 +23,6 @@ public class SimpleColorDto {
     private int blue;
 
     public SimpleColorDto(Color color) {
-        if (color == null) {
-            color = Color.BLACK;
-        }
         this.red = color.getRed();
         this.green = color.getGreen();
         this.blue = color.getBlue();
