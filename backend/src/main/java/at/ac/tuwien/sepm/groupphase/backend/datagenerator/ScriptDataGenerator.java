@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.awt.Color;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -39,16 +38,15 @@ public class ScriptDataGenerator {
     Role (script = <script_id>, name = "Role <i>", color = Color.CYAN)
      */
 
-    private static final int NUMBER_OF_SCRIPTS_TO_GENERATE = 5;
-    private static final int NUMBER_OF_PAGES_PER_SCRIPT = 10;
-    private static final int NUMBER_OF_LINES_PER_PAGE = 10;
-    private static final int NUMBER_OF_ROLES_PER_SCRIPT = 5;
-
-    private static final String TEST_SCRIPT_NAME = "Script";
-    private static final String TEST_LINE_CONTENT = "Lorem ipsum dolor sit amet, "
+    public static final int NUMBER_OF_SCRIPTS_TO_GENERATE = 5;
+    public static final int NUMBER_OF_PAGES_PER_SCRIPT = 10;
+    public static final int NUMBER_OF_LINES_PER_PAGE = 10;
+    public static final int NUMBER_OF_ROLES_PER_SCRIPT = 5;
+    public static final String TEST_SCRIPT_NAME = "Script";
+    public static final String TEST_LINE_CONTENT = "Lorem ipsum dolor sit amet, "
         + "consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
-    private static final String TEST_ROLE_NAME = "Role";
-    private static final Color TEST_ROLE_COLOR = Color.CYAN;
+    public static final String TEST_ROLE_NAME = "Role";
+    public static final Color TEST_ROLE_COLOR = Color.CYAN;
 
     private final UserRepository userRepository;
     private final ScriptRepository scriptRepository;
