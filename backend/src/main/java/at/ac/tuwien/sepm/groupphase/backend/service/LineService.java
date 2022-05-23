@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.service;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.LineDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UpdateLineDto;
 import org.springframework.stereotype.Component;
 
 /**
@@ -16,9 +17,18 @@ public interface LineService {
      * <br>
      * Sets the content of the line of the given id.
      *
-     * @param content the new line content
-     * @param id      the id of the line to be changed
+     * @param updateLineDto changes to the line
+     * @param sid           the id of the script
+     * @param id            the id of the line to be changed
      * @return the updated line
      */
-    LineDto update(String content, Long id);
+    LineDto update(UpdateLineDto updateLineDto, Long sid, Long id);
+
+    /**
+     * Deletes a line.
+     *
+     * @param sid the id of the script
+     * @param id  the id of the line to be changed
+     */
+    void delete(Long sid, Long id);
 }
