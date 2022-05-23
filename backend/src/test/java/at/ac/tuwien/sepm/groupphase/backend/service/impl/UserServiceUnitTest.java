@@ -95,6 +95,7 @@ class UserServiceUnitTest {
             userService.changePassword(new PasswordChangeDto(null, UserDataGenerator.TEST_USER_PASSWORD + 2, "hallo12345"), 2L).getPasswordHash()));
     }
 
+
     @Test
     @DisplayName("throws ValidationException")
     @Transactional
@@ -349,6 +350,7 @@ class UserServiceUnitTest {
             return temp.stream();
         }
 
+        @Test
         @Transactional
         @DisplayName("deletes user correctly")
         @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + 19 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + 19,
