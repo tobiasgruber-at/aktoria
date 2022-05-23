@@ -34,7 +34,7 @@ public class Session {
 
     @CreationTimestamp
     @Column(name = "start_time", updatable = false, columnDefinition = "timestamp without time zone default current_timestamp")
-    private Timestamp start;
+    private LocalDateTime start;
 
     @Column(name = "end_time", updatable = false)
     private LocalDateTime end;
