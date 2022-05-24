@@ -179,7 +179,7 @@ public class UserServiceImpl implements UserService {
         }
         User user = userOptional.get();
 
-        SecureToken secureToken = secureTokenService.createSecureToken(TokenType.resetPassword);
+        SecureToken secureToken = secureTokenService.createSecureToken(TokenType.RESET_PASSWORD);
         secureToken.setAccount(user);
         secureTokenService.saveSecureToken(secureToken);
 
@@ -223,7 +223,7 @@ public class UserServiceImpl implements UserService {
         if (token != null) {
             SecureToken secureToken = secureTokenService.findByToken(token);
             secureTokenService.removeToken(token);
-            if (secureToken.getType() == TokenType.resetPassword) {
+            if (secureToken.getType() == TokenType.RESET_PASSWORD) {
                 if (secureToken.getExpireAt().isAfter(LocalDateTime.now())) {
                     User user = secureToken.getAccount();
                     user.setPasswordHash(passwordEncoder.encode(passwordChangeDto.getNewPassword()));
@@ -288,7 +288,7 @@ public class UserServiceImpl implements UserService {
     public void sendEmailVerificationLink(User user) {
         log.trace("sendEmailVerificationLink(user = {})", user);
 
-        SecureToken secureToken = secureTokenService.createSecureToken(TokenType.verifyEmail);
+        SecureToken secureToken = secureTokenService.createSecureToken(TokenType.VERIFY_EMAIL);
         secureToken.setAccount(user);
         secureTokenService.saveSecureToken(secureToken);
 
@@ -331,7 +331,7 @@ public class UserServiceImpl implements UserService {
 
         SecureToken secureToken = secureTokenService.findByToken(token);
         secureTokenService.removeToken(token);
-        if (secureToken.getType() == TokenType.verifyEmail) {
+        if (secureToken.getType() == TokenType.VERIFY_EMAIL) {
             if (secureToken.getExpireAt().isAfter(LocalDateTime.now())) {
                 User user = secureToken.getAccount();
                 user.setVerified(true);
