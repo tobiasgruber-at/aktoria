@@ -10,7 +10,6 @@ export class VerifiedGuard implements CanActivate {
   constructor(private authService: AuthService, private router: Router) {}
 
   canActivate(): boolean {
-    console.log(this.authService.isVerified());
     if (!this.authService.isLoggedIn()) {
       this.router.navigate(['/login']);
       return false;

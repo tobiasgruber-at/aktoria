@@ -27,6 +27,13 @@ const routes: Routes = [
     component: ScriptOverviewComponent
   },
   {
+    path: ':id/edit',
+    component: ScriptEditComponent,
+    data: {
+      isUploading: false
+    }
+  },
+  {
     path: ':id/view',
     component: ScriptReadComponent
   }

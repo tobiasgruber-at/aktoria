@@ -57,9 +57,9 @@ export class ScriptEditComponent
         this.script = script;
       });
     if (this.isUploading) {
-      this.handleUploading();
+      this.fetchScriptWhenUploading();
     } else {
-      this.handleNotUploading();
+      this.fetchScriptWhenNotUploading();
     }
   }
 
@@ -78,7 +78,7 @@ export class ScriptEditComponent
 
   ngAfterViewInit() {
     if (this.isUploading) {
-      this.openModal(this.tutorialModal);
+      //this.openModal(this.tutorialModal);
     }
   }
 
@@ -106,7 +106,7 @@ export class ScriptEditComponent
   }
 
   /** Fetches staged script that should be reviewed. */
-  private handleUploading() {
+  private fetchScriptWhenUploading() {
     const handleNoStagedScript = () => {
       this.router.navigateByUrl('/scripts');
       this.toastService.show({
@@ -131,7 +131,7 @@ export class ScriptEditComponent
   }
 
   /** Fetches existing script that should be edited. */
-  private handleNotUploading() {
+  private fetchScriptWhenNotUploading() {
     this.route.paramMap.subscribe((params) => {
       const id = +params.get('id');
       const handleNotFound = () => {
@@ -144,7 +144,10 @@ export class ScriptEditComponent
       } else {
         this.scriptService.getOne(id).subscribe({
           next: (script) => {
-            this.script = script;
+            this.scriptViewerService.setScript(script);
+            this.form.patchValue({
+              scriptName: script.name
+            });
             this.getLoading = false;
           },
           error: handleNotFound
