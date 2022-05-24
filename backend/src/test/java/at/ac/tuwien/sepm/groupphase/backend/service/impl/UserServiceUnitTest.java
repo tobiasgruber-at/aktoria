@@ -156,13 +156,12 @@ class UserServiceUnitTest {
 
     @Nested
     @DisplayName("changePassword()")
-    @SpringBootTest
     @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user, Role.verified, Role.admin })
     class ForgotPasswordTest {
 
         @Test
-        @DisplayName("sends email")
         @Transactional
+        @DisplayName("sends email")
         void forgotPasswordSendsEmail() {
             userService.forgotPassword("test1@test.com");
 
@@ -172,8 +171,8 @@ class UserServiceUnitTest {
 
 
         @Test
-        @DisplayName("NotFoundException when email does not exists")
         @Transactional
+        @DisplayName("NotFoundException when email does not exists")
         void forgotPasswordEmailDoesNotExist() {
             assertThrows(NotFoundException.class, () -> userService.forgotPassword("notfound@test.com"));
         }
@@ -304,18 +303,18 @@ class UserServiceUnitTest {
         }
 
         @ParameterizedTest
+        @Transactional
         @DisplayName("throws ValidationException")
         @MethodSource("parameterizedCreateUserThrowsExceptionProvider")
-        @Transactional
         void createUserThrowsException(UserRegistrationDto input) {
             //test for whitespaces, null and too long inputs
             assertThrows(ValidationException.class, () -> userService.create(input));
         }
 
         @ParameterizedTest
+        @Transactional
         @DisplayName("creates user correctly")
         @MethodSource("parameterizedUserRegistrationDtoProvider")
-        @Transactional
         void createUserIsOk(CreateUserRecord input) {
             SimpleUserDto actual = userService.create(input.input);
             input.expected.setId(actual.getId());
