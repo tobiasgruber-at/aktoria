@@ -58,9 +58,9 @@ public class ScriptEndpoint {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @Secured(Permission.verified)
-    public Stream<ScriptPreviewDto> getScriptPreviews(@RequestParam("permission") String permission) {
+    public Stream<ScriptPreviewDto> getScriptPreviews() {
         log.info("GET {}", path);
-        return scriptService.findAllPreviews(permission);
+        return scriptService.findAllPreviews();
     }
 
     @GetMapping(path = "/{id}")

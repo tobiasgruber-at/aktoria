@@ -15,7 +15,9 @@ import { ScriptViewerComponent } from './components/script-viewer/script-viewer.
 import { ScriptRolesListComponent } from './components/script-roles-list/script-roles-list.component';
 import { ScriptInviteComponent } from './components/script-invite/script-invite.component';
 import { ScriptInviteAcceptComponent } from './components/script-invite-accept/script-invite-accept.component';
-import { ScriptMembersComponent } from './components/script-overview/script-members/script-members.component';
+import { ScriptMembersListComponent } from './components/script-overview/script-members-list/script-members-list.component';
+// eslint-disable-next-line max-len
+import { ScriptMembersItemComponent } from './components/script-overview/script-members-list/script-members-item/script-members-item.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +35,8 @@ import { ScriptMembersComponent } from './components/script-overview/script-memb
     ScriptRolesListComponent,
     ScriptInviteComponent,
     ScriptInviteAcceptComponent,
-    ScriptMembersComponent
+    ScriptMembersListComponent,
+    ScriptMembersItemComponent
   ],
   imports: [SharedModule, ScriptsRoutingModule]
 })

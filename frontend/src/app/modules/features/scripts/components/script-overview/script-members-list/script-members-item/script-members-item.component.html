@@ -1,0 +1,33 @@
+<div
+  role="button"
+  (click)="openModal(removeMemberModal)"
+>
+  <ng-template #removeMemberModal let-modal>
+    <app-modal
+      (confirm)="removeMember(modal)"
+      (decline)="modal.dismiss()"
+      [loading]="deleteLoading"
+      [theme]="theme.danger"
+      confirmBtnLabel="Entfernen"
+      title="Mitglied entfernen"
+    >
+      Sicher, dass du
+      <i>{{member.firstName}} {{member.lastName}}</i>
+      aus deinem Skript entfernen
+      möchtest?
+    </app-modal>
+  </ng-template>
+  <div class="card">
+    <div class="d-flex align-items-center justify-content-center h-100 p-3">
+      <img
+        [alt]="member.firstName + ' ' + member.lastName"
+        [style.opacity]="0.1"
+        class="card-img"
+        src="../../../../../../assets/illustrations/user.svg"
+      />
+    </div>
+    <div class="card-img-overlay">
+      <h5 class="card-title text-truncate">{{ member.firstName }}</h5>
+    </div>
+  </div>
+</div>

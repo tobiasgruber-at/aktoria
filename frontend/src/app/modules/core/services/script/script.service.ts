@@ -65,8 +65,8 @@ export class ScriptService {
    *
    * @return observable list of script previews
    */
-  getAll(permission: string): Observable<ScriptPreview[]> {
-    const uri = this.baseUri + '?permission=' + permission;
+  getAll(): Observable<ScriptPreview[]> {
+    const uri = this.baseUri;
     return this.scripts?.length > 0
       ? of(this.scripts)
       : this.http

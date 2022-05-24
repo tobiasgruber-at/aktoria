@@ -48,7 +48,7 @@ public interface ScriptService {
      * @return a stream of previews
      * @throws ServiceException when an error occurs while trying to get the scripts
      */
-    Stream<ScriptPreviewDto> findAllPreviews(String permission);
+    Stream<ScriptPreviewDto> findAllPreviews();
 
     /**
      * Gets the script corresponding to the given id.

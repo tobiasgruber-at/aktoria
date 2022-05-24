@@ -11,14 +11,13 @@ import {ScriptPreview} from '../../../../shared/dtos/script-dtos';
 export class ScriptListComponent implements OnInit {
   @Input() title: string;
   @Input() hasUploadButton = false;
-  @Input() permission: string;
   scriptPreviews: ScriptPreview[];
 
   constructor(public scriptService: ScriptService) {
   }
 
   ngOnInit(): void {
-    this.scriptService.getAll(this.permission).subscribe({
+    this.scriptService.getAll().subscribe({
       next: (res) => {
         this.scriptPreviews = res;
       },

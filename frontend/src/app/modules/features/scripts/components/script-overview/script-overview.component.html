@@ -10,6 +10,7 @@
           <button
             class="btn btn-outline-secondary me-3"
             routerLink="/scripts/{{ script?.id }}/invite"
+            *ngIf="isOwner()"
           >
             Mitglied einladen
           </button>
@@ -19,7 +20,7 @@
           >
             Skript ansehen
           </button>
-          <button (click)="openModal(deleteModal)" class="btn btn-danger">
+          <button (click)="openModal(deleteModal)" class="btn btn-danger" *ngIf="isOwner()">
             Skript löschen
           </button>
           <ng-template #deleteModal let-modal>
@@ -45,9 +46,10 @@
           </ng-template>
         </div>
       </div>
-      <app-script-members
-        [members]="members"
-      ></app-script-members>
+      <app-script-members-list
+        [members] = members
+        [isOwner] = isOwner()
+      ></app-script-members-list>
     </div>
   </ng-template>
 </app-page-layout>

@@ -6,6 +6,7 @@ import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastService } from '../../../../core/services/toast/toast.service';
 import { Theme } from '../../../../shared/enums/theme.enum';
 import {SimpleUser} from '../../../../shared/dtos/user-dtos';
+import {AuthService} from '../../../../core/services/auth/auth-service';
 
 @Component({
   selector: 'app-script-overview',
@@ -26,7 +27,8 @@ export class ScriptOverviewComponent implements OnInit {
     private router: Router,
     private scriptService: ScriptService,
     private toastService: ToastService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private authService: AuthService,
   ) {}
 
   ngOnInit(): void {
@@ -74,5 +76,12 @@ export class ScriptOverviewComponent implements OnInit {
         this.deleteError = err.error?.message;
       }
     });
+  }
+
+  isOwner() {
+    if (this.script) {
+      return this.script.owner.email === this.authService.getEmail();
+    }
+    return false;
   }
 }

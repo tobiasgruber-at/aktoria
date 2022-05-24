@@ -246,19 +246,18 @@ public class ScriptServiceImpl implements ScriptService {
 
     @Override
     @Transactional
-    public Stream<ScriptPreviewDto> findAllPreviews(String permission) {
-        log.trace("getAllPreviews({})", permission);
+    public Stream<ScriptPreviewDto> findAllPreviews() {
+        log.trace("getAllPreviews()");
 
         User user = authorizationService.getLoggedInUser();
         if (user == null) {
             throw new UnauthorizedException();
         }
 
-        if (permission.equals("owner")) {
-            return scriptMapper.listOfScriptToListOfScriptPreviewDto(scriptRepository.getScriptByOwner(user)).stream();
-        } else {
-            return scriptMapper.listOfScriptToListOfScriptPreviewDto(scriptRepository.getScriptByParticipant(user)).stream();
-        }
+
+        Stream<ScriptPreviewDto> owner = scriptMapper.listOfScriptToListOfScriptPreviewDto(scriptRepository.getScriptByOwner(user)).stream();
+        Stream<ScriptPreviewDto> participant = scriptMapper.listOfScriptToListOfScriptPreviewDto(scriptRepository.getScriptByParticipant(user)).stream();
+        return Stream.concat(owner, participant);
     }
 
     @Transactional
