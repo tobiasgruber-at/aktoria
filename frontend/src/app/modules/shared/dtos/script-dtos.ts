@@ -1,20 +1,17 @@
 export class UploadScript {
-  constructor(public readonly file: File) {
-  }
+  constructor(public readonly file: File) {}
 }
 
 export class SimpleScript {
   constructor(
-    public readonly pages: Page[],
-    public readonly roles: Role[],
-    public readonly name: string
-  ) {
-  }
+    public pages: Page[],
+    public roles: Role[],
+    public name: string
+  ) {}
 }
 
 export class ScriptPreview {
-  constructor(public readonly id: number, public readonly name: string) {
-  }
+  constructor(public readonly id: number, public readonly name: string) {}
 }
 
 export class DetailedScript extends SimpleScript {

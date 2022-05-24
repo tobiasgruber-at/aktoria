@@ -11,6 +11,7 @@ export class ButtonComponent {
   @Input() loading = false;
   @Input() disabled = false;
   @Input() label: string;
+  @Input() fullWidth = false;
   @Input() theme: Theme = Theme.primary;
   @Input() type: 'button' | 'submit' = 'button';
 }
