@@ -7,6 +7,7 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PageDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.RoleDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ScriptDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ScriptPreviewDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleColorDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleLineDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimplePageDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleRoleDto;
@@ -37,7 +38,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-import java.awt.Color;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.List;
@@ -78,7 +78,7 @@ class ScriptEndpointIntegrationTest {
     void saveScript() {
         SimpleRoleDto simpleRoleDto = new SimpleRoleDto();
         simpleRoleDto.setName("ROLEA");
-        simpleRoleDto.setColor(Color.CYAN);
+        simpleRoleDto.setColor(new SimpleColorDto(255, 0, 255));
 
         SimpleLineDto simpleLineDto = new SimpleLineDto();
         simpleLineDto.setIndex(0L);
@@ -104,7 +104,7 @@ class ScriptEndpointIntegrationTest {
 
         RoleDto roleDto = new RoleDto();
         roleDto.setName("ROLEA");
-        roleDto.setColor(Color.CYAN);
+        roleDto.setColor(new SimpleColorDto(255, 0, 255));
 
         LineDto lineDto = new LineDto();
         lineDto.setActive(true);
@@ -235,7 +235,7 @@ class ScriptEndpointIntegrationTest {
                 .getContentAsByteArray();
 
             final SimpleScriptDto response = objectMapper.readValue(body, SimpleScriptDto.class);
-            
+
             assertNotNull(response);
             assertEquals(expected, response);
         }
