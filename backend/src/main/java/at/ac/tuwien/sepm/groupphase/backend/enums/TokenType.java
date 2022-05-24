@@ -6,7 +6,7 @@ package at.ac.tuwien.sepm.groupphase.backend.enums;
  * @author Nikolaus Peter
  */
 public enum TokenType {
-    verifyEmail,
-    resetPassword,
-    inviteParticipant
+    VERIFY_EMAIL,
+    RESET_PASSWORD,
+    INVITE_PARTICIPANT
 }

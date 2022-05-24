@@ -97,6 +97,7 @@ public class ScriptServiceImpl implements ScriptService {
         this.mailSender = mailSender;
     }
 
+    @Transactional
     @Override
     public SimpleScriptDto parse(MultipartFile file, Integer startPage) {
         log.trace("newScript(pdfScript = {})", file);
@@ -182,8 +183,8 @@ public class ScriptServiceImpl implements ScriptService {
                 && data[data.length - 1] == 0x0d);
     }
 
-    @Override
     @Transactional
+    @Override
     public ScriptDto save(SimpleScriptDto simpleScriptDto) {
         log.trace("save(scriptDto = {})", simpleScriptDto);
 
@@ -243,6 +244,7 @@ public class ScriptServiceImpl implements ScriptService {
         return scriptMapper.simpleScriptDtoToScriptDto(simpleScriptDto, script.getId(), owner);
     }
 
+    @Transactional
     @Override
     @Transactional
     public Stream<ScriptPreviewDto> findAllPreviews(String permission) {
@@ -260,8 +262,8 @@ public class ScriptServiceImpl implements ScriptService {
         }
     }
 
-    @Override
     @Transactional
+    @Override
     public ScriptDto findById(Long id) {
         log.trace("getById(id = {})", id);
 
@@ -281,8 +283,8 @@ public class ScriptServiceImpl implements ScriptService {
         return scriptMapper.scriptToScriptDto(script.get());
     }
 
-    @Override
     @Transactional
+    @Override
     public void delete(Long id) {
         log.trace("delete(id = {})", id);
 

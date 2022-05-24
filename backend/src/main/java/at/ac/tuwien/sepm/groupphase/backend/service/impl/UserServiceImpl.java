@@ -179,7 +179,7 @@ public class UserServiceImpl implements UserService {
         }
         User user = userOptional.get();
 
-        SecureToken secureToken = secureTokenService.createSecureToken(TokenType.resetPassword, 15);
+        SecureToken secureToken = secureTokenService.createSecureToken(TokenType.RESET_PASSWORD, 15);
         secureToken.setAccount(user);
         secureTokenService.saveSecureToken(secureToken);
 
@@ -223,7 +223,7 @@ public class UserServiceImpl implements UserService {
         if (token != null) {
             SecureToken secureToken = secureTokenService.findByToken(token);
             secureTokenService.removeToken(token);
-            if (secureToken.getType() == TokenType.resetPassword) {
+            if (secureToken.getType() == TokenType.RESET_PASSWORD) {
                 if (secureToken.getExpireAt().isAfter(LocalDateTime.now())) {
                     User user = secureToken.getAccount();
                     user.setPasswordHash(passwordEncoder.encode(passwordChangeDto.getNewPassword()));
@@ -235,6 +235,9 @@ public class UserServiceImpl implements UserService {
                 throw new InvalidTokenException();
             }
         } else {
+            if (id == null) {
+                throw new NotFoundException("User existiert nicht!");
+            }
             Optional<User> userOptional = userRepository.findById(id);
             User update;
             if (userOptional.isPresent()) {
@@ -288,7 +291,7 @@ public class UserServiceImpl implements UserService {
     public void sendEmailVerificationLink(User user) {
         log.trace("sendEmailVerificationLink(user = {})", user);
 
-        SecureToken secureToken = secureTokenService.createSecureToken(TokenType.verifyEmail, 15);
+        SecureToken secureToken = secureTokenService.createSecureToken(TokenType.VERIFY_EMAIL, 15);
         secureToken.setAccount(user);
         secureTokenService.saveSecureToken(secureToken);
 
@@ -331,7 +334,7 @@ public class UserServiceImpl implements UserService {
 
         SecureToken secureToken = secureTokenService.findByToken(token);
         secureTokenService.removeToken(token);
-        if (secureToken.getType() == TokenType.verifyEmail) {
+        if (secureToken.getType() == TokenType.VERIFY_EMAIL) {
             if (secureToken.getExpireAt().isAfter(LocalDateTime.now())) {
                 User user = secureToken.getAccount();
                 user.setVerified(true);
