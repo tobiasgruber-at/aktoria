@@ -23,7 +23,7 @@ export class EmailVerificationComponent extends FormBase implements OnInit {
     this.form = this.formBuilder.group({});
   }
 
-  protected sendSubmit(): void {
+  protected processSubmit(): void {
     this.userService.resendVerificationEmail().subscribe({
       next: () => {
         this.toastService.show({

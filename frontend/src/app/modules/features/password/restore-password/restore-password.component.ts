@@ -37,7 +37,7 @@ export class RestorePasswordComponent extends FormBase implements OnInit {
     this.token = this.route.snapshot.paramMap.get('token');
   }
 
-  protected sendSubmit(): void {
+  protected processSubmit(): void {
     const { password } = this.form.value;
     this.userService
       .changePassword(new ChangePassword(this.token, null, password))

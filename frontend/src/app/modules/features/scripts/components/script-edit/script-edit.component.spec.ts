@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ScriptUploadReviewComponent } from './script-upload-review.component';
+import { ScriptEditComponent } from './script-edit.component';
 
 describe('ScriptUploadPreviewComponent', () => {
-  let component: ScriptUploadReviewComponent;
-  let fixture: ComponentFixture<ScriptUploadReviewComponent>;
+  let component: ScriptEditComponent;
+  let fixture: ComponentFixture<ScriptEditComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ScriptUploadReviewComponent]
+      declarations: [ScriptEditComponent]
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ScriptUploadReviewComponent);
+    fixture = TestBed.createComponent(ScriptEditComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

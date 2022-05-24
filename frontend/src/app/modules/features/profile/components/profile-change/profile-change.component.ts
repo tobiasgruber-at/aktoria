@@ -103,7 +103,7 @@ export class ProfileChangeComponent
   }
 
   /** Submits only the changed data. */
-  protected sendSubmit() {
+  protected processSubmit() {
     let { firstName, lastName, email } = this.form.value;
     const { oldPassword, password } = this.form.value;
     if (firstName === this.user.firstName) {

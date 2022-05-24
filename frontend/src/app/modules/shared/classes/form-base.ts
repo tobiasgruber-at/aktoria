@@ -17,7 +17,7 @@ export abstract class FormBase {
     this.submitted = true;
     if (this.form.valid) {
       this.toggleLoading(true);
-      this.sendSubmit();
+      this.processSubmit();
     } else {
       console.log('Invalid input');
     }
@@ -63,12 +63,11 @@ export abstract class FormBase {
     const field = this.form.get(fieldName);
     return (
       this.submitted &&
-      field.touched &&
       field.invalid &&
       (errorName ? field.errors[errorName] : true)
     );
   }
 
   /** Sends the submitted value, after the form is validated. */
-  protected abstract sendSubmit(): void;
+  protected abstract processSubmit(): void;
 }

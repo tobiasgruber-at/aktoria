@@ -23,4 +23,17 @@ form .form-control {
 .badge.badge-lg {
   font-size: 1em;
   font-weight: 500;
+  border: 1.5px var(--bs-secondary) solid;
+  color: var(--bs-secondary);
+
+  &:hover {
+    color: var(--bs-warning);
+    border-color: var(--bs-warning);
+  }
+
+  &.selected {
+    background-color: var(--bs-warning);
+    color: var(--bs-white);
+    border-color: var(--bs-warning);
+  }
 }

@@ -4,7 +4,7 @@ import { ScriptsComponent } from './scripts.component';
 import { ScriptUploadComponent } from './components/script-upload/script-upload.component';
 import { ScriptOverviewComponent } from './components/script-overview/script-overview.component';
 import { ScriptReadComponent } from './components/script-read/script-read.component';
-import { ScriptUploadReviewComponent } from './components/script-upload/script-upload-review/script-upload-review.component';
+import { ScriptEditComponent } from './components/script-edit/script-edit.component';
 
 const routes: Routes = [
   {
@@ -17,7 +17,10 @@ const routes: Routes = [
   },
   {
     path: 'upload/review',
-    component: ScriptUploadReviewComponent
+    component: ScriptEditComponent,
+    data: {
+      isUploading: true
+    }
   },
   {
     path: ':id',
