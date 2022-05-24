@@ -1,0 +1,6 @@
+textarea {
+  height: 9rem;
+  resize: none;
+  // just that the scrollbar is always there and not jumping when overscroll
+  overflow-y: scroll;
+}

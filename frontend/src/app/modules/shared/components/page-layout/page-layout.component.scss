@@ -1,6 +1,6 @@
 :host {
   --nav-height: 4.5rem;
-  --sidebar-width: 23rem;
+  --sidebar-width: 24rem;
 
   & > .wrapper {
     padding-top: var(--nav-height);
@@ -58,6 +58,7 @@ main {
 aside {
   height: calc(100vh - var(--nav-height));
   width: var(--sidebar-width);
+  overflow-y: scroll;
   top: var(--nav-height);
   right: 0;
   z-index: 10;

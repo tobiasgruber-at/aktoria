@@ -8,11 +8,13 @@ import { ScriptUploadComponent } from './components/script-upload/script-upload.
 import { UploadInformationComponent } from './components/script-upload/upload-information/upload-information.component';
 import { ScriptOverviewComponent } from './components/script-overview/script-overview.component';
 import { ScriptReadComponent } from './components/script-read/script-read.component';
-import { ScriptUploadReviewComponent } from './components/script-upload/script-upload-review/script-upload-review.component';
 import { ScriptLineComponent } from './components/script-viewer/script-line/script-line.component';
 import { ScriptPageComponent } from './components/script-viewer/script-page/script-page.component';
 import { ScriptViewerComponent } from './components/script-viewer/script-viewer.component';
 import { ScriptRolesListComponent } from './components/script-roles-list/script-roles-list.component';
+import { ScriptEditComponent } from './components/script-edit/script-edit.component';
+import { MergeRolesModalComponent } from './components/script-edit/merge-roles-modal/merge-roles-modal.component';
+import { ChangeLineModalComponent } from './components/script-viewer/script-line/change-line-modal/change-line-modal.component';
 
 @NgModule({
   declarations: [
@@ -26,8 +28,10 @@ import { ScriptRolesListComponent } from './components/script-roles-list/script-
     ScriptPageComponent,
     ScriptLineComponent,
     ScriptReadComponent,
-    ScriptUploadReviewComponent,
-    ScriptRolesListComponent
+    ScriptEditComponent,
+    ScriptRolesListComponent,
+    MergeRolesModalComponent,
+    ChangeLineModalComponent
   ],
   imports: [SharedModule, ScriptsRoutingModule]
 })
