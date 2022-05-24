@@ -328,7 +328,6 @@ class UserServiceUnitTest {
 
         record CreateUserRecord(UserRegistrationDto input, DetailedUserDto expected) {
         }
-
     }
 
     @Nested
