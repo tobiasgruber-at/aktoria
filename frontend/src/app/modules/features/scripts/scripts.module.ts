@@ -14,6 +14,7 @@ import { ScriptViewerComponent } from './components/script-viewer/script-viewer.
 import { ScriptRolesListComponent } from './components/script-roles-list/script-roles-list.component';
 import { ScriptEditComponent } from './components/script-edit/script-edit.component';
 import { MergeRolesModalComponent } from './components/script-edit/merge-roles-modal/merge-roles-modal.component';
+import { ChangeLineModalComponent } from './components/script-viewer/script-line/change-line-modal/change-line-modal.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { MergeRolesModalComponent } from './components/script-edit/merge-roles-m
     ScriptReadComponent,
     ScriptEditComponent,
     ScriptRolesListComponent,
-    MergeRolesModalComponent
+    MergeRolesModalComponent,
+    ChangeLineModalComponent
   ],
   imports: [SharedModule, ScriptsRoutingModule]
 })

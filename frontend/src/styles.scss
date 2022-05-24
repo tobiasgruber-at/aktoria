@@ -20,10 +20,16 @@ form .form-control {
   background-color: hsl(210deg 11% 21%) !important;
 }
 
+label {
+  font-weight: 500;
+  margin-bottom: 0.4rem;
+}
+
 .badge.badge-lg {
+  border-radius: 9999px;
   font-size: 1em;
   font-weight: 500;
-  border: 1.5px var(--bs-secondary) solid;
+  border: 1px var(--bs-secondary) solid;
   color: var(--bs-secondary);
 
   &:hover {

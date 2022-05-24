@@ -47,19 +47,21 @@
       </app-form-errors>
     </div>
     <div class="form-group mb-3">
-      <h3>Rollen</h3>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="mb-0">Rollen</h3>
+        <button
+          (click)="openModal(mergeRolesModal)"
+          class="btn btn-sm btn-outline-primary"
+          type="button"
+        >
+          Zusammenlegen
+        </button>
+      </div>
       <app-script-roles-list
         (roleClicked)="scriptViewerService.setSelectedRole($event)"
         [roles]="script.roles"
         [selectedRole]="scriptViewerService.$selectedRole | async"
       ></app-script-roles-list>
-      <button
-        (click)="openModal(mergeRolesModal)"
-        class="btn btn-secondary mt-2"
-        type="button"
-      >
-        Rollen vereinigen
-      </button>
       <ng-template #mergeRolesModal let-modal>
         <app-merge-roles-modal [modal]="modal"></app-merge-roles-modal>
       </ng-template>

@@ -42,7 +42,7 @@ export class ScriptEditComponent
     private route: ActivatedRoute
   ) {
     super(toastService);
-    this.scriptViewerService.setIsEditing(true);
+    this.scriptViewerService.setIsEditingScript(true);
     this.isUploading = route.snapshot.data?.isUploading || false;
     this.scriptViewerService.setIsUploading(this.isUploading);
   }

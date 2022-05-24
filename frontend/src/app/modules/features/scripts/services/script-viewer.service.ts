@@ -3,8 +3,11 @@ import {BehaviorSubject, Observable} from 'rxjs';
 
 /** Local service for viewing or editing scripts. */
 export class ScriptViewerService {
-  private isEditing = false;
-  private isEditingSubject = new BehaviorSubject<boolean>(this.isEditing);
+  /** Whether the script viewer is editable, or read-only. */
+  private isEditingScript = false;
+  private isEditingScriptSubject = new BehaviorSubject<boolean>(
+    this.isEditingScript
+  );
   private isUploading = false;
   private isUploadingSubject = new BehaviorSubject<boolean>(this.isUploading);
   private script: SimpleScript = null;
@@ -20,8 +23,9 @@ export class ScriptViewerService {
     return this.scriptSubject.asObservable();
   }
 
-  get $isEditing(): Observable<boolean> {
-    return this.isEditingSubject.asObservable();
+  /** @see isEditingScript */
+  get $isEditingScript(): Observable<boolean> {
+    return this.isEditingScriptSubject.asObservable();
   }
 
   get $isUploading(): Observable<boolean> {
@@ -33,9 +37,9 @@ export class ScriptViewerService {
     this.scriptSubject.next(this.script);
   }
 
-  setIsEditing(isEditing: boolean): void {
-    this.isEditing = isEditing;
-    this.isEditingSubject.next(this.isEditing);
+  setIsEditingScript(isEditingScript: boolean): void {
+    this.isEditingScript = isEditingScript;
+    this.isEditingScriptSubject.next(this.isEditingScript);
   }
 
   setIsUploading(isUploading: boolean): void {
