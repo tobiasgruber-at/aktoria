@@ -311,7 +311,7 @@ public class ScriptServiceImpl implements ScriptService {
 
             final String link = "http://localhost:4200/#/scripts/" + script.get().getId() + "/join/" + secureToken.getToken();
             try {
-                mailSender.sendMail(email, "Aktoria Passwort zurücksetzen",
+                mailSender.sendMail(email, "Aktoria Einladung",
                     """
                             <h1>Hallo,</h1>
                             %s lädt dich ein bei dem Aktoria Skript "%s" mitzulernen.
