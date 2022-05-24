@@ -427,7 +427,7 @@ class UserEndpointIntegrationTest {
         @DisplayName("returns UnprocessableEntity")
         @MethodSource("forgottenPasswordInvalidProvider")
         void forgottenPasswordInvalidEmail(PasswordChangeDto input) throws Exception {
-            SecureToken secureToken = secureTokenService.createSecureToken(TokenType.RESET_PASSWORD);
+            SecureToken secureToken = secureTokenService.createSecureToken(TokenType.RESET_PASSWORD, 15);
             secureToken.setAccount(userList.get(0));
             secureTokenService.saveSecureToken(secureToken);
             input.setToken(secureToken.getToken());
@@ -445,7 +445,7 @@ class UserEndpointIntegrationTest {
         @DisplayName("changes password correctly")
         @MethodSource("forgottenPasswordValidProvider")
         void forgottenPasswordSuccessful(PasswordChangeDto input) throws Exception {
-            SecureToken secureToken = secureTokenService.createSecureToken(TokenType.RESET_PASSWORD);
+            SecureToken secureToken = secureTokenService.createSecureToken(TokenType.RESET_PASSWORD, 15);
             secureToken.setAccount(userList.get(0));
             secureTokenService.saveSecureToken(secureToken);
             input.setToken(secureToken.getToken());

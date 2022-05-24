@@ -20,6 +20,7 @@ import at.ac.tuwien.sepm.groupphase.backend.testhelpers.ScriptTestHelper;
 import at.ac.tuwien.sepm.groupphase.backend.testhelpers.UserTestHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -141,7 +142,7 @@ class ScriptEndpointIntegrationTest {
     @DisplayName("getScriptPreviews() gets zero previews for user with no scripts")
     @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = Role.verified)
     void getScriptPreviewsReturnsZero() {
-        List<ScriptPreviewDto> scriptPreviewDtoList = scriptService.findAllPreviews().toList();
+        List<ScriptPreviewDto> scriptPreviewDtoList = scriptService.findAllPreviews("owner").toList();
         assertEquals(0, scriptPreviewDtoList.size());
     }
 
@@ -150,7 +151,7 @@ class ScriptEndpointIntegrationTest {
     @DisplayName("getScriptPreviews() gets the correct previews")
     @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "2" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "2", roles = Role.verified)
     void getScriptPreviews() {
-        List<ScriptPreviewDto> scriptPreviewDtoList = scriptService.findAllPreviews().toList();
+        List<ScriptPreviewDto> scriptPreviewDtoList = scriptService.findAllPreviews("owner").toList();
         assertEquals(new ScriptPreviewDto(1L, ScriptDataGenerator.TEST_SCRIPT_NAME + " 1"), scriptPreviewDtoList.get(0));
         assertEquals(Math.floorDiv(ScriptDataGenerator.NUMBER_OF_SCRIPTS_TO_GENERATE, UserDataGenerator.NUMBER_OF_USERS_TO_GENERATE) + 1, scriptPreviewDtoList.size());
     }

@@ -6,14 +6,21 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordChangeDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UpdateUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserRegistrationDto;
+import at.ac.tuwien.sepm.groupphase.backend.entity.SecureToken;
+import at.ac.tuwien.sepm.groupphase.backend.entity.User;
 import at.ac.tuwien.sepm.groupphase.backend.enums.Role;
+import at.ac.tuwien.sepm.groupphase.backend.enums.TokenType;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.InvalidTokenException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
+import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
+import at.ac.tuwien.sepm.groupphase.backend.service.SecureTokenService;
 import at.ac.tuwien.sepm.groupphase.backend.service.UserService;
 import at.ac.tuwien.sepm.groupphase.backend.testhelpers.UserTestHelper;
 import com.icegreen.greenmail.configuration.GreenMailConfiguration;
 import com.icegreen.greenmail.junit5.GreenMailExtension;
+import com.icegreen.greenmail.util.GreenMailUtil;
 import com.icegreen.greenmail.util.ServerSetupTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -29,14 +36,17 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.internet.MimeMessage;
+import javax.swing.text.html.Option;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Class for testing user services.
@@ -54,11 +64,19 @@ class UserServiceUnitTest {
         .withConfiguration(GreenMailConfiguration.aConfig().withUser("tester", "password"))
         .withPerMethodLifecycle(true);
 
-    @Autowired
-    UserService userService;
+
+    private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final SecureTokenService secureTokenService;
 
     @Autowired
-    PasswordEncoder passwordEncoder;
+    public UserServiceUnitTest(UserService userService, PasswordEncoder passwordEncoder, UserRepository userRepository, SecureTokenService secureTokenService){
+        this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
+        this.userRepository = userRepository;
+        this.secureTokenService = secureTokenService;
+    }
 
     @Test
     @DisplayName("findUserByEmail()")
@@ -75,47 +93,122 @@ class UserServiceUnitTest {
             UserDataGenerator.TEST_USER_EMAIL_LOCAL + 14 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, true), userService.findByEmail(UserDataGenerator.TEST_USER_EMAIL_LOCAL + 14 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN));
     }
 
-    @Test
-    @DisplayName("changes the password correctly")
-    @Transactional
-    @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + 1 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + 1,
-        roles = {Role.verified})
-    void changePasswordWorks() {
-        assertTrue(passwordEncoder.matches("hallo12345",
-            userService.changePassword(new PasswordChangeDto(null, UserDataGenerator.TEST_USER_PASSWORD + 1, "hallo12345"), 1L).getPasswordHash()));
-    }
+    @Nested
+    @DisplayName("changePassword()")
+    @SpringBootTest
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {Role.user, Role.verified, Role.admin})
+    class ChangePasswordTest {
 
-    @Test
-    @DisplayName("changes the password correctly and encodes correctly")
-    @Transactional
-    @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + 2 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + 2,
-        roles = {Role.verified})
-    void changePasswordChangesPassword() {
-        assertFalse(passwordEncoder.matches("hallo1256",
-            userService.changePassword(new PasswordChangeDto(null, UserDataGenerator.TEST_USER_PASSWORD + 2, "hallo12345"), 2L).getPasswordHash()));
-    }
+        @Test
+        @DisplayName("changes the password correctly")
+        @Transactional
+        @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + 1 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + 1,
+            roles = {Role.verified})
+        void changePasswordWorks() {
+            assertTrue(passwordEncoder.matches("hallo12345",
+                userService.changePassword(new PasswordChangeDto(null, UserDataGenerator.TEST_USER_PASSWORD + 1, "hallo12345"), 1L).getPasswordHash()));
+        }
+
+        @Test
+        @DisplayName("changes the password correctly and encodes correctly")
+        @Transactional
+        @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + 2 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + 2,
+            roles = {Role.verified})
+        void changePasswordChangesPassword() {
+            assertFalse(passwordEncoder.matches("hallo1256",
+                userService.changePassword(new PasswordChangeDto(null, UserDataGenerator.TEST_USER_PASSWORD + 2, "hallo12345"), 2L).getPasswordHash()));
+        }
 
 
-    @Test
-    @DisplayName("throws ValidationException")
-    @Transactional
-    @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + 10 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + 10,
-        roles = {Role.verified})
-    void changePasswordThrowsValidationException() {
-        assertThrows(ValidationException.class, () -> userService.changePassword(new PasswordChangeDto(null,
-            UserDataGenerator.TEST_USER_PASSWORD + 10, ""), 10L));
-        assertThrows(ValidationException.class, () -> userService.changePassword(new PasswordChangeDto(null,
-            UserDataGenerator.TEST_USER_PASSWORD + 10, "passw"), 10L));
-    }
+        @Test
+        @DisplayName("throws ValidationException")
+        @Transactional
+        @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + 10 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + 10,
+            roles = {Role.verified})
+        void changePasswordThrowsValidationException() {
+            assertThrows(ValidationException.class, () -> userService.changePassword(new PasswordChangeDto(null,
+                UserDataGenerator.TEST_USER_PASSWORD + 10, ""), 10L));
+            assertThrows(ValidationException.class, () -> userService.changePassword(new PasswordChangeDto(null,
+                UserDataGenerator.TEST_USER_PASSWORD + 10, "passw"), 10L));
+        }
 
-    @Test
-    @DisplayName("throws ConflictException")
-    @Transactional
-    @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + 14 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + 14,
-        roles = {Role.verified})
-    void changePasswordThrowsConflictException() {
-        assertThrows(ConflictException.class, () -> userService.changePassword(new PasswordChangeDto(null,
-            "wrongPassword", "hallo1010"), 14L));
+        @Test
+        @DisplayName("throws ConflictException")
+        @Transactional
+        @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + 14 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + 14,
+            roles = {Role.verified})
+        void changePasswordThrowsConflictException() {
+            assertThrows(ConflictException.class, () -> userService.changePassword(new PasswordChangeDto(null,
+                "wrongPassword", "hallo1010"), 14L));
+        }
+
+        @Test
+        @DisplayName("throws InvalidTokenException")
+        @Transactional
+        @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + 14 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + 14,
+            roles = {Role.verified})
+        void changePasswordWithInvalidToken() {
+            assertThrows(InvalidTokenException.class, () -> userService.changePassword(new PasswordChangeDto("ExpiredPasswordToken",
+                null, "hallo1010"), 14L));
+        }
+
+        @Test
+        @DisplayName("throws InvalidTokenException")
+        @Transactional
+        @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + 14 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + 14,
+            roles = {Role.verified})
+        void changePasswordWithExpiredToken() {
+            Optional<User> userOptional = userRepository.findById(14L);
+            assertTrue(userOptional.isPresent());
+            User user = userOptional.get();
+
+            SecureToken token = secureTokenService.createSecureToken(TokenType.RESET_PASSWORD, 0);
+            token.setToken("ExpiredPasswordToken");
+            token.setAccount(user);
+            secureTokenService.saveSecureToken(token);
+
+            assertThrows(InvalidTokenException.class, () -> userService.changePassword(new PasswordChangeDto("ExpiredPasswordToken",
+                null, "hallo1010"), 14L));
+        }
+
+        @Test
+        @DisplayName("throws InvalidTokenException")
+        @Transactional
+        @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + 14 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + 14,
+            roles = {Role.verified})
+        void changePasswordWithWrongTokenType() {
+            Optional<User> userOptional = userRepository.findById(14L);
+            assertTrue(userOptional.isPresent());
+            User user = userOptional.get();
+
+            SecureToken token = secureTokenService.createSecureToken(TokenType.VERIFY_EMAIL, 15);
+            token.setToken("ExpiredEmailToken");
+            token.setAccount(user);
+            secureTokenService.saveSecureToken(token);
+
+            assertThrows(InvalidTokenException.class, () -> userService.changePassword(new PasswordChangeDto("ExpiredEmailToken",
+                null, "hallo1010"), 14L));
+        }
+
+        @Test
+        @DisplayName("throws InvalidTokenException")
+        @Transactional
+        @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + 14 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + 14,
+            roles = {Role.verified})
+        void changePasswordWithValidToken() {
+            Optional<User> userOptional = userRepository.findById(14L);
+            assertTrue(userOptional.isPresent());
+            User user = userOptional.get();
+
+            SecureToken token = secureTokenService.createSecureToken(TokenType.RESET_PASSWORD, 15);
+            token.setToken("ValidPasswordToken");
+            token.setAccount(user);
+            secureTokenService.saveSecureToken(token);
+
+            assertTrue(passwordEncoder.matches("hallo12345",
+                userService.changePassword(new PasswordChangeDto("ValidPasswordToken", null, "hallo12345"), 1L).getPasswordHash()));
+        }
+
     }
 
     @Test
@@ -154,7 +247,7 @@ class UserServiceUnitTest {
     }
 
     @Nested
-    @DisplayName("changePassword()")
+    @DisplayName("forgotPassword()")
     @SpringBootTest
     @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {Role.user, Role.verified, Role.admin})
     class ForgotPasswordTest {
@@ -176,6 +269,116 @@ class UserServiceUnitTest {
         void forgotPasswordEmailDoesNotExist() {
             assertThrows(NotFoundException.class, () -> userService.forgotPassword("notfound@test.com"));
         }
+    }
+
+    @Nested
+    @DisplayName("verifyEmail()")
+    @SpringBootTest
+    @WithMockUser(username = "test5@test.com", password = "password5", roles = {Role.user, Role.admin})
+    class VerifyEmailTest {
+
+        @Test
+        @DisplayName("no token throws InvalidTokenException")
+        @Transactional
+        void VerifyEmailWithNoToken() {
+            assertFalse(userService.findById(5L).getVerified());
+            assertThrows(InvalidTokenException.class, () -> userService.verifyEmail(null));
+            assertFalse(userService.findById(5L).getVerified());
+        }
+
+        @Test
+        @DisplayName("empty token throws InvalidTokenException")
+        @Transactional
+        void VerifyEmailWithEmptyToken() {
+            assertFalse(userService.findById(5L).getVerified());
+            assertThrows(InvalidTokenException.class, () -> userService.verifyEmail(""));
+            assertFalse(userService.findById(5L).getVerified());
+        }
+
+        @Test
+        @DisplayName("not existent token throws InvalidTokenException")
+        @Transactional
+        void VerifyEmailWithNotExistentToken() {
+            assertFalse(userService.findById(5L).getVerified());
+            assertThrows(InvalidTokenException.class, () -> userService.verifyEmail("someRandomToken"));
+            assertFalse(userService.findById(5L).getVerified());
+        }
+
+        @Test
+        @DisplayName("expired token throws InvalidTokenException")
+        @Transactional
+        void VerifyEmailWithExpiredToken() {
+
+            Optional<User> userOptional = userRepository.findById(5L);
+            assertTrue(userOptional.isPresent());
+            User user = userOptional.get();
+
+            SecureToken token = secureTokenService.createSecureToken(TokenType.VERIFY_EMAIL, 0);
+            token.setToken("ExpiredEmailToken");
+            token.setAccount(user);
+            secureTokenService.saveSecureToken(token);
+
+            assertFalse(userService.findById(5L).getVerified());
+            assertThrows(InvalidTokenException.class, () -> userService.verifyEmail("ExpiredEmailToken"));
+            assertFalse(userService.findById(5L).getVerified());
+        }
+
+        @Test
+        @DisplayName("expired token throws InvalidTokenException")
+        @Transactional
+        void VerifyEmailWithWrongTokenType() {
+
+            Optional<User> userOptional = userRepository.findById(5L);
+            assertTrue(userOptional.isPresent());
+            User user = userOptional.get();
+
+            SecureToken token = secureTokenService.createSecureToken(TokenType.RESET_PASSWORD, 15);
+            token.setToken("ValidPasswordToken");
+            token.setAccount(user);
+            secureTokenService.saveSecureToken(token);
+
+            assertFalse(userService.findById(5L).getVerified());
+            assertThrows(InvalidTokenException.class, () -> userService.verifyEmail("ValidPasswordToken"));
+            assertFalse(userService.findById(5L).getVerified());
+        }
+
+        @Test
+        @DisplayName("send verification email")
+        @Transactional
+        void VerifyEmailWithValidToken() {
+
+            Optional<User> userOptional = userRepository.findById(5L);
+            assertTrue(userOptional.isPresent());
+            User user = userOptional.get();
+
+            SecureToken token = secureTokenService.createSecureToken(TokenType.VERIFY_EMAIL, 15);
+            token.setToken("ValidEmailToken");
+            token.setAccount(user);
+            secureTokenService.saveSecureToken(token);
+
+            assertFalse(userService.findById(5L).getVerified());
+            userService.verifyEmail("ValidEmailToken");
+            assertTrue(userService.findById(5L).getVerified());
+
+            userRepository.saveAndFlush(user);
+        }
+
+    }
+
+    @Test
+    @DisplayName("changes the user data correctly")
+    @Transactional
+    @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + 16 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + 16,
+        roles = {Role.verified})
+    void sendVerificationEmailTest() {
+        Optional<User> userOptional = userRepository.findById(5L);
+        assertTrue(userOptional.isPresent());
+        User user = userOptional.get();
+
+        userService.sendEmailVerificationLink(user);
+
+        final MimeMessage[] receivedMessages = greenMail.getReceivedMessages();
+        assertEquals(1, receivedMessages.length);
     }
 
     @Nested
@@ -354,7 +557,7 @@ class UserServiceUnitTest {
         @Transactional
         @DisplayName("deletes user correctly")
         @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + 19 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + 19,
-            roles = {Role.verified})
+            roles = {Role.user, Role.verified, Role.admin})
         void deleteUserWorks() {
             userService.delete(19L);
             assertThrows(NotFoundException.class, () -> userService.findById(19L));

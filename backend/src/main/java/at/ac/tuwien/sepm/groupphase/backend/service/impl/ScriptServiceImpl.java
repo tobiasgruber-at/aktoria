@@ -244,7 +244,6 @@ public class ScriptServiceImpl implements ScriptService {
         return scriptMapper.simpleScriptDtoToScriptDto(simpleScriptDto, script.getId(), owner);
     }
 
-    @Transactional
     @Override
     @Transactional
     public Stream<ScriptPreviewDto> findAllPreviews(String permission) {
@@ -307,7 +306,7 @@ public class ScriptServiceImpl implements ScriptService {
 
         Optional<Script> script = scriptRepository.findById(scriptId);
         if (script.isPresent()) {
-            SecureToken secureToken = secureTokenService.createSecureToken(TokenType.inviteParticipant, 1440);
+            SecureToken secureToken = secureTokenService.createSecureToken(TokenType.INVITE_PARTICIPANT, 1440);
             secureToken.setScript(script.get());
             secureTokenService.saveSecureToken(secureToken);
 
@@ -344,7 +343,7 @@ public class ScriptServiceImpl implements ScriptService {
 
         SecureToken secureToken = secureTokenService.findByToken(token);
         secureTokenService.removeToken(token);
-        if (secureToken.getType() == TokenType.inviteParticipant) {
+        if (secureToken.getType() == TokenType.INVITE_PARTICIPANT) {
             if (secureToken.getExpireAt().isAfter(LocalDateTime.now())) {
 
                 Script script = secureToken.getScript();
