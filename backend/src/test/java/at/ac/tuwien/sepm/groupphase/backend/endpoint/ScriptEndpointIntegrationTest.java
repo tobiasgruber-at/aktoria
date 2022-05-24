@@ -161,7 +161,6 @@ class ScriptEndpointIntegrationTest {
     @DisplayName("getScriptById() gets the correct script")
     void getScriptById() {
         ScriptDto scriptDto = scriptService.findById(1L);
-
         assertNotNull(scriptDto);
     }
 
