@@ -135,7 +135,7 @@ class ScriptEndpointIntegrationTest {
                 .getContentAsByteArray();
 
             final SimpleScriptDto response = objectMapper.readValue(body, SimpleScriptDto.class);
-            
+
             assertNotNull(response);
             assertEquals(expected, response);
         }
