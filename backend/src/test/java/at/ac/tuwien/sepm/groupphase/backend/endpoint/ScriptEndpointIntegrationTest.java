@@ -135,14 +135,14 @@ class ScriptEndpointIntegrationTest {
                 .getContentAsByteArray();
 
             final SimpleScriptDto response = objectMapper.readValue(body, SimpleScriptDto.class);
-            
+
             assertNotNull(response);
             assertEquals(expected, response);
         }
 
         @Test
-        @DisplayName("returns correct status code for corrupted files")
         @Transactional
+        @DisplayName("returns correct status code for corrupted files")
         @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = Role.verified)
         void uploadScriptReturnsCorrectStatusCodeForCorruptedFiles() throws Exception {
             final File pdf = new File("./src/test/resources/service/parsing/script/Skript_NF_CORRUPTED.pdf");
