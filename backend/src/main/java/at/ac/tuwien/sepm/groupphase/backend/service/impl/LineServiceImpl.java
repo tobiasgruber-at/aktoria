@@ -4,11 +4,13 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.LineDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UpdateLineDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.LineMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Line;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Role;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Script;
 import at.ac.tuwien.sepm.groupphase.backend.entity.User;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.UnauthorizedException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.LineRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.RoleRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ScriptRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.AuthorizationService;
 import at.ac.tuwien.sepm.groupphase.backend.service.LineService;
@@ -17,7 +19,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * A specific implementation of LineService.
@@ -33,13 +38,15 @@ public class LineServiceImpl implements LineService {
     private final LineValidation lineValidation;
     private final AuthorizationService authorizationService;
     private final ScriptRepository scriptRepository;
+    private final RoleRepository roleRepository;
 
-    public LineServiceImpl(LineRepository lineRepository, LineMapper lineMapper, LineValidation lineValidation, AuthorizationService authorizationService, ScriptRepository scriptRepository) {
+    public LineServiceImpl(LineRepository lineRepository, LineMapper lineMapper, LineValidation lineValidation, AuthorizationService authorizationService, ScriptRepository scriptRepository, RoleRepository roleRepository) {
         this.lineRepository = lineRepository;
         this.lineMapper = lineMapper;
         this.lineValidation = lineValidation;
         this.authorizationService = authorizationService;
         this.scriptRepository = scriptRepository;
+        this.roleRepository = roleRepository;
     }
 
     @Transactional
@@ -50,7 +57,9 @@ public class LineServiceImpl implements LineService {
         if (updateLineDto.getContent() != null) {
             lineValidation.validateContentInput(updateLineDto.getContent());
         }
-
+        if (updateLineDto.getRoleIds() != null) {
+            lineValidation.validateRoleIdsInput(updateLineDto.getRoleIds());
+        }
         User user = authorizationService.getLoggedInUser();
         if (user == null) {
             throw new UnauthorizedException();
@@ -59,7 +68,6 @@ public class LineServiceImpl implements LineService {
         if (script.isPresent() && !script.get().getOwner().getId().equals(user.getId())) {
             throw new UnauthorizedException("Der Nutzer darf diese Zeile nicht bearbeiten.");
         }
-
         Optional<Line> lineOptional = lineRepository.findById(id);
         Line line;
         if (lineOptional.isPresent()) {
@@ -70,35 +78,21 @@ public class LineServiceImpl implements LineService {
         if (updateLineDto.getContent() != null) {
             line.setContent(updateLineDto.getContent());
         }
-        if (updateLineDto.getIsInactive() != null) {
-            line.setActive(updateLineDto.getIsInactive());
+        if (updateLineDto.getActive() != null) {
+            line.setActive(updateLineDto.getActive());
+        }
+        if (updateLineDto.getRoleIds() != null) {
+            final List<Long> ids = updateLineDto.getRoleIds();
+            if (ids.size() <= 0) {
+                line.setSpokenBy(null);
+            } else {
+                List<Role> roles = roleRepository.findAllById(ids);
+                line.setSpokenBy(new HashSet<>(Set.copyOf(roles)));
+            }
         }
 
         // TODO: delete all affected sessions
 
         return lineMapper.lineToLineDto(lineRepository.save(line));
-    }
-
-    @Transactional
-    @Override
-    public void delete(Long sid, Long id) {
-        log.trace("delete(sid = {}, id = {})", sid, id);
-
-        User user = authorizationService.getLoggedInUser();
-        if (user == null) {
-            throw new UnauthorizedException();
-        }
-        Optional<Script> script = scriptRepository.findById(sid);
-        if (script.isPresent() && !script.get().getOwner().getId().equals(user.getId())) {
-            throw new UnauthorizedException("Der Nutzer darf diese Zeile nicht löschen.");
-        }
-        Optional<Line> line = lineRepository.findById(id);
-        if (line.isEmpty()) {
-            throw new NotFoundException("Zeile existiert nicht!");
-        }
-
-        // TODO: delete all affected sessions
-
-        lineRepository.deleteById(id);
     }
 }

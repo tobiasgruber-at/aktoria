@@ -23,12 +23,4 @@ public interface LineService {
      * @return the updated line
      */
     LineDto update(UpdateLineDto updateLineDto, Long sid, Long id);
-
-    /**
-     * Deletes a line.
-     *
-     * @param sid the id of the script
-     * @param id  the id of the line to be changed
-     */
-    void delete(Long sid, Long id);
 }

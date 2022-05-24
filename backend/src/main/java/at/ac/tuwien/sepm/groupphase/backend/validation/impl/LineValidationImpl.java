@@ -6,6 +6,7 @@ import at.ac.tuwien.sepm.groupphase.backend.validation.LineValidation;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -73,6 +74,15 @@ public class LineValidationImpl implements LineValidation {
             }
             if (!isCompleted) {
                 throw new ValidationException("Zeileninhalt muss korrekt beendet werden.");
+            }
+        }
+    }
+
+    @Override
+    public void validateRoleIdsInput(List<Long> ids) {
+        for (Long id : ids) {
+            if (id == null) {
+                throw new ValidationException("Id muss angegeben werden.");
             }
         }
     }
