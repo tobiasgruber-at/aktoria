@@ -235,6 +235,9 @@ public class UserServiceImpl implements UserService {
                 throw new InvalidTokenException();
             }
         } else {
+            if (id == null) {
+                throw new NotFoundException("User existiert nicht!");
+            }
             Optional<User> userOptional = userRepository.findById(id);
             User update;
             if (userOptional.isPresent()) {
@@ -247,7 +250,9 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    //Method is not used. But is used from spring,security ???
     @Override
+    @Deprecated
     public UserDetails loadUserByUsername(String email) {
         log.trace("loadUserByUsername(email = {})", email);
 

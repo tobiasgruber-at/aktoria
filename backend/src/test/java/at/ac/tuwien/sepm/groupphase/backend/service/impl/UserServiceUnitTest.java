@@ -1,10 +1,13 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
+import at.ac.tuwien.sepm.groupphase.backend.datagenerator.UserDataGenerator;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordChangeDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UpdateUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UserRegistrationDto;
 import at.ac.tuwien.sepm.groupphase.backend.enums.Role;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.UnauthorizedException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
@@ -13,7 +16,6 @@ import at.ac.tuwien.sepm.groupphase.backend.testhelpers.UserTestHelper;
 import com.icegreen.greenmail.configuration.GreenMailConfiguration;
 import com.icegreen.greenmail.junit5.GreenMailExtension;
 import com.icegreen.greenmail.util.ServerSetupTest;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -22,6 +24,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,8 +35,9 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Class for testing user services.
@@ -54,20 +58,107 @@ class UserServiceUnitTest {
     @Autowired
     UserService userService;
 
-    @Test
-    @DisplayName("loadUserByUsername()")
-    void loadUserByUsername() {
-    }
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @Test
     @DisplayName("findUserByEmail()")
+    @Transactional
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user, Role.verified, Role.admin })
     void findUserByEmail() {
+        assertEquals(new SimpleUserDto(1L, UserDataGenerator.TEST_USER_FIRST_NAME + 1, UserDataGenerator.TEST_USER_LAST_NAME + 1,
+            UserDataGenerator.TEST_USER_EMAIL_LOCAL + 1 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, true), userService.findByEmail(UserDataGenerator.TEST_USER_EMAIL_LOCAL + 1 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN));
+
+        assertEquals(new SimpleUserDto(3L, UserDataGenerator.TEST_USER_FIRST_NAME + 3, UserDataGenerator.TEST_USER_LAST_NAME + 3,
+            UserDataGenerator.TEST_USER_EMAIL_LOCAL + 3 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, true), userService.findByEmail(UserDataGenerator.TEST_USER_EMAIL_LOCAL + 3 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN));
+
+        assertEquals(new SimpleUserDto(14L, UserDataGenerator.TEST_USER_FIRST_NAME + 14, UserDataGenerator.TEST_USER_LAST_NAME + 14,
+            UserDataGenerator.TEST_USER_EMAIL_LOCAL + 14 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, true), userService.findByEmail(UserDataGenerator.TEST_USER_EMAIL_LOCAL + 14 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN));
+    }
+
+    @Test
+    @DisplayName("changes the password correctly")
+    @Transactional
+    @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + 1 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + 1,
+        roles = { Role.verified })
+    void changePasswordWorks() {
+        assertTrue(passwordEncoder.matches("hallo12345",
+            userService.changePassword(new PasswordChangeDto(null, UserDataGenerator.TEST_USER_PASSWORD + 1, "hallo12345"), 1L).getPasswordHash()));
+    }
+
+    @Test
+    @DisplayName("changes the password correctly and encodes correctly")
+    @Transactional
+    @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + 2 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + 2,
+        roles = { Role.verified })
+    void changePasswordChangesPassword() {
+        assertFalse(passwordEncoder.matches("hallo1256",
+            userService.changePassword(new PasswordChangeDto(null, UserDataGenerator.TEST_USER_PASSWORD + 2, "hallo12345"), 2L).getPasswordHash()));
+    }
+
+
+    @Test
+    @DisplayName("throws ValidationException")
+    @Transactional
+    @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + 10 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + 10,
+        roles = { Role.verified })
+    void changePasswordThrowsValidationException() {
+        assertThrows(ValidationException.class, () -> userService.changePassword(new PasswordChangeDto(null,
+            UserDataGenerator.TEST_USER_PASSWORD + 10, ""), 10L));
+        assertThrows(ValidationException.class, () -> userService.changePassword(new PasswordChangeDto(null,
+            UserDataGenerator.TEST_USER_PASSWORD + 10, "passw"), 10L));
+    }
+
+    @Test
+    @DisplayName("throws ConflictException")
+    @Transactional
+    @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + 14 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + 14,
+        roles = { Role.verified })
+    void changePasswordThrowsConflictException() {
+        assertThrows(ConflictException.class, () -> userService.changePassword(new PasswordChangeDto(null,
+            "wrongPassword", "hallo1010"), 14L));
+    }
+
+    @Test
+    @DisplayName("findById works")
+    @Transactional
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user, Role.verified, Role.admin })
+    void findByIdReturnsCorrectUse() {
+        assertEquals(new SimpleUserDto(7L, UserDataGenerator.TEST_USER_FIRST_NAME + 7, UserDataGenerator.TEST_USER_LAST_NAME + 7,
+            UserDataGenerator.TEST_USER_EMAIL_LOCAL + 7 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, true), userService.findById(7L));
+
+        assertEquals(new SimpleUserDto(13L, UserDataGenerator.TEST_USER_FIRST_NAME + 13, UserDataGenerator.TEST_USER_LAST_NAME + 13,
+            UserDataGenerator.TEST_USER_EMAIL_LOCAL + 13 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, true), userService.findById(13L));
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("patch user throws ValidationException")
+    @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + 16 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + 16,
+        roles = { Role.verified })
+    void changeUserThrowsValidationException() {
+        assertThrows(ValidationException.class, () -> userService.patch(new UpdateUserDto(null, "n".repeat(200), null, null, null, null, true), 16L));
+        assertThrows(ValidationException.class, () -> userService.patch(new UpdateUserDto(null, null, "nd".repeat(187), null, null, null, true), 16L));
+        assertThrows(ValidationException.class, () -> userService.patch(new UpdateUserDto(null, null, null, "halo", null, null, true), 16L));
+        assertThrows(ConflictException.class, () -> userService.patch(new UpdateUserDto(null, null, null, UserDataGenerator.TEST_USER_EMAIL_LOCAL + 1 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, null, null, true), 16L));
+    }
+
+    @Test
+    @DisplayName("changes the user data correctly")
+    @Transactional
+    @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + 16 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + 16,
+        roles = { Role.verified })
+    void changeUserDataIsOk() {
+        assertEquals("newName", userService.patch(new UpdateUserDto(null, "newName", null, null, null, null, true), 16L).getFirstName());
+        assertEquals("newLastName", userService.patch(new UpdateUserDto(null, null, "newLastName", null, null, null, true), 16L).getLastName());
+        assertEquals("newmail16@gmx.com", userService.patch(new UpdateUserDto(null, null, null, "newmail16@gmx.com", null, null, true), 16L).getEmail());
     }
 
     @Nested
     @DisplayName("changePassword()")
     @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user, Role.verified, Role.admin })
     class ForgotPasswordTest {
+
         @Test
         @Transactional
         @DisplayName("sends email")
@@ -78,163 +169,12 @@ class UserServiceUnitTest {
             assertEquals(1, receivedMessages.length);
         }
 
-        @Disabled
+
         @Test
         @Transactional
         @DisplayName("NotFoundException when email does not exists")
         void forgotPasswordEmailDoesNotExist() {
             assertThrows(NotFoundException.class, () -> userService.forgotPassword("notfound@test.com"));
-        }
-    }
-
-    @Disabled
-    @Nested
-    @DisplayName("changePassword()")
-    class ChangePasswordTest {
-
-        private static Stream<ChangePasswordRecord> parameterizedChangePasswordWorksProvider() {
-            final List<ChangePasswordRecord> temp = new LinkedList<>();
-            //needed datagen for valid ids and password
-            return temp.stream();
-        }
-
-        private static Stream<ChangePasswordRecord> parameterizedChangePasswordThrowsUnauthorizedExceptionProvider() {
-            final List<ChangePasswordRecord> temp = new LinkedList<>();
-            //needed datagen for invalid ids and password
-            return temp.stream();
-        }
-
-        private static Stream<ChangePasswordRecord> parameterizedChangePasswordThrowsValidationExceptionProvider() {
-            final List<ChangePasswordRecord> temp = new LinkedList<>();
-            //needed datagen for invalid ids and password
-            return temp.stream();
-        }
-
-        @Disabled
-        @ParameterizedTest
-        @Transactional
-        @DisplayName("changes the password correctly")
-        @MethodSource("parameterizedChangePasswordWorksProvider")
-        void changePasswordWorks(ChangePasswordRecord input) {
-
-        }
-
-        @ParameterizedTest
-        @Transactional
-        @DisplayName("throws UnauthorizedException")
-        @MethodSource("parameterizedChangePasswordThrowsUnauthorizedExceptionProvider")
-        void changePasswordThrowsUnauthorizedException(ChangePasswordRecord input) {
-            //test if entered old password matches current password
-            assertThrows(UnauthorizedException.class, () -> userService.changePassword(input.passwordChangeDto, input.id));
-        }
-
-        @ParameterizedTest
-        @Transactional
-        @DisplayName("throws ValidationException")
-        @MethodSource("parameterizedChangePasswordThrowsValidationExceptionProvider")
-        void changePasswordThrowsValidationException(ChangePasswordRecord input) {
-            //test if new password is a valid password
-            assertThrows(ValidationException.class, () -> userService.changePassword(input.passwordChangeDto, input.id));
-        }
-
-        record ChangePasswordRecord(PasswordChangeDto passwordChangeDto, Long id) {
-        }
-    }
-
-    @Disabled
-    @Nested
-    @DisplayName("getUser()")
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user, Role.verified, Role.admin })
-    class GetUserTest {
-        private static Stream<String> parameterizedGetUserWorksProvider() {
-            final List<String> temp = new LinkedList<>();
-            //needed datagen for valid ids
-            return temp.stream();
-        }
-
-        private static Stream<String> parameterizedGetUserExceptionProvider() {
-            final List<String> temp = new LinkedList<>();
-            //needed datagen to know which ids are invalid for this test
-            return temp.stream();
-        }
-
-        @ParameterizedTest
-        @Transactional
-        @DisplayName("throws ServiceException")
-        @MethodSource("parameterizedGetUserExceptionProvider")
-        void getUserThrowsException(String input) {
-            assertThrows(NotFoundException.class, () -> userService.findByEmail(input));
-        }
-
-        @ParameterizedTest
-        @Transactional
-        @DisplayName("gets the correct user")
-        @MethodSource("parameterizedGetUserWorksProvider")
-        void getUserWorks(String input) {
-            assertNull(userService.findByEmail(input));
-        }
-    }
-
-    @Nested
-    @DisplayName("deleteUser()")
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user, Role.verified, Role.admin })
-    class DeleteUserTest {
-        private static Stream<Long> parameterizedDeleteUserProvider() {
-            final List<Long> temp = new LinkedList<>();
-            //needed datagen
-            return temp.stream();
-        }
-
-        private static Stream<Long> parameterizedDeleteUserExceptionProvider() {
-            final List<Long> temp = new LinkedList<>();
-            temp.add(-200L);
-            temp.add(-201L);
-            temp.add(-202L);
-            temp.add(-203L);
-            temp.add(-204L);
-            temp.add(-205L);
-            temp.add(-206L);
-            temp.add(-207L);
-            temp.add(-208L);
-            temp.add(-209L);
-            temp.add(-210L);
-            return temp.stream();
-        }
-
-        @Disabled
-        @ParameterizedTest
-        @Transactional
-        @DisplayName("deletes user correctly")
-        @MethodSource("parameterizedDeleteUserProvider")
-        void deleteUserWorks(SimpleUserDto input) {
-            //delete users and check for no errors and void return. then check if user doesn't exist anymore
-        }
-
-        @ParameterizedTest
-        @Transactional
-        @DisplayName("throws NotFoundException")
-        @MethodSource("parameterizedDeleteUserExceptionProvider")
-        void deleteUserThrowsException(Long input) {
-            assertThrows(NotFoundException.class, () -> userService.delete(input));
-        }
-    }
-
-    @Nested
-    @DisplayName("changeUser()")
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user, Role.verified, Role.admin })
-    class ChangeUserTest {
-        private static Stream<SimpleUserDto> parameterizedChangeUserProvider() {
-            final List<SimpleUserDto> temp = new LinkedList<>();
-            //needed datagen
-            return temp.stream();
-        }
-
-        @Disabled
-        @ParameterizedTest
-        @Transactional
-        @DisplayName("changes the user data correctly")
-        @MethodSource("parameterizedChangeUserProvider")
-        void changeUserDataIsOk(SimpleUserDto input) {
         }
     }
 
@@ -389,4 +329,61 @@ class UserServiceUnitTest {
         record CreateUserRecord(UserRegistrationDto input, DetailedUserDto expected) {
         }
     }
+
+    @Nested
+    @DisplayName("deleteUser()")
+    class DeleteUserTest {
+        private static Stream<Long> parameterizedDeleteUserExceptionProvider() {
+            final List<Long> temp = new LinkedList<>();
+            temp.add(-200L);
+            temp.add(-201L);
+            temp.add(-202L);
+            temp.add(-203L);
+            temp.add(-204L);
+            temp.add(-205L);
+            temp.add(-206L);
+            temp.add(-207L);
+            temp.add(-208L);
+            temp.add(-209L);
+            temp.add(-210L);
+            return temp.stream();
+        }
+
+        @Test
+        @Transactional
+        @DisplayName("deletes user correctly")
+        @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + 3 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + 3,
+            roles = { Role.verified })
+        void deleteUserWorks() {
+            userService.delete(3L);
+        }
+
+        @Test
+        @Transactional
+        @DisplayName("deletes user correctly without verification")
+        @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + 3 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + 3,
+            roles = { Role.user })
+        void deleteUserWorks2() {
+            userService.delete(3L);
+        }
+
+        @Test
+        @Transactional
+        @DisplayName("deletes throws ")
+        @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + 4 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + 4,
+            roles = { Role.verified })
+        void deleteUserThrowsUnauthorized() {
+            assertThrows(UnauthorizedException.class, () -> userService.delete(3L));
+        }
+
+        @Transactional
+        @ParameterizedTest
+        @DisplayName("throws NotFoundException")
+        @MethodSource("parameterizedDeleteUserExceptionProvider")
+        @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user, Role.verified, Role.admin })
+        void deleteUserThrowsException(Long input) {
+            assertThrows(NotFoundException.class, () -> userService.delete(input));
+        }
+    }
 }
+
