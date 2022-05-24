@@ -1,7 +1,7 @@
 <div
   *ngIf="isEditingScript || line.active"
   [class.py-2]="isInstruction"
-  class="mb-1"
+  class="py-1"
 >
   <div
     (openChange)="setIsActive($event)"
@@ -52,3 +52,11 @@
     </ng-template>
   </div>
 </div>
+<div
+  *ngIf="(scriptViewerService.$markedSection | async)?.startLine === line.index"
+  class="marking start-line"
+></div>
+<div
+  *ngIf="(scriptViewerService.$markedSection | async)?.endLine === line.index"
+  class="marking end-line"
+></div>

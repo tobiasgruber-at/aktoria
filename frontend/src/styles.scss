@@ -20,26 +20,53 @@ form .form-control {
   background-color: hsl(210deg 11% 21%) !important;
 }
 
-label {
-  font-weight: 500;
-  margin-bottom: 0.4rem;
+.dropdown-menu-lg .dropdown-menu {
+  min-width: 100%;
+  font-size: 1.2rem;
+
+  .dropdown-item {
+    padding: 0.6rem 1.1rem;
+    //text-align: end;
+  }
 }
 
-.badge.badge-lg {
-  border-radius: 9999px;
-  font-size: 1em;
+label {
   font-weight: 500;
-  border: 1px var(--bs-secondary) solid;
-  color: var(--bs-secondary);
+  margin-bottom: 0.3rem;
+}
 
-  &:hover {
-    color: var(--bs-warning);
-    border-color: var(--bs-warning);
+.badge {
+  &.badge-primary {
+    --badge-color: var(--bs-primary);
   }
 
-  &.selected {
-    background-color: var(--bs-warning);
-    color: var(--bs-white);
-    border-color: var(--bs-warning);
+  &.badge-secondary {
+    --badge-color: var(--bs-warning);
+  }
+
+  &.badge-lg,
+  &.badge-xl {
+    padding: 0.4rem 0.8rem;
+    border-radius: 9999px;
+    font-size: 1em;
+    font-weight: 400;
+    border: 1px var(--bs-secondary) solid;
+    color: var(--bs-secondary);
+
+    &:hover {
+      color: var(--badge-color);
+      border-color: var(--badge-color);
+    }
+
+    &.selected {
+      background-color: var(--badge-color);
+      color: var(--bs-white);
+      border-color: var(--badge-color);
+    }
+  }
+
+  &.badge-xl {
+    padding: 0.5rem 1rem;
+    font-size: 1.1em;
   }
 }

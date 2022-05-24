@@ -6,7 +6,10 @@
     padding-top: var(--nav-height);
 
     &.sidebar-gap {
-      padding-right: var(--sidebar-width);
+      &,
+      .loading-screen {
+        padding-right: var(--sidebar-width);
+      }
     }
   }
 }

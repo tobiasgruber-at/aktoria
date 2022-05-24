@@ -1,33 +1,13 @@
 <app-page-layout [loading]="getLoading" [showSidebar]="true" theme="dark">
   <app-script-viewer></app-script-viewer>
-  <ng-template #tutorialModal let-modal>
-    <app-modal
-      (confirm)="modal.dismiss()"
-      (decline)="modal.dismiss()"
-      [showDecline]="false"
-      confirmBtnLabel="Weiter"
-      title="Skript überprüfen"
-    >
-      <p>Bitte überprüfe, ob dein Skript richtig verarbeitet wurde.<br /></p>
-      <p>
-        Sollten Rollen den falschen Texten zugewiesen sein, kannst du auf den
-        Text klicken und die
-        <strong class="text-primary">Rollen ändern</strong>.
-      </p>
-      <p>
-        Wurden Rollen mehrfach erkannt, so kannst du auf der rechten
-        Seitenleiste
-        <strong class="text-primary">Rollen vereinigen</strong>.
-      </p>
-    </app-modal>
-  </ng-template>
   <form
     (ngSubmit)="submit()"
     [formGroup]="form"
     class="form d-flex flex-column flex-grow-1"
     role="sidebar"
   >
-    <div class="form-group mb-3">
+    <h2 class="mb-4">Skript hochladen</h2>
+    <div class="form-group mb-4">
       <label for="input-script-name">Bezeichnung</label>
       <input
         class="form-control"
@@ -103,3 +83,23 @@
     </ng-container>
   </form>
 </app-page-layout>
+<ng-template #tutorialModal let-modal>
+  <app-modal
+    (confirm)="modal.dismiss()"
+    (decline)="modal.dismiss()"
+    [showDecline]="false"
+    confirmBtnLabel="Weiter"
+    title="Skript überprüfen"
+  >
+    <p>Bitte überprüfe, ob dein Skript richtig verarbeitet wurde.<br /></p>
+    <p>
+      Sollten Rollen den falschen Texten zugewiesen sein, kannst du auf den Text
+      klicken und die
+      <strong class="text-primary">Rollen ändern</strong>.
+    </p>
+    <p>
+      Wurden Rollen mehrfach erkannt, so kannst du auf der rechten Seitenleiste
+      <strong class="text-primary">Rollen vereinigen</strong>.
+    </p>
+  </app-modal>
+</ng-template>
