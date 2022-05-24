@@ -68,15 +68,15 @@ public interface ScriptService {
     void delete(Long id);
 
     /**
-     * Sends an invitation to join the script as participant
+     * Sends an invitation to join the script as participant.
      *
-     * @param script_id id of the script
+     * @param scriptId id of the script
      * @param email email the invitation is sent to
      */
-    void invite(Long script_id, String email);
+    void invite(Long scriptId, String email);
 
     /**
-     * Accepts an invitaion and add user to participants
+     * Accepts an invitaion and add user to participants.
      *
      * @param id of the new participant
      * @param token to verify that an invitation was received

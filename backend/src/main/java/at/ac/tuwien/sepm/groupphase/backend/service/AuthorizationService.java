@@ -49,7 +49,7 @@ public interface AuthorizationService {
      * Checks if the client is logged in as the owner of the given script,
      * or is an admin.
      *
-     * @param id_script
+     * @param scriptId id of the script
      */
-    void isOwnerOfScript(Long id_script);
+    void isOwnerOfScript(Long scriptId);
 }

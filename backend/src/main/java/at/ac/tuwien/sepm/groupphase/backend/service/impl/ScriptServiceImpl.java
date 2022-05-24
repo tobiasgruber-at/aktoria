@@ -246,14 +246,14 @@ public class ScriptServiceImpl implements ScriptService {
     @Override
     @Transactional
     public Stream<ScriptPreviewDto> findAllPreviews(String permission) {
-        log.trace("getAllPreviews({})",permission);
+        log.trace("getAllPreviews({})", permission);
 
         User user = authorizationService.getLoggedInUser();
         if (user == null) {
             throw new UnauthorizedException();
         }
 
-        if (permission.equals("owner")){
+        if (permission.equals("owner")) {
             return scriptMapper.listOfScriptToListOfScriptPreviewDto(scriptRepository.getScriptByOwner(user)).stream();
         } else {
             return scriptMapper.listOfScriptToListOfScriptPreviewDto(scriptRepository.getScriptByParticipant(user)).stream();
@@ -298,13 +298,13 @@ public class ScriptServiceImpl implements ScriptService {
     }
 
     @Override
-    public void invite(Long script_id, String email) {
-        log.trace("invite(script_id = {}, email = {})", script_id, email);
+    public void invite(Long scriptId, String email) {
+        log.trace("invite(script_id = {}, email = {})", scriptId, email);
 
-        authorizationService.isOwnerOfScript(script_id);
+        authorizationService.isOwnerOfScript(scriptId);
 
-        Optional<Script> script = scriptRepository.findById(script_id);
-        if (script.isPresent()){
+        Optional<Script> script = scriptRepository.findById(scriptId);
+        if (script.isPresent()) {
             SecureToken secureToken = secureTokenService.createSecureToken(TokenType.inviteParticipant, 1440);
             secureToken.setScript(script.get());
             secureTokenService.saveSecureToken(secureToken);
@@ -336,7 +336,7 @@ public class ScriptServiceImpl implements ScriptService {
         log.trace("addParticipant(id = {}, token = {})", id, token);
 
         User user = authorizationService.getLoggedInUser();
-        if (user == null){
+        if (user == null) {
             throw new UnauthorizedException();
         }
 
@@ -346,7 +346,7 @@ public class ScriptServiceImpl implements ScriptService {
             if (secureToken.getExpireAt().isAfter(LocalDateTime.now())) {
 
                 Script script = secureToken.getScript();
-                if (!Objects.equals(script.getId(), id)){
+                if (!Objects.equals(script.getId(), id)) {
                     throw new UnauthorizedException();
                 }
 

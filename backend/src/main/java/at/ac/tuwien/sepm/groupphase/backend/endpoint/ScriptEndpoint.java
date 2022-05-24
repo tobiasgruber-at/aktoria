@@ -79,18 +79,18 @@ public class ScriptEndpoint {
         scriptService.delete(id);
     }
 
-    @PostMapping(path="/{id}/invitations")
+    @PostMapping(path = "/{id}/invitations")
     @ResponseStatus(HttpStatus.OK)
     @Secured(Permission.verified)
-    public void inviteUser(@PathVariable Long id, @RequestBody String email){
+    public void inviteUser(@PathVariable Long id, @RequestBody String email) {
         log.info("POST /invitation");
         scriptService.invite(id, email);
     }
 
-    @PostMapping(path="/{id}/participants")
+    @PostMapping(path = "/{id}/participants")
     @ResponseStatus(HttpStatus.OK)
     @Secured(Permission.verified)
-    public void addParticipant(@PathVariable Long id, @RequestBody String token){
+    public void addParticipant(@PathVariable Long id, @RequestBody String token) {
         log.info("POST /{}/participants", id);
         scriptService.addParticipant(id, token);
     }

@@ -31,6 +31,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         this.scriptRepository = scriptRepository;
     }
 
+    @Override
     public void checkBasicAuthorization(Long id) {
         if (isAdmin()) {
             return;
@@ -42,23 +43,6 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     }
 
     @Override
-    public void isOwnerOfScript(Long id_script) {
-        if (isAdmin()) {
-            return;
-        }
-        Optional<Script> scriptOptional = scriptRepository.findById(id_script);
-        if (scriptOptional.isPresent()){
-            Long owner_id = scriptOptional.get().getOwner().getId();
-            if (isLoggedInAs(owner_id)) {
-                return;
-            }
-            throw new UnauthorizedException();
-
-        }
-        throw new NotFoundException("Skript existiert nicht");
-    }
-
-    @Override
     public void checkBasicAuthorization(String email) {
         if (isAdmin()) {
             return;
@@ -67,6 +51,23 @@ public class AuthorizationServiceImpl implements AuthorizationService {
             return;
         }
         throw new UnauthorizedException();
+    }
+
+    @Override
+    public void isOwnerOfScript(Long scriptId) {
+        if (isAdmin()) {
+            return;
+        }
+        Optional<Script> scriptOptional = scriptRepository.findById(scriptId);
+        if (scriptOptional.isPresent()) {
+            Long ownerId = scriptOptional.get().getOwner().getId();
+            if (isLoggedInAs(ownerId)) {
+                return;
+            }
+            throw new UnauthorizedException();
+
+        }
+        throw new NotFoundException("Skript existiert nicht");
     }
 
     private boolean isAdmin() {
