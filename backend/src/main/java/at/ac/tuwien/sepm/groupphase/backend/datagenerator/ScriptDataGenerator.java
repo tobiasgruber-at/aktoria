@@ -122,8 +122,7 @@ public class ScriptDataGenerator {
         } else {
             if (!scripts.get(0).getRoles().stream().toList().get(0).getLines().isEmpty()) {
                 log.debug("already generated spoken-by entries");
-            }
-            else{
+            } else {
                 log.debug("generating spoken-by entries");
                 for (Script script : scripts) {
                     List<Role> roles = script.getRoles().stream().toList();

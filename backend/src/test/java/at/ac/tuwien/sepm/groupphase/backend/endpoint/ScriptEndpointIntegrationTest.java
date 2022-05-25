@@ -142,13 +142,13 @@ class ScriptEndpointIntegrationTest {
     @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
     void getScriptPreviewsReturnsZero() {
         List<ScriptPreviewDto> scriptPreviewDtoList = scriptService.findAllPreviews().toList();
-        assertEquals(0, scriptPreviewDtoList.size());
+        assertEquals(1, scriptPreviewDtoList.size());
     }
 
     @Test
     @Transactional
     @DisplayName("getScriptPreviews() gets the correct previews")
-    @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "2" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "2", roles = { Role.verified })
+    @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "1" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "1", roles = { Role.verified })
     void getScriptPreviews() {
         List<ScriptPreviewDto> scriptPreviewDtoList = scriptService.findAllPreviews().toList();
         assertEquals(new ScriptPreviewDto(1L, ScriptDataGenerator.TEST_SCRIPT_NAME + " 1"), scriptPreviewDtoList.get(0));
@@ -157,7 +157,7 @@ class ScriptEndpointIntegrationTest {
 
     @Test
     @Transactional
-    @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "2" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "2", roles = { Role.verified })
+    @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "1" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "1", roles = { Role.verified })
     @DisplayName("getScriptById() gets the correct script")
     void getScriptById() {
         ScriptDto scriptDto = scriptService.findById(1L);
@@ -166,10 +166,10 @@ class ScriptEndpointIntegrationTest {
 
     @Test
     @Transactional
-    @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "1" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "2", roles = { Role.verified })
+    @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "1" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "1", roles = { Role.verified })
     @DisplayName("getScriptById() throws UnauthorizedException")
     void getScriptByIdThrowsException() {
-        assertThrows(UnauthorizedException.class, () -> scriptService.findById(1L));
+        assertThrows(UnauthorizedException.class, () -> scriptService.findById(2L));
     }
 
     @Nested

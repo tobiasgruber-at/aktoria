@@ -76,7 +76,7 @@ class LineEndpointIntegrationTest {
         @Transactional
         @DisplayName("works correctly")
         @MethodSource("updateLineDtoValidProvider")
-        @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "2" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "2", roles = { Role.verified })
+        @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "1" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "1", roles = { Role.verified })
         void updateLineIsOk(UpdateLineDto input) throws Exception {
             byte[] body = mockMvc
                 .perform(MockMvcRequestBuilders
@@ -99,7 +99,7 @@ class LineEndpointIntegrationTest {
         @Transactional
         @DisplayName("returns InternalServerError")
         @MethodSource("updateLineDtoInvalidProvider")
-        @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "2" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "2", roles = { Role.verified })
+        @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "1" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "1", roles = { Role.verified })
         void updateLineThrowsException(UpdateLineDto input) throws Exception {
             mockMvc
                 .perform(MockMvcRequestBuilders
@@ -113,7 +113,7 @@ class LineEndpointIntegrationTest {
         @Test
         @Transactional
         @DisplayName("returns Forbidden")
-        @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "2" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "2", roles = { Role.user })
+        @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "1" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "1", roles = { Role.user })
         void updateLineThrowsException() throws Exception {
             mockMvc
                 .perform(MockMvcRequestBuilders
@@ -131,7 +131,7 @@ class LineEndpointIntegrationTest {
         @Test
         @Transactional
         @DisplayName("works correctly")
-        @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "2" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "2", roles = { Role.verified })
+        @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "1" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "1", roles = { Role.verified })
         void deleteLine() throws Exception {
             mockMvc
                 .perform(MockMvcRequestBuilders
@@ -147,7 +147,7 @@ class LineEndpointIntegrationTest {
         @Test
         @Transactional
         @DisplayName("returns Forbidden")
-        @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "2" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "2", roles = { Role.user })
+        @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "1" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "1", roles = { Role.user })
         void deleteLineThrowsException() throws Exception {
             mockMvc
                 .perform(MockMvcRequestBuilders
