@@ -1,5 +1,8 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
+import at.ac.tuwien.sepm.groupphase.backend.entity.Line;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Role;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Section;
 import at.ac.tuwien.sepm.groupphase.backend.enums.AssessmentType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,7 +12,7 @@ import java.time.LocalDateTime;
 
 /**
  * Session Data Transfer Object.
- *
+ * <p>
  * This DTO is intended for transferring all
  * available Data of a session.
  *
@@ -25,7 +28,7 @@ public class SessionDto {
     private LocalDateTime start;
     private LocalDateTime end;
     private AssessmentType selfAssessment;
-    private Long sectionId;
-    private Long roleId;
-    private Long currentLine;
+    private Section section;
+    private Role role;
+    private Line currentLine;
 }

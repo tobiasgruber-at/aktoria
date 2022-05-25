@@ -43,10 +43,10 @@ public class Session {
     private AssessmentType selfAssessment;
 
     @Column(name = "deprecated", columnDefinition = "boolean default false")
-    private Boolean deprecated;
+    private Boolean deprecated = false;
 
     @Column(name = "coverage")
-    private Double coverage;
+    private Double coverage = 0.0;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "section", nullable = false)
