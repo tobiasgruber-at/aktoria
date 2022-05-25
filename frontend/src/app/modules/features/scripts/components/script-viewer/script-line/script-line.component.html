@@ -1,7 +1,7 @@
 <div
-  *ngIf="isEditing || line.active"
+  *ngIf="isEditingScript || line.active"
   [class.py-2]="isInstruction"
-  class="position-relative mb-1"
+  class="mb-1"
 >
   <div
     (openChange)="setIsActive($event)"
@@ -29,9 +29,9 @@
     >
       {{ line?.content }}
     </p>
-    <div *ngIf="isEditing" class="my-1" ngbDropdownMenu>
-      <button (click)="toggleModal(changeRolesModal)" ngbDropdownItem>
-        Rollen {{ line.roles?.length > 0 ? 'ändern' : 'zuweisen' }}
+    <div *ngIf="isEditingScript" class="my-1" ngbDropdownMenu>
+      <button (click)="toggleModal(changeLineModal)" ngbDropdownItem>
+        Bearbeiten
       </button>
       <button
         (click)="removeRoles()"
@@ -41,23 +41,14 @@
         Als Instruktion markieren
       </button>
       <button (click)="toggleLineActive()" ngbDropdownItem>
-        Text {{ line.active ? 'ausblenden' : 'einblenden' }}
+        {{ line.active ? 'Ausblenden' : 'Einblenden' }}
       </button>
     </div>
-    <ng-template #changeRolesModal let-modal>
-      <app-modal
-        (confirm)="modal.dismiss()"
-        (decline)="modal.dismiss()"
-        [showDecline]="false"
-        confirmBtnLabel="Fertig"
-        title="Rollen {{ line.roles?.length > 0 ? 'ändern' : 'zuweisen' }}"
-      >
-        <app-script-roles-list
-          (roleClicked)="changeRoles($event)"
-          [roles]="(scriptViewerService.$script | async)?.roles"
-          [selectedRoles]="line.roles"
-        ></app-script-roles-list>
-      </app-modal>
+    <ng-template #changeLineModal let-modal>
+      <app-change-line-modal
+        [line]="line"
+        [modal]="modal"
+      ></app-change-line-modal>
     </ng-template>
   </div>
 </div>

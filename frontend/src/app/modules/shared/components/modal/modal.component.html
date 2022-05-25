@@ -17,8 +17,10 @@
   </button>
   <app-button
     (click)="onConfirm()"
+    [disabled]="disabled"
     [label]="confirmBtnLabel || 'Ok'"
     [loading]="loading"
     [theme]="theme"
+    ngbAutofocus
   ></app-button>
 </div>

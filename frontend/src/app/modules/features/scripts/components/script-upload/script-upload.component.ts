@@ -43,7 +43,7 @@ export class ScriptUploadComponent extends FormBase implements OnInit {
     fileInputNode.value = null;
   }
 
-  protected sendSubmit() {
+  protected processSubmit() {
     const { file, startPage } = this.form.value;
     this.scriptService.parse(file, startPage).subscribe({
       next: (script) => {

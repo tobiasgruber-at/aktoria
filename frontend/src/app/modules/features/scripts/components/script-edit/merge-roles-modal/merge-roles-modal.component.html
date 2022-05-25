@@ -1,0 +1,51 @@
+<app-modal
+  (confirm)="submit()"
+  (decline)="modal.dismiss()"
+  [disabled]="hasError()"
+  [loading]="loading"
+  confirmBtnLabel="Zusammenlegen"
+  title="Rollen zusammenlegen"
+>
+  <form (ngSubmit)="submit()" [formGroup]="form" class="form">
+    <p>
+      Bitte <strong class="text-primary">wähle Rollen aus</strong>, die zu einer
+      zusammengefasst werden sollen.
+    </p>
+    <div class="form-group mt-3">
+      <app-script-roles-list
+        (roleClicked)="updateRoles($event)"
+        [roles]="script?.roles"
+        [selectedRoles]="form?.value.selectedRoles"
+      ></app-script-roles-list>
+      <app-form-errors>
+        <app-form-error
+          *ngIf="fieldHasErrors('selectedRoles', 'arrayMinLength')"
+          >Bitte wähle mindestens 2 Rollen aus.
+        </app-form-error>
+      </app-form-errors>
+    </div>
+    <div class="form-group mt-3">
+      <label for="input-role-name">Bezeichnung</label>
+      <input
+        class="form-control roles-input"
+        formControlName="roleName"
+        id="input-role-name"
+        name="roleName"
+        placeholder="Bezeichnung der neuen Rolle"
+        type="text"
+      />
+      <app-form-errors>
+        <app-form-error *ngIf="fieldHasErrors('roleName', 'required')"
+          >Bitte gib eine Bezeichnung an.
+        </app-form-error>
+        <app-form-error *ngIf="fieldHasErrors('roleName', 'maxlength')"
+          >Bezeichnung zu lange.
+        </app-form-error>
+        <!-- TODO: validate if duplicated name -->
+        <!--<app-form-error *ngIf="checkDuplicatedRole('roleName')"
+          >Rolle existiert bereits.</app-form-error
+        >-->
+      </app-form-errors>
+    </div>
+  </form>
+</app-modal>

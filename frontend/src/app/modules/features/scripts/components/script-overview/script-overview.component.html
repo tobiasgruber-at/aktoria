@@ -13,6 +13,12 @@
           >
             Skript ansehen
           </button>
+          <button
+            class="btn btn-outline-primary me-3"
+            routerLink="/scripts/{{ script?.id }}/edit"
+          >
+            Skript bearbeiten
+          </button>
           <button (click)="openModal(deleteModal)" class="btn btn-danger">
             Skript löschen
           </button>

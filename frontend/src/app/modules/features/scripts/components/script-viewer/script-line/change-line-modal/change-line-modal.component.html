@@ -1,0 +1,39 @@
+<app-modal
+  (confirm)="submit()"
+  (decline)="modal.dismiss()"
+  [disabled]="hasError()"
+  [loading]="loading"
+  confirmBtnLabel="Fertig"
+  title="Zeile bearbeiten"
+>
+  <form (ngSubmit)="submit()" [formGroup]="form" class="form">
+    <div class="form-group mb-3">
+      <label for="input-roles">Rollen</label>
+      <app-script-roles-list
+        (roleClicked)="changeRoles($event)"
+        [roles]="(scriptViewerService.$script | async)?.roles"
+        [selectedRoles]="form.value.roles"
+        id="input-roles"
+      ></app-script-roles-list>
+    </div>
+    <div class="form-group">
+      <label for="input-content">Text</label>
+      <textarea
+        class="form-control"
+        formControlName="content"
+        id="input-content"
+        name="content"
+        placeholder="Zugehöriger Text"
+        type="text"
+      ></textarea>
+      <app-form-errors>
+        <app-form-error *ngIf="fieldHasErrors('content', 'required')"
+          >Bitte gib einen Text an.
+        </app-form-error>
+        <app-form-error *ngIf="fieldHasErrors('content', 'maxlength')"
+          >Text zu lange.
+        </app-form-error>
+      </app-form-errors>
+    </div>
+  </form>
+</app-modal>

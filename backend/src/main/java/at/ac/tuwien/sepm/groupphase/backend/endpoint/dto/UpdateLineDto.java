@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SimpleRoleDto {
-    private String name;
-    private SimpleColorDto color;
+public class UpdateLineDto {
+    private String content;
+    private Boolean isInactive;
 }
