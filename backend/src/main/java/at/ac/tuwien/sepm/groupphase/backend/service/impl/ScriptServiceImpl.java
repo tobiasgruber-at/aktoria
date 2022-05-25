@@ -8,6 +8,7 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimplePageDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleRoleDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleScriptDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UpdateScriptDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ScriptMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.UserMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Line;
@@ -269,5 +270,28 @@ public class ScriptServiceImpl implements ScriptService {
             throw new UnauthorizedException("User is not permitted to delete this file");
         }
         scriptRepository.deleteById(id);
+    }
+
+    @Transactional
+    @Override
+    public ScriptDto update(UpdateScriptDto updateScriptDto, Long id) {
+        log.trace("update(updateScriptDto = {}, id = {})", updateScriptDto, id);
+
+        User user = authorizationService.getLoggedInUser();
+        if (user == null) {
+            throw new UnauthorizedException();
+        }
+        Optional<Script> scriptOptional = scriptRepository.findById(id);
+        if (scriptOptional.isPresent() && !scriptOptional.get().getOwner().getId().equals(user.getId())) {
+            throw new UnauthorizedException("User is not permitted to edit this script");
+        }
+        if (scriptOptional.isEmpty()) {
+            throw new NotFoundException();
+        }
+        Script script = scriptOptional.get();
+        if (updateScriptDto.getName() != null) {
+            script.setName(updateScriptDto.getName());
+        }
+        return scriptMapper.scriptToScriptDto(scriptRepository.save(script));
     }
 }

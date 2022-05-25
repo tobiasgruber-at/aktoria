@@ -13,6 +13,7 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimplePageDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleRoleDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleScriptDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UpdateScriptDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ScriptMapper;
 import at.ac.tuwien.sepm.groupphase.backend.enums.Role;
 import at.ac.tuwien.sepm.groupphase.backend.exception.UnauthorizedException;
@@ -24,6 +25,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -252,6 +255,86 @@ class ScriptEndpointIntegrationTest {
                     .multipart("/api/v1/scripts/new")
                     .file(multipartFile)
                 ).andExpect(status().isUnprocessableEntity());
+        }
+    }
+
+    @Nested
+    @DisplayName("updateScript()")
+    class PatchScript {
+
+        @Test
+        @Transactional
+        @DisplayName("works correctly")
+        @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "2" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "2", roles = { Role.verified })
+        void patchScriptWorks() throws Exception {
+            final UpdateScriptDto input = new UpdateScriptDto("new script name");
+            byte[] body = mockMvc
+                .perform(MockMvcRequestBuilders
+                    .patch("/api/v1/scripts/1")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsBytes(input))
+                    .accept(MediaType.APPLICATION_JSON)
+                ).andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsByteArray();
+
+            ScriptDto actual = objectMapper.readValue(body, ScriptDto.class);
+            assertEquals(input.getName(), actual.getName());
+        }
+
+        @Test
+        @Transactional
+        @DisplayName("empty dto does not change anything")
+        @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "2" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "2", roles = { Role.verified })
+        void patchScriptDoesNotChangeAnything() throws Exception {
+            final UpdateScriptDto input = new UpdateScriptDto(null);
+            byte[] body = mockMvc
+                .perform(MockMvcRequestBuilders
+                    .patch("/api/v1/scripts/1")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsBytes(input))
+                    .accept(MediaType.APPLICATION_JSON)
+                ).andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsByteArray();
+
+            ScriptDto actual = objectMapper.readValue(body, ScriptDto.class);
+            assertEquals(ScriptDataGenerator.TEST_SCRIPT_NAME + " 1", actual.getName());
+        }
+
+        @ParameterizedTest
+        @Transactional
+        @DisplayName("returns BadRequest")
+        @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "2" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "2", roles = { Role.verified })
+        @ValueSource(strings = {
+            "      ",
+            "\t\t",
+            "\n",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaasaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaasaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            ""
+        })
+        void patchScriptReturnsBadRequest(String input) throws Exception {
+            final UpdateScriptDto updateScriptDto = new UpdateScriptDto(input);
+            mockMvc
+                .perform(MockMvcRequestBuilders
+                    .patch("/api/v1/scripts/1")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsBytes(updateScriptDto))
+                    .accept(MediaType.APPLICATION_JSON)
+                ).andExpect(status().isBadRequest());
+        }
+
+        @Test
+        @Transactional
+        @DisplayName("returns Unauthorized")
+        @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "1" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "1", roles = { Role.verified })
+        void patchScriptReturnsUnauthorized() throws Exception {
+            final UpdateScriptDto input = new UpdateScriptDto("new script name");
+            mockMvc
+                .perform(MockMvcRequestBuilders
+                    .patch("/api/v1/scripts/1")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsBytes(input))
+                    .accept(MediaType.APPLICATION_JSON)
+                ).andExpect(status().isUnauthorized());
         }
     }
 }
