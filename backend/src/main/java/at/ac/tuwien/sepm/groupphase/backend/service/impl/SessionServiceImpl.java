@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 /**
- * Specific implementation of SessionService
+ * Specific implementation of SessionService.
  *
  * @author Marvin Flandorfer
  */

@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 
 /**
  * Session Data Transfer Object.
- * <p>
+ * <br>
  * This DTO is intended for transferring all
  * available Data of a session.
  *

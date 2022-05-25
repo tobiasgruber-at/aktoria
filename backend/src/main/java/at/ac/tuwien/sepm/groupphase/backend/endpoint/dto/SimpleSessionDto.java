@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * Simple Session Data Transfer Object.
- *
+ * <br>
  * This DTO is intended for creating new sessions with
  * the least possible data.
  *
