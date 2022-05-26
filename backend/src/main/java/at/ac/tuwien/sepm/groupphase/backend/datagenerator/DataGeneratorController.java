@@ -34,5 +34,6 @@ public class DataGeneratorController {
         scriptDataGenerator.generateSpokenBy();
         userDataGenerator.generateParticipation();
         sectionDataGenerator.generateSection();
+        sectionDataGenerator.generateSession();
     }
 }
