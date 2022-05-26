@@ -184,7 +184,7 @@ public class ScriptServiceImpl implements ScriptService {
                 Role role = Role.builder()
                     .script(script)
                     .name(roleDto.getName())
-                    .color(roleDto.getColor().asColor())
+                    .color(roleDto.getColor() == null ? null : roleDto.getColor().asColor())
                     .build();
                 role = roleRepository.save(role);
                 roles.add(role);
