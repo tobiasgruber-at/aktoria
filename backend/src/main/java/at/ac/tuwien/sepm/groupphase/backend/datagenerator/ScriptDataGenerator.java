@@ -32,7 +32,7 @@ public class ScriptDataGenerator {
 
     /*
     Script test data is built in accord with the following schema:
-    Script (name = "Script <i>", owner = <i % [number_of_users] + 1>)
+    Script (name = "Script <i>", owner = <i % [number_of_users]>)
     Page (script = <script_id>, index = <i>)
     Line (page = <page_id>, index = <i>, content = "Lorem ipsum dolor [...]", active = true)
     Role (script = <script_id>, name = "Role <i>", color = Color.CYAN)
@@ -120,7 +120,7 @@ public class ScriptDataGenerator {
         if (scripts.isEmpty()) {
             log.debug("cannot generate spoken-by entries without scripts");
         } else {
-            if (!scripts.get(0).getRoles().stream().toList().get(0).getLines().isEmpty()) {
+            if (scripts.get(0).getRoles().stream().toList().get(0).getLines() == null) {
                 log.debug("already generated spoken-by entries");
             } else {
                 log.debug("generating spoken-by entries");
