@@ -2,6 +2,8 @@ package at.ac.tuwien.sepm.groupphase.backend.validation;
 
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * Validation for Line.
  *
@@ -15,4 +17,11 @@ public interface LineValidation {
      * @param content the new content of a line.
      */
     void validateContentInput(String content);
+
+    /**
+     * Validates input for line roles.
+     *
+     * @param ids list of role ids.
+     */
+    void validateRoleIdsInput(List<Long> ids);
 }
