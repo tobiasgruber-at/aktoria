@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
 import at.ac.tuwien.sepm.groupphase.backend.datagenerator.UserDataGenerator;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.LineDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.RoleDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UpdateLineDto;
 import at.ac.tuwien.sepm.groupphase.backend.enums.Role;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,10 +26,13 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -55,20 +59,22 @@ class LineEndpointIntegrationTest {
 
         private static Stream<UpdateLineDto> updateLineDtoValidProvider() {
             final List<UpdateLineDto> lineDtoList = new ArrayList<>();
-            lineDtoList.add(new UpdateLineDto(null, null));
-            lineDtoList.add(new UpdateLineDto("New Content.", null));
-            lineDtoList.add(new UpdateLineDto("New Content.", true));
+            lineDtoList.add(new UpdateLineDto(null, null, null));
+            lineDtoList.add(new UpdateLineDto("New Content 1.", null, null));
+            lineDtoList.add(new UpdateLineDto("New Content 2.", true, null));
+            lineDtoList.add(new UpdateLineDto("New Content 3.", true, new LinkedList<>(List.of(1L, 2L, 3L))));
+            lineDtoList.add(new UpdateLineDto("New Content 4.", true, new LinkedList<>()));
             return lineDtoList.stream();
         }
 
         private static Stream<UpdateLineDto> updateLineDtoInvalidProvider() {
             final List<UpdateLineDto> lineDtoList = new ArrayList<>();
-            lineDtoList.add(new UpdateLineDto("new Content.", null));
-            lineDtoList.add(new UpdateLineDto("New Content", null));
-            lineDtoList.add(new UpdateLineDto("New \n Content.", null));
-            lineDtoList.add(new UpdateLineDto("New \r Content.", null));
-            lineDtoList.add(new UpdateLineDto("New \t Content.", null));
-            lineDtoList.add(new UpdateLineDto("New \f Content.", null));
+            lineDtoList.add(new UpdateLineDto("new Content 1.", null, null));
+            lineDtoList.add(new UpdateLineDto("New Content 2", null, null));
+            lineDtoList.add(new UpdateLineDto("New \n Content 3.", null, null));
+            lineDtoList.add(new UpdateLineDto("New \r Content 4.", null, null));
+            lineDtoList.add(new UpdateLineDto("New \t Content 5.", null, new LinkedList<>(List.of(-16L, 1L, -16L))));
+            lineDtoList.add(new UpdateLineDto("New \f Content 6.", null, null));
             return lineDtoList.stream();
         }
 
@@ -90,8 +96,17 @@ class LineEndpointIntegrationTest {
             if (input.getContent() != null) {
                 assertEquals(input.getContent(), objectMapper.readValue(body, LineDto.class).getContent());
             }
-            if (input.getIsInactive() != null) {
-                assertEquals(input.getIsInactive(), objectMapper.readValue(body, LineDto.class).isActive());
+            if (input.getActive() != null) {
+                assertEquals(input.getActive(), objectMapper.readValue(body, LineDto.class).isActive());
+            }
+            if (input.getRoleIds() != null) {
+                if (input.getRoleIds().size() <= 0) {
+                    assertNull(objectMapper.readValue(body, LineDto.class).getRoles());
+                } else {
+                    List<Long> actual = objectMapper.readValue(body, LineDto.class).getRoles().stream().map(RoleDto::getId).toList();
+                    List<Long> expected = input.getRoleIds();
+                    assertTrue(actual.containsAll(expected));
+                }
             }
         }
 
@@ -119,39 +134,8 @@ class LineEndpointIntegrationTest {
                 .perform(MockMvcRequestBuilders
                     .patch("/api/v1/scripts/1/lines/1")
                     .accept(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsBytes(new UpdateLineDto(null, null)))
+                    .content(objectMapper.writeValueAsBytes(new UpdateLineDto(null, null, null)))
                     .contentType(MediaType.APPLICATION_JSON)
-                ).andExpect(status().isForbidden());
-        }
-    }
-
-    @Nested
-    @DisplayName("deleteLine()")
-    class DeleteLine {
-        @Test
-        @Transactional
-        @DisplayName("works correctly")
-        @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "2" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "2", roles = { Role.verified })
-        void deleteLine() throws Exception {
-            mockMvc
-                .perform(MockMvcRequestBuilders
-                    .delete("/api/v1/scripts/1/lines/2")
-                ).andExpect(status().isNoContent());
-
-            mockMvc
-                .perform(MockMvcRequestBuilders
-                    .delete("/api/v1/scripts/1/lines/2")
-                ).andExpect(status().isNotFound());
-        }
-
-        @Test
-        @Transactional
-        @DisplayName("returns Forbidden")
-        @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "2" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "2", roles = { Role.user })
-        void deleteLineThrowsException() throws Exception {
-            mockMvc
-                .perform(MockMvcRequestBuilders
-                    .delete("/api/v1/scripts/1/lines/2")
                 ).andExpect(status().isForbidden());
         }
     }
