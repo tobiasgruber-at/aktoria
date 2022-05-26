@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -70,20 +71,55 @@ public class RoleServiceImpl implements RoleService {
         List<Role> allReplaceRoles = roleRepository.findAllById(mergeRolesDto.getIds());
         Set<Role> removeFromLine = new HashSet<>(allReplaceRoles);
 
+        Set<Role> delete;
+        Set<Set<Role>> allDelete = new HashSet<>();
+        List<Line> lineToSave = new LinkedList<>();
+
+        List<Line> lines = new LinkedList<>();
         for (Role r : allReplaceRoles) {
             for (Line i : r.getLines()) {
-                i.getSpokenBy().removeAll(removeFromLine);
+                /*  delete = i.getSpokenBy();
+                allDelete.add(delete);
+                lineToSave.add(i);*/
+                lines.add(i);
+
+                /* i.getSpokenBy().removeAll(removeFromLine);
                 i.getSpokenBy().add(keep);
-                lineRepository.saveAndFlush(i);
+                lineRepository.saveAndFlush(i); */
             }
         }
 
+        for (int i = 0; i < lines.size(); i++) {
+            allReplaceRoles.forEach(lines.get(i).getSpokenBy()::remove);
+            lines.get(i).getSpokenBy().add(keep);
+            lineRepository.save(lines.get(i));
+        }
+
+        /* List<Set<Role>> roles = allDelete.stream().toList();
+        for (int i = 0; i < roles.size(); i++) {
+            roles.get(i).removeAll(removeFromLine);
+            roles.get(i).add(keep);
+            lineRepository.saveAndFlush(lineToSave.get(i));
+        }*/
+
+
+        Role keepNew = roleRepository.getById(keep.getId());
         allReplaceRoles.remove(keep);
-        roleRepository.deleteAll(allReplaceRoles);
+        List<Long> idsToDelete = new LinkedList<>();
+        for (int i = 0; i < allReplaceRoles.size(); i++) {
+            idsToDelete.add(allReplaceRoles.get(i).getId());
+        }
+
+      /*  for (int i = 0; i < lines.size(); i++) {
+            keep.getLines().add(lines.get(i));
+        }*/
+
+        roleRepository.deleteAllById(idsToDelete);
 
         roleValidation.validateRoleName(mergeRolesDto.getNewName());
         keep.setName(mergeRolesDto.getNewName());
         roleRepository.saveAndFlush(keep);
         return roleMapper.roleToRoleDto(keep);
     }
+
 }
