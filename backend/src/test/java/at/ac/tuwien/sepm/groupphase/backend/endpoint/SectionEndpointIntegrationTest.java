@@ -4,6 +4,7 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SectionDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Line;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Page;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Script;
+import at.ac.tuwien.sepm.groupphase.backend.entity.User;
 import at.ac.tuwien.sepm.groupphase.backend.enums.Role;
 import at.ac.tuwien.sepm.groupphase.backend.testhelpers.UserTestHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,6 +29,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * Class for testing Section Endpoint.
+ *
+ * @author Julia Bernold
+ */
 @SpringBootTest
 @ActiveProfiles({"test", "datagen"})
 @EnableWebMvc
@@ -88,21 +94,39 @@ class SectionEndpointIntegrationTest {
         void saveSection() throws Exception {
             //TODO: replace with actual dummy data
             Page page = new Page();
+            User user = new User();
             Line start = new Line(null, page, -1L, "A", null, false, null, null);
             Line end = new Line(null, page, -2L, "B", null, false, null, null);
             byte[] body = mockMvc
                 .perform(MockMvcRequestBuilders
                     .post("/api/v1/scripts/sections")
                     .accept(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsBytes(new SectionDto(null, "Szene Fünf", start, end)))
+                    .content(objectMapper.writeValueAsBytes(new SectionDto(null, "Szene Fünf", user, start, end, null)))
                     .contentType(MediaType.APPLICATION_JSON)
                 ).andExpect(status().isCreated())
                 .andReturn().getResponse().getContentAsByteArray();
             SectionDto sectionResult = objectMapper.readValue(body, SectionDto.class);
-            SectionDto expected = new SectionDto(sectionResult.getId(), "Szene Fünf", start, end);
+            SectionDto expected = new SectionDto(sectionResult.getId(), "Szene Fünf", user, start, end, null);
 
             assertNotNull(sectionResult);
             assertEquals(expected, sectionResult);
+        }
+
+        @Test
+        @Transactional
+        @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = Role.verified)
+        @DisplayName("Save a section without a user")
+        void saveSectionNoUser() throws Exception {
+            //TODO: replace with actual dummy data
+            Page page = new Page();
+            Line start = new Line(null, page, -1L, "A", null, false, null, null);
+            Line end = new Line(null, page, -2L, "B", null, false, null, null);
+            mockMvc.perform(MockMvcRequestBuilders
+                .post("/api/v1/scripts/sections")
+                .accept(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsBytes(new SectionDto(null, "Szene Fünf", null, start, end, null)))
+                .contentType(MediaType.APPLICATION_JSON)
+            ).andExpect(status().isUnprocessableEntity());
         }
 
 
@@ -113,13 +137,14 @@ class SectionEndpointIntegrationTest {
         void saveSectionInvalidStart() throws Exception {
             //TODO: replace with actual dummy data
             Page page = new Page();
+            User user = new User();
             Line start = new Line(null, page, -10000000L, "A", null, false, null, null);
             Line end = new Line(null, page, -2L, "B", null, false, null, null);
             //there are not that many lines on the page, and the start is "below" the end
             mockMvc.perform(MockMvcRequestBuilders
                 .post("/api/v1/scripts/sections")
                 .accept(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(new SectionDto(null, "Szene Fünf", start, end)))
+                .content(objectMapper.writeValueAsBytes(new SectionDto(null, "Szene Fünf", user, start, end, null)))
                 .contentType(MediaType.APPLICATION_JSON)
             ).andExpect(status().isUnprocessableEntity());
         }
@@ -132,6 +157,7 @@ class SectionEndpointIntegrationTest {
         void saveSectionInvalidEnd() throws Exception {
             //TODO: replace with actual dummy data
             Script script = Script.builder().build();
+            User user = new User();
             Page page1 = new Page(null, script, -1L, null);
             Page page2 = new Page(null, script, -100000L, null);
             Line start = new Line(null, page1, -1L, "A", null, false, null, null);
@@ -140,7 +166,7 @@ class SectionEndpointIntegrationTest {
             mockMvc.perform(MockMvcRequestBuilders
                 .post("/api/v1/scripts/sections")
                 .accept(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(new SectionDto(null, "Szene Fünf", start, end)))
+                .content(objectMapper.writeValueAsBytes(new SectionDto(null, "Szene Fünf", user, start, end, null)))
                 .contentType(MediaType.APPLICATION_JSON)
             ).andExpect(status().isUnprocessableEntity());
         }
@@ -153,6 +179,7 @@ class SectionEndpointIntegrationTest {
             //TODO: replace with actual dummy data
             Script script = Script.builder().build();
             Script script1 = Script.builder().build();
+            User user = new User();
             Page page1 = new Page(null, script, -1L, null);
             Page page2 = new Page(null, script1, -1L, null);
             Line start = new Line(null, page1, -1L, "A", null, false, null, null);
@@ -161,7 +188,7 @@ class SectionEndpointIntegrationTest {
             mockMvc.perform(MockMvcRequestBuilders
                 .post("/api/v1/scripts/sections")
                 .accept(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(new SectionDto(null, "Szene Fünf", start, end)))
+                .content(objectMapper.writeValueAsBytes(new SectionDto(null, "Szene Fünf", user, start, end, null)))
                 .contentType(MediaType.APPLICATION_JSON)
             ).andExpect(status().isUnprocessableEntity());
         }
@@ -173,12 +200,13 @@ class SectionEndpointIntegrationTest {
         void saveSectionTooLongName() throws Exception {
             //TODO: replace with actual dummy data
             Page page = new Page();
+            User user = new User();
             Line start = new Line(null, page, -1L, "A", null, false, null, null);
             Line end = new Line(null, page, -2L, "B", null, false, null, null);
             mockMvc.perform(MockMvcRequestBuilders
                 .post("/api/v1/scripts/sections")
                 .accept(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(new SectionDto(null, "a".repeat(101), start, end)))
+                .content(objectMapper.writeValueAsBytes(new SectionDto(null, "a".repeat(101), user, start, end, null)))
                 .contentType(MediaType.APPLICATION_JSON)
             ).andExpect(status().isUnprocessableEntity());
         }
@@ -190,6 +218,7 @@ class SectionEndpointIntegrationTest {
         @DisplayName("Save a section with lines from a nonexistent script")
         void saveSectionNonexistentScript() throws Exception {
             //TODO: replace with actual dummy data
+            User user = new User();
             Script script = new Script(-10000L, "SCRIPT", null, null, null, null);
             Page page1 = new Page(null, script, -1L, null);
             Line start = new Line(null, page1, -1L, "A", null, false, null, null);
@@ -198,7 +227,7 @@ class SectionEndpointIntegrationTest {
             mockMvc.perform(MockMvcRequestBuilders
                 .post("/api/v1/scripts/sections")
                 .accept(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(new SectionDto(null, "Szene Fünf", start, end)))
+                .content(objectMapper.writeValueAsBytes(new SectionDto(null, "Szene Fünf", user, start, end, null)))
                 .contentType(MediaType.APPLICATION_JSON)
             ).andExpect(status().isUnprocessableEntity());
         }
@@ -212,16 +241,24 @@ class SectionEndpointIntegrationTest {
         @Test
         @Transactional
         @DisplayName("Delete a section")
+        @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = Role.verified)
         void deleteSection() throws Exception {
-            //TODO
+            mockMvc.perform(MockMvcRequestBuilders
+                .get("/api/v1/scripts/sections/-1")
+                .accept(MediaType.APPLICATION_JSON)
+            ).andExpect(status().isNoContent());
         }
 
-
-        /*
-          TODO:
-          - missing ID
-          - invalid ID
-          */
+        @Test
+        @Transactional
+        @DisplayName("Delete a section with invalid Id")
+        @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = Role.verified)
+        void deleteSectionInvalidId() throws Exception {
+            mockMvc.perform(MockMvcRequestBuilders
+                .get("/api/v1/scripts/sections/0")
+                .accept(MediaType.APPLICATION_JSON)
+            ).andExpect(status().isNotFound());
+        }
     }
 
 
