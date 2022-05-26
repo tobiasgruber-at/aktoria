@@ -23,13 +23,12 @@ public class UserDataGenerator {
     User (firstName = "testFirst<i>", lastName = "testLast<i>", email = "test<i>@test.com", password = "password<i>", verified = true)
      */
 
+    public static final String TEST_USER_PASSWORD = "password";
     public static final int NUMBER_OF_USERS_TO_GENERATE = 20;
     public static final String TEST_USER_FIRST_NAME = "testFirst";
     public static final String TEST_USER_LAST_NAME = "testLast";
     public static final String TEST_USER_EMAIL_LOCAL = "test";
     public static final String TEST_USER_EMAIL_DOMAIN = "@test.com";
-    public static final String TEST_USER_PASSWORD = "password";
-
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 

@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.awt.Color;
-
 /**
  * Role Data Transfer Object.
  * <br>
@@ -20,5 +18,5 @@ public class RoleDto {
     private Long id;
     private Long scriptId;
     private String name;
-    private Color color;
+    private SimpleColorDto color;
 }

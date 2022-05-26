@@ -43,7 +43,7 @@ export class RegistrationComponent extends FormBase implements OnInit {
     );
   }
 
-  protected sendSubmit() {
+  protected processSubmit() {
     const { firstName, lastName, email, password } = this.form.value;
     this.userService
       .register(new UserRegistration(firstName, lastName, email, password))
