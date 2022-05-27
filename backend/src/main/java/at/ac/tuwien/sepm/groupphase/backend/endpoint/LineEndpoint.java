@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(LineEndpoint.path)
 @Slf4j
 public class LineEndpoint {
-    public static final String path = "/api/v1/scripts/{sid}/lines";
+    public static final String path = "/api/v1/lines";
     private final LineService lineService;
 
     public LineEndpoint(LineService lineService) {
@@ -33,8 +33,8 @@ public class LineEndpoint {
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @Secured(Permission.verified)
-    public LineDto updateLine(@RequestBody UpdateLineDto updateLineDto, @PathVariable Long sid, @PathVariable Long id) {
+    public LineDto updateLine(@RequestBody UpdateLineDto updateLineDto, @PathVariable Long id) {
         log.info("PATCH {}/{}", path, id);
-        return lineService.update(updateLineDto, sid, id);
+        return lineService.update(updateLineDto, id);
     }
 }
