@@ -57,7 +57,7 @@ public class Line {
     @JoinColumn(name = "recorded_by")
     private User recordedBy;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "spoken_by", joinColumns = @JoinColumn(name = "line_id"),
         inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> spokenBy;
