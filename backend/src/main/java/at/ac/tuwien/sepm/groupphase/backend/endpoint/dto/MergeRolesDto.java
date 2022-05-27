@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 /**
- * Dto for merging multiple roles to one role.
+ * Dto for merging multiple roles into one role.
  *
  * @author Luke Nemeskeri
  */
