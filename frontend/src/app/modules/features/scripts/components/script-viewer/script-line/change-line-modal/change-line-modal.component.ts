@@ -1,24 +1,35 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { Line, Role } from '../../../../../../shared/dtos/script-dtos';
+import {
+  Line,
+  Role,
+  UpdateLine
+} from '../../../../../../shared/dtos/script-dtos';
 import { ScriptViewerService } from '../../../../services/script-viewer.service';
 import { FormBase } from '../../../../../../shared/classes/form-base';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ToastService } from '../../../../../../core/services/toast/toast.service';
+import { Subject, takeUntil } from 'rxjs';
+import { LineService } from '../../../../../../core/services/line/line.service';
 
 @Component({
   selector: 'app-change-line-modal',
   templateUrl: './change-line-modal.component.html',
   styleUrls: ['./change-line-modal.component.scss']
 })
-export class ChangeLineModalComponent extends FormBase implements OnInit {
+export class ChangeLineModalComponent
+  extends FormBase
+  implements OnInit, OnDestroy {
   @Input() modal: NgbActiveModal;
   @Input() line: Line;
+  private isUploading = false;
+  private $destroy = new Subject<void>();
 
   constructor(
     public scriptViewerService: ScriptViewerService,
     private formBuilder: FormBuilder,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private lineService: LineService
   ) {
     super(toastService);
   }
@@ -31,6 +42,17 @@ export class ChangeLineModalComponent extends FormBase implements OnInit {
         [Validators.required, Validators.maxLength(1000)]
       ]
     });
+    this.scriptViewerService.$isUploading
+      .pipe(takeUntil(this.$destroy))
+      .subscribe((isUploading) => {
+        this.isUploading = isUploading;
+        console.log(this.isUploading);
+      });
+  }
+
+  ngOnDestroy() {
+    this.$destroy.next();
+    this.$destroy.complete();
   }
 
   changeRoles(toggledRole: Role): void {
@@ -51,8 +73,25 @@ export class ChangeLineModalComponent extends FormBase implements OnInit {
 
   protected processSubmit(): void {
     const { roles, content } = this.form.value;
-    this.line.roles = roles;
-    this.line.content = content;
-    this.modal.dismiss();
+    const line: UpdateLine = {
+      content,
+      roleIds: roles?.map((r) => r.id) || []
+    };
+    if (this.isUploading) {
+      this.line.roles = roles;
+      this.line.content = content;
+      this.modal.dismiss();
+    } else {
+      this.lineService.patchLine(line, this.line.id).subscribe({
+        next: (updatedLine) => {
+          this.line.roles = updatedLine.roles;
+          this.line.content = updatedLine.content;
+          this.modal.dismiss();
+        },
+        error: (err) => {
+          this.handleError(err);
+        }
+      });
+    }
   }
 }

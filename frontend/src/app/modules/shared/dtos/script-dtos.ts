@@ -31,11 +31,18 @@ export class Page {
 }
 
 export class Line {
+  id?: number;
   index: number;
   roles: Role[];
   content: string;
   audioSnippet: AudioBuffer;
   active: boolean;
+}
+
+export class UpdateLine {
+  content?: string;
+  active?: boolean;
+  roleIds?: number[];
 }
 
 export class Role {

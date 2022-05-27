@@ -19,6 +19,8 @@ export class ScriptViewerService {
   private scriptSubject = new BehaviorSubject<SimpleScript>(this.script);
   private selectedRole: Role = null;
   private selectedRoleSubject = new BehaviorSubject<Role>(this.selectedRole);
+  private loading = false;
+  private loadingSubject = new BehaviorSubject<boolean>(this.loading);
 
   get $script(): Observable<SimpleScript> {
     return this.scriptSubject.asObservable();
@@ -39,6 +41,10 @@ export class ScriptViewerService {
 
   get $markedSection(): Observable<SimpleSection> {
     return this.markedSectionSubject.asObservable();
+  }
+
+  get $loading(): Observable<boolean> {
+    return this.loadingSubject.asObservable();
   }
 
   setScript(script: SimpleScript): void {
@@ -64,5 +70,10 @@ export class ScriptViewerService {
   setMarkedSection(markedSection: SimpleSection): void {
     this.markedSection = markedSection;
     this.markedSectionSubject.next(this.markedSection);
+  }
+
+  setLoading(loading: boolean): void {
+    this.loading = loading;
+    this.loadingSubject.next(this.loading);
   }
 }

@@ -1,5 +1,10 @@
 <app-page-layout [loading]="getLoading">
-  <app-alert *ngIf="getError; else noError" [closeable]="false" type="danger">
+  <app-alert
+    *ngIf="getError; else noError"
+    [closeable]="false"
+    class="mb-1"
+    type="danger"
+  >
     <strong>Fehler!</strong> Skript wurde nicht gefunden.
   </app-alert>
   <ng-template #noError>
@@ -65,9 +70,13 @@
     confirmBtnLabel="Löschen"
     title="Skript löschen"
   >
-    <app-alert *ngIf="deleteError" [closeable]="false" type="danger">{{
-      this.deleteError
-    }}</app-alert>
+    <app-alert
+      *ngIf="deleteError"
+      [closeable]="false"
+      class="mb-1"
+      type="danger"
+      >{{ this.deleteError }}</app-alert
+    >
     Sicher, dass du
     <i>{{ script?.name }} </i>
     <strong class="text-primary">unwiderruflich löschen</strong>

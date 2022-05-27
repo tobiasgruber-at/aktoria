@@ -15,7 +15,7 @@ import {appearAnimations} from '../../animations/appear-animations';
 })
 export class AlertComponent {
   @Output() closeAlert = new EventEmitter<void>();
-  @Input() type: 'danger' | 'success' | 'info' = 'success';
+  @Input() type: 'danger' | 'success' | 'info' | 'primary' = 'success';
   @Input() closeable = true;
 
   @HostBinding('class')
