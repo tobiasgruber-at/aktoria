@@ -98,7 +98,21 @@ export class ScriptLineComponent implements OnInit, OnDestroy {
 
   /** Clears all roles of this line. */
   removeRoles(): void {
-    this.line.roles = [];
+    if (this.isUploading) {
+      this.line.roles = [];
+    } else {
+      this.scriptViewerService.setLoading(true);
+      this.lineService.patchLine({ roleIds: [] }, this.line.id).subscribe({
+        next: (line) => {
+          this.scriptViewerService.setLoading(false);
+          this.line.roles = [];
+        },
+        error: (err) => {
+          this.scriptViewerService.setLoading(false);
+          this.toastService.showError(err);
+        }
+      });
+    }
   }
 
   /** Toggles whether this line is active. */

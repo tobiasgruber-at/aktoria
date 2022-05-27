@@ -1,10 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import {
-  Line,
-  Role,
-  UpdateLine
-} from '../../../../../../shared/dtos/script-dtos';
+import { Line, Role } from '../../../../../../shared/dtos/script-dtos';
 import { ScriptViewerService } from '../../../../services/script-viewer.service';
 import { FormBase } from '../../../../../../shared/classes/form-base';
 import { FormBuilder, Validators } from '@angular/forms';
@@ -73,25 +69,29 @@ export class ChangeLineModalComponent
 
   protected processSubmit(): void {
     const { roles, content } = this.form.value;
-    const line: UpdateLine = {
-      content,
-      roleIds: roles?.map((r) => r.id) || []
-    };
     if (this.isUploading) {
       this.line.roles = roles;
       this.line.content = content;
       this.modal.dismiss();
     } else {
-      this.lineService.patchLine(line, this.line.id).subscribe({
-        next: (updatedLine) => {
-          this.line.roles = updatedLine.roles;
-          this.line.content = updatedLine.content;
-          this.modal.dismiss();
-        },
-        error: (err) => {
-          this.handleError(err);
-        }
-      });
+      this.lineService
+        .patchLine(
+          {
+            content,
+            roleIds: roles?.map((r) => r.id) || []
+          },
+          this.line.id
+        )
+        .subscribe({
+          next: (updatedLine) => {
+            this.line.roles = updatedLine.roles;
+            this.line.content = updatedLine.content;
+            this.modal.dismiss();
+          },
+          error: (err) => {
+            this.handleError(err);
+          }
+        });
     }
   }
 }

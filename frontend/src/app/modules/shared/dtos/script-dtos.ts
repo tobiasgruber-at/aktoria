@@ -8,6 +8,10 @@ export class SimpleScript {
     public roles: Role[],
     public name: string
   ) {}
+
+  getId(): number {
+    return null;
+  }
 }
 
 export class ScriptPreview {
@@ -22,6 +26,10 @@ export class DetailedScript extends SimpleScript {
     name: string
   ) {
     super(pages, roles, name);
+  }
+
+  getId(): number {
+    return this.id;
   }
 }
 
@@ -49,4 +57,9 @@ export class Role {
   id: number;
   name: string;
   color: string;
+}
+
+export class MergeRoles {
+  ids: number[];
+  newName: string;
 }

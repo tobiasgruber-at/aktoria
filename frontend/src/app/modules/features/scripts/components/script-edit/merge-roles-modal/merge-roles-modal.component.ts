@@ -12,6 +12,7 @@ import { ToastService } from '../../../../../core/services/toast/toast.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { arrayMinLengthValidator } from '../../../../../shared/validators/array-min-length';
 import { Theme } from '../../../../../shared/enums/theme.enum';
+import { RoleService } from '../../../../../core/services/role/role.service';
 
 @Component({
   selector: 'app-merge-roles-modal',
@@ -23,12 +24,14 @@ export class MergeRolesModalComponent
   implements OnInit, OnDestroy {
   @Input() modal: NgbActiveModal;
   script: SimpleScript = null;
+  private isUploading = false;
   private $destroy = new Subject<void>();
 
   constructor(
     public scriptViewerService: ScriptViewerService,
     private formBuilder: FormBuilder,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private roleService: RoleService
   ) {
     super(toastService);
   }
@@ -42,6 +45,11 @@ export class MergeRolesModalComponent
       .pipe(takeUntil(this.$destroy))
       .subscribe((script) => {
         this.script = script;
+      });
+    this.scriptViewerService.$isUploading
+      .pipe(takeUntil(this.$destroy))
+      .subscribe((isUploading) => {
+        this.isUploading = isUploading;
       });
   }
 
@@ -69,12 +77,38 @@ export class MergeRolesModalComponent
   }*/
 
   protected processSubmit(): void {
-    const { selectedRoles, roleName } = this.form.value;
-    const mergedRole = {
-      id: null,
-      name: roleName.toUpperCase(),
-      color: null
-    };
+    let { roleName } = this.form.value;
+    const { selectedRoles } = this.form.value;
+    roleName = roleName.toUpperCase();
+    if (this.isUploading) {
+      this.updateStateAfterMerge(selectedRoles, {
+        id: null,
+        name: roleName.toUpperCase(),
+        color: null
+      });
+    } else {
+      this.roleService
+        .mergeRoles(
+          {
+            ids: selectedRoles.map((r) => r.id),
+            newName: roleName
+          },
+          this.script.getId()
+        )
+        .subscribe({
+          next: (mergedRole) => {
+            this.updateStateAfterMerge(selectedRoles, mergedRole);
+            this.modal.dismiss();
+          },
+          error: (err) => {
+            this.handleError(err);
+          }
+        });
+    }
+  }
+
+  /** Updates the state after a merge */
+  private updateStateAfterMerge(selectedRoles: Role[], mergedRole: Role): void {
     const replaceRoles = (obj: SimpleScript | Line) => {
       if (obj === null || obj.roles === null) {
         return;

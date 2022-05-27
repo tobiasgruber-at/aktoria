@@ -36,6 +36,7 @@
         <h3 class="mb-0">Rollen</h3>
         <button
           (click)="openModal(mergeRolesModal)"
+          *ngIf="script?.roles.length > 1"
           class="btn btn-sm btn-outline-primary"
           type="button"
         >

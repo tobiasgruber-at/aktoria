@@ -19,8 +19,17 @@ export class ScriptViewerService {
   private scriptSubject = new BehaviorSubject<SimpleScript>(this.script);
   private selectedRole: Role = null;
   private selectedRoleSubject = new BehaviorSubject<Role>(this.selectedRole);
-  private loading = false;
-  private loadingSubject = new BehaviorSubject<boolean>(this.loading);
+  /**
+   * Indicates how many loadings are currently stacked.
+   *
+   * @description It might be that setLoading(true) was called multiple times, before the first loading was completed by
+   * setLoading(false). In this case, it would stop loading, although the second loading has not completed yet. That's why
+   * the loadings are counted.
+   */
+  private loadingCounter = 0;
+  private loadingSubject = new BehaviorSubject<boolean>(
+    this.loadingCounter > 0
+  );
 
   get $script(): Observable<SimpleScript> {
     return this.scriptSubject.asObservable();
@@ -73,7 +82,11 @@ export class ScriptViewerService {
   }
 
   setLoading(loading: boolean): void {
-    this.loading = loading;
-    this.loadingSubject.next(this.loading);
+    if (loading) {
+      this.loadingCounter++;
+    } else {
+      this.loadingCounter--;
+    }
+    this.loadingSubject.next(this.loadingCounter > 0);
   }
 }
