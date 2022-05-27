@@ -1,7 +1,6 @@
 import { Globals } from '../../global/globals';
 import { BehaviorSubject, Observable } from 'rxjs';
 import {
-  DetailedUser,
   SimpleUser,
   UpdateUser,
   UserRegistration
@@ -42,8 +41,8 @@ export class UserImplService extends UserService {
     return this.http.post<SimpleUser>(this.baseUri, req);
   }
 
-  update(user: UpdateUser): Observable<DetailedUser> {
-    return this.http.patch<DetailedUser>(this.baseUri + '/' + user.id, user);
+  update(user: UpdateUser): Observable<SimpleUser> {
+    return this.http.patch<SimpleUser>(this.baseUri + '/' + user.id, user);
   }
 
   delete(id: number): Observable<void> {

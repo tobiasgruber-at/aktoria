@@ -1,6 +1,5 @@
 import { Observable } from 'rxjs';
 import {
-  DetailedUser,
   SimpleUser,
   UpdateUser,
   UserRegistration
@@ -35,7 +34,7 @@ export abstract class UserService {
    *
    * @param user Body of the updated user.
    */
-  abstract update(user: UpdateUser): Observable<DetailedUser>;
+  abstract update(user: UpdateUser): Observable<SimpleUser>;
 
   /** Resends a verification email. */
   abstract resendVerificationEmail(): Observable<void>;

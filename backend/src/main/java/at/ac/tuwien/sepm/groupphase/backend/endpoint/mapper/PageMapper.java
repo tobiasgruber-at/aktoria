@@ -14,7 +14,7 @@ import java.util.List;
  *
  * @author Simon Josef Kreuzpointner
  */
-@Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR, uses = { LineMapper.class })
+@Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR, uses = {LineMapper.class})
 public interface PageMapper {
     List<SimplePageDto> listOfPageToListOfSimplePageDto(List<Page> pages);
 
