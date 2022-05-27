@@ -4,6 +4,7 @@ import at.ac.tuwien.sepm.groupphase.backend.exception.UnprocessableEmailExceptio
 import at.ac.tuwien.sepm.groupphase.backend.service.MailSender;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.Authenticator;
 import javax.mail.Message;
@@ -30,6 +31,7 @@ public class MailSenderImpl implements MailSender {
     @Value("${spring.mail.port}")
     private String port;
 
+    @Transactional
     public void sendMail(String receiver, String subject, String content) {
         Properties properties = new Properties();
 

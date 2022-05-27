@@ -1,0 +1,7 @@
+input.roles-input {
+  text-transform: uppercase;
+
+  &::placeholder {
+    text-transform: none;
+  }
+}

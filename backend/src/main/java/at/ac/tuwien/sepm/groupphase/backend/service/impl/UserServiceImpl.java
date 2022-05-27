@@ -31,6 +31,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -73,6 +74,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public SimpleUserDto create(UserRegistrationDto userRegistrationDto) {
         log.trace("createUser(userRegistrationDto = {})", userRegistrationDto);
 
@@ -92,6 +94,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public SimpleUserDto findById(Long id) {
         log.trace("getUser(id = {})", id);
 
@@ -101,12 +104,13 @@ public class UserServiceImpl implements UserService {
         if (userOptional.isPresent()) {
             return userMapper.userToSimpleUserDto(userOptional.get());
         } else {
-            throw new NotFoundException("Could not find User");
+            throw new NotFoundException("User existiert nicht!");
         }
     }
 
     @Override
-    public DetailedUserDto patch(UpdateUserDto updateUserDto, Long id) {
+    @Transactional
+    public SimpleUserDto patch(UpdateUserDto updateUserDto, Long id) {
         log.trace("patch(updateUserDto = {}, id = {})", updateUserDto, id);
 
         authorizationService.checkBasicAuthorization(id);
@@ -153,10 +157,11 @@ public class UserServiceImpl implements UserService {
         if (emailChanged) {
             sendEmailVerificationLink(patchedUser);
         }
-        return userMapper.userToDetailedUserDto(patchedUser);
+        return userMapper.userToSimpleUserDto(patchedUser);
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
         log.trace("deleteUser(id = {})", id);
 
@@ -170,6 +175,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void forgotPassword(String email) {
         log.trace("forgotPassword(email = {})", email);
 
@@ -179,7 +185,7 @@ public class UserServiceImpl implements UserService {
         }
         User user = userOptional.get();
 
-        SecureToken secureToken = secureTokenService.createSecureToken(TokenType.resetPassword);
+        SecureToken secureToken = secureTokenService.createSecureToken(TokenType.RESET_PASSWORD);
         secureToken.setAccount(user);
         secureTokenService.saveSecureToken(secureToken);
 
@@ -199,6 +205,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public DetailedUserDto changePassword(PasswordChangeDto passwordChangeDto, Long id) {
         if (id == null) {
             log.trace("changePassword(passwordChangeDto = {}, id = {})", passwordChangeDto, secureTokenService.findByToken(passwordChangeDto.getToken()).getAccount().getId());
@@ -223,7 +230,7 @@ public class UserServiceImpl implements UserService {
         if (token != null) {
             SecureToken secureToken = secureTokenService.findByToken(token);
             secureTokenService.removeToken(token);
-            if (secureToken.getType() == TokenType.resetPassword) {
+            if (secureToken.getType() == TokenType.RESET_PASSWORD) {
                 if (secureToken.getExpireAt().isAfter(LocalDateTime.now())) {
                     User user = secureToken.getAccount();
                     user.setPasswordHash(passwordEncoder.encode(passwordChangeDto.getNewPassword()));
@@ -235,6 +242,9 @@ public class UserServiceImpl implements UserService {
                 throw new InvalidTokenException();
             }
         } else {
+            if (id == null) {
+                throw new NotFoundException("User existiert nicht!");
+            }
             Optional<User> userOptional = userRepository.findById(id);
             User update;
             if (userOptional.isPresent()) {
@@ -247,7 +257,10 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    //Method is not used. But is used from spring,security ???
     @Override
+    @Deprecated
+    @Transactional
     public UserDetails loadUserByUsername(String email) {
         log.trace("loadUserByUsername(email = {})", email);
 
@@ -271,6 +284,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public SimpleUserDto findByEmail(String email) {
         log.trace("findUserByEmail(email = {})", email);
 
@@ -285,10 +299,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void sendEmailVerificationLink(User user) {
         log.trace("sendEmailVerificationLink(user = {})", user);
 
-        SecureToken secureToken = secureTokenService.createSecureToken(TokenType.verifyEmail);
+        SecureToken secureToken = secureTokenService.createSecureToken(TokenType.VERIFY_EMAIL);
         secureToken.setAccount(user);
         secureTokenService.saveSecureToken(secureToken);
 
@@ -311,6 +326,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void resendEmailVerificationLink() {
         log.trace("resendEmailVerificationLink()");
 
@@ -326,12 +342,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void verifyEmail(String token) {
         log.trace("verifyEmail(token = {})", token);
 
         SecureToken secureToken = secureTokenService.findByToken(token);
         secureTokenService.removeToken(token);
-        if (secureToken.getType() == TokenType.verifyEmail) {
+        if (secureToken.getType() == TokenType.VERIFY_EMAIL) {
             if (secureToken.getExpireAt().isAfter(LocalDateTime.now())) {
                 User user = secureToken.getAccount();
                 user.setVerified(true);

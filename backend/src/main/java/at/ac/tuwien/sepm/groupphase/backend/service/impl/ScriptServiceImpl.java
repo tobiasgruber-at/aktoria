@@ -76,6 +76,7 @@ public class ScriptServiceImpl implements ScriptService {
         this.authorizationService = authorizationService;
     }
 
+    @Transactional
     @Override
     public SimpleScriptDto parse(MultipartFile file, Integer startPage) {
         log.trace("newScript(pdfScript = {})", file);
@@ -161,8 +162,8 @@ public class ScriptServiceImpl implements ScriptService {
                 && data[data.length - 1] == 0x0d);
     }
 
-    @Override
     @Transactional
+    @Override
     public ScriptDto save(SimpleScriptDto simpleScriptDto) {
         log.trace("save(scriptDto = {})", simpleScriptDto);
 
@@ -183,7 +184,7 @@ public class ScriptServiceImpl implements ScriptService {
                 Role role = Role.builder()
                     .script(script)
                     .name(roleDto.getName())
-                    .color(roleDto.getColor())
+                    .color(roleDto.getColor() == null ? null : roleDto.getColor().asColor())
                     .build();
                 role = roleRepository.save(role);
                 roles.add(role);
@@ -222,6 +223,7 @@ public class ScriptServiceImpl implements ScriptService {
         return scriptMapper.simpleScriptDtoToScriptDto(simpleScriptDto, script.getId(), owner);
     }
 
+    @Transactional
     @Override
     public Stream<ScriptPreviewDto> findAllPreviews() {
         log.trace("getAllPreviews()");
@@ -234,8 +236,8 @@ public class ScriptServiceImpl implements ScriptService {
         return scriptMapper.listOfScriptToListOfScriptPreviewDto(scriptRepository.getScriptByOwner(user)).stream();
     }
 
-    @Override
     @Transactional
+    @Override
     public ScriptDto findById(Long id) {
         log.trace("getById(id = {})", id);
 
@@ -248,13 +250,13 @@ public class ScriptServiceImpl implements ScriptService {
             throw new NotFoundException();
         }
         if (!script.get().getOwner().getId().equals(user.getId())) {
-            throw new UnauthorizedException("User is not permitted to open this file");
+            throw new UnauthorizedException("Dieser User ist nicht berechtigt diese Datei zu öffnen");
         }
         return scriptMapper.scriptToScriptDto(script.get());
     }
 
-    @Override
     @Transactional
+    @Override
     public void delete(Long id) {
         log.trace("delete(id = {})", id);
 
@@ -264,8 +266,25 @@ public class ScriptServiceImpl implements ScriptService {
         }
         Optional<Script> script = scriptRepository.findById(id);
         if (script.isPresent() && !script.get().getOwner().getId().equals(user.getId())) {
-            throw new UnauthorizedException("User is not permitted to delete this file");
+            throw new UnauthorizedException("Dieser User ist nicht berechtigt diese Datei zu löschen");
         }
         scriptRepository.deleteById(id);
+    }
+
+    @Override
+    @Transactional
+    public ScriptDto patch(ScriptDto scriptDto, Long id) {
+        log.trace("patch(id = {})", id);
+
+        User user = authorizationService.getLoggedInUser();
+        if (user == null) {
+            throw new UnauthorizedException();
+        }
+        Optional<Script> script = scriptRepository.findById(id);
+        if (script.isEmpty()) {
+            throw new NotFoundException();
+        }
+        //TODO: fertig machen
+        return null;
     }
 }

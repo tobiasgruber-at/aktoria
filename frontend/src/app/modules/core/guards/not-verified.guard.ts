@@ -10,7 +10,6 @@ export class NotVerifiedGuard implements CanActivate {
   constructor(private authService: AuthService, private router: Router) {}
 
   canActivate(): boolean {
-    console.log(!this.authService.isVerified());
     if (!this.authService.isVerified()) {
       return true;
     } else {

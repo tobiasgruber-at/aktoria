@@ -14,6 +14,7 @@ export class ModalComponent {
   @Input() theme: Theme = Theme.primary;
   @Input() confirmBtnLabel: string;
   @Input() loading = false;
+  @Input() disabled = false;
   @Input() showDecline = true;
 
   /** If modal is declined. */

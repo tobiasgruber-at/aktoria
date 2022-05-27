@@ -43,7 +43,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 user.getEmail(),
                 user.getPassword()));
         } catch (IOException e) {
-            throw new BadCredentialsException("Wrong API request or JSON schema", e);
+            throw new BadCredentialsException("Falsche API anfrage oder JSON schema", e);
         } catch (BadCredentialsException e) {
             if (user != null && user.getEmail() != null) {
                 log.error("Unsuccessful authentication attempt for user {}", user.getEmail());
