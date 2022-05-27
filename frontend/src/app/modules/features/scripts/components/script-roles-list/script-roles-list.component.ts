@@ -12,6 +12,8 @@ export class ScriptRolesListComponent {
   @Input() selectedRole: Role = null;
   /** The selected roles. Alternative to selectedRole. */
   @Input() selectedRoles: Role[] = [];
+  @Input() size: 'lg' | 'xl' = 'lg';
+  @Input() theme: 'primary' | 'secondary' = 'secondary';
   @Output() roleClicked = new EventEmitter<Role>();
 
   onRoleClicked(role: Role): void {
