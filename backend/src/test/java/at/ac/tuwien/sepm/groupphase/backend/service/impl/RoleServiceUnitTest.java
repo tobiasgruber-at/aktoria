@@ -56,6 +56,7 @@ class RoleServiceUnitTest {
         List<Long> rolesToMergeFail = new LinkedList<Long>(Arrays.asList(7L, 4L, 3L));
         assertThrows(ValidationException.class, () -> roleService.mergeRoles(new MergeRolesDto(rolesToMergeFail, "MEROLE"), 1L));
         roleService.mergeRoles(new MergeRolesDto(rolesToMerge, "MERGEROLE"), 1L);
+        
         assertEquals(3, scriptService.findById(1L).getRoles().size());
         assertThrows(NotFoundException.class, () -> {
             Optional<at.ac.tuwien.sepm.groupphase.backend.entity.Role> role = roleRepository.findById(4L);
