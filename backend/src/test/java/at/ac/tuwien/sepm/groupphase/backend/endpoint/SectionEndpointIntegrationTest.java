@@ -4,8 +4,11 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SectionDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Line;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Page;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Script;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Section;
 import at.ac.tuwien.sepm.groupphase.backend.entity.User;
 import at.ac.tuwien.sepm.groupphase.backend.enums.Role;
+import at.ac.tuwien.sepm.groupphase.backend.repository.ScriptRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.SectionRepository;
 import at.ac.tuwien.sepm.groupphase.backend.testhelpers.UserTestHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,6 +28,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -43,12 +48,20 @@ class SectionEndpointIntegrationTest {
     @Autowired
     ObjectMapper objectMapper;
     @Autowired
+    SectionRepository sectionRepository;
+    @Autowired
     private WebApplicationContext webAppContext;
     private MockMvc mockMvc;
+    @Autowired
+    private ScriptRepository scriptRepository;
+    private List<Script> scriptList;
+    private List<Section> sectionList;
 
     @BeforeEach
     public void setup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webAppContext).build();
+        this.scriptList = scriptRepository.findAll();
+        this.sectionList = sectionRepository.findAll();
     }
 
     //TESTING GET
@@ -62,13 +75,14 @@ class SectionEndpointIntegrationTest {
         void getSectionById() throws Exception {
             byte[] body = mockMvc
                 .perform(MockMvcRequestBuilders
-                    .get("/api/v1/scripts/sections/-1")
+                    .get("/api/v1/scripts/sections/1")
                     .accept(MediaType.APPLICATION_JSON)
                 ).andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsByteArray();
             SectionDto sectionResult = objectMapper.readValue(body, SectionDto.class);
             assertNotNull(sectionResult);
-            assertEquals(-1L, sectionResult.getId());
+            assertEquals(1L, sectionResult.getId());
+            //TODO: compare to the Section in sectionList
         }
 
         @Test
@@ -92,21 +106,21 @@ class SectionEndpointIntegrationTest {
         @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = Role.verified)
         @DisplayName("Save a section successfully")
         void saveSection() throws Exception {
-            //TODO: replace with actual dummy data
-            Page page = new Page();
-            User user = new User();
-            Line start = new Line(null, page, -1L, "A", null, false, null, null);
-            Line end = new Line(null, page, -2L, "B", null, false, null, null);
+            Script script = scriptList.get(0);
+            Page page = script.getPages().get(0);
+            Line start = page.getLines().get(0);
+            Line end = page.getLines().get(1);
+            User user = script.getOwner();
             byte[] body = mockMvc
                 .perform(MockMvcRequestBuilders
                     .post("/api/v1/scripts/sections")
                     .accept(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsBytes(new SectionDto(null, "Szene Fünf", user, start, end, null)))
+                    .content(objectMapper.writeValueAsBytes(new SectionDto(null, "Szene Fünf", user.getId(), start.getId(), end.getId(), null)))
                     .contentType(MediaType.APPLICATION_JSON)
                 ).andExpect(status().isCreated())
                 .andReturn().getResponse().getContentAsByteArray();
             SectionDto sectionResult = objectMapper.readValue(body, SectionDto.class);
-            SectionDto expected = new SectionDto(sectionResult.getId(), "Szene Fünf", user, start, end, null);
+            SectionDto expected = new SectionDto(sectionResult.getId(), "Szene Fünf", user.getId(), start.getId(), end.getId(), null);
 
             assertNotNull(sectionResult);
             assertEquals(expected, sectionResult);
@@ -117,14 +131,14 @@ class SectionEndpointIntegrationTest {
         @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = Role.verified)
         @DisplayName("Save a section without a user")
         void saveSectionNoUser() throws Exception {
-            //TODO: replace with actual dummy data
-            Page page = new Page();
-            Line start = new Line(null, page, -1L, "A", null, false, null, null);
-            Line end = new Line(null, page, -2L, "B", null, false, null, null);
+            Script script = scriptList.get(0);
+            Page page = script.getPages().get(0);
+            Line start = page.getLines().get(0);
+            Line end = page.getLines().get(1);
             mockMvc.perform(MockMvcRequestBuilders
                 .post("/api/v1/scripts/sections")
                 .accept(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(new SectionDto(null, "Szene Fünf", null, start, end, null)))
+                .content(objectMapper.writeValueAsBytes(new SectionDto(null, "Szene Fünf", 0L, start.getId(), end.getId(), null)))
                 .contentType(MediaType.APPLICATION_JSON)
             ).andExpect(status().isUnprocessableEntity());
         }
@@ -135,16 +149,17 @@ class SectionEndpointIntegrationTest {
         @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = Role.verified)
         @DisplayName("Save a section with an invalid starting line")
         void saveSectionInvalidStart() throws Exception {
-            //TODO: replace with actual dummy data
-            Page page = new Page();
-            User user = new User();
-            Line start = new Line(null, page, -10000000L, "A", null, false, null, null);
-            Line end = new Line(null, page, -2L, "B", null, false, null, null);
+            Script script = scriptList.get(0);
+            Page page = script.getPages().get(0);
+            int index = page.getLines().size();
+            Line start = page.getLines().get(index);
+            Line end = page.getLines().get(1);
+            User user = script.getOwner();
             //there are not that many lines on the page, and the start is "below" the end
             mockMvc.perform(MockMvcRequestBuilders
                 .post("/api/v1/scripts/sections")
                 .accept(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(new SectionDto(null, "Szene Fünf", user, start, end, null)))
+                .content(objectMapper.writeValueAsBytes(new SectionDto(null, "Szene Fünf", user.getId(), start.getId(), end.getId(), null)))
                 .contentType(MediaType.APPLICATION_JSON)
             ).andExpect(status().isUnprocessableEntity());
         }
@@ -155,18 +170,17 @@ class SectionEndpointIntegrationTest {
         @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = Role.verified)
         @DisplayName("Save a section with an invalid ending line")
         void saveSectionInvalidEnd() throws Exception {
-            //TODO: replace with actual dummy data
-            Script script = Script.builder().build();
-            User user = new User();
-            Page page1 = new Page(null, script, -1L, null);
-            Page page2 = new Page(null, script, -100000L, null);
-            Line start = new Line(null, page1, -1L, "A", null, false, null, null);
-            Line end = new Line(null, page2, -2L, "B", null, false, null, null);
+            Script script = scriptList.get(0);
+            Page page = script.getPages().get(0);
+            int index = page.getLines().size();
+            Line start = page.getLines().get(0);
+            Line end = page.getLines().get(index);
+            User user = script.getOwner();
             //end is "after" the last page
             mockMvc.perform(MockMvcRequestBuilders
                 .post("/api/v1/scripts/sections")
                 .accept(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(new SectionDto(null, "Szene Fünf", user, start, end, null)))
+                .content(objectMapper.writeValueAsBytes(new SectionDto(null, "Szene Fünf", user.getId(), start.getId(), end.getId(), null)))
                 .contentType(MediaType.APPLICATION_JSON)
             ).andExpect(status().isUnprocessableEntity());
         }
@@ -176,19 +190,18 @@ class SectionEndpointIntegrationTest {
         @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = Role.verified)
         @DisplayName("Save a section with two lines from different scripts")
         void saveSectionFalseScript() throws Exception {
-            //TODO: replace with actual dummy data
-            Script script = Script.builder().build();
-            Script script1 = Script.builder().build();
-            User user = new User();
-            Page page1 = new Page(null, script, -1L, null);
-            Page page2 = new Page(null, script1, -1L, null);
-            Line start = new Line(null, page1, -1L, "A", null, false, null, null);
-            Line end = new Line(null, page2, -2L, "B", null, false, null, null);
+            Script script = scriptList.get(0);
+            Script script2 = scriptList.get(1);
+            Page page = script.getPages().get(0);
+            Page page2 = script2.getPages().get(0);
+            Line start = page.getLines().get(0);
+            Line end = page2.getLines().get(1);
+            User user = script.getOwner();
             //lines not from the same script
             mockMvc.perform(MockMvcRequestBuilders
                 .post("/api/v1/scripts/sections")
                 .accept(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(new SectionDto(null, "Szene Fünf", user, start, end, null)))
+                .content(objectMapper.writeValueAsBytes(new SectionDto(null, "Szene Fünf", user.getId(), start.getId(), end.getId(), null)))
                 .contentType(MediaType.APPLICATION_JSON)
             ).andExpect(status().isUnprocessableEntity());
         }
@@ -198,15 +211,33 @@ class SectionEndpointIntegrationTest {
         @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = Role.verified)
         @DisplayName("Save a section with too long name")
         void saveSectionTooLongName() throws Exception {
-            //TODO: replace with actual dummy data
-            Page page = new Page();
-            User user = new User();
-            Line start = new Line(null, page, -1L, "A", null, false, null, null);
-            Line end = new Line(null, page, -2L, "B", null, false, null, null);
+            Script script = scriptList.get(0);
+            Page page = script.getPages().get(0);
+            Line start = page.getLines().get(0);
+            Line end = page.getLines().get(1);
+            User user = script.getOwner();
             mockMvc.perform(MockMvcRequestBuilders
                 .post("/api/v1/scripts/sections")
                 .accept(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(new SectionDto(null, "a".repeat(101), user, start, end, null)))
+                .content(objectMapper.writeValueAsBytes(new SectionDto(null, "a".repeat(101), user.getId(), start.getId(), end.getId(), null)))
+                .contentType(MediaType.APPLICATION_JSON)
+            ).andExpect(status().isUnprocessableEntity());
+        }
+
+        @Test
+        @Transactional
+        @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = Role.verified)
+        @DisplayName("Save a section with blank name")
+        void saveSectionBlankName() throws Exception {
+            Script script = scriptList.get(0);
+            Page page = script.getPages().get(0);
+            Line start = page.getLines().get(0);
+            Line end = page.getLines().get(1);
+            User user = script.getOwner();
+            mockMvc.perform(MockMvcRequestBuilders
+                .post("/api/v1/scripts/sections")
+                .accept(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsBytes(new SectionDto(null, "    ", user.getId(), start.getId(), end.getId(), null)))
                 .contentType(MediaType.APPLICATION_JSON)
             ).andExpect(status().isUnprocessableEntity());
         }
@@ -217,17 +248,10 @@ class SectionEndpointIntegrationTest {
         @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = Role.verified)
         @DisplayName("Save a section with lines from a nonexistent script")
         void saveSectionNonexistentScript() throws Exception {
-            //TODO: replace with actual dummy data
-            User user = new User();
-            Script script = new Script(-10000L, "SCRIPT", null, null, null, null);
-            Page page1 = new Page(null, script, -1L, null);
-            Line start = new Line(null, page1, -1L, "A", null, false, null, null);
-            Line end = new Line(null, page1, -2L, "B", null, false, null, null);
-            //lines not from the same script
             mockMvc.perform(MockMvcRequestBuilders
                 .post("/api/v1/scripts/sections")
                 .accept(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(new SectionDto(null, "Szene Fünf", user, start, end, null)))
+                .content(objectMapper.writeValueAsBytes(new SectionDto(null, "Szene Fünf", 1L, -1L, -2L, null)))
                 .contentType(MediaType.APPLICATION_JSON)
             ).andExpect(status().isUnprocessableEntity());
         }
@@ -244,7 +268,7 @@ class SectionEndpointIntegrationTest {
         @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = Role.verified)
         void deleteSection() throws Exception {
             mockMvc.perform(MockMvcRequestBuilders
-                .get("/api/v1/scripts/sections/-1")
+                .get("/api/v1/scripts/sections/1")
                 .accept(MediaType.APPLICATION_JSON)
             ).andExpect(status().isNoContent());
         }

@@ -1,8 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
-import at.ac.tuwien.sepm.groupphase.backend.entity.Line;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Session;
-import at.ac.tuwien.sepm.groupphase.backend.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,8 +21,8 @@ import java.util.Set;
 public class SectionDto {
     private Long id;
     private String name;
-    private User owner;
-    private Line start;
-    private Line end;
+    private Long owner;
+    private Long startLine;
+    private Long endLine;
     private Set<Session> sessions;
 }
