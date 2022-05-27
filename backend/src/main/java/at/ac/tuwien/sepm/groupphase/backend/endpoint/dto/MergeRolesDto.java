@@ -7,6 +7,11 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+/**
+ * Dto for merging roles.
+ *
+ * @author Luke Nemeskeri
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

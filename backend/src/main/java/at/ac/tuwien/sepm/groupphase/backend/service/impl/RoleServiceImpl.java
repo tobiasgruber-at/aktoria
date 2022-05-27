@@ -6,11 +6,14 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.RoleMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.UserMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Line;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Role;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Script;
 import at.ac.tuwien.sepm.groupphase.backend.entity.User;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.UnauthorizedException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.LineRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.RoleRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.ScriptRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.AuthorizationService;
 import at.ac.tuwien.sepm.groupphase.backend.service.RoleService;
 import at.ac.tuwien.sepm.groupphase.backend.service.ScriptService;
@@ -19,12 +22,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
+/**
+ * Service for roles.
+ *
+ * @author Luke Nemeskeri
+ */
 @Service
 @Slf4j
 public class RoleServiceImpl implements RoleService {
@@ -35,9 +41,10 @@ public class RoleServiceImpl implements RoleService {
     private final AuthorizationService authorizationService;
     private final ScriptService scriptService;
     private final UserMapper userMapper;
+    private final ScriptRepository scriptRepository;
 
     public RoleServiceImpl(RoleRepository roleRepository, RoleValidation roleValidation, LineRepository lineRepository, RoleMapper roleMapper, AuthorizationService authorizationService,
-                           ScriptService scriptService, UserMapper userMapper) {
+                           ScriptService scriptService, UserMapper userMapper, ScriptRepository scriptRepository) {
         this.roleRepository = roleRepository;
         this.roleValidation = roleValidation;
         this.lineRepository = lineRepository;
@@ -45,12 +52,17 @@ public class RoleServiceImpl implements RoleService {
         this.authorizationService = authorizationService;
         this.scriptService = scriptService;
         this.userMapper = userMapper;
+        this.scriptRepository = scriptRepository;
     }
 
     @Override
     @Transactional
-    public RoleDto mergeRoles(MergeRolesDto mergeRolesDto, Long id, Long sid) {
-        log.trace("merge roles into {}", id);
+    public RoleDto mergeRoles(MergeRolesDto mergeRolesDto, Long sid) {
+        log.trace("merge roles into {}", mergeRolesDto.getIds().get(0));
+
+        if (sid == null) {
+            throw new ValidationException("Bad Request");
+        }
 
         User user = authorizationService.getLoggedInUser();
         if (user == null) {
@@ -60,59 +72,56 @@ public class RoleServiceImpl implements RoleService {
             throw new UnauthorizedException("Dieser User ist nicht berechtigt diese Datei zu bearbeiten");
         }
 
-        Optional<Role> keepOptional = roleRepository.findById(id);
+        List<Role> allReplaceRoles = roleRepository.findAllById(mergeRolesDto.getIds());
+        if (!(scriptRepository.getById(sid).getRoles().containsAll(allReplaceRoles))) {
+            throw new ValidationException("Eine oder mehrere Rollen sind nicht in diesem Script enthalten");
+        }
+
+        Long idToKeep = mergeRolesDto.getIds().get(0);
+        Optional<Role> keepOptional = roleRepository.findById(idToKeep);
         Role keep;
         if (keepOptional.isPresent()) {
             keep = keepOptional.get();
         } else {
             throw new NotFoundException("Rolle exisitiert nicht!");
         }
-
-        List<Role> allReplaceRoles = roleRepository.findAllById(mergeRolesDto.getIds());
-        Set<Role> removeFromLine = new HashSet<>(allReplaceRoles);
-
-        Set<Role> delete;
-        Set<Set<Role>> allDelete = new HashSet<>();
-        List<Line> lineToSave = new LinkedList<>();
+        
+        if (allReplaceRoles.size() == 1 && allReplaceRoles.get(0).getId().equals(idToKeep)) {
+            return roleMapper.roleToRoleDto(keep);
+        }
 
         List<Line> lines = new LinkedList<>();
-        for (Role r : allReplaceRoles) {
-            for (Line i : r.getLines()) {
-                /*  delete = i.getSpokenBy();
-                allDelete.add(delete);
-                lineToSave.add(i);*/
-                lines.add(i);
 
-                /* i.getSpokenBy().removeAll(removeFromLine);
-                i.getSpokenBy().add(keep);
-                lineRepository.saveAndFlush(i); */
-            }
+        for (Role r : allReplaceRoles) {
+            lines.addAll(r.getLines());
         }
+
 
         for (int i = 0; i < lines.size(); i++) {
             allReplaceRoles.forEach(lines.get(i).getSpokenBy()::remove);
             lines.get(i).getSpokenBy().add(keep);
             lineRepository.save(lines.get(i));
+            if (!(keep.getLines().contains(lines.get(i)))) {
+                keep.getLines().add(lineRepository.getById(lines.get(i).getId()));
+            }
         }
 
-        /* List<Set<Role>> roles = allDelete.stream().toList();
-        for (int i = 0; i < roles.size(); i++) {
-            roles.get(i).removeAll(removeFromLine);
-            roles.get(i).add(keep);
-            lineRepository.saveAndFlush(lineToSave.get(i));
-        }*/
 
-
-        Role keepNew = roleRepository.getById(keep.getId());
         allReplaceRoles.remove(keep);
         List<Long> idsToDelete = new LinkedList<>();
         for (int i = 0; i < allReplaceRoles.size(); i++) {
             idsToDelete.add(allReplaceRoles.get(i).getId());
         }
 
-      /*  for (int i = 0; i < lines.size(); i++) {
-            keep.getLines().add(lines.get(i));
-        }*/
+
+        for (int i = 0; i < allReplaceRoles.size(); i++) {
+            allReplaceRoles.get(i).setLines(null);
+        }
+
+        Script script = scriptRepository.getById(sid);
+
+        allReplaceRoles.forEach(script.getRoles()::remove);
+        scriptRepository.save(script);
 
         roleRepository.deleteAllById(idsToDelete);
 

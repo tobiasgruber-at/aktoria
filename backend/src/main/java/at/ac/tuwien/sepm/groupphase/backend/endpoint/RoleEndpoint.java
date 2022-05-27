@@ -26,9 +26,9 @@ public class RoleEndpoint {
         this.roleService = roleService;
     }
 
-    @PatchMapping(path = "/{id}")
-    public RoleDto mergeRoles(@RequestBody MergeRolesDto mergeRolesDto, @PathVariable Long id, @PathVariable Long sid) {
-        log.info("PATCH {}/{}", path, id);
-        return roleService.mergeRoles(mergeRolesDto, id, sid);
+    @PatchMapping()
+    public RoleDto mergeRoles(@RequestBody MergeRolesDto mergeRolesDto, @PathVariable Long sid) {
+        log.info("PATCH {}", path);
+        return roleService.mergeRoles(mergeRolesDto, sid);
     }
 }
