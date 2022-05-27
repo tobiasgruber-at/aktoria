@@ -18,6 +18,8 @@ import { ScriptInviteAcceptComponent } from './components/script-invite-accept/s
 import { ScriptMembersListComponent } from './components/script-overview/script-members-list/script-members-list.component';
 // eslint-disable-next-line max-len
 import { ScriptMembersItemComponent } from './components/script-overview/script-members-list/script-members-item/script-members-item.component';
+import { ScriptInviteLinkComponent } from './components/script-invite/script-invite-link/script-invite-link.component';
+import { ScriptInviteEmailComponent } from './components/script-invite/script-invite-email/script-invite-email.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +38,9 @@ import { ScriptMembersItemComponent } from './components/script-overview/script-
     ScriptInviteComponent,
     ScriptInviteAcceptComponent,
     ScriptMembersListComponent,
-    ScriptMembersItemComponent
+    ScriptMembersItemComponent,
+    ScriptInviteLinkComponent,
+    ScriptInviteEmailComponent
   ],
   imports: [SharedModule, ScriptsRoutingModule]
 })

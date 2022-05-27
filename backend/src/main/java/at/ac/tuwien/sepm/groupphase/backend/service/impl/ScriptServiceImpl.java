@@ -17,6 +17,7 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Script;
 import at.ac.tuwien.sepm.groupphase.backend.entity.SecureToken;
 import at.ac.tuwien.sepm.groupphase.backend.entity.User;
 import at.ac.tuwien.sepm.groupphase.backend.enums.TokenType;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.IllegalFileFormatException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.InvalidTokenException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
@@ -46,6 +47,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -299,7 +301,7 @@ public class ScriptServiceImpl implements ScriptService {
 
     @Override
     public void invite(Long scriptId, String email) {
-        log.trace("invite(script_id = {}, email = {})", scriptId, email);
+        log.trace("invite(scriptId = {}, email = {})", scriptId, email);
 
         authorizationService.isOwnerOfScript(scriptId);
 
@@ -349,6 +351,12 @@ public class ScriptServiceImpl implements ScriptService {
                 if (!Objects.equals(script.getId(), id)) {
                     throw new UnauthorizedException();
                 }
+                if (script.getOwner().getId().equals(user.getId())){
+                    throw new ConflictException("Du kannst nicht deinem eigenen Skript nochmal beitreten!");
+                }
+                if (script.getParticipants().contains(user)){
+                    throw new ConflictException("Du bist diesem Skript bereits begetreten!");
+                }
 
                 Set<Script> scripts = user.getParticipatesIn();
                 scripts.add(script);
@@ -359,5 +367,47 @@ public class ScriptServiceImpl implements ScriptService {
             }
         }
         throw new InvalidTokenException();
+    }
+
+    @Override
+    public String inviteLink(Long scriptId) {
+        log.trace("invite(scriptId = {})", scriptId);
+
+        authorizationService.isOwnerOfScript(scriptId);
+
+        Optional<Script> script = scriptRepository.findById(scriptId);
+        if (script.isPresent()) {
+            SecureToken secureToken = secureTokenService.createSecureToken(TokenType.INVITE_PARTICIPANT, 1440);
+            secureToken.setScript(script.get());
+            secureTokenService.saveSecureToken(secureToken);
+
+            final String link = "http://localhost:4200/#/scripts/" + script.get().getId() + "/join/" + secureToken.getToken();
+            return link;
+        } else {
+            throw new NotFoundException();
+        }
+    }
+
+    @Override
+    @Transactional
+    public void deleteParticipant(Long scriptId, String email){
+        try {
+            authorizationService.checkBasicAuthorization(email);
+        } catch (UnauthorizedException e){
+            authorizationService.isOwnerOfScript(scriptId);
+        }
+
+        Optional<User> userOpt = userRepository.findByEmail(email);
+        Optional<Script> scriptOpt = scriptRepository.findById(scriptId);
+
+        if (scriptOpt.isPresent() && userOpt.isPresent()) {
+            Script script = scriptOpt.get();
+            User user = userOpt.get();
+            Set<Script> participatesIn = user.getParticipatesIn();
+            participatesIn.remove(script);
+            user.setParticipatesIn(participatesIn);
+
+            userRepository.saveAndFlush(user);
+        }
     }
 }

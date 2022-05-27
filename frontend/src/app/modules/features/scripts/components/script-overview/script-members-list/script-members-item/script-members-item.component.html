@@ -1,6 +1,7 @@
 <div
   role="button"
   (click)="openModal(removeMemberModal)"
+  *ngIf="!removed"
 >
   <ng-template #removeMemberModal let-modal>
     <app-modal
@@ -17,6 +18,21 @@
       möchtest?
     </app-modal>
   </ng-template>
+
+  <ng-template #exitScriptModal let-modal>
+    <app-modal
+      (confirm)="removeMember(modal)"
+      (decline)="modal.dismiss()"
+      [loading]="deleteLoading"
+      [theme]="theme.danger"
+      confirmBtnLabel="Austreten"
+      title="Aus Skript austreten"
+    >
+      Sicher, dass du
+      aus diesem Skript entfernen
+      möchtest?
+    </app-modal>
+  </ng-template>
   <div class="card">
     <div class="d-flex align-items-center justify-content-center h-100 p-3">
       <img
@@ -28,6 +44,7 @@
     </div>
     <div class="card-img-overlay">
       <h5 class="card-title text-truncate">{{ member.firstName }}</h5>
+      <h6 *ngIf="isMe()">(ich)</h6>
     </div>
   </div>
 </div>

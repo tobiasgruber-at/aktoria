@@ -133,6 +133,15 @@ export class ScriptService {
       .post<void>(this.baseUri + '/' + scriptId + '/participants', token);
   }
 
+  removeParticipant(scriptId: string, email: string): Observable<void> {
+    return this.http.delete<void>(this.baseUri + '/' + scriptId + '/participants/' + email);
+  }
+
+  inviteLink(scriptId): Observable<ArrayBuffer> {
+    // @ts-ignore
+    return this.http.post<ArrayBuffer>(this.baseUri + '/' + scriptId + '/inviteLink', null, { responseType: 'text' });
+  }
+
   /** Resets the state of this service. */
   resetState(): void {
     this.setScripts([]);

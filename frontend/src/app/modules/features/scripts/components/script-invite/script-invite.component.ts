@@ -11,39 +11,14 @@ import {ScriptService} from '../../../../core/services/script/script.service';
   templateUrl: './script-invite.component.html',
   styleUrls: ['./script-invite.component.scss']
 })
-export class ScriptInviteComponent extends FormBase implements OnInit {
+export class ScriptInviteComponent implements OnInit {
 
   scriptId: string;
 
-  constructor(
-    private route: ActivatedRoute,
-    private formBuilder: FormBuilder,
-    private scriptService: ScriptService,
-    private router: Router,
-    private toastService: ToastService
-  ) {
-    super(toastService);
+  constructor() {
   }
 
   ngOnInit(): void {
-    this.form = this.formBuilder.group({
-      email: ['', [Validators.required, Validators.email]]
-    });
-    this.scriptId = this.route.snapshot.paramMap.get('id');
-  }
-
-  protected sendSubmit(): void {
-    const {email} = this.form.value;
-    this.scriptService.inviteParticipant(email, this.scriptId).subscribe({
-      next: () => {
-        this.toggleLoading(false);
-        this.toastService.show({
-          message: 'Einladung wurde gesendet!',
-          theme: Theme.primary
-        });
-      },
-      error: (err) => this.handleError(err)
-    });
   }
 
 }

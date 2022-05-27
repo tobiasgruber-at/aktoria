@@ -83,8 +83,16 @@ public class ScriptEndpoint {
     @ResponseStatus(HttpStatus.OK)
     @Secured(Permission.verified)
     public void inviteUser(@PathVariable Long id, @RequestBody String email) {
-        log.info("POST /invitation");
+        log.info("POST /{}/invitation", id);
         scriptService.invite(id, email);
+    }
+
+    @PostMapping(path = "/{id}/inviteLink")
+    @ResponseStatus(HttpStatus.OK)
+    @Secured(Permission.verified)
+    public String inviteLink(@PathVariable Long id) {
+        log.info("POST /{}/inviteLink", id);
+        return scriptService.inviteLink(id);
     }
 
     @PostMapping(path = "/{id}/participants")
@@ -93,5 +101,13 @@ public class ScriptEndpoint {
     public void addParticipant(@PathVariable Long id, @RequestBody String token) {
         log.info("POST /{}/participants", id);
         scriptService.addParticipant(id, token);
+    }
+
+    @DeleteMapping(path = "/{id}/participants/{email}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Secured(Permission.verified)
+    public void deleteParticipant(@PathVariable Long id, @PathVariable String email) {
+        log.info("POST /{}/participants/{}", id, email);
+        scriptService.deleteParticipant(id, email);
     }
 }

@@ -82,4 +82,13 @@ public interface ScriptService {
      * @param token to verify that an invitation was received
      */
     void addParticipant(Long id, String token);
+
+    /**
+     * Returns an invitationlink to join the script as participant.
+     *
+     * @param scriptId id of the script
+     */
+    String inviteLink(Long scriptId);
+
+    void deleteParticipant(Long id, String email);
 }

@@ -4,6 +4,7 @@ import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {Theme} from '../../../../../../shared/enums/theme.enum';
 import {AuthService} from '../../../../../../core/services/auth/auth-service';
 import {ActivatedRoute} from '@angular/router';
+import {ScriptService} from '../../../../../../core/services/script/script.service';
 
 @Component({
   selector: 'app-script-members-item',
@@ -14,6 +15,7 @@ export class ScriptMembersItemComponent implements OnInit {
   @Input() member: SimpleUser;
   @Input() isOwner: boolean;
   scriptId;
+  removed = false;
 
   readonly theme = Theme;
   deleteLoading = false;
@@ -21,6 +23,7 @@ export class ScriptMembersItemComponent implements OnInit {
   constructor(private modalService: NgbModal,
               private authService: AuthService,
               private route: ActivatedRoute,
+              private scriptService: ScriptService
   ) { }
 
   ngOnInit(): void {
@@ -28,13 +31,24 @@ export class ScriptMembersItemComponent implements OnInit {
   }
 
   openModal(modal: TemplateRef<any>) {
-    if (this.isOwner) {
+    if (this.isOwner && !this.isMe()) {
       this.modalService.open(modal, { centered: true });
     }
   }
 
   removeMember(modal: NgbActiveModal) {
-    console.log('removing member with id: ' + this.member.id);
-    modal.dismiss();
+    this.scriptService.removeParticipant(this.scriptId, this.member.email).subscribe({
+      next: () => {
+        this.removed = true;
+        modal.dismiss();
+      },
+      error: (err) => {
+        this.deleteLoading = false;
+      }
+    });
+  }
+
+  isMe() {
+    return this.member.email === this.authService.getEmail();
   }
 }
