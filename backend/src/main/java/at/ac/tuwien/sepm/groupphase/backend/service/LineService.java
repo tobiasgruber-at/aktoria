@@ -18,9 +18,8 @@ public interface LineService {
      * Sets the content of the line of the given id.
      *
      * @param updateLineDto changes to the line
-     * @param sid           the id of the script
      * @param id            the id of the line to be changed
      * @return the updated line
      */
-    LineDto update(UpdateLineDto updateLineDto, Long sid, Long id);
+    LineDto update(UpdateLineDto updateLineDto, Long id);
 }
