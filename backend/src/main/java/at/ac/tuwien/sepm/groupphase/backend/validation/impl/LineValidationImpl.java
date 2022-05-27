@@ -32,7 +32,7 @@ public class LineValidationImpl implements LineValidation {
         if (!content.equals(content.trim())) {
             throw new ValidationException("Zeileninhalt darf nicht mit Leerzeichen beginnen oder enden.");
         }
-        if (Arrays.stream(new String[] { "\r", "\n", "\f", "\t" }).anyMatch(content::contains)) {
+        if (Arrays.stream(new String[] {"\r", "\n", "\f", "\t"}).anyMatch(content::contains)) {
             throw new ValidationException("Zeileninhalt beinhaltet nicht valide Leerzeichen!");
         }
         boolean isSpecialSentence = false;
