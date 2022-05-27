@@ -18,7 +18,8 @@ import { Subject, takeUntil } from 'rxjs';
 export class ScriptLineComponent implements OnInit, OnDestroy {
   @Input() line: Line;
   @Input() prevLine: Line;
-  isEditing = false;
+  /** @see ScriptViewerService.$isEditingScript */
+  isEditingScript = false;
   /** Indicates whether the user is actively interacting with this line. */
   private isInteracting = false;
   private isModalOpened = false;
@@ -32,8 +33,8 @@ export class ScriptLineComponent implements OnInit, OnDestroy {
   @HostBinding('class')
   get classes(): string[] {
     const classes = [];
-    if (this.isEditing) {
-      classes.push('is-editing');
+    if (this.isEditingScript) {
+      classes.push('is-editing-script');
     }
     if (!this.line.active) {
       classes.push('is-hidden');
@@ -65,10 +66,10 @@ export class ScriptLineComponent implements OnInit, OnDestroy {
     if (this.line.roles === null) {
       this.line.roles = [];
     }
-    this.scriptViewerService.$isEditing
+    this.scriptViewerService.$isEditingScript
       .pipe(takeUntil(this.$destroy))
       .subscribe((isEditing) => {
-        this.isEditing = isEditing;
+        this.isEditingScript = isEditing;
       });
   }
 
@@ -83,16 +84,6 @@ export class ScriptLineComponent implements OnInit, OnDestroy {
     modalRef.result.finally(() => {
       this.isModalOpened = false;
     });
-  }
-
-  changeRoles(toggledRole: Role): void {
-    if (this.line.roles.some((r) => r.name === toggledRole.name)) {
-      this.line.roles = this.line.roles.filter(
-        (r) => r.name !== toggledRole.name
-      );
-      return;
-    }
-    this.line.roles.push(toggledRole);
   }
 
   /** Clears all roles of this line. */
