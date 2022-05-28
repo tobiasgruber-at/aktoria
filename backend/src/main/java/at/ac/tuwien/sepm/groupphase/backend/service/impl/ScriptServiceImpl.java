@@ -358,7 +358,7 @@ public class ScriptServiceImpl implements ScriptService {
             if (secureToken.getExpireAt().isAfter(LocalDateTime.now())) {
 
                 Script script = secureToken.getScript();
-                if (script == null){
+                if (script == null) {
                     throw new UnauthorizedException();
                 }
                 if (!Objects.equals(script.getId(), id)) {
