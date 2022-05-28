@@ -1,3 +1,5 @@
+import {SimpleUser} from './user-dtos';
+
 export class UploadScript {
   constructor(public readonly file: File) {}
 }
@@ -19,11 +21,16 @@ export class ScriptPreview {
 }
 
 export class DetailedScript extends SimpleScript {
+  owner: SimpleUser;
+  participants: SimpleUser[];
+
   constructor(
     public readonly id: number,
     pages: Page[],
     roles: Role[],
-    name: string
+    name: string,
+    owner: SimpleUser,
+    participants: SimpleUser[]
   ) {
     super(pages, roles, name);
   }

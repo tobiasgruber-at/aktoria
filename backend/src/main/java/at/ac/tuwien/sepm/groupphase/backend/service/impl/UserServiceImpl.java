@@ -185,7 +185,7 @@ public class UserServiceImpl implements UserService {
         }
         User user = userOptional.get();
 
-        SecureToken secureToken = secureTokenService.createSecureToken(TokenType.RESET_PASSWORD);
+        SecureToken secureToken = secureTokenService.createSecureToken(TokenType.RESET_PASSWORD, 15);
         secureToken.setAccount(user);
         secureTokenService.saveSecureToken(secureToken);
 
@@ -257,9 +257,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    //Method is not used. But is used from spring,security ???
     @Override
-    @Deprecated
     @Transactional
     public UserDetails loadUserByUsername(String email) {
         log.trace("loadUserByUsername(email = {})", email);
@@ -303,7 +301,7 @@ public class UserServiceImpl implements UserService {
     public void sendEmailVerificationLink(User user) {
         log.trace("sendEmailVerificationLink(user = {})", user);
 
-        SecureToken secureToken = secureTokenService.createSecureToken(TokenType.VERIFY_EMAIL);
+        SecureToken secureToken = secureTokenService.createSecureToken(TokenType.VERIFY_EMAIL, 15);
         secureToken.setAccount(user);
         secureTokenService.saveSecureToken(secureToken);
 

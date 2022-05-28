@@ -22,6 +22,7 @@
         </div>
         <div class="col-3 d-flex flex-column align-items-end">
           <button
+            class="btn btn-primary me-3"
             class="start-rehearsal btn btn-primary btn-lg mt-2 d-flex align-items-center justify-content-between mb-3"
             routerLink="/scripts/{{ script?.id }}/rehearse/sections"
           >
@@ -41,6 +42,13 @@
             <div ngbDropdownMenu>
               <button
                 ngbDropdownItem
+                routerLink="/scripts/{{ script?.id }}/invite"
+                *ngIf="isOwner()"
+              >
+                Mitglied einladen
+              </button>
+              <button
+                ngbDropdownItem
                 routerLink="/scripts/{{ script?.id }}/view"
               >
                 Ansehen
@@ -51,12 +59,22 @@
               >
                 Bearbeiten
               </button>
-              <button (click)="openModal(deleteModal)" ngbDropdownItem>
+              <button (click)="openModal(deleteModal)"
+                ngbDropdownItem
+                *ngIf="isOwner()"
+              >
                 Löschen
+              </button>
+              <button (click)="openModal(exitModal)" ngbDropdownItem>
+                Austreten
               </button>
             </div>
           </div>
         </div>
+        <app-script-members-list
+          [members] = members
+          [isOwner] = isOwner()
+        ></app-script-members-list>
       </div>
     </div>
   </ng-template>
@@ -81,5 +99,25 @@
     <i>{{ script?.name }} </i>
     <strong class="text-primary">unwiderruflich löschen</strong>
     möchtest möchtest?
+  </app-modal>
+</ng-template>
+<ng-template #exitModal let-modal>
+  <app-modal
+    (confirm)="exitScript(modal)"
+    (decline)="modal.dismiss()"
+    [loading]="deleteLoading"
+    [theme]="theme.danger"
+    confirmBtnLabel="Austreten"
+    title="Skript verlassen"
+  >
+    <app-alert
+      *ngIf="deleteError"
+      [closeable]="false"
+      type="danger"
+    >{{ this.deleteError }}</app-alert
+    >
+    Sicher, dass du
+    <i>{{ script?.name }} </i>
+    verlassen möchtest?
   </app-modal>
 </ng-template>

@@ -50,26 +50,31 @@ export class ScriptService {
    */
   getOne(id: number): Observable<DetailedScript> {
     const loadedScript = this.fullyLoadedScripts.find((f) => f.id === id);
-    return loadedScript
+    console.log(loadedScript);
+    const returnValue = loadedScript
       ? of(loadedScript)
       : this.http.get<DetailedScript>(`${this.baseUri}/${id}`).pipe(
-          map(
-            (script) =>
-              new DetailedScript(
-                script.id,
-                script.pages,
-                script.roles,
-                script.name
-              )
-          ),
-          tap((script) => {
-            this.fullyLoadedScripts.push(script);
-          })
-        );
+        /*map(
+          (script) =>
+            new DetailedScript(
+              script.id,
+              script.pages,
+              script.roles,
+              script.name,
+              script.owner,
+              script.participants
+            )
+        ),*/
+        tap((script) => {
+          this.fullyLoadedScripts.push(script);
+        })
+      );
+    console.log(returnValue);
+    return returnValue;
   }
 
   /**
-   * Gets all script previews
+   * Gets all script previews.
    *
    * @return observable list of script previews
    */
@@ -123,6 +128,37 @@ export class ScriptService {
       .pipe(
         tap(() => this.setScripts(this.scripts.filter((s) => s.id !== id)))
       );
+  }
+
+  /**
+   * Sends an invite to join the script.
+   *
+   * @param email the email the invite is sent to
+   * @param scriptId the scriptId of the invitation
+   */
+  inviteParticipant(email: string, scriptId: string): Observable<void> {
+    return this.http
+      .post<void>(this.baseUri + '/' + scriptId + '/invitations', email);
+  }
+
+  /**
+   * Adds a new participant to the script
+   *
+   * @param token token of invitation
+   * @param scriptId id of the script
+   */
+  addParticipant(token: string, scriptId: string): Observable<void> {
+    return this.http
+      .post<void>(this.baseUri + '/' + scriptId + '/participants', token);
+  }
+
+  removeParticipant(scriptId, email: string): Observable<void> {
+    return this.http.delete<void>(this.baseUri + '/' + scriptId + '/participants/' + email);
+  }
+
+  inviteLink(scriptId): Observable<ArrayBuffer> {
+    // @ts-ignore
+    return this.http.post<ArrayBuffer>(this.baseUri + '/' + scriptId + '/inviteLink', null, { responseType: 'text' });
   }
 
   /** Resets the state of this service. */

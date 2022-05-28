@@ -45,4 +45,5 @@ public interface UserValidation {
      */
     void validateChangePasswordInput(PasswordChangeDto passwordChangeDto, Long id);
 
+    void validateEmail(String email);
 }

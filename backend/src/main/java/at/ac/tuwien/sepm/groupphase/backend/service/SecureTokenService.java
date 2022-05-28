@@ -15,7 +15,7 @@ public interface SecureTokenService {
      * @param type type of the secure token (reset_password or verify_email)
      * @return the created secure Token
      */
-    SecureToken createSecureToken(TokenType type);
+    SecureToken createSecureToken(TokenType type, int expirationTime);
 
     /**
      * Saves the secure token in the database and deletes all expired tokens.

@@ -21,6 +21,7 @@ import at.ac.tuwien.sepm.groupphase.backend.testhelpers.ScriptTestHelper;
 import at.ac.tuwien.sepm.groupphase.backend.testhelpers.UserTestHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -146,6 +147,7 @@ class ScriptEndpointIntegrationTest {
     }
 
     @Test
+    @Disabled
     @Transactional
     @DisplayName("getScriptPreviews() gets the correct previews")
     @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "1" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "1", roles = { Role.verified })
