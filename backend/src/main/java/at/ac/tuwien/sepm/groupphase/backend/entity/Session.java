@@ -32,7 +32,8 @@ public class Session {
     private Long id;
 
     @CreationTimestamp
-    @Column(name = "start_time", updatable = false, columnDefinition = "timestamp without time zone default current_timestamp")
+    @Column(name = "start_time", updatable = false, nullable = false,
+        columnDefinition = "timestamp without time zone default current_timestamp")
     private LocalDateTime start;
 
     @Column(name = "end_time", updatable = false)

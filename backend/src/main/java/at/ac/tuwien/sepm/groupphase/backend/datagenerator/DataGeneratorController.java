@@ -18,11 +18,13 @@ public class DataGeneratorController {
 
     private final UserDataGenerator userDataGenerator;
     private final ScriptDataGenerator scriptDataGenerator;
+    private final SectionDataGenerator sectionDataGenerator;
 
 
-    public DataGeneratorController(UserDataGenerator userDataGenerator, ScriptDataGenerator scriptDataGenerator) {
+    public DataGeneratorController(UserDataGenerator userDataGenerator, ScriptDataGenerator scriptDataGenerator, SectionDataGenerator sectionDataGenerator) {
         this.userDataGenerator = userDataGenerator;
         this.scriptDataGenerator = scriptDataGenerator;
+        this.sectionDataGenerator = sectionDataGenerator;
     }
 
     @PostConstruct
@@ -30,5 +32,8 @@ public class DataGeneratorController {
         userDataGenerator.generateUser();
         scriptDataGenerator.generateScript();
         scriptDataGenerator.generateSpokenBy();
+        userDataGenerator.generateParticipation();
+        sectionDataGenerator.generateSection();
+        sectionDataGenerator.generateSession();
     }
 }

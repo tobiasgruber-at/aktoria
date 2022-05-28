@@ -15,6 +15,9 @@ import { ScriptRolesListComponent } from './components/script-roles-list/script-
 import { ScriptEditComponent } from './components/script-edit/script-edit.component';
 import { MergeRolesModalComponent } from './components/script-edit/merge-roles-modal/merge-roles-modal.component';
 import { ChangeLineModalComponent } from './components/script-viewer/script-line/change-line-modal/change-line-modal.component';
+import { ScriptRehearsalComponent } from './components/script-rehearsal/script-rehearsal.component';
+import { ScriptRehearsalSectionsComponent } from './components/script-rehearsal/script-rehearsal-sections/script-rehearsal-sections.component';
+import { RehearsalSectionComponent } from './components/rehearsal-section/rehearsal-section.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +34,10 @@ import { ChangeLineModalComponent } from './components/script-viewer/script-line
     ScriptEditComponent,
     ScriptRolesListComponent,
     MergeRolesModalComponent,
-    ChangeLineModalComponent
+    ChangeLineModalComponent,
+    ScriptRehearsalComponent,
+    ScriptRehearsalSectionsComponent,
+    RehearsalSectionComponent
   ],
   imports: [SharedModule, ScriptsRoutingModule]
 })

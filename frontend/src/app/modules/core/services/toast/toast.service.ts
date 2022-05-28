@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Toast} from '../../../shared/interfaces/toast.interface';
 import {BehaviorSubject, Observable} from 'rxjs';
+import {Theme} from '../../../shared/enums/theme.enum';
 
 /** @author Tobias Gruber */
 @Injectable({
@@ -23,6 +24,19 @@ export class ToastService {
       this.toasts.shift();
     }
     this.toastsSubject.next(this.toasts);
+  }
+
+  showError(error): void {
+    let errorMessage = '';
+    if (typeof error.error === 'object') {
+      errorMessage = error.error?.message;
+    } else {
+      errorMessage = error.error;
+    }
+    this.show({
+      message: errorMessage || 'Ein Fehler ist aufgetreten!',
+      theme: Theme.danger
+    });
   }
 
   /** Closes a toast. */

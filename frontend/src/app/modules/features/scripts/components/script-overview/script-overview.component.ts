@@ -1,7 +1,7 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ScriptService } from '../../../../core/services/script/script.service';
-import { DetailedScript } from '../../../../shared/dtos/script-dtos';
+import { DetailedScript, Role } from '../../../../shared/dtos/script-dtos';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastService } from '../../../../core/services/toast/toast.service';
 import { Theme } from '../../../../shared/enums/theme.enum';
@@ -17,6 +17,7 @@ export class ScriptOverviewComponent implements OnInit {
   deleteLoading = false;
   deleteError = null;
   script: DetailedScript = null;
+  selectedRole: Role = null;
   readonly theme = Theme;
 
   constructor(
@@ -40,6 +41,7 @@ export class ScriptOverviewComponent implements OnInit {
         this.scriptService.getOne(id).subscribe({
           next: (script) => {
             this.script = script;
+            this.selectedRole = this.script.roles[0];
             this.getLoading = false;
           },
           error: handleNotFound
@@ -69,5 +71,9 @@ export class ScriptOverviewComponent implements OnInit {
         this.deleteError = err.error?.message;
       }
     });
+  }
+
+  selectRole(role: Role): void {
+    this.selectedRole = role;
   }
 }

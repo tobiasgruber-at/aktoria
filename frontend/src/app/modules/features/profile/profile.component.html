@@ -15,9 +15,13 @@
             confirmBtnLabel="Löschen"
             title="Nutzer löschen"
           >
-            <app-alert *ngIf="deleteError" [closeable]="false" type="danger">{{
-              this.deleteError
-            }}</app-alert>
+            <app-alert
+              *ngIf="deleteError"
+              [closeable]="false"
+              class="mb-1"
+              type="danger"
+              >{{ this.deleteError }}</app-alert
+            >
             Sicher, dass du dein Konto
             <strong class="text-primary">unwiderruflich löschen</strong>
             möchtest möchtest?

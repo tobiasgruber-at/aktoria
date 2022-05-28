@@ -1,8 +1,10 @@
 <div
   (click)="onRoleClicked(role)"
   *ngFor="let role of roles"
-  [class]="isRoleSelected(role) ? 'selected' : ''"
-  class="badge badge-lg btn mb-2 me-2"
+  [class.selected]="isRoleSelected(role)"
+  class="badge badge-{{ theme }} badge-{{ size }} btn mb-{{
+    size === 'lg' ? 2 : 3
+  }} me-{{ size === 'lg' ? 2 : 3 }}"
   type="button"
 >
   {{ role.name }}

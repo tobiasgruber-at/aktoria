@@ -9,6 +9,8 @@ import { Line, Role } from '../../../../../shared/dtos/script-dtos';
 import { ScriptViewerService } from '../../../services/script-viewer.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Subject, takeUntil } from 'rxjs';
+import { LineService } from '../../../../../core/services/line/line.service';
+import { ToastService } from '../../../../../core/services/toast/toast.service';
 
 @Component({
   selector: 'app-script-line',
@@ -22,12 +24,15 @@ export class ScriptLineComponent implements OnInit, OnDestroy {
   isEditingScript = false;
   /** Indicates whether the user is actively interacting with this line. */
   private isInteracting = false;
+  private isUploading = false;
   private isModalOpened = false;
   private $destroy = new Subject<void>();
 
   constructor(
     public scriptViewerService: ScriptViewerService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private lineService: LineService,
+    private toastService: ToastService
   ) {}
 
   @HostBinding('class')
@@ -71,6 +76,11 @@ export class ScriptLineComponent implements OnInit, OnDestroy {
       .subscribe((isEditing) => {
         this.isEditingScript = isEditing;
       });
+    this.scriptViewerService.$isUploading
+      .pipe(takeUntil(this.$destroy))
+      .subscribe((isUploading) => {
+        this.isUploading = isUploading;
+      });
   }
 
   /** @return Whether a line is highlighted. */
@@ -88,12 +98,42 @@ export class ScriptLineComponent implements OnInit, OnDestroy {
 
   /** Clears all roles of this line. */
   removeRoles(): void {
-    this.line.roles = [];
+    if (this.isUploading) {
+      this.line.roles = [];
+    } else {
+      this.scriptViewerService.setLoading(true);
+      this.lineService.patchLine({ roleIds: [] }, this.line.id).subscribe({
+        next: (line) => {
+          this.scriptViewerService.setLoading(false);
+          this.line.roles = [];
+        },
+        error: (err) => {
+          this.scriptViewerService.setLoading(false);
+          this.toastService.showError(err);
+        }
+      });
+    }
   }
 
   /** Toggles whether this line is active. */
   toggleLineActive(): void {
-    this.line.active = !this.line.active;
+    if (this.isUploading) {
+      this.line.active = !this.line.active;
+    } else {
+      this.scriptViewerService.setLoading(true);
+      this.lineService
+        .patchLine({ active: !this.line.active }, this.line.id)
+        .subscribe({
+          next: (line) => {
+            this.scriptViewerService.setLoading(false);
+            this.line.active = line.active;
+          },
+          error: (err) => {
+            this.scriptViewerService.setLoading(false);
+            this.toastService.showError(err);
+          }
+        });
+    }
   }
 
   ngOnDestroy() {
