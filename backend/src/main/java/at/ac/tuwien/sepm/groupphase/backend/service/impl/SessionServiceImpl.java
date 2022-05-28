@@ -156,7 +156,20 @@ public class SessionServiceImpl implements SessionService {
 
     @Override
     public SessionDto findById(Long id) {
-        return null;
+        log.trace("findSessionById(id = {})", id);
+        User user = authorizationService.getLoggedInUser();
+        if (user == null) {
+            throw new UnauthorizedException();
+        }
+        Optional<Session> session = sessionRepository.findById(id);
+        if (session.isEmpty()) {
+            throw new NotFoundException("Session not found");
+        }
+        Session curSession = session.get();
+        if (!curSession.getSection().getOwner().getId().equals(user.getId())) {
+            throw new UnauthorizedException("User not permitted to view this session");
+        }
+        return sessionMapper.sessionToSessionDto(curSession);
     }
 
     private Double computeCoverage(Section section, Line line) {
