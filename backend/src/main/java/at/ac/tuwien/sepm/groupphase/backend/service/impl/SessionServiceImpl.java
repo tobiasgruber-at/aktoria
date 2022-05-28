@@ -1,18 +1,18 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SessionDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleSessionDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.SessionMapper;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Role;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Script;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Section;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Session;
 import at.ac.tuwien.sepm.groupphase.backend.entity.User;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.UnauthorizedException;
-import at.ac.tuwien.sepm.groupphase.backend.repository.ScriptRepository;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SessionDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleSessionDto;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.SessionMapper;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Role;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.RoleRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.ScriptRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.SectionRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.SessionRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.AuthorizationService;
@@ -43,12 +43,14 @@ public class SessionServiceImpl implements SessionService {
     private final RoleRepository roleRepository;
     private final SessionMapper sessionMapper;
 
-    public SessionServiceImpl(AuthorizationService authorizationService, SessionRepository sessionRepository, ScriptRepository scriptRepository, SectionRepository sectionRepository, RoleRepository roleRepository) {
+    public SessionServiceImpl(AuthorizationService authorizationService, SessionRepository sessionRepository, ScriptRepository scriptRepository, SectionRepository sectionRepository, RoleRepository roleRepository,
+                              SessionMapper sessionMapper) {
         this.authorizationService = authorizationService;
         this.sessionRepository = sessionRepository;
         this.scriptRepository = scriptRepository;
         this.sectionRepository = sectionRepository;
         this.roleRepository = roleRepository;
+        this.sessionMapper = sessionMapper;
     }
 
     @Transactional
