@@ -19,8 +19,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Specific implementation of SessionService.
@@ -104,16 +106,21 @@ public class SessionServiceImpl implements SessionService {
             if (line.isEmpty()) {
                 throw new NotFoundException("Current line not found");
             }
-            if (curSession.getSection().getStartLine().getPage().getScript().getId()
+            if (!curSession.getSection().getStartLine().getPage().getScript().getId()
                 .equals(line.get().getPage().getScript().getId())) {
                 throw new ValidationException("Current line not in correct script");
             }
-            if (curSession.getSection().getEndLine().getIndex() < line.get().getIndex()) {
-                throw new ValidationException("Current line may not be after the end of the section");
+            if (curSession.getSection().getEndLine().getPage().getIndex() <= line.get().getPage().getIndex()) {
+                if (curSession.getSection().getEndLine().getPage().getIndex() < line.get().getPage().getIndex()
+                    || curSession.getSection().getEndLine().getIndex() < line.get().getIndex()) {
+                    throw new ValidationException("Current line may not be after the end of the section");
+                }
             }
             curSession.setCurrentLine(line.get());
-            Double coverage = (double) (line.get().getIndex() /
-                (curSession.getSection().getEndLine().getIndex() - curSession.getSection().getStartLine().getIndex()));
+            Double coverage = computeCoverage(curSession.getSection(), line.get());
+            if (coverage == null) {
+                throw new IllegalStateException();
+            }
             curSession.setCoverage(coverage);
         }
         if (updateSessionDto.getSelfAssessment() != null) {
@@ -130,6 +137,18 @@ public class SessionServiceImpl implements SessionService {
 
     @Override
     public SessionDto findById(Long id) {
+        return null;
+    }
+
+    private Double computeCoverage(Section section, Line line) {
+        Line startLine = section.getStartLine();
+        Line endLine = section.getEndLine();
+        List<Line> linesInBetween = lineRepository.findByStartLineAndEndLine(startLine, endLine);
+        for (int i = 0; i < linesInBetween.size(); i++) {
+            if (linesInBetween.get(i).getIndex().equals(line.getIndex())) {
+                return (double) (i+1)/linesInBetween.size();
+            }
+        }
         return null;
     }
 }

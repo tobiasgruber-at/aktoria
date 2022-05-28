@@ -47,6 +47,7 @@ public class LineRepositoryUnitTest {
 
     @Test
     @Transactional
+    @DisplayName("find all lines between two other lines in the same script")
     public void findByStartLineAndEndLineCorrectly() throws Exception {
         Optional<Script> script = scriptRepository.findById(1L);
         if (script.isPresent()) {
