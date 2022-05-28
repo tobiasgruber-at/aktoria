@@ -70,6 +70,8 @@ public class SessionServiceImpl implements SessionService {
             .section(section.get())
             .role(role.get())
             .currentLine(section.get().getStartLine())
+            .coverage(0.0)
+            .deprecated(false)
             .build();
         session = sessionRepository.save(session);
         return sessionMapper.sessionToSessionDto(session);
