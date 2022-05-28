@@ -17,10 +17,11 @@ import { SimpleSection } from '../../../../shared/dtos/section-dtos';
   styleUrls: ['./rehearsal-section.component.scss']
 })
 export class RehearsalSectionComponent implements OnInit, OnDestroy {
-  @Input() active = false;
+  @Input() isActive = false;
   @Input() section: SimpleSection = null;
+  /** Whether this is just a create-new section button, or an existing session. */
+  @Input() isCreate = false;
   script: SimpleScript = null;
-  @HostBinding('class') private readonly classes = 'mb-2';
   private $destroy = new Subject<void>();
 
   constructor(private scriptViewerService: ScriptViewerService) {}
@@ -37,6 +38,15 @@ export class RehearsalSectionComponent implements OnInit, OnDestroy {
       : 0;
   }
 
+  @HostBinding('class')
+  private get classes(): string[] {
+    const classes = ['mb-2'];
+    if (this.isActive) {
+      classes.push('is-active');
+    }
+    return classes;
+  }
+
   ngOnInit(): void {
     this.scriptViewerService.$script
       .pipe(takeUntil(this.$destroy))
@@ -45,7 +55,7 @@ export class RehearsalSectionComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.$destroy))
       .subscribe(
         (markedSection) =>
-          (this.active = this.section === markedSection?.section)
+          (this.isActive = this.section === markedSection?.section)
       );
   }
 
@@ -57,7 +67,7 @@ export class RehearsalSectionComponent implements OnInit, OnDestroy {
   @HostListener('click', ['$event'])
   private selectSection(): void {
     this.scriptViewerService.setMarkedSection(
-      this.active
+      this.isActive || this.isCreate
         ? null
         : {
             section: this.section,

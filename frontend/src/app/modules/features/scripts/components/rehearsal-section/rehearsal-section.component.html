@@ -1,19 +1,17 @@
 <div class="card overflow-hidden position-relative" style="width: 18rem">
   <div class="card-body py-3 px-3">
     <h5
-      [class.text-primary]="active"
       class="card-title mb-0 d-flex justify-content-between align-items-center"
     >
-      {{ section?.name }}
+      {{ isCreate ? 'Abschnitt erstellen' : section?.name }}
     </h5>
-    <h6 class="text-secondary mb-0">
+    <h6 *ngIf="!isCreate" class="mb-0">
       Seite {{ section?.getStartPage(this.script) }} -
       {{ section?.getEndPage(this.script) }}
     </h6>
   </div>
-  <div class="section-span w-100 position-relative">
+  <div *ngIf="!isCreate" class="section-span w-100 position-relative">
     <div
-      [class]="active ? 'bg-primary' : 'bg-secondary'"
       [style.left.%]="startLinePercentage"
       [style.right.%]="100 - endLinePercentage"
       class="indicator"

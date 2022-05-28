@@ -15,7 +15,7 @@ app-script-line:not(.is-not-in-section) {
 
 app-script-line,
 .page {
-  transition: background-color 200ms ease-in-out;
+  //transition: background-color 200ms ease-in-out;
   // explicitely define bg color, so that bg-color transition is equally fast for line and page
   background-color: var(--bs-light);
 

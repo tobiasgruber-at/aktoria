@@ -7,6 +7,8 @@ export interface MarkedSection {
   scrollTo: boolean;
 }
 
+export type IsMarkingSection = 'start' | 'end';
+
 /** Local service for viewing or editing scripts. */
 export class ScriptViewerService {
   /** Whether the script viewer is editable, or read-only. */
@@ -16,6 +18,10 @@ export class ScriptViewerService {
   );
   private isUploading = false;
   private isUploadingSubject = new BehaviorSubject<boolean>(this.isUploading);
+  private isMarkingSection: IsMarkingSection = null;
+  private isMarkingSectionSubject = new BehaviorSubject<IsMarkingSection>(
+    this.isMarkingSection
+  );
   private markedSection: MarkedSection = null;
   private markedSectionSubject = new BehaviorSubject<MarkedSection>(
     this.markedSection
@@ -53,6 +59,10 @@ export class ScriptViewerService {
     return this.isUploadingSubject.asObservable();
   }
 
+  get $isMarkingSection(): Observable<IsMarkingSection> {
+    return this.isMarkingSectionSubject.asObservable();
+  }
+
   get $markedSection(): Observable<MarkedSection> {
     return this.markedSectionSubject.asObservable();
   }
@@ -79,6 +89,11 @@ export class ScriptViewerService {
   setIsUploading(isUploading: boolean): void {
     this.isUploading = isUploading;
     this.isUploadingSubject.next(this.isUploading);
+  }
+
+  setIsMarkingSection(isMarkingSection: IsMarkingSection): void {
+    this.isMarkingSection = isMarkingSection;
+    this.isMarkingSectionSubject.next(this.isMarkingSection);
   }
 
   setMarkedSection(markedSection: MarkedSection): void {

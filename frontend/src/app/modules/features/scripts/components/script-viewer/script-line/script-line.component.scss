@@ -26,6 +26,10 @@
       text-decoration: line-through;
     }
   }
+
+  &.is-marking-section {
+    cursor: pointer;
+  }
 }
 
 .roles {
@@ -66,8 +70,8 @@ p {
 }
 
 .marking {
-  --bleed-offset-x: 1rem;
-  --height: 0.25rem;
+  --bleed-offset-x: 0.5rem;
+  --height: 0.2rem;
   --translate-x: calc(-0.5 * var(--bleed-offset-x));
   width: calc(100% + var(--bleed-offset-x));
   border-radius: 999px;
