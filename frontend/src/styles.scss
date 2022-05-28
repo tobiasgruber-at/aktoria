@@ -20,7 +20,53 @@ form .form-control {
   background-color: hsl(210deg 11% 21%) !important;
 }
 
-.badge.badge-lg {
-  font-size: 1em;
+.dropdown-menu-lg .dropdown-menu {
+  min-width: 100%;
+  font-size: 1.2rem;
+
+  .dropdown-item {
+    padding: 0.6rem 1.1rem;
+    //text-align: end;
+  }
+}
+
+label {
   font-weight: 500;
+  margin-bottom: 0.3rem;
+}
+
+.badge {
+  &.badge-primary {
+    --badge-color: var(--bs-primary);
+  }
+
+  &.badge-secondary {
+    --badge-color: var(--bs-warning);
+  }
+
+  &.badge-lg,
+  &.badge-xl {
+    padding: 0.4rem 0.8rem;
+    border-radius: 9999px;
+    font-size: 1em;
+    font-weight: 400;
+    border: 1px var(--bs-secondary) solid;
+    color: var(--bs-secondary);
+
+    &:hover {
+      color: var(--badge-color);
+      border-color: var(--badge-color);
+    }
+
+    &.selected {
+      background-color: var(--badge-color);
+      color: var(--bs-white);
+      border-color: var(--badge-color);
+    }
+  }
+
+  &.badge-xl {
+    padding: 0.5rem 1rem;
+    font-size: 1.1em;
+  }
 }

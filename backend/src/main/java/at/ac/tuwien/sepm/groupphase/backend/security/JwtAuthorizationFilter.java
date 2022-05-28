@@ -38,9 +38,9 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         } catch (IllegalArgumentException | JwtException e) {
-            log.debug("Invalid authorization attempt: {}", e.getMessage());
+            log.debug("Ungültiger Befugnis Versuch: {}", e.getMessage());
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Invalid authorization header or token");
+            response.getWriter().write("Ungültiger Befugnis Token oder Header");
             return;
         }
         chain.doFilter(request, response);
@@ -54,13 +54,13 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         }
 
         if (!token.startsWith(securityProperties.getAuthTokenPrefix())) {
-            throw new IllegalArgumentException("Authorization header is malformed or missing");
+            throw new IllegalArgumentException("Befugnis-Header fehlt oder ist falsch");
         }
 
         byte[] signingKey = securityProperties.getJwtSecret().getBytes();
 
         if (!token.startsWith("Bearer ")) {
-            throw new IllegalArgumentException("Token must start with 'Bearer'");
+            throw new IllegalArgumentException("Token muss mit 'Bearer' starten");
         }
         Claims claims = Jwts.parserBuilder().setSigningKey(signingKey).build()
             .parseClaimsJws(token.replace(securityProperties.getAuthTokenPrefix(), ""))
@@ -74,7 +74,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             .collect(Collectors.toList());
 
         if (username == null || username.isEmpty()) {
-            throw new IllegalArgumentException("Token contains no user");
+            throw new IllegalArgumentException("Token enthält keinen User");
         }
 
         return new UsernamePasswordAuthenticationToken(username, null, authorities);

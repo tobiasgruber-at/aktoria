@@ -1,5 +1,4 @@
 import {FormGroup} from '@angular/forms';
-import {Theme} from '../enums/theme.enum';
 import {ToastService} from '../../core/services/toast/toast.service';
 
 /** @author Tobias Gruber */
@@ -17,7 +16,7 @@ export abstract class FormBase {
     this.submitted = true;
     if (this.form.valid) {
       this.toggleLoading(true);
-      this.sendSubmit();
+      this.processSubmit();
     } else {
       console.log('Invalid input');
     }
@@ -36,18 +35,8 @@ export abstract class FormBase {
   /** Handles common errors by notifying the user. */
   handleError(error): void {
     this.toggleLoading(false);
-    console.log('Could not log in due to:');
+    this.ts.showError(error);
     console.log(error);
-    let errorMessage = '';
-    if (typeof error.error === 'object') {
-      errorMessage = error.error?.message;
-    } else {
-      errorMessage = error.error;
-    }
-    this.ts.show({
-      message: errorMessage || 'Ein Fehler ist aufgetreten!',
-      theme: Theme.danger
-    });
   }
 
   /** @return Whether form has a specific error. */
@@ -63,12 +52,11 @@ export abstract class FormBase {
     const field = this.form.get(fieldName);
     return (
       this.submitted &&
-      field.touched &&
       field.invalid &&
       (errorName ? field.errors[errorName] : true)
     );
   }
 
   /** Sends the submitted value, after the form is validated. */
-  protected abstract sendSubmit(): void;
+  protected abstract processSubmit(): void;
 }

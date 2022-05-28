@@ -1,0 +1,11 @@
+<app-page-layout [loading]="getLoading" [showSidebar]="true" theme="dark">
+  <app-script-viewer></app-script-viewer>
+  <div role="sidebar">
+    <h2 class="mb-4">Lernabschnitt festlegen</h2>
+    <app-rehearsal-section
+      (click)="selectSection(section)"
+      *ngFor="let section of sections"
+      [active]="section === (scriptViewerService.$markedSection | async)"
+    ></app-rehearsal-section>
+  </div>
+</app-page-layout>

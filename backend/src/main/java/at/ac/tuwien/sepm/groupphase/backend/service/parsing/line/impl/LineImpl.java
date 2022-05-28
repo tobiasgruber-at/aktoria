@@ -19,10 +19,11 @@ import java.util.regex.Pattern;
  */
 @Slf4j
 public class LineImpl implements Line {
-    private static final String[] SENTENCE_DELIMITERS = { ".", "!", "?", "\"", "”", "/", ")", "…" };
-    private static final String[] MULTI_ROLES_DELIMITERS = { " UND ", "/", " / " };
-    private static final String[] SPECIAL_SENTENCES_PATTERNS = { "^.* Akt$", "^Vorhang$", "^Ende$" };
-    private static final String[] ALL_ROLES_IDENTIFIERS = { "ALLE" };
+    public static final String[] SENTENCE_DELIMITERS = {".", "!", "?", "\"", "”", "/", ")", "…"};
+    public static final String[] SPECIAL_SENTENCE_STARTERS = {"(", "\"", "(", "„"};
+    public static final String[] SPECIAL_SENTENCES_PATTERNS = {"^.* Akt$", "^Vorhang$", "^Ende$"};
+    private static final String[] MULTI_ROLES_DELIMITERS = {" UND ", "/", " / "};
+    private static final String[] ALL_ROLES_IDENTIFIERS = {"ALLE"};
     private Line.ConflictType conflictType;
     private boolean isDecomposed;
     private String raw;
@@ -322,7 +323,7 @@ public class LineImpl implements Line {
             Pattern pattern = Pattern.compile(p, Pattern.CASE_INSENSITIVE);
             Matcher matcher = pattern.matcher(raw);
 
-            if (matcher.find()) {
+            if (matcher.matches()) {
                 return true;
             }
         }

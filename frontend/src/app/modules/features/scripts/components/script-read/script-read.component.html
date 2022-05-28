@@ -1,5 +1,10 @@
 <app-page-layout [loading]="loading" theme="dark">
-  <app-alert *ngIf="error; else noError" [closeable]="false" type="danger">
+  <app-alert
+    *ngIf="error; else noError"
+    [closeable]="false"
+    class="mb-1"
+    type="danger"
+  >
     <strong>Fehler!</strong> Skript wurde nicht gefunden.
   </app-alert>
   <ng-template #noError>

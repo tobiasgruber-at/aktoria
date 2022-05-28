@@ -28,6 +28,7 @@ public class SecureTokenServiceImpl implements SecureTokenService {
     }
 
     @Override
+    @Transactional
     public SecureToken createSecureToken(TokenType type, int expirationTime) {
         String tokenValue = Base64.encodeBase64URLSafeString(DEFAULT_TOKEN_GENERATOR.generateKey());
         SecureToken secureToken = new SecureToken();
@@ -38,12 +39,14 @@ public class SecureTokenServiceImpl implements SecureTokenService {
     }
 
     @Override
+    @Transactional
     public void saveSecureToken(SecureToken token) {
         secureTokenRepository.deleteAllExpired(LocalDateTime.now());
         secureTokenRepository.saveAndFlush(token);
     }
 
     @Override
+    @Transactional
     public SecureToken findByToken(String token) {
         Optional<SecureToken> secureTokenOptional = secureTokenRepository.findByToken(token);
         if (secureTokenOptional.isPresent()) {
@@ -54,6 +57,7 @@ public class SecureTokenServiceImpl implements SecureTokenService {
     }
 
     @Override
+    @Transactional
     public void removeToken(String token) {
         secureTokenRepository.removeByToken(token);
     }

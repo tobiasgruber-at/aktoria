@@ -91,4 +91,14 @@ public interface ScriptService {
     String inviteLink(Long scriptId);
 
     void deleteParticipant(Long id, String email);
+
+    /**
+     * Updates a script. Can change roles, pages, lines and name of the script.
+     *
+     * @param scriptDto the script to update
+     * @param id        the id of the script
+     * @return the patched script
+     * @author Luke Nemeskeri
+     */
+    ScriptDto patch(ScriptDto scriptDto, Long id);
 }

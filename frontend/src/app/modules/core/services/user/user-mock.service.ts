@@ -11,6 +11,10 @@ export class UserMockService extends UserService {
     super();
   }
 
+  resetState(): void {
+    throw new Error('Method not implemented.');
+  }
+
   $ownUser(): Observable<SimpleUser> {
     return undefined;
   }

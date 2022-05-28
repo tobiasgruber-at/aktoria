@@ -7,6 +7,7 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PageDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.RoleDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ScriptDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ScriptPreviewDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleColorDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleLineDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimplePageDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleRoleDto;
@@ -38,7 +39,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-import java.awt.Color;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.List;
@@ -75,11 +75,11 @@ class ScriptEndpointIntegrationTest {
     @Test
     @Transactional
     @DisplayName("saveScript() saves the script correctly")
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = Role.verified)
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
     void saveScript() {
         SimpleRoleDto simpleRoleDto = new SimpleRoleDto();
         simpleRoleDto.setName("ROLEA");
-        simpleRoleDto.setColor(Color.CYAN);
+        simpleRoleDto.setColor(new SimpleColorDto(255, 0, 255));
 
         SimpleLineDto simpleLineDto = new SimpleLineDto();
         simpleLineDto.setIndex(0L);
@@ -105,7 +105,7 @@ class ScriptEndpointIntegrationTest {
 
         RoleDto roleDto = new RoleDto();
         roleDto.setName("ROLEA");
-        roleDto.setColor(Color.CYAN);
+        roleDto.setColor(new SimpleColorDto(255, 0, 255));
 
         LineDto lineDto = new LineDto();
         lineDto.setActive(true);
@@ -140,7 +140,7 @@ class ScriptEndpointIntegrationTest {
     @Test
     @Transactional
     @DisplayName("getScriptPreviews() gets zero previews for user with no scripts")
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = Role.verified)
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
     void getScriptPreviewsReturnsZero() {
         List<ScriptPreviewDto> scriptPreviewDtoList = scriptService.findAllPreviews().toList();
         assertEquals(0, scriptPreviewDtoList.size());
@@ -150,7 +150,7 @@ class ScriptEndpointIntegrationTest {
     @Disabled
     @Transactional
     @DisplayName("getScriptPreviews() gets the correct previews")
-    @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "2" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "2", roles = Role.verified)
+    @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "2" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "2", roles = { Role.verified })
     void getScriptPreviews() {
         List<ScriptPreviewDto> scriptPreviewDtoList = scriptService.findAllPreviews().toList();
         assertEquals(new ScriptPreviewDto(1L, ScriptDataGenerator.TEST_SCRIPT_NAME + " 1"), scriptPreviewDtoList.get(0));
@@ -159,17 +159,16 @@ class ScriptEndpointIntegrationTest {
 
     @Test
     @Transactional
-    @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "2" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "2", roles = Role.verified)
+    @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "2" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "2", roles = { Role.verified })
     @DisplayName("getScriptById() gets the correct script")
     void getScriptById() {
         ScriptDto scriptDto = scriptService.findById(1L);
-
         assertNotNull(scriptDto);
     }
 
     @Test
     @Transactional
-    @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "1" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "2", roles = Role.verified)
+    @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "1" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "2", roles = { Role.verified })
     @DisplayName("getScriptById() throws UnauthorizedException")
     void getScriptByIdThrowsException() {
         assertThrows(UnauthorizedException.class, () -> scriptService.findById(1L));
@@ -181,7 +180,7 @@ class ScriptEndpointIntegrationTest {
         @Test
         @Transactional
         @DisplayName("returns the saved script")
-        @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = Role.verified)
+        @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
         void saveScriptReturnsCorrectly() throws Exception {
             byte[] body = mockMvc
                 .perform(MockMvcRequestBuilders
@@ -199,7 +198,7 @@ class ScriptEndpointIntegrationTest {
         @Test
         @Transactional
         @DisplayName("returns correct status code for invalid body")
-        @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = Role.user)
+        @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user })
         void saveScriptReturnsCorrectStatusCodeForInvalidInputs() throws Exception {
             mockMvc
                 .perform(MockMvcRequestBuilders
@@ -220,9 +219,9 @@ class ScriptEndpointIntegrationTest {
         @Test
         @Transactional
         @DisplayName("returns the correctly parsed script")
-        @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = Role.verified)
+        @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
         void uploadScriptReturnsCorrectly() throws Exception {
-            final SimpleScriptDto expected = scriptTestHelper.dummySimpleScriptDto();
+            final SimpleScriptDto expected = scriptTestHelper.dummySimpleScriptDtoWithoutColors();
 
             final File pdf = new File("./src/test/resources/service/parsing/script/Skript_NF.pdf");
             final MockMultipartFile multipartFile = new MockMultipartFile("file", pdf.getName(), MediaType.APPLICATION_PDF_VALUE, new FileInputStream(pdf));
@@ -243,9 +242,9 @@ class ScriptEndpointIntegrationTest {
         }
 
         @Test
-        @DisplayName("returns correct status code for corrupted files")
         @Transactional
-        @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = Role.verified)
+        @DisplayName("returns correct status code for corrupted files")
+        @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
         void uploadScriptReturnsCorrectStatusCodeForCorruptedFiles() throws Exception {
             final File pdf = new File("./src/test/resources/service/parsing/script/Skript_NF_CORRUPTED.pdf");
             final MockMultipartFile multipartFile = new MockMultipartFile("file", pdf.getName(), MediaType.APPLICATION_PDF_VALUE, new FileInputStream(pdf));

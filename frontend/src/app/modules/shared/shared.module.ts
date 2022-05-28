@@ -6,7 +6,7 @@ import { AlertComponent } from './components/alert/alert.component';
 import { PageLayoutComponent } from './components/page-layout/page-layout.component';
 import { CardComponent } from './components/card/card.component';
 import { ButtonComponent } from './components/button/button.component';
-import { PersonCircle, ThreeDots } from 'ng-bootstrap-icons/icons';
+import { PersonCircle, PlayFill, ThreeDots } from 'ng-bootstrap-icons/icons';
 import { BootstrapIconsModule } from 'ng-bootstrap-icons';
 import { FormErrorComponent } from './components/form-errors/form-error/form-error.component';
 import { FormErrorsComponent } from './components/form-errors/form-errors.component';
@@ -20,7 +20,9 @@ const icons = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   PersonCircle,
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  ThreeDots
+  ThreeDots,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  PlayFill
 };
 const sharedDeclarations = [
   PageLayoutComponent,

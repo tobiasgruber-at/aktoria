@@ -13,6 +13,7 @@ import at.ac.tuwien.sepm.groupphase.backend.enums.TokenType;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.InvalidTokenException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.UnauthorizedException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.SecureTokenService;
@@ -55,7 +56,7 @@ import static org.junit.jupiter.api.Assertions.fail;
  * @author Simon Josef Kreuzpointner
  */
 
-@ActiveProfiles({"test", "datagen"})
+@ActiveProfiles({ "test", "datagen" })
 @SpringBootTest
 class UserServiceUnitTest {
 
@@ -81,7 +82,7 @@ class UserServiceUnitTest {
     @Test
     @DisplayName("findUserByEmail()")
     @Transactional
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {Role.user, Role.verified, Role.admin})
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user, Role.verified, Role.admin })
     void findUserByEmail() {
         assertEquals(new SimpleUserDto(1L, UserDataGenerator.TEST_USER_FIRST_NAME + 1, UserDataGenerator.TEST_USER_LAST_NAME + 1,
             UserDataGenerator.TEST_USER_EMAIL_LOCAL + 1 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, true), userService.findByEmail(UserDataGenerator.TEST_USER_EMAIL_LOCAL + 1 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN));
@@ -103,7 +104,7 @@ class UserServiceUnitTest {
         @DisplayName("changes the password correctly")
         @Transactional
         @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + 1 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + 1,
-            roles = {Role.verified})
+            roles = { Role.verified })
         void changePasswordWorks() {
             assertTrue(passwordEncoder.matches("hallo12345",
                 userService.changePassword(new PasswordChangeDto(null, UserDataGenerator.TEST_USER_PASSWORD + 1, "hallo12345"), 1L).getPasswordHash()));
@@ -113,7 +114,7 @@ class UserServiceUnitTest {
         @DisplayName("changes the password correctly and encodes correctly")
         @Transactional
         @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + 2 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + 2,
-            roles = {Role.verified})
+            roles = { Role.verified })
         void changePasswordChangesPassword() {
             assertFalse(passwordEncoder.matches("hallo1256",
                 userService.changePassword(new PasswordChangeDto(null, UserDataGenerator.TEST_USER_PASSWORD + 2, "hallo12345"), 2L).getPasswordHash()));
@@ -124,7 +125,7 @@ class UserServiceUnitTest {
         @DisplayName("throws ValidationException")
         @Transactional
         @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + 10 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + 10,
-            roles = {Role.verified})
+            roles = { Role.verified })
         void changePasswordThrowsValidationException() {
             assertThrows(ValidationException.class, () -> userService.changePassword(new PasswordChangeDto(null,
                 UserDataGenerator.TEST_USER_PASSWORD + 10, ""), 10L));
@@ -136,7 +137,7 @@ class UserServiceUnitTest {
         @DisplayName("throws ConflictException")
         @Transactional
         @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + 14 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + 14,
-            roles = {Role.verified})
+            roles = { Role.verified })
         void changePasswordThrowsConflictException() {
             assertThrows(ConflictException.class, () -> userService.changePassword(new PasswordChangeDto(null,
                 "wrongPassword", "hallo1010"), 14L));
@@ -214,7 +215,7 @@ class UserServiceUnitTest {
     @Test
     @DisplayName("findById works")
     @Transactional
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {Role.user, Role.verified, Role.admin})
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user, Role.verified, Role.admin })
     void findByIdReturnsCorrectUse() {
         assertEquals(new SimpleUserDto(7L, UserDataGenerator.TEST_USER_FIRST_NAME + 7, UserDataGenerator.TEST_USER_LAST_NAME + 7,
             UserDataGenerator.TEST_USER_EMAIL_LOCAL + 7 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, true), userService.findById(7L));
@@ -227,7 +228,7 @@ class UserServiceUnitTest {
     @Transactional
     @DisplayName("patch user throws ValidationException")
     @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + 16 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + 16,
-        roles = {Role.verified})
+        roles = { Role.verified })
     void changeUserThrowsValidationException() {
         assertThrows(ValidationException.class, () -> userService.patch(new UpdateUserDto(null, "n".repeat(200), null, null, null, null, true), 16L));
         assertThrows(ValidationException.class, () -> userService.patch(new UpdateUserDto(null, null, "nd".repeat(187), null, null, null, true), 16L));
@@ -239,7 +240,7 @@ class UserServiceUnitTest {
     @DisplayName("changes the user data correctly")
     @Transactional
     @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + 16 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + 16,
-        roles = {Role.verified})
+        roles = { Role.verified })
     void changeUserDataIsOk() {
         assertEquals("newName", userService.patch(new UpdateUserDto(null, "newName", null, null, null, null, true), 16L).getFirstName());
         assertEquals("newLastName", userService.patch(new UpdateUserDto(null, null, "newLastName", null, null, null, true), 16L).getLastName());
@@ -531,7 +532,6 @@ class UserServiceUnitTest {
 
         record CreateUserRecord(UserRegistrationDto input, DetailedUserDto expected) {
         }
-
     }
 
     @Nested
@@ -556,18 +556,35 @@ class UserServiceUnitTest {
         @Test
         @Transactional
         @DisplayName("deletes user correctly")
-        @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + 19 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + 19,
-            roles = {Role.user, Role.verified, Role.admin})
+        @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + 3 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + 3,
+            roles = { Role.verified })
         void deleteUserWorks() {
-            userService.delete(19L);
-            assertThrows(NotFoundException.class, () -> userService.findById(19L));
+            userService.delete(3L);
+        }
+
+        @Test
+        @Transactional
+        @DisplayName("deletes user correctly without verification")
+        @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + 3 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + 3,
+            roles = { Role.user })
+        void deleteUserWorks2() {
+            userService.delete(3L);
+        }
+
+        @Test
+        @Transactional
+        @DisplayName("deletes throws ")
+        @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + 4 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + 4,
+            roles = { Role.verified })
+        void deleteUserThrowsUnauthorized() {
+            assertThrows(UnauthorizedException.class, () -> userService.delete(3L));
         }
 
         @Transactional
         @ParameterizedTest
         @DisplayName("throws NotFoundException")
         @MethodSource("parameterizedDeleteUserExceptionProvider")
-        @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {Role.user, Role.verified, Role.admin})
+        @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user, Role.verified, Role.admin })
         void deleteUserThrowsException(Long input) {
             assertThrows(NotFoundException.class, () -> userService.delete(input));
         }

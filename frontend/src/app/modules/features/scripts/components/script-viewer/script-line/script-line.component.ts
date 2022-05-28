@@ -9,6 +9,8 @@ import { Line, Role } from '../../../../../shared/dtos/script-dtos';
 import { ScriptViewerService } from '../../../services/script-viewer.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Subject, takeUntil } from 'rxjs';
+import { LineService } from '../../../../../core/services/line/line.service';
+import { ToastService } from '../../../../../core/services/toast/toast.service';
 
 @Component({
   selector: 'app-script-line',
@@ -18,22 +20,26 @@ import { Subject, takeUntil } from 'rxjs';
 export class ScriptLineComponent implements OnInit, OnDestroy {
   @Input() line: Line;
   @Input() prevLine: Line;
-  isEditing = false;
+  /** @see ScriptViewerService.$isEditingScript */
+  isEditingScript = false;
   /** Indicates whether the user is actively interacting with this line. */
   private isInteracting = false;
+  private isUploading = false;
   private isModalOpened = false;
   private $destroy = new Subject<void>();
 
   constructor(
     public scriptViewerService: ScriptViewerService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private lineService: LineService,
+    private toastService: ToastService
   ) {}
 
   @HostBinding('class')
   get classes(): string[] {
     const classes = [];
-    if (this.isEditing) {
-      classes.push('is-editing');
+    if (this.isEditingScript) {
+      classes.push('is-editing-script');
     }
     if (!this.line.active) {
       classes.push('is-hidden');
@@ -65,10 +71,15 @@ export class ScriptLineComponent implements OnInit, OnDestroy {
     if (this.line.roles === null) {
       this.line.roles = [];
     }
-    this.scriptViewerService.$isEditing
+    this.scriptViewerService.$isEditingScript
       .pipe(takeUntil(this.$destroy))
       .subscribe((isEditing) => {
-        this.isEditing = isEditing;
+        this.isEditingScript = isEditing;
+      });
+    this.scriptViewerService.$isUploading
+      .pipe(takeUntil(this.$destroy))
+      .subscribe((isUploading) => {
+        this.isUploading = isUploading;
       });
   }
 
@@ -85,24 +96,44 @@ export class ScriptLineComponent implements OnInit, OnDestroy {
     });
   }
 
-  changeRoles(toggledRole: Role): void {
-    if (this.line.roles.some((r) => r.name === toggledRole.name)) {
-      this.line.roles = this.line.roles.filter(
-        (r) => r.name !== toggledRole.name
-      );
-      return;
-    }
-    this.line.roles.push(toggledRole);
-  }
-
   /** Clears all roles of this line. */
   removeRoles(): void {
-    this.line.roles = [];
+    if (this.isUploading) {
+      this.line.roles = [];
+    } else {
+      this.scriptViewerService.setLoading(true);
+      this.lineService.patchLine({ roleIds: [] }, this.line.id).subscribe({
+        next: (line) => {
+          this.scriptViewerService.setLoading(false);
+          this.line.roles = [];
+        },
+        error: (err) => {
+          this.scriptViewerService.setLoading(false);
+          this.toastService.showError(err);
+        }
+      });
+    }
   }
 
   /** Toggles whether this line is active. */
   toggleLineActive(): void {
-    this.line.active = !this.line.active;
+    if (this.isUploading) {
+      this.line.active = !this.line.active;
+    } else {
+      this.scriptViewerService.setLoading(true);
+      this.lineService
+        .patchLine({ active: !this.line.active }, this.line.id)
+        .subscribe({
+          next: (line) => {
+            this.scriptViewerService.setLoading(false);
+            this.line.active = line.active;
+          },
+          error: (err) => {
+            this.scriptViewerService.setLoading(false);
+            this.toastService.showError(err);
+          }
+        });
+    }
   }
 
   ngOnDestroy() {

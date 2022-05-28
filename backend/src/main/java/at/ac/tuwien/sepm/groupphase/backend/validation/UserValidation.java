@@ -23,7 +23,7 @@ public interface UserValidation {
      * @throws ValidationException is thrown when the data is not valid
      * @throws ConflictException   is thrown when the email is already in use
      */
-    void validateCreateUserInput(UserRegistrationDto userRegistrationDto) throws ValidationException, ConflictException;
+    void validateCreateUserInput(UserRegistrationDto userRegistrationDto);
 
     /**
      * validate input when patching a user.
@@ -32,7 +32,7 @@ public interface UserValidation {
      * @throws ValidationException is thrown when the data is not valid
      * @throws ConflictException   is thrown when the email is already in use
      */
-    void validatePatchUserInput(UpdateUserDto updateUserDto) throws ValidationException, ConflictException;
+    void validatePatchUserInput(UpdateUserDto updateUserDto);
 
     /**
      * Validates the new password.
@@ -43,7 +43,7 @@ public interface UserValidation {
      * @throws ConflictException   is thrown when the old password does not match the password stored in the data base
      * @throws NotFoundException   is thrown if no user with such id exists
      */
-    void validateChangePasswordInput(PasswordChangeDto passwordChangeDto, Long id) throws ValidationException, ConflictException, NotFoundException;
+    void validateChangePasswordInput(PasswordChangeDto passwordChangeDto, Long id);
 
     void validateEmail(String email);
 }

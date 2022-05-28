@@ -1,3 +1,19 @@
-h1 {
-  max-width: 50%;
+.btn.btn-lg {
+  width: 13rem;
+
+  &.start-rehearsal bi {
+    height: 1.6em;
+  }
+}
+
+.btn-outline-secondary {
+  background-color: transparent;
+  color: var(--bs-secondary);
+
+  &:hover,
+  &:focus,
+  &:active {
+    color: var(--bs-dark);
+    border-color: var(--bs-dark);
+  }
 }

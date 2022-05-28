@@ -8,7 +8,6 @@ import { ScriptUploadComponent } from './components/script-upload/script-upload.
 import { UploadInformationComponent } from './components/script-upload/upload-information/upload-information.component';
 import { ScriptOverviewComponent } from './components/script-overview/script-overview.component';
 import { ScriptReadComponent } from './components/script-read/script-read.component';
-import { ScriptUploadReviewComponent } from './components/script-upload/script-upload-review/script-upload-review.component';
 import { ScriptLineComponent } from './components/script-viewer/script-line/script-line.component';
 import { ScriptPageComponent } from './components/script-viewer/script-page/script-page.component';
 import { ScriptViewerComponent } from './components/script-viewer/script-viewer.component';
@@ -20,6 +19,12 @@ import { ScriptMembersListComponent } from './components/script-overview/script-
 import { ScriptMembersItemComponent } from './components/script-overview/script-members-list/script-members-item/script-members-item.component';
 import { ScriptInviteLinkComponent } from './components/script-invite/script-invite-link/script-invite-link.component';
 import { ScriptInviteEmailComponent } from './components/script-invite/script-invite-email/script-invite-email.component';
+import { ScriptEditComponent } from './components/script-edit/script-edit.component';
+import { MergeRolesModalComponent } from './components/script-edit/merge-roles-modal/merge-roles-modal.component';
+import { ChangeLineModalComponent } from './components/script-viewer/script-line/change-line-modal/change-line-modal.component';
+import { ScriptRehearsalComponent } from './components/script-rehearsal/script-rehearsal.component';
+import { ScriptRehearsalSectionsComponent } from './components/script-rehearsal/script-rehearsal-sections/script-rehearsal-sections.component';
+import { RehearsalSectionComponent } from './components/rehearsal-section/rehearsal-section.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +45,14 @@ import { ScriptInviteEmailComponent } from './components/script-invite/script-in
     ScriptMembersListComponent,
     ScriptMembersItemComponent,
     ScriptInviteLinkComponent,
-    ScriptInviteEmailComponent
+    ScriptInviteEmailComponent,
+    ScriptEditComponent,
+    ScriptRolesListComponent,
+    MergeRolesModalComponent,
+    ChangeLineModalComponent,
+    ScriptRehearsalComponent,
+    ScriptRehearsalSectionsComponent,
+    RehearsalSectionComponent
   ],
   imports: [SharedModule, ScriptsRoutingModule]
 })
