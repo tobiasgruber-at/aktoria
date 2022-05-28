@@ -49,7 +49,7 @@ class RoleServiceUnitTest {
     @Test
     @Transactional
     @DisplayName("mergeRoles")
-    @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + 2 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + 2,
+    @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + 1 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + 1,
         roles = {Role.verified})
     void mergeRoles() {
         List<Long> rolesToMerge = new LinkedList<Long>(Arrays.asList(2L, 4L, 3L));
