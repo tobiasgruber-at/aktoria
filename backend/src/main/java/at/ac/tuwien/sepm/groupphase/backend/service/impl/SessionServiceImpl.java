@@ -24,6 +24,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
 
 /**
  * Specific implementation of SessionService.
@@ -170,6 +171,16 @@ public class SessionServiceImpl implements SessionService {
             throw new UnauthorizedException("User not permitted to view this session");
         }
         return sessionMapper.sessionToSessionDto(curSession);
+    }
+
+    @Override
+    public Stream<SessionDto> findAll() {
+        log.trace("findAllSessions()");
+        User user = authorizationService.getLoggedInUser();
+        if (user == null) {
+            throw new UnauthorizedException();
+        }
+        return sessionRepository.findAllByUser(user).stream().map(sessionMapper::sessionToSessionDto);
     }
 
     private Double computeCoverage(Section section, Line line) {

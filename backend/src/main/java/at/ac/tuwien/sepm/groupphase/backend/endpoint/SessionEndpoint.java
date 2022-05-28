@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.stream.Stream;
+
 /**
  * Session endpoint.
  *
@@ -52,8 +54,17 @@ public class SessionEndpoint {
 
     @GetMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @Secured(Permission.verified)
     public SessionDto getSessionById(@PathVariable Long id) {
         log.info("GET {}/{}", path, id);
         return sessionService.findById(id);
+    }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    @Secured(Permission.verified)
+    public Stream<SessionDto> getAllSessions() {
+        log.info("GET {}", path);
+        return sessionService.findAll();
     }
 }

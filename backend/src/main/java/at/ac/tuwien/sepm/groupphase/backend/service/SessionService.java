@@ -5,6 +5,8 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleSessionDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UpdateSessionDto;
 import org.springframework.stereotype.Service;
 
+import java.util.stream.Stream;
+
 /**
  * Describes a session service component.
  *
@@ -45,4 +47,11 @@ public interface SessionService {
      * @return the session found in the data storage
      */
     SessionDto findById(Long id);
+
+    /**
+     * Gets all sessions for a user.
+     *
+     * @return all sessions found in the data storage for the user.
+     */
+    Stream<SessionDto> findAll();
 }
