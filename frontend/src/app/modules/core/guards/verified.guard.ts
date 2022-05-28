@@ -11,7 +11,14 @@ export class VerifiedGuard implements CanActivate {
 
   canActivate(): boolean {
     if (!this.authService.isLoggedIn()) {
-      this.router.navigate(['/login']);
+      const navigation = this.router.getCurrentNavigation();
+
+      let url = '/';
+      if (navigation) {
+        url = navigation.extractedUrl.toString();
+      }
+
+      this.router.navigate(['/login'], {queryParams: { returnTo: url}});
       return false;
     } else if (!this.authService.isVerified()) {
       this.router.navigate(['/']);

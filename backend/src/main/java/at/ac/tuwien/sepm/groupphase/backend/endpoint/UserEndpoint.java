@@ -1,6 +1,5 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.DetailedUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.PasswordChangeDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UpdateUserDto;
@@ -56,7 +55,7 @@ public class UserEndpoint {
     @PatchMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     @Secured(Permission.verified)
-    public DetailedUserDto patchUser(@RequestBody UpdateUserDto updateUserDto, @PathVariable Long id) {
+    public SimpleUserDto patchUser(@RequestBody UpdateUserDto updateUserDto, @PathVariable Long id) {
         log.info("PATCH {}/{}", path, id);
         return userService.patch(updateUserDto, id);
     }

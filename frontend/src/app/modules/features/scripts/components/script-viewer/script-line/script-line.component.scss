@@ -1,6 +1,7 @@
 :host {
   display: block;
   --text-padding: 0.5em;
+  position: relative;
 
   &.is-editing-script {
     p:hover,
@@ -55,5 +56,28 @@ p {
 
   &.highlighted {
     background-color: rgba(228 206 7 / 20%);
+  }
+}
+
+.marking {
+  --bleed-offset-x: 1.5rem;
+  --height: 0.25rem;
+  --translate-x: calc(-0.5 * var(--bleed-offset-x));
+  width: calc(100% + var(--bleed-offset-x));
+  border-radius: 999px;
+  height: var(--height);
+  box-shadow: 0 0 8px rgb(0 0 0 / 22%);
+  background-color: var(--bs-primary);
+  position: absolute;
+  left: 0;
+
+  &.start-line {
+    transform: translate(var(--translate-x), calc(-0.5 * var(--height)));
+    top: 0;
+  }
+
+  &.end-line {
+    transform: translate(var(--translate-x), calc(0.5 * var(--height)));
+    bottom: 0;
   }
 }

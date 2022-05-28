@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,7 +39,7 @@ public class ScriptEndpoint {
         this.scriptService = scriptService;
     }
 
-    @PostMapping(path = "/new", produces = { MediaType.APPLICATION_JSON_VALUE }, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    @PostMapping(path = "/new", produces = {MediaType.APPLICATION_JSON_VALUE}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @ResponseStatus(HttpStatus.OK)
     @Secured(Permission.verified)
     public SimpleScriptDto uploadScript(@RequestPart("file") MultipartFile multipartFile, @RequestPart(value = "startPage", required = false) String startPage) {
@@ -76,5 +77,37 @@ public class ScriptEndpoint {
     public void deleteScript(@PathVariable Long id) {
         log.info("DELETE {}/{}", ScriptEndpoint.path, id);
         scriptService.delete(id);
+    }
+
+    @PostMapping(path = "/{id}/invitations")
+    @ResponseStatus(HttpStatus.OK)
+    @Secured(Permission.verified)
+    public void inviteUser(@PathVariable Long id, @RequestBody String email) {
+        log.info("POST /{}/invitation", id);
+        scriptService.invite(id, email);
+    }
+
+    @PostMapping(path = "/{id}/inviteLink")
+    @ResponseStatus(HttpStatus.OK)
+    @Secured(Permission.verified)
+    public String inviteLink(@PathVariable Long id) {
+        log.info("POST /{}/inviteLink", id);
+        return scriptService.inviteLink(id);
+    }
+
+    @PostMapping(path = "/{id}/participants")
+    @ResponseStatus(HttpStatus.OK)
+    @Secured(Permission.verified)
+    public void addParticipant(@PathVariable Long id, @RequestBody String token) {
+        log.info("POST /{}/participants", id);
+        scriptService.addParticipant(id, token);
+    }
+
+    @DeleteMapping(path = "/{id}/participants/{email}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Secured(Permission.verified)
+    public void deleteParticipant(@PathVariable Long id, @PathVariable String email) {
+        log.info("POST /{}/participants/{}", id, email);
+        scriptService.deleteParticipant(id, email);
     }
 }

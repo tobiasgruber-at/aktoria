@@ -13,23 +13,22 @@ import java.time.LocalDateTime;
 /**
  * Session Data Transfer Object.
  * <br>
- * This DTO holds references to an ID, start and end time,
- * a self assessment, a boolean describing whether the session is deprecated,
- * a description of the coverage, the practiced section, current Line and role.
+ * This DTO is intended for transferring all
+ * available Data of a session.
  *
- * @author Julia Bernold
+ * @author Marvin Flandorfer
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class SessionDto {
     private Long id;
+    private Double coverage;
+    private Boolean deprecated;
     private LocalDateTime start;
     private LocalDateTime end;
     private AssessmentType selfAssessment;
-    private Boolean deprecated;
-    private Double coverage;
-    private Section section;
-    private Line currentLine;
-    private Role role;
+    private Long sectionId;
+    private Long roleId;
+    private Long currentLineId;
 }

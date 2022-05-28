@@ -46,4 +46,8 @@ export class AuthMockService extends AuthService {
   getEmail(): string {
     return '';
   }
+
+  isVerified(): boolean {
+    throw new Error('Method not implemented.');
+  }
 }

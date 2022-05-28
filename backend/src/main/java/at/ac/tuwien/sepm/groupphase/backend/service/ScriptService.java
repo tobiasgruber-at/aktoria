@@ -66,4 +66,39 @@ public interface ScriptService {
      * @author Marvin Flandorfer
      */
     void delete(Long id);
+
+    /**
+     * Sends an invitation to join the script as participant.
+     *
+     * @param scriptId id of the script
+     * @param email email the invitation is sent to
+     */
+    void invite(Long scriptId, String email);
+
+    /**
+     * Accepts an invitaion and add user to participants.
+     *
+     * @param id of the new participant
+     * @param token to verify that an invitation was received
+     */
+    void addParticipant(Long id, String token);
+
+    /**
+     * Returns an invitationlink to join the script as participant.
+     *
+     * @param scriptId id of the script
+     */
+    String inviteLink(Long scriptId);
+
+    void deleteParticipant(Long id, String email);
+
+    /**
+     * Updates a script. Can change roles, pages, lines and name of the script.
+     *
+     * @param scriptDto the script to update
+     * @param id        the id of the script
+     * @return the patched script
+     * @author Luke Nemeskeri
+     */
+    ScriptDto patch(ScriptDto scriptDto, Long id);
 }

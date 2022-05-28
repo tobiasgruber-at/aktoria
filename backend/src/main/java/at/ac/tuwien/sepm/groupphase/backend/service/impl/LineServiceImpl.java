@@ -4,12 +4,14 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.LineDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UpdateLineDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.LineMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Line;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Page;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Role;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Script;
 import at.ac.tuwien.sepm.groupphase.backend.entity.User;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.UnauthorizedException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.LineRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.PageRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.RoleRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ScriptRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.AuthorizationService;
@@ -40,19 +42,23 @@ public class LineServiceImpl implements LineService {
     private final ScriptRepository scriptRepository;
     private final RoleRepository roleRepository;
 
-    public LineServiceImpl(LineRepository lineRepository, LineMapper lineMapper, LineValidation lineValidation, AuthorizationService authorizationService, ScriptRepository scriptRepository, RoleRepository roleRepository) {
+    private final PageRepository pageRepository;
+
+    public LineServiceImpl(LineRepository lineRepository, LineMapper lineMapper, LineValidation lineValidation, AuthorizationService authorizationService, ScriptRepository scriptRepository, RoleRepository roleRepository,
+                           PageRepository pageRepository) {
         this.lineRepository = lineRepository;
         this.lineMapper = lineMapper;
         this.lineValidation = lineValidation;
         this.authorizationService = authorizationService;
         this.scriptRepository = scriptRepository;
         this.roleRepository = roleRepository;
+        this.pageRepository = pageRepository;
     }
 
     @Transactional
     @Override
-    public LineDto update(UpdateLineDto updateLineDto, Long sid, Long id) {
-        log.trace("update(updateLineDto = {}, sid = {}, id = {})", updateLineDto, sid, id);
+    public LineDto update(UpdateLineDto updateLineDto, Long id) {
+        log.trace("update(updateLineDto = {}, id = {})", updateLineDto, id);
 
         if (updateLineDto.getContent() != null) {
             lineValidation.validateContentInput(updateLineDto.getContent());
@@ -64,16 +70,23 @@ public class LineServiceImpl implements LineService {
         if (user == null) {
             throw new UnauthorizedException();
         }
-        Optional<Script> script = scriptRepository.findById(sid);
-        if (script.isPresent() && !script.get().getOwner().getId().equals(user.getId())) {
-            throw new UnauthorizedException("Der Nutzer darf diese Zeile nicht bearbeiten.");
-        }
         Optional<Line> lineOptional = lineRepository.findById(id);
         Line line;
         if (lineOptional.isPresent()) {
             line = lineOptional.get();
         } else {
             throw new NotFoundException("Zeile existiert nicht!");
+        }
+        Optional<Page> pageOptional = pageRepository.findById(line.getPage().getId());
+        Page page;
+        if (pageOptional.isPresent()) {
+            page = pageOptional.get();
+        } else {
+            throw new NotFoundException("Seite existiert nicht!");
+        }
+        Optional<Script> scriptOptional = scriptRepository.findById(page.getScript().getId());
+        if (scriptOptional.isPresent() && !scriptOptional.get().getOwner().getId().equals(user.getId())) {
+            throw new UnauthorizedException("Der Nutzer darf diese Zeile nicht bearbeiten.");
         }
         if (updateLineDto.getContent() != null) {
             line.setContent(updateLineDto.getContent());

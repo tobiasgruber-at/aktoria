@@ -1,8 +1,11 @@
 package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
+import at.ac.tuwien.sepm.groupphase.backend.entity.Script;
 import at.ac.tuwien.sepm.groupphase.backend.entity.User;
+import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.enums.Permission;
 import at.ac.tuwien.sepm.groupphase.backend.exception.UnauthorizedException;
+import at.ac.tuwien.sepm.groupphase.backend.repository.ScriptRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.AuthorizationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +14,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -20,12 +24,16 @@ import java.util.Optional;
 public class AuthorizationServiceImpl implements AuthorizationService {
 
     private final UserRepository userRepository;
+    private final ScriptRepository scriptRepository;
 
     @Autowired
-    public AuthorizationServiceImpl(UserRepository userRepository) {
+    public AuthorizationServiceImpl(UserRepository userRepository, ScriptRepository scriptRepository) {
         this.userRepository = userRepository;
+        this.scriptRepository = scriptRepository;
     }
 
+    @Transactional
+    @Override
     public void checkBasicAuthorization(Long id) {
         if (isAdmin()) {
             return;
@@ -37,11 +45,68 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     }
 
     @Override
+    @Transactional
     public void checkBasicAuthorization(String email) {
         if (isAdmin()) {
             return;
         }
         if (isLoggedInAs(email)) {
+            return;
+        }
+        throw new UnauthorizedException();
+    }
+
+    @Override
+    @Transactional
+    public boolean isOwnerOfScript(Long scriptId) {
+        Optional<Script> scriptOptional = scriptRepository.findById(scriptId);
+        if (scriptOptional.isPresent()) {
+            Long ownerId = scriptOptional.get().getOwner().getId();
+            if (isLoggedInAs(ownerId)) {
+                return true;
+            }
+            return false;
+        }
+        throw new NotFoundException("Skript existiert nicht");
+    }
+
+    @Override
+    @Transactional
+    public boolean isParticipantOfScript(Long scriptId) {
+        Optional<Script> scriptOptional = scriptRepository.findById(scriptId);
+        if (scriptOptional.isPresent()) {
+            User user = getLoggedInUser();
+            Script script = scriptOptional.get();
+
+            return script.getParticipants().contains(user);
+        }
+        throw new NotFoundException("Skript existiert nicht");
+    }
+
+    @Override
+    @Transactional
+    public void checkMemberAuthorization(Long scriptId, String email) {
+        if (isAdmin()) {
+            return;
+        }
+        if (isLoggedInAs(email)) {
+            return;
+        }
+        if (isOwnerOfScript(scriptId)) {
+            return;
+        }
+        throw new UnauthorizedException();
+    }
+
+    @Override
+    public void checkMemberAuthorization(Long scriptId) {
+        if (isAdmin()) {
+            return;
+        }
+        if (isOwnerOfScript(scriptId)) {
+            return;
+        }
+        if (isParticipantOfScript(scriptId)) {
             return;
         }
         throw new UnauthorizedException();
@@ -59,6 +124,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     }
 
     @Override
+    @Transactional
     public boolean isLoggedInAs(Long id) {
         User user = getLoggedInUser();
         if (user == null) {
@@ -68,6 +134,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     }
 
     @Override
+    @Transactional
     public boolean isLoggedInAs(String email) {
         User user = getLoggedInUser();
         if (user == null) {
@@ -77,6 +144,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     }
 
     @Override
+    @Transactional
     public User getLoggedInUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null) {

@@ -4,19 +4,16 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SessionDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Session;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
 
-import java.util.List;
-import java.util.Set;
-
-/**
- * Describes a session mapper.
- *
- * @author Julia Bernold
- */
-@Mapper(componentModel = "spring",
-    injectionStrategy = InjectionStrategy.CONSTRUCTOR)
+@Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface SessionMapper {
-    SessionDto sessionToSessionDto(Session session);
 
-    List<SessionDto> setOfSessionToListOfSessionDto(Set<Session> sessions);
+    @Mappings({
+        @Mapping(target = "sectionId", source = "section.id"),
+        @Mapping(target = "roleId", source = "role.id"),
+        @Mapping(target = "currentLineId", source = "currentLine.id")
+    })
+    SessionDto sessionToSessionDto(Session session);
 }

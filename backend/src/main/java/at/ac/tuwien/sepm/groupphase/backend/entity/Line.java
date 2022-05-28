@@ -64,7 +64,7 @@ public class Line {
     @OneToMany(mappedBy = "endLine", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Section> endOf;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "spoken_by", joinColumns = @JoinColumn(name = "line_id"),
         inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> spokenBy;
