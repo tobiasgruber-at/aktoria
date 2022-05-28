@@ -47,7 +47,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -138,7 +137,7 @@ public class ScriptServiceImpl implements ScriptService {
     private boolean isPdfFileType(MultipartFile file) throws IOException {
         log.trace("isPdfFileType(file = {})", file);
 
-        byte[] data = file.getBytes();
+        final byte[] data = file.getBytes();
 
         return (
             data.length >= 4
@@ -256,7 +255,6 @@ public class ScriptServiceImpl implements ScriptService {
             throw new UnauthorizedException();
         }
 
-
         Stream<ScriptPreviewDto> owner = scriptMapper.listOfScriptToListOfScriptPreviewDto(scriptRepository.getScriptByOwner(user)).stream();
         Stream<ScriptPreviewDto> participant = scriptMapper.listOfScriptToListOfScriptPreviewDto(scriptRepository.getScriptByParticipant(user)).stream();
         return Stream.concat(owner, participant);
@@ -305,7 +303,7 @@ public class ScriptServiceImpl implements ScriptService {
         if (script.isEmpty()) {
             throw new NotFoundException();
         }
-        //TODO: fertig machen
+        // TODO: fertig machen
         return null;
     }
 
@@ -368,7 +366,7 @@ public class ScriptServiceImpl implements ScriptService {
                     throw new ConflictException("Du kannst nicht deinem eigenen Skript nochmal beitreten!");
                 }
                 if (script.getParticipants().contains(user)) {
-                    throw new ConflictException("Du bist diesem Skript bereits begetreten!");
+                    throw new ConflictException("Du bist diesem Skript bereits beigetreten!");
                 }
 
                 Set<Script> scripts = user.getParticipatesIn();

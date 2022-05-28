@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  *
  * @author Luke Nemeskeri
  */
-@ActiveProfiles({"test", "datagen"})
+@ActiveProfiles({ "test", "datagen" })
 @SpringBootTest
 class RoleServiceUnitTest {
 
@@ -50,7 +50,7 @@ class RoleServiceUnitTest {
     @Transactional
     @DisplayName("mergeRoles")
     @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + 1 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + 1,
-        roles = {Role.verified})
+        roles = { Role.verified })
     void mergeRoles() {
         List<Long> rolesToMerge = new LinkedList<Long>(Arrays.asList(2L, 4L, 3L));
         List<Long> rolesToMergeFail = new LinkedList<Long>(Arrays.asList(7L, 4L, 3L));
@@ -70,7 +70,7 @@ class RoleServiceUnitTest {
     @Transactional
     @DisplayName("mergeRoles with only 1 role")
     @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + 1 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + 1,
-        roles = {Role.verified})
+        roles = { Role.verified })
     void mergeRolesIsNotNeeded() {
         List<Long> rolesToMerge = new LinkedList<Long>(Arrays.asList(5L));
         assertEquals(5L, roleService.mergeRoles(new MergeRolesDto(rolesToMerge, "MERGE"), 1L).getId());

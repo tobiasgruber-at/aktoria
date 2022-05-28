@@ -16,6 +16,7 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.RoleRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ScriptRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.AuthorizationService;
 import at.ac.tuwien.sepm.groupphase.backend.service.LineService;
+import at.ac.tuwien.sepm.groupphase.backend.service.SessionService;
 import at.ac.tuwien.sepm.groupphase.backend.validation.LineValidation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -43,9 +44,10 @@ public class LineServiceImpl implements LineService {
     private final RoleRepository roleRepository;
 
     private final PageRepository pageRepository;
+    private final SessionService sessionService;
 
     public LineServiceImpl(LineRepository lineRepository, LineMapper lineMapper, LineValidation lineValidation, AuthorizationService authorizationService, ScriptRepository scriptRepository, RoleRepository roleRepository,
-                           PageRepository pageRepository) {
+                           PageRepository pageRepository, SessionService sessionService) {
         this.lineRepository = lineRepository;
         this.lineMapper = lineMapper;
         this.lineValidation = lineValidation;
@@ -53,6 +55,7 @@ public class LineServiceImpl implements LineService {
         this.scriptRepository = scriptRepository;
         this.roleRepository = roleRepository;
         this.pageRepository = pageRepository;
+        this.sessionService = sessionService;
     }
 
     @Transactional
@@ -85,7 +88,13 @@ public class LineServiceImpl implements LineService {
             throw new NotFoundException("Seite existiert nicht!");
         }
         Optional<Script> scriptOptional = scriptRepository.findById(page.getScript().getId());
-        if (scriptOptional.isPresent() && !scriptOptional.get().getOwner().getId().equals(user.getId())) {
+        Script script;
+        if (scriptOptional.isPresent()) {
+            script = scriptOptional.get();
+        } else {
+            throw new NotFoundException();
+        }
+        if (!scriptOptional.get().getOwner().getId().equals(user.getId())) {
             throw new UnauthorizedException("Der Nutzer darf diese Zeile nicht bearbeiten.");
         }
         if (updateLineDto.getContent() != null) {
@@ -103,9 +112,7 @@ public class LineServiceImpl implements LineService {
                 line.setSpokenBy(new HashSet<>(Set.copyOf(roles)));
             }
         }
-
-        // TODO: delete all affected sessions
-
+        sessionService.deprecateAffected(script.getId());
         return lineMapper.lineToLineDto(lineRepository.save(line));
     }
 }
