@@ -16,9 +16,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.awt.Color;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Entity class for roles.
@@ -46,6 +48,9 @@ public class Role {
 
     @Column(name = "color")
     private Color color;
+
+    @OneToMany(mappedBy = "role", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<Session> sessions;
 
     @ManyToMany(mappedBy = "spokenBy", cascade = CascadeType.ALL)
     private List<Line> lines;
