@@ -1,50 +1,85 @@
 <app-page-layout [loading]="getLoading">
-  <app-alert *ngIf="getError; else noError" [closeable]="false" type="danger">
+  <app-alert
+    *ngIf="getError; else noError"
+    [closeable]="false"
+    class="mb-1"
+    type="danger"
+  >
     <strong>Fehler!</strong> Skript wurde nicht gefunden.
   </app-alert>
   <ng-template #noError>
-    <div>
-      <div class="d-flex justify-content-between align-items-center">
-        <h1 class="display-3 mb-3 text-truncate">{{ script?.name }}</h1>
-        <div>
+    <div class="d-flex flex-column align-items-start flex-grow-1">
+      <div class="row w-100">
+        <div class="col-9 d-flex flex-column">
+          <h1 class="display-3 mb-3 text-truncate">{{ script?.name }}</h1>
+          <app-script-roles-list
+            (roleClicked)="selectRole($event)"
+            [roles]="script?.roles"
+            [selectedRole]="selectedRole"
+            size="xl"
+            theme="primary"
+          ></app-script-roles-list>
+        </div>
+        <div class="col-3 d-flex flex-column align-items-end">
           <button
-            class="btn btn-primary me-3"
+            class="start-rehearsal btn btn-primary btn-lg mt-2 d-flex align-items-center justify-content-between mb-3"
+            routerLink="/scripts/{{ script?.id }}/rehearse/sections"
+          >
+            Rolle proben
+            <bi name="play-fill"></bi>
+          </button>
+          <!--<button
+            class="btn btn-outline-primary btn-lg mb-3"
             routerLink="/scripts/{{ script?.id }}/view"
           >
             Skript ansehen
-          </button>
-          <button
-            class="btn btn-outline-primary me-3"
-            routerLink="/scripts/{{ script?.id }}/edit"
-          >
-            Skript bearbeiten
-          </button>
-          <button (click)="openModal(deleteModal)" class="btn btn-danger">
-            Skript löschen
-          </button>
-          <ng-template #deleteModal let-modal>
-            <app-modal
-              (confirm)="deleteScript(modal)"
-              (decline)="modal.dismiss()"
-              [loading]="deleteLoading"
-              [theme]="theme.danger"
-              confirmBtnLabel="Löschen"
-              title="Skript löschen"
-            >
-              <app-alert
-                *ngIf="deleteError"
-                [closeable]="false"
-                type="danger"
-                >{{ this.deleteError }}</app-alert
+          </button>-->
+          <div dropdownClass="dropdown-menu-lg" ngbDropdown>
+            <button class="btn btn-outline-secondary btn-lg" ngbDropdownToggle>
+              Weitere Aktionen
+            </button>
+            <div ngbDropdownMenu>
+              <button
+                ngbDropdownItem
+                routerLink="/scripts/{{ script?.id }}/view"
               >
-              Sicher, dass du
-              <i>{{ script?.name }} </i>
-              <strong class="text-primary">unwiderruflich löschen</strong>
-              möchtest möchtest?
-            </app-modal>
-          </ng-template>
+                Ansehen
+              </button>
+              <button
+                ngbDropdownItem
+                routerLink="/scripts/{{ script?.id }}/edit"
+              >
+                Bearbeiten
+              </button>
+              <button (click)="openModal(deleteModal)" ngbDropdownItem>
+                Löschen
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </ng-template>
 </app-page-layout>
+<ng-template #deleteModal let-modal>
+  <app-modal
+    (confirm)="deleteScript(modal)"
+    (decline)="modal.dismiss()"
+    [loading]="deleteLoading"
+    [theme]="theme.danger"
+    confirmBtnLabel="Löschen"
+    title="Skript löschen"
+  >
+    <app-alert
+      *ngIf="deleteError"
+      [closeable]="false"
+      class="mb-1"
+      type="danger"
+      >{{ this.deleteError }}</app-alert
+    >
+    Sicher, dass du
+    <i>{{ script?.name }} </i>
+    <strong class="text-primary">unwiderruflich löschen</strong>
+    möchtest möchtest?
+  </app-modal>
+</ng-template>

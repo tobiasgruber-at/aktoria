@@ -86,7 +86,7 @@ class LineEndpointIntegrationTest {
         void updateLineIsOk(UpdateLineDto input) throws Exception {
             byte[] body = mockMvc
                 .perform(MockMvcRequestBuilders
-                    .patch("/api/v1/scripts/1/lines/1")
+                    .patch("/api/v1/lines/1")
                     .accept(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsBytes(input))
                     .contentType(MediaType.APPLICATION_JSON)
@@ -118,7 +118,7 @@ class LineEndpointIntegrationTest {
         void updateLineThrowsException(UpdateLineDto input) throws Exception {
             mockMvc
                 .perform(MockMvcRequestBuilders
-                    .patch("/api/v1/scripts/1/lines/1")
+                    .patch("/api/v1/lines/1")
                     .accept(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsBytes(input))
                     .contentType(MediaType.APPLICATION_JSON)
@@ -132,7 +132,7 @@ class LineEndpointIntegrationTest {
         void updateLineThrowsException() throws Exception {
             mockMvc
                 .perform(MockMvcRequestBuilders
-                    .patch("/api/v1/scripts/1/lines/1")
+                    .patch("/api/v1/lines/1")
                     .accept(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsBytes(new UpdateLineDto(null, null, null)))
                     .contentType(MediaType.APPLICATION_JSON)

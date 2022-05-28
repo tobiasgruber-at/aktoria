@@ -1,5 +1,4 @@
 import {FormGroup} from '@angular/forms';
-import {Theme} from '../enums/theme.enum';
 import {ToastService} from '../../core/services/toast/toast.service';
 
 /** @author Tobias Gruber */
@@ -36,18 +35,8 @@ export abstract class FormBase {
   /** Handles common errors by notifying the user. */
   handleError(error): void {
     this.toggleLoading(false);
-    console.log('Could not log in due to:');
+    this.ts.showError(error);
     console.log(error);
-    let errorMessage = '';
-    if (typeof error.error === 'object') {
-      errorMessage = error.error?.message;
-    } else {
-      errorMessage = error.error;
-    }
-    this.ts.show({
-      message: errorMessage || 'Ein Fehler ist aufgetreten!',
-      theme: Theme.danger
-    });
   }
 
   /** @return Whether form has a specific error. */

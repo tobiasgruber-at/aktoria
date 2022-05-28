@@ -134,25 +134,20 @@ export class ScriptEditComponent
   private fetchScriptWhenNotUploading() {
     this.route.paramMap.subscribe((params) => {
       const id = +params.get('id');
-      const handleNotFound = () => {
-        // TODO: show error
-        //this.getError = 'Skript konnte nicht gefunden werden.';
-        this.getLoading = false;
-      };
-      if (isNaN(id)) {
-        handleNotFound();
-      } else {
-        this.scriptService.getOne(id).subscribe({
-          next: (script) => {
-            this.scriptViewerService.setScript(script);
-            this.form.patchValue({
-              scriptName: script.name
-            });
-            this.getLoading = false;
-          },
-          error: handleNotFound
-        });
-      }
+      this.scriptService.getOne(id).subscribe({
+        next: (script) => {
+          this.scriptViewerService.setScript(script);
+          this.form.patchValue({
+            scriptName: script.name
+          });
+          this.getLoading = false;
+        },
+        error: () => {
+          // TODO: show error
+          //this.getError = 'Skript konnte nicht gefunden werden.';
+          this.getLoading = false;
+        }
+      });
     });
   }
 }

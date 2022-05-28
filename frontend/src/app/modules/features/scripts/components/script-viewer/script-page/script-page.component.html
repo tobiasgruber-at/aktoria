@@ -1,4 +1,7 @@
-<div class="page bg-light mx-auto rounded py-5 d-flex flex-column">
+<div
+  *ngIf="showPage"
+  class="page bg-light mx-auto rounded py-5 d-flex flex-column"
+>
   <div class="d-flex flex-column flex-grow-1 justify-content-between">
     <div class="wrapper">
       <app-script-line

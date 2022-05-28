@@ -11,6 +11,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -26,6 +27,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         this.userRepository = userRepository;
     }
 
+    @Transactional
     public void checkBasicAuthorization(Long id) {
         if (isAdmin()) {
             return;
@@ -37,6 +39,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     }
 
     @Override
+    @Transactional
     public void checkBasicAuthorization(String email) {
         if (isAdmin()) {
             return;
@@ -59,6 +62,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     }
 
     @Override
+    @Transactional
     public boolean isLoggedInAs(Long id) {
         User user = getLoggedInUser();
         if (user == null) {
@@ -68,6 +72,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     }
 
     @Override
+    @Transactional
     public boolean isLoggedInAs(String email) {
         User user = getLoggedInUser();
         if (user == null) {
@@ -77,6 +82,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     }
 
     @Override
+    @Transactional
     public User getLoggedInUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null) {

@@ -1,12 +1,9 @@
-:host {
-  display: block;
-  
-  &:not(:last-of-type) {
-    margin-bottom: 3rem;
-  }
+:host:not(:last-of-type) .page {
+  margin-bottom: 3rem;
 }
 
 .page {
+  display: block;
   max-width: 900px;
   aspect-ratio: 21 / 29.7;
   box-shadow: 0 8px 17px 0 rgb(0 0 0 / 8%);
