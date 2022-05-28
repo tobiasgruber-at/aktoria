@@ -3,6 +3,8 @@ export class UploadScript {
 }
 
 export class SimpleScript {
+  private lastLineIdx: number = null;
+
   constructor(
     public pages: Page[],
     public roles: Role[],
@@ -11,6 +13,15 @@ export class SimpleScript {
 
   getId(): number {
     return null;
+  }
+
+  getLastLineIdx(): number {
+    if (!this.lastLineIdx) {
+      const lastPage = this.pages[this.pages.length - 1];
+      const lastLine = lastPage.lines[lastPage.lines.length - 1];
+      this.lastLineIdx = lastLine.index;
+    }
+    return this.lastLineIdx;
   }
 }
 

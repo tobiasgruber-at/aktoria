@@ -1,5 +1,6 @@
 import {
   Component,
+  ElementRef,
   HostBinding,
   Input,
   OnDestroy,
@@ -11,6 +12,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Subject, takeUntil } from 'rxjs';
 import { LineService } from '../../../../../core/services/line/line.service';
 import { ToastService } from '../../../../../core/services/toast/toast.service';
+import { SimpleSection } from '../../../../../shared/dtos/section-dtos';
 
 @Component({
   selector: 'app-script-line',
@@ -22,6 +24,7 @@ export class ScriptLineComponent implements OnInit, OnDestroy {
   @Input() prevLine: Line;
   /** @see ScriptViewerService.$isEditingScript */
   isEditingScript = false;
+  section: SimpleSection = null;
   /** Indicates whether the user is actively interacting with this line. */
   private isInteracting = false;
   private isUploading = false;
@@ -29,6 +32,7 @@ export class ScriptLineComponent implements OnInit, OnDestroy {
   private $destroy = new Subject<void>();
 
   constructor(
+    private ref: ElementRef,
     public scriptViewerService: ScriptViewerService,
     private modalService: NgbModal,
     private lineService: LineService,
@@ -80,6 +84,24 @@ export class ScriptLineComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.$destroy))
       .subscribe((isUploading) => {
         this.isUploading = isUploading;
+      });
+    this.scriptViewerService.$markedSection
+      .pipe(takeUntil(this.$destroy))
+      .subscribe((markedSection) => {
+        if (!markedSection) {
+          return;
+        }
+        this.section = markedSection.section;
+        if (
+          this.ref &&
+          markedSection.scrollTo &&
+          this.line.index === this.section.startLine
+        ) {
+          this.ref.nativeElement.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
       });
   }
 

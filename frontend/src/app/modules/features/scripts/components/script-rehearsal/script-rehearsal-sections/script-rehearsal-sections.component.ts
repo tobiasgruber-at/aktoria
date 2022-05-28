@@ -15,26 +15,16 @@ export class ScriptRehearsalSectionsComponent implements OnInit {
   getLoading = true;
   script: SimpleScript = null;
   sections: SimpleSection[] = [
-    {
-      name: 'Abschnitt 1',
-      startLine: 1,
-      endLine: 20
-    },
-    {
-      name: 'Abschnitt 2',
-      startLine: 5,
-      endLine: 25
-    }
+    new SimpleSection('Abschnitt 1', 50, 200),
+    new SimpleSection('Abschnitt 2', 1, 600),
+    new SimpleSection('Abschnitt 3', 600, 900)
   ];
 
   constructor(
     public scriptViewerService: ScriptViewerService,
     private scriptService: ScriptService,
     private route: ActivatedRoute
-  ) {
-    // TODO: remove
-    //this.scriptViewerService.setMarkedSection(this.sections[0]);
-  }
+  ) {}
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
@@ -51,9 +41,5 @@ export class ScriptRehearsalSectionsComponent implements OnInit {
         }
       });
     });
-  }
-
-  selectSection(section: SimpleSection): void {
-    this.scriptViewerService.setMarkedSection(section);
   }
 }
