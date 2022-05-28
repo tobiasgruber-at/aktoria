@@ -133,7 +133,7 @@ export class ScriptService {
       .post<void>(this.baseUri + '/' + scriptId + '/participants', token);
   }
 
-  removeParticipant(scriptId: string, email: string): Observable<void> {
+  removeParticipant(scriptId, email: string): Observable<void> {
     return this.http.delete<void>(this.baseUri + '/' + scriptId + '/participants/' + email);
   }
 

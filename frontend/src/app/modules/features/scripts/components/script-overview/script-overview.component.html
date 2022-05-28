@@ -20,7 +20,7 @@
           >
             Skript ansehen
           </button>
-          <button (click)="openModal(deleteModal)" class="btn btn-danger" *ngIf="isOwner()">
+          <button (click)="openModal(deleteModal)" class="btn btn-danger me-3" *ngIf="isOwner()">
             Skript löschen
           </button>
           <ng-template #deleteModal let-modal>
@@ -42,6 +42,29 @@
               <i>{{ script?.name }} </i>
               <strong class="text-primary">unwiderruflich löschen</strong>
               möchtest möchtest?
+            </app-modal>
+          </ng-template>
+          <button (click)="openModal(exitModal)" class="btn btn-danger">
+            Austreten
+          </button>
+          <ng-template #exitModal let-modal>
+            <app-modal
+              (confirm)="exitScript(modal)"
+              (decline)="modal.dismiss()"
+              [loading]="deleteLoading"
+              [theme]="theme.danger"
+              confirmBtnLabel="Austreten"
+              title="Skript verlassen"
+            >
+              <app-alert
+                *ngIf="deleteError"
+                [closeable]="false"
+                type="danger"
+              >{{ this.deleteError }}</app-alert
+              >
+              Sicher, dass du
+              <i>{{ script?.name }} </i>
+              verlassen möchtest?
             </app-modal>
           </ng-template>
         </div>

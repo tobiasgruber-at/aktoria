@@ -78,6 +78,24 @@ export class ScriptOverviewComponent implements OnInit {
     });
   }
 
+  exitScript(modal: NgbActiveModal): void {
+    this.deleteLoading = true;
+    this.scriptService.removeParticipant(this.script.id, this.authService.getEmail()).subscribe({
+      next: () => {
+        modal.dismiss();
+        this.router.navigateByUrl('/scripts');
+        this.toastService.show({
+          message: 'Skript erfolgreich verlassen.',
+          theme: Theme.primary
+        });
+      },
+      error: (err) => {
+        this.deleteLoading = false;
+        this.deleteError = err.error?.message;
+      }
+    });
+  }
+
   isOwner() {
     if (this.script) {
       return this.script.owner.email === this.authService.getEmail();

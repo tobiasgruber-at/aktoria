@@ -403,11 +403,26 @@ public class ScriptServiceImpl implements ScriptService {
         if (scriptOpt.isPresent() && userOpt.isPresent()) {
             Script script = scriptOpt.get();
             User user = userOpt.get();
+
+            if (script.getOwner().getId().equals(user.getId())){
+                Set<User> participants = script.getParticipants();
+                if (participants.isEmpty()){
+                    delete(scriptId);
+                    return;
+                }
+                User newOwner = participants.iterator().next();
+                participants.remove(newOwner);
+                script.setOwner(newOwner);
+
+                user = newOwner;
+            }
             Set<Script> participatesIn = user.getParticipatesIn();
             participatesIn.remove(script);
             user.setParticipatesIn(participatesIn);
 
-            userRepository.saveAndFlush(user);
+            //userRepository.saveAndFlush(user);
+            return;
         }
+        throw new NotFoundException();
     }
 }
