@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SessionDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleSessionDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UpdateSessionDto;
 import at.ac.tuwien.sepm.groupphase.backend.enums.Permission;
 import at.ac.tuwien.sepm.groupphase.backend.service.SessionService;
 import lombok.extern.slf4j.Slf4j;
@@ -41,9 +42,9 @@ public class SessionEndpoint {
 
     @PatchMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @Secured("ROLE_VERIFIED")
-    public SessionDto updateSession(@PathVariable Long id) {
+    @Secured(Permission.verified)
+    public SessionDto updateSession(@PathVariable Long id, @RequestBody UpdateSessionDto updateSessionDto) {
         log.info("PATCH {}", path);
-        return null;
+        return sessionService.update(updateSessionDto, id);
     }
 }

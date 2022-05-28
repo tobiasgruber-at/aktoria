@@ -2,13 +2,13 @@ package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SessionDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleSessionDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UpdateSessionDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.SessionMapper;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Role;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Section;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Session;
-import at.ac.tuwien.sepm.groupphase.backend.entity.User;
+import at.ac.tuwien.sepm.groupphase.backend.entity.*;
+import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.UnauthorizedException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
+import at.ac.tuwien.sepm.groupphase.backend.repository.LineRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.RoleRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.SectionRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.SessionRepository;
@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -33,15 +34,17 @@ public class SessionServiceImpl implements SessionService {
     private final SessionRepository sessionRepository;
     private final SectionRepository sectionRepository;
     private final RoleRepository roleRepository;
+    private final LineRepository lineRepository;
     private final AuthorizationService authorizationService;
     private final SessionMapper sessionMapper;
 
     public SessionServiceImpl(SessionRepository sessionRepository, SectionRepository sectionRepository,
-                              RoleRepository roleRepository, AuthorizationService authorizationService,
-                              SessionMapper sessionMapper) {
+                              RoleRepository roleRepository, LineRepository lineRepository,
+                              AuthorizationService authorizationService, SessionMapper sessionMapper) {
         this.sessionRepository = sessionRepository;
         this.sectionRepository = sectionRepository;
         this.roleRepository = roleRepository;
+        this.lineRepository = lineRepository;
         this.authorizationService = authorizationService;
         this.sessionMapper = sessionMapper;
     }
@@ -78,8 +81,46 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
-    public SessionDto update(SessionDto sessionDto, Long id) {
-        return null;
+    @Transactional
+    public SessionDto update(UpdateSessionDto updateSessionDto, Long id) {
+        log.trace("update(session = {}, {})", id, updateSessionDto);
+        User user = authorizationService.getLoggedInUser();
+        if (user == null) {
+            throw new UnauthorizedException();
+        }
+        Optional<Session> session = sessionRepository.findById(id);
+        if (session.isEmpty()) {
+            throw new NotFoundException("Session not found");
+        }
+        Session curSession = session.get();
+        if (!curSession.getSection().getOwner().getId().equals(user.getId())) {
+            throw new UnauthorizedException("User not permitted to update this session");
+        }
+        if (updateSessionDto.getDeprecated() != null) {
+            curSession.setDeprecated(updateSessionDto.getDeprecated());
+        }
+        if (updateSessionDto.getCurrentLineId() != null) {
+            Optional<Line> line = lineRepository.findById(updateSessionDto.getCurrentLineId());
+            if (line.isEmpty()) {
+                throw new NotFoundException("Current line not found");
+            }
+            if (curSession.getSection().getStartLine().getPage().getScript().getId()
+                .equals(line.get().getPage().getScript().getId())) {
+                throw new ValidationException("Current line not in correct script");
+            }
+            if (curSession.getSection().getEndLine().getIndex() < line.get().getIndex()) {
+                throw new ValidationException("Current line may not be after the end of the section");
+            }
+            curSession.setCurrentLine(line.get());
+            Double coverage = (double) (line.get().getIndex() /
+                (curSession.getSection().getEndLine().getIndex() - curSession.getSection().getStartLine().getIndex()));
+            curSession.setCoverage(coverage);
+        }
+        if (updateSessionDto.getSelfAssessment() != null) {
+            curSession.setSelfAssessment(updateSessionDto.getSelfAssessment());
+        }
+        curSession = sessionRepository.save(curSession);
+        return sessionMapper.sessionToSessionDto(curSession);
     }
 
     @Override
