@@ -32,7 +32,7 @@ export class ScriptInviteEmailComponent extends FormBase implements OnInit {
     this.scriptId = this.route.snapshot.paramMap.get('id');
   }
 
-  protected sendSubmit(): void {
+  protected processSubmit(): void {
     const {email} = this.form.value;
     this.scriptService.inviteParticipant(email, this.scriptId).subscribe({
       next: () => {

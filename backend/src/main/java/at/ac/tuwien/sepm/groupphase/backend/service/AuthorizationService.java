@@ -51,5 +51,7 @@ public interface AuthorizationService {
      *
      * @param scriptId id of the script
      */
-    void isOwnerOfScript(Long scriptId);
+    boolean isOwnerOfScript(Long scriptId);
+
+    void checkMemberAuthorization(Long scriptId, String email);
 }

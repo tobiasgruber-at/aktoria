@@ -32,7 +32,7 @@ export class ScriptInviteLinkComponent extends FormBase implements OnInit {
     this.scriptId = this.route.snapshot.paramMap.get('id');
   }
 
-  protected sendSubmit(): void {
+  protected processSubmit(): void {
     console.log('test');
     this.scriptService.inviteLink(this.scriptId).subscribe({
       next: (res) => {

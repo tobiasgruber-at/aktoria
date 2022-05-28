@@ -408,11 +408,7 @@ public class ScriptServiceImpl implements ScriptService {
     @Override
     @Transactional
     public void deleteParticipant(Long scriptId, String email){
-        try {
-            authorizationService.checkBasicAuthorization(email);
-        } catch (UnauthorizedException e){
-            authorizationService.isOwnerOfScript(scriptId);
-        }
+        authorizationService.checkMemberAuthorization(scriptId, email);
 
         Optional<User> userOpt = userRepository.findByEmail(email);
         Optional<Script> scriptOpt = scriptRepository.findById(scriptId);
@@ -437,7 +433,6 @@ public class ScriptServiceImpl implements ScriptService {
             participatesIn.remove(script);
             user.setParticipatesIn(participatesIn);
 
-            //userRepository.saveAndFlush(user);
             return;
         }
         throw new NotFoundException();

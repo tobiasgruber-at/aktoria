@@ -23,6 +23,7 @@ import { ScriptEditComponent } from './components/script-edit/script-edit.compon
 import { MergeRolesModalComponent } from './components/script-edit/merge-roles-modal/merge-roles-modal.component';
 import { ChangeLineModalComponent } from './components/script-viewer/script-line/change-line-modal/change-line-modal.component';
 import { ScriptRehearsalComponent } from './components/script-rehearsal/script-rehearsal.component';
+// eslint-disable-next-line max-len
 import { ScriptRehearsalSectionsComponent } from './components/script-rehearsal/script-rehearsal-sections/script-rehearsal-sections.component';
 import { RehearsalSectionComponent } from './components/rehearsal-section/rehearsal-section.component';
 
@@ -38,7 +39,6 @@ import { RehearsalSectionComponent } from './components/rehearsal-section/rehear
     ScriptPageComponent,
     ScriptLineComponent,
     ScriptReadComponent,
-    ScriptUploadReviewComponent,
     ScriptRolesListComponent,
     ScriptInviteComponent,
     ScriptInviteAcceptComponent,

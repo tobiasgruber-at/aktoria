@@ -50,22 +50,27 @@ export class ScriptService {
    */
   getOne(id: number): Observable<DetailedScript> {
     const loadedScript = this.fullyLoadedScripts.find((f) => f.id === id);
-    return loadedScript
+    console.log(loadedScript);
+    const returnValue = loadedScript
       ? of(loadedScript)
       : this.http.get<DetailedScript>(`${this.baseUri}/${id}`).pipe(
-          map(
-            (script) =>
-              new DetailedScript(
-                script.id,
-                script.pages,
-                script.roles,
-                script.name
-              )
-          ),
-          tap((script) => {
-            this.fullyLoadedScripts.push(script);
-          })
-        );
+        /*map(
+          (script) =>
+            new DetailedScript(
+              script.id,
+              script.pages,
+              script.roles,
+              script.name,
+              script.owner,
+              script.participants
+            )
+        ),*/
+        tap((script) => {
+          this.fullyLoadedScripts.push(script);
+        })
+      );
+    console.log(returnValue);
+    return returnValue;
   }
 
   /**

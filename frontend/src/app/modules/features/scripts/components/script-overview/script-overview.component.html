@@ -59,7 +59,10 @@
               >
                 Bearbeiten
               </button>
-              <button (click)="openModal(deleteModal)" ngbDropdownItem>
+              <button (click)="openModal(deleteModal)"
+                ngbDropdownItem
+                *ngIf="isOwner()"
+              >
                 Löschen
               </button>
               <button (click)="openModal(exitModal)" ngbDropdownItem>
@@ -67,11 +70,11 @@
               </button>
             </div>
           </div>
-          <app-script-members-list
-            [members] = members
-            [isOwner] = isOwner()
-          ></app-script-members-list>
         </div>
+        <app-script-members-list
+          [members] = members
+          [isOwner] = isOwner()
+        ></app-script-members-list>
       </div>
     </div>
   </ng-template>

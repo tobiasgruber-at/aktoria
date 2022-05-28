@@ -56,8 +56,4 @@ export class UserMockService extends UserService {
   }
 
   submitEmailToken(token: string): any {}
-
-  resetState(): void {
-    throw new Error('Method not implemented.');
-  }
 }
