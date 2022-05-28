@@ -57,6 +57,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     }
 
     @Override
+    @Transactional
     public boolean isOwnerOfScript(Long scriptId) {
         Optional<Script> scriptOptional = scriptRepository.findById(scriptId);
         if (scriptOptional.isPresent()) {
@@ -71,6 +72,19 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 
     @Override
     @Transactional
+    public boolean isParticipantOfScript(Long scriptId) {
+        Optional<Script> scriptOptional = scriptRepository.findById(scriptId);
+        if (scriptOptional.isPresent()) {
+            User user = getLoggedInUser();
+            Script script = scriptOptional.get();
+
+            return script.getParticipants().contains(user);
+        }
+        throw new NotFoundException("Skript existiert nicht");
+    }
+
+    @Override
+    @Transactional
     public void checkMemberAuthorization(Long scriptId, String email) {
         if (isAdmin()) {
             return;
@@ -78,7 +92,21 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         if (isLoggedInAs(email)) {
             return;
         }
-        if (isOwnerOfScript(scriptId)){
+        if (isOwnerOfScript(scriptId)) {
+            return;
+        }
+        throw new UnauthorizedException();
+    }
+
+    @Override
+    public void checkMemberAuthorization(Long scriptId) {
+        if (isAdmin()) {
+            return;
+        }
+        if (isOwnerOfScript(scriptId)) {
+            return;
+        }
+        if (isParticipantOfScript(scriptId)) {
             return;
         }
         throw new UnauthorizedException();

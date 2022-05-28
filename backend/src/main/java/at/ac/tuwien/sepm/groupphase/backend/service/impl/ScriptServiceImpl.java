@@ -266,20 +266,13 @@ public class ScriptServiceImpl implements ScriptService {
     @Override
     public ScriptDto findById(Long id) {
         log.trace("getById(id = {})", id);
+        authorizationService.checkMemberAuthorization(id);
 
-        User user = authorizationService.getLoggedInUser();
-        if (user == null) {
-            throw new UnauthorizedException();
-        }
         Optional<Script> script = scriptRepository.findById(id);
         if (script.isEmpty()) {
             throw new NotFoundException();
         }
-        if (!script.get().getOwner().getId().equals(user.getId())) {
-            if (!script.get().getParticipants().contains(user)) {
-                throw new UnauthorizedException("Dieser User ist nicht berechtigt diese Datei zu öffnen");
-            }
-        }
+
         return scriptMapper.scriptToScriptDto(script.get());
     }
 
@@ -365,13 +358,16 @@ public class ScriptServiceImpl implements ScriptService {
             if (secureToken.getExpireAt().isAfter(LocalDateTime.now())) {
 
                 Script script = secureToken.getScript();
+                if (script == null){
+                    throw new UnauthorizedException();
+                }
                 if (!Objects.equals(script.getId(), id)) {
                     throw new UnauthorizedException();
                 }
-                if (script.getOwner().getId().equals(user.getId())){
+                if (script.getOwner().getId().equals(user.getId())) {
                     throw new ConflictException("Du kannst nicht deinem eigenen Skript nochmal beitreten!");
                 }
-                if (script.getParticipants().contains(user)){
+                if (script.getParticipants().contains(user)) {
                     throw new ConflictException("Du bist diesem Skript bereits begetreten!");
                 }
 
@@ -407,7 +403,7 @@ public class ScriptServiceImpl implements ScriptService {
 
     @Override
     @Transactional
-    public void deleteParticipant(Long scriptId, String email){
+    public void deleteParticipant(Long scriptId, String email) {
         authorizationService.checkMemberAuthorization(scriptId, email);
 
         Optional<User> userOpt = userRepository.findByEmail(email);
@@ -417,9 +413,9 @@ public class ScriptServiceImpl implements ScriptService {
             Script script = scriptOpt.get();
             User user = userOpt.get();
 
-            if (script.getOwner().getId().equals(user.getId())){
+            if (script.getOwner().getId().equals(user.getId())) {
                 Set<User> participants = script.getParticipants();
-                if (participants.isEmpty()){
+                if (participants.isEmpty()) {
                     delete(scriptId);
                     return;
                 }
