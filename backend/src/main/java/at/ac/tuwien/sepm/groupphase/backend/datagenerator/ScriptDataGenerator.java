@@ -32,7 +32,7 @@ public class ScriptDataGenerator {
 
     /*
     Script test data is built in accord with the following schema:
-    Script (name = "Script <i>", owner = <i % [number_of_users] + 1>)
+    Script (name = "Script <i>", owner = <i % [number_of_users]>)
     Page (script = <script_id>, index = <i>)
     Line (page = <page_id>, index = <i>, content = "Lorem ipsum dolor [...]", active = true)
     Role (script = <script_id>, name = "Role <i>", color = Color.CYAN)
@@ -42,6 +42,7 @@ public class ScriptDataGenerator {
     public static final int NUMBER_OF_PAGES_PER_SCRIPT = 10;
     public static final int NUMBER_OF_LINES_PER_PAGE = 10;
     public static final int NUMBER_OF_ROLES_PER_SCRIPT = 5;
+    public static final int NUMBER_OF_ROLES_PER_LINE = 1;
     public static final String TEST_SCRIPT_NAME = "Script";
     public static final String TEST_LINE_CONTENT = "Lorem ipsum dolor sit amet, "
         + "consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
@@ -74,7 +75,7 @@ public class ScriptDataGenerator {
             int usersSize = users.size();
             for (int i = 1; i <= NUMBER_OF_SCRIPTS_TO_GENERATE; i++) {
                 Script script = Script.builder().name(TEST_SCRIPT_NAME + " " + i)
-                    .owner(users.get(1)).build();
+                    .owner(users.get((i - 1) % usersSize)).build();
                 log.debug("saving script {}", script);
                 scriptRepository.save(script);
                 generatePage(script);
@@ -119,19 +120,25 @@ public class ScriptDataGenerator {
         if (scripts.isEmpty()) {
             log.debug("cannot generate spoken-by entries without scripts");
         } else {
-            log.debug("generating spoken-by entries");
-            for (Script script : scripts) {
-                List<Role> roles = script.getRoles().stream().toList();
-                List<Page> pages = script.getPages();
-                for (Page page : pages) {
-                    List<Line> lines = page.getLines();
-                    for (int i = 0; i < lines.size(); i++) {
-                        Set<Role> spokenBy = new HashSet<>();
-                        spokenBy.add(roles.get(i % roles.size()));
-                        Line line = lines.get(i);
-                        line.setSpokenBy(spokenBy);
-                        log.debug("update line {}", line);
-                        lineRepository.save(line);
+            if (scripts.get(0).getRoles().stream().toList().get(0).getLines() == null) {
+                log.debug("already generated spoken-by entries");
+            } else {
+                log.debug("generating spoken-by entries");
+                for (Script script : scripts) {
+                    List<Role> roles = script.getRoles().stream().toList();
+                    List<Page> pages = script.getPages();
+                    for (Page page : pages) {
+                        List<Line> lines = page.getLines();
+                        for (int i = 0; i < NUMBER_OF_ROLES_PER_LINE; i++) {
+                            for (int j = 0; j < lines.size(); j++) {
+                                Line line = lines.get(j);
+                                Set<Role> spokenBy = line.getSpokenBy() == null ? new HashSet<>() : line.getSpokenBy();
+                                spokenBy.add(roles.get((i + j) % roles.size()));
+                                line.setSpokenBy(spokenBy);
+                                log.debug("update line {}", line);
+                                lineRepository.save(line);
+                            }
+                        }
                     }
                 }
             }

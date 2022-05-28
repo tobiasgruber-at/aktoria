@@ -17,6 +17,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.Set;
 
@@ -56,6 +57,12 @@ public class Line {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "recorded_by")
     private User recordedBy;
+
+    @OneToMany(mappedBy = "startLine", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<Section> startOf;
+
+    @OneToMany(mappedBy = "endLine", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<Section> endOf;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "spoken_by", joinColumns = @JoinColumn(name = "line_id"),

@@ -68,7 +68,6 @@ public class User {
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Section> sections;
 
-    @ManyToMany
-    @JoinTable(name = "participates_in", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "script_id"))
+    @ManyToMany(mappedBy = "participants", cascade = CascadeType.ALL)
     private Set<Script> participatesIn;
 }

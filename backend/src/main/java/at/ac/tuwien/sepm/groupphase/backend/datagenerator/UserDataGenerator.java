@@ -1,12 +1,18 @@
 package at.ac.tuwien.sepm.groupphase.backend.datagenerator;
 
+import at.ac.tuwien.sepm.groupphase.backend.entity.Script;
 import at.ac.tuwien.sepm.groupphase.backend.entity.User;
+import at.ac.tuwien.sepm.groupphase.backend.repository.ScriptRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
+
+import javax.transaction.Transactional;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Data generator for users.
@@ -23,17 +29,20 @@ public class UserDataGenerator {
     User (firstName = "testFirst<i>", lastName = "testLast<i>", email = "test<i>@test.com", password = "password<i>", verified = true)
      */
 
-    public static final String TEST_USER_PASSWORD = "password";
     public static final int NUMBER_OF_USERS_TO_GENERATE = 20;
+    public static final int NUMBER_OF_PARTICIPANTS_PER_SCRIPT = 5;
+    public static final String TEST_USER_PASSWORD = "password";
     public static final String TEST_USER_FIRST_NAME = "testFirst";
     public static final String TEST_USER_LAST_NAME = "testLast";
     public static final String TEST_USER_EMAIL_LOCAL = "test";
     public static final String TEST_USER_EMAIL_DOMAIN = "@test.com";
     private final UserRepository userRepository;
+    private final ScriptRepository scriptRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public UserDataGenerator(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserDataGenerator(UserRepository userRepository, ScriptRepository scriptRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.scriptRepository = scriptRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -51,6 +60,40 @@ public class UserDataGenerator {
                     .verified((i % 5 != 0)).build();
                 log.debug("saving user {}", user);
                 userRepository.save(user);
+            }
+        }
+    }
+
+    @Transactional
+    public void generateParticipation() {
+        List<Script> scripts = scriptRepository.findAll();
+        List<User> users = userRepository.findAll();
+        if (scripts.isEmpty() || users.isEmpty()) {
+            log.debug("cannot generate participation entities");
+        } else {
+            if (scripts.get(0).getParticipants() == null) {
+                log.debug("participation already generated");
+            } else {
+                log.debug("generating participation entries");
+                int count = 0;
+                for (Script script : scripts) {
+                    Set<User> participants = new HashSet<>();
+                    User owner = script.getOwner();
+                    int ownerFlag = 0;
+                    for (int i = 0; i < NUMBER_OF_PARTICIPANTS_PER_SCRIPT + ownerFlag; i++) {
+                        User user = users.get(count % users.size());
+                        if (owner.getId().equals(user.getId())) {
+                            ownerFlag++;
+                            count++;
+                            continue;
+                        }
+                        participants.add(user);
+                        count++;
+                    }
+                    log.debug("update script {}", script);
+                    script.setParticipants(participants);
+                    scriptRepository.save(script);
+                }
             }
         }
     }
