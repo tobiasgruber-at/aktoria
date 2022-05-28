@@ -1,11 +1,10 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
-import at.ac.tuwien.sepm.groupphase.backend.entity.Session;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
+import java.util.List;
 
 /**
  * Section Data Transfer Object.
@@ -24,5 +23,5 @@ public class SectionDto {
     private Long owner;
     private Long startLine;
     private Long endLine;
-    private Set<Session> sessions;
+    private List<Long> sessionIds;
 }

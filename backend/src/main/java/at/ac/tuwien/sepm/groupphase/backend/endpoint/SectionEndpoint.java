@@ -36,7 +36,8 @@ public class SectionEndpoint {
     @Secured(Permission.verified)
     public SectionDto getSectionById(@PathVariable Long id) {
         log.info("GET {}/{}", path, id);
-        return sectionService.getSection(id);
+        SectionDto sectionDto = sectionService.getSection(id);
+        return sectionDto;
     }
 
     @PostMapping

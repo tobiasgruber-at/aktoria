@@ -11,6 +11,7 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.LineRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.AuthorizationService;
 import at.ac.tuwien.sepm.groupphase.backend.validation.SectionValidation;
+import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -20,6 +21,7 @@ import java.util.Optional;
  *
  * @author Julia Bernold
  */
+@Component
 public class SectionValidationImpl implements SectionValidation {
     UserRepository userRepository;
     LineRepository lineRepository;
@@ -43,8 +45,6 @@ public class SectionValidationImpl implements SectionValidation {
             ownerLoggedIn(sectionDto.getOwner());
         } catch (ValidationException e) {
             throw new ValidationException(e.getMessage(), e);
-        } catch (NotFoundException e) {
-            throw new NotFoundException(e.getMessage(), e);
         } catch (UnauthorizedException e) {
             throw new UnauthorizedException(e.getMessage(), e);
         }
@@ -68,11 +68,11 @@ public class SectionValidationImpl implements SectionValidation {
         }
         Optional<User> user = userRepository.findById(ownerId);
         if (user.isEmpty()) {
-            throw new NotFoundException("Besitzer des Lernabschnitts existiert nicht!");
+            throw new ValidationException("Besitzer des Lernabschnitts existiert nicht!");
         }
     }
 
-    private void validateLines(Long startId, Long endId) throws ValidationException, NotFoundException {
+    private void validateLines(Long startId, Long endId) throws ValidationException {
         if (startId == null) {
             throw new ValidationException("Lernabschnitt hat keinen Anfang");
         }
@@ -85,14 +85,14 @@ public class SectionValidationImpl implements SectionValidation {
         Optional<Line> start = lineRepository.findById(startId);
         Optional<Line> end = lineRepository.findById(endId);
         if (start.isEmpty()) {
-            throw new NotFoundException("Anfang des Lernabschnitts existiert nicht");
+            throw new ValidationException("Anfang des Lernabschnitts existiert nicht");
         }
         if (end.isEmpty()) {
-            throw new NotFoundException("Ende des Lernabschnitts existiert nicht");
+            throw new ValidationException("Ende des Lernabschnitts existiert nicht");
         }
         Script startScript = start.get().getPage().getScript();
         Script endScript = end.get().getPage().getScript();
-        if (!startScript.equals(endScript)) {
+        if (!Objects.equals(startScript.getId(), endScript.getId())) {
             throw new ValidationException("Start und Ende müssen im selben Skript liegen!");
         }
     }

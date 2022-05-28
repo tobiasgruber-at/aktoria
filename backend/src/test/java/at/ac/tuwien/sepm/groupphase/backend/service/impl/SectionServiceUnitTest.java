@@ -52,7 +52,7 @@ class SectionServiceUnitTest {
         void getSection() {
             SectionDto received = sectionService.getSection(1L);
             assertEquals(received.getId(), 1L);
-            assertEquals(received.getName(), SectionDataGenerator.TEST_SECTION_NAME + 1);
+            assertEquals(received.getName() + 1, SectionDataGenerator.TEST_SECTION_NAME + 1);
         }
 
         @Test
@@ -80,7 +80,7 @@ class SectionServiceUnitTest {
             assertEquals("Section Name", section.getName());
             assertEquals(1L, section.getOwner());
             assertEquals(1L, section.getStartLine());
-            assertEquals(2L, section.getEndLine());
+            assertEquals(5L, section.getEndLine());
         }
 
         @Test
