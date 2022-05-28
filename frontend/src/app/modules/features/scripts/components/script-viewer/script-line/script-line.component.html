@@ -53,5 +53,18 @@
     </ng-template>
   </div>
 </div>
-<div *ngIf="section?.startLine === line.index" class="marking start-line"></div>
-<div *ngIf="section?.endLine === line.index" class="marking end-line"></div>
+<div
+  *ngIf="section?.startLine === line.index"
+  @appear
+  class="marking start-line"
+>
+  <span>{{ section?.name }}</span>
+</div>
+<div *ngIf="section?.endLine === line.index" class="marking end-line">
+  <span>Ende</span>
+</div>
+<!--
+  Line anchor to scroll to. necessary to not scroll directly on the top of the line,
+  but a little further up
+-->
+<div #scrollAnchor class="scroll-anchor"></div>

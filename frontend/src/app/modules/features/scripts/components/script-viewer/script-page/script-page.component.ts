@@ -1,7 +1,8 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { Page } from '../../../../../shared/dtos/script-dtos';
+import { Line, Page } from '../../../../../shared/dtos/script-dtos';
 import { ScriptViewerService } from '../../../services/script-viewer.service';
 import { Subject, takeUntil } from 'rxjs';
+import { SimpleSection } from '../../../../../shared/dtos/section-dtos';
 
 @Component({
   selector: 'app-script-page',
@@ -10,6 +11,7 @@ import { Subject, takeUntil } from 'rxjs';
 })
 export class ScriptPageComponent implements OnInit, OnDestroy {
   @Input() page: Page;
+  section: SimpleSection = null;
   private isEditing = false;
   private $destroy = new Subject<void>();
 
@@ -25,10 +27,22 @@ export class ScriptPageComponent implements OnInit, OnDestroy {
       .subscribe((isEditing) => {
         this.isEditing = isEditing;
       });
+    this.scriptViewerService.$markedSection
+      .pipe(takeUntil(this.$destroy))
+      .subscribe((markedSection) => {
+        this.section = markedSection?.section;
+      });
   }
 
   ngOnDestroy() {
     this.$destroy.next();
     this.$destroy.complete();
+  }
+
+  isNotInSection(line: Line): boolean {
+    return (
+      this.section &&
+      (line.index < this.section.startLine || line.index > this.section.endLine)
+    );
   }
 }

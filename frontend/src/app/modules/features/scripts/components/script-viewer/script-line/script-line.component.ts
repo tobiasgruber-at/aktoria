@@ -4,7 +4,8 @@ import {
   HostBinding,
   Input,
   OnDestroy,
-  OnInit
+  OnInit,
+  ViewChild
 } from '@angular/core';
 import { Line, Role } from '../../../../../shared/dtos/script-dtos';
 import { ScriptViewerService } from '../../../services/script-viewer.service';
@@ -13,13 +14,16 @@ import { Subject, takeUntil } from 'rxjs';
 import { LineService } from '../../../../../core/services/line/line.service';
 import { ToastService } from '../../../../../core/services/toast/toast.service';
 import { SimpleSection } from '../../../../../shared/dtos/section-dtos';
+import { appearAnimations } from '../../../../../shared/animations/appear-animations';
 
 @Component({
   selector: 'app-script-line',
   templateUrl: './script-line.component.html',
-  styleUrls: ['./script-line.component.scss']
+  styleUrls: ['./script-line.component.scss'],
+  animations: [appearAnimations]
 })
 export class ScriptLineComponent implements OnInit, OnDestroy {
+  @ViewChild('scrollAnchor') scrollAnchorRef: ElementRef;
   @Input() line: Line;
   @Input() prevLine: Line;
   /** @see ScriptViewerService.$isEditingScript */
@@ -32,7 +36,6 @@ export class ScriptLineComponent implements OnInit, OnDestroy {
   private $destroy = new Subject<void>();
 
   constructor(
-    private ref: ElementRef,
     public scriptViewerService: ScriptViewerService,
     private modalService: NgbModal,
     private lineService: LineService,
@@ -88,16 +91,14 @@ export class ScriptLineComponent implements OnInit, OnDestroy {
     this.scriptViewerService.$markedSection
       .pipe(takeUntil(this.$destroy))
       .subscribe((markedSection) => {
-        if (!markedSection) {
-          return;
-        }
-        this.section = markedSection.section;
+        this.section = markedSection?.section;
         if (
-          this.ref &&
+          this.section &&
+          this.scrollAnchorRef &&
           markedSection.scrollTo &&
           this.line.index === this.section.startLine
         ) {
-          this.ref.nativeElement.scrollIntoView({
+          this.scrollAnchorRef.nativeElement.scrollIntoView({
             behavior: 'smooth',
             block: 'start'
           });

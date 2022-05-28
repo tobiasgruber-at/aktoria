@@ -15,8 +15,8 @@ export class ScriptRehearsalSectionsComponent implements OnInit {
   getLoading = true;
   script: SimpleScript = null;
   sections: SimpleSection[] = [
-    new SimpleSection('Abschnitt 1', 50, 200),
-    new SimpleSection('Abschnitt 2', 1, 600),
+    new SimpleSection('Abschnitt 1', 49, 200),
+    new SimpleSection('Abschnitt 2', 0, 600),
     new SimpleSection('Abschnitt 3', 600, 900)
   ];
 

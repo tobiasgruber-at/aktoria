@@ -59,8 +59,14 @@ p {
   }
 }
 
+.scroll-anchor {
+  position: absolute;
+  top: -10vh; // shift
+  left: 0;
+}
+
 .marking {
-  --bleed-offset-x: 1.5rem;
+  --bleed-offset-x: 1rem;
   --height: 0.25rem;
   --translate-x: calc(-0.5 * var(--bleed-offset-x));
   width: calc(100% + var(--bleed-offset-x));
@@ -70,6 +76,9 @@ p {
   background-color: var(--bs-primary);
   position: absolute;
   left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   &.start-line {
     transform: translate(var(--translate-x), calc(-0.5 * var(--height)));
@@ -79,5 +88,17 @@ p {
   &.end-line {
     transform: translate(var(--translate-x), calc(0.5 * var(--height)));
     bottom: 0;
+  }
+
+  span {
+    padding: 0.1rem 0.8rem;
+    color: var(--bs-white);
+    font-weight: 500;
+    font-size: 0.8rem;
+    letter-spacing: 0.03rem;
+    text-transform: uppercase;
+    border-radius: 6px;
+    background-color: inherit;
+    box-shadow: inherit;
   }
 }
