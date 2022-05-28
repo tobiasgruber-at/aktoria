@@ -5,6 +5,7 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleSessionDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UpdateSessionDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.SessionMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.*;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.UnauthorizedException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
@@ -132,7 +133,25 @@ public class SessionServiceImpl implements SessionService {
 
     @Override
     public SessionDto finish(Long id) {
-        return null;
+        log.trace("finish(id = {})", id);
+        User user = authorizationService.getLoggedInUser();
+        if (user == null) {
+            throw new UnauthorizedException();
+        }
+        Optional<Session> session = sessionRepository.findById(id);
+        if (session.isEmpty()) {
+            throw new NotFoundException("Session not found");
+        }
+        Session curSession = session.get();
+        if (!curSession.getSection().getOwner().getId().equals(user.getId())) {
+            throw new UnauthorizedException("User not permitted to update this session");
+        }
+        if(curSession.getDeprecated()) {
+            throw new ConflictException("Session is already deprecated");
+        }
+        curSession.setEnd(LocalDateTime.now());
+        curSession = sessionRepository.save(curSession);
+        return sessionMapper.sessionToSessionDto(curSession);
     }
 
     @Override
@@ -141,6 +160,7 @@ public class SessionServiceImpl implements SessionService {
     }
 
     private Double computeCoverage(Section section, Line line) {
+        log.trace("computeCoverage(section = {}, line = {})", section, line);
         Line startLine = section.getStartLine();
         Line endLine = section.getEndLine();
         List<Line> linesInBetween = lineRepository.findByStartLineAndEndLine(startLine, endLine);

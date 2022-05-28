@@ -44,7 +44,15 @@ public class SessionEndpoint {
     @ResponseStatus(HttpStatus.OK)
     @Secured(Permission.verified)
     public SessionDto updateSession(@PathVariable Long id, @RequestBody UpdateSessionDto updateSessionDto) {
-        log.info("PATCH {}", path);
+        log.info("PATCH {}/{}", path, id);
         return sessionService.update(updateSessionDto, id);
+    }
+
+    @PostMapping(path = "/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @Secured(Permission.verified)
+    public SessionDto endSession(@PathVariable Long id) {
+        log.info("POST {}/{}", path, id);
+        return sessionService.finish(id);
     }
 }
