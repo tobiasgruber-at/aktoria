@@ -1,6 +1,5 @@
 package at.ac.tuwien.sepm.groupphase.backend.service;
 
-import org.springframework.stereotype.Component;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SessionDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleSessionDto;
 import org.springframework.stereotype.Service;
@@ -40,7 +39,7 @@ public interface SessionService {
      * Updates a session in the data storage.
      *
      * @param sessionDto the session that contains the changes
-     * @param id the id of the session
+     * @param id         the id of the session
      * @return the updated session
      */
     SessionDto update(SessionDto sessionDto, Long id);
