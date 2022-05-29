@@ -28,7 +28,7 @@ export class SimpleScript {
 }
 
 export class ScriptPreview {
-  constructor(public readonly id: number, public readonly name: string) {}
+  constructor(public readonly id: number, public readonly name: string, public readonly owner: boolean) {}
 }
 
 export class DetailedScript extends SimpleScript {
