@@ -1,11 +1,86 @@
 <app-page-layout [loading]="getLoading" [showSidebar]="true" theme="dark">
   <app-script-viewer></app-script-viewer>
-  <div role="sidebar">
+  <form
+    (ngSubmit)="submit()"
+    [formGroup]="form"
+    class="form d-flex flex-column flex-grow-1"
+    role="sidebar"
+  >
     <h2 class="mb-4">Lernabschnitt festlegen</h2>
-    <app-rehearsal-section
-      (click)="selectSection(section)"
-      *ngFor="let section of sections"
-      [active]="section === (scriptViewerService.$markedSection | async)"
-    ></app-rehearsal-section>
-  </div>
+    <ng-container *ngIf="curStep === steps.selectSection">
+      <app-rehearsal-section
+        (click)="changeStep(steps.createSection)"
+        [isCreate]="true"
+      ></app-rehearsal-section>
+      <app-rehearsal-section
+        *ngFor="let section of sections"
+        [section]="section"
+      ></app-rehearsal-section>
+    </ng-container>
+    <ng-container *ngIf="curStep === steps.createSection">
+      <div class="form-group mb-4">
+        <label for="input-section-name">Bezeichnung</label>
+        <input
+          class="form-control"
+          formControlName="sectionName"
+          id="input-section-name"
+          name="sectionName"
+          placeholder="Bezeichnung des Abschnitts"
+          type="text"
+        />
+        <app-form-errors>
+          <app-form-error *ngIf="fieldHasErrors('sectionName', 'required')"
+            >Bitte gib eine Bezeichnung an.
+          </app-form-error>
+          <app-form-error *ngIf="fieldHasErrors('sectionName', 'maxlength')"
+            >Bezeichnung zu lange.
+          </app-form-error>
+        </app-form-errors>
+      </div>
+      <div class="form-group mb-4">
+        <label for="input-section-name">Start</label>
+        <p class="mb-0">
+          <ng-container
+            *ngIf="isMarkingSection === 'start'; else markingStartCompleted"
+          >
+            Bitte
+            <strong class="text-primary">wähle eine Startzeile</strong> aus.
+          </ng-container>
+          <ng-template #markingStartCompleted>
+            Seite
+            {{ markedSection?.getStartPage(script) }}
+          </ng-template>
+        </p>
+      </div>
+      <div
+        [class.opacity-50]="isMarkingSection && isMarkingSection !== 'end'"
+        class="form-group mb-4"
+      >
+        <label for="input-section-name">Ende</label>
+        <p class="mb-0">
+          <ng-container *ngIf="isMarkingSection; else markingEndCompleted">
+            Bitte
+            <strong
+              [class]="
+                isMarkingSection === 'end' ? 'text-primary' : 'text-secondary'
+              "
+              >wähle eine Endzeile</strong
+            >
+            aus.
+          </ng-container>
+          <ng-template #markingEndCompleted>
+            Seite
+            {{ markedSection?.getEndPage(script) }}
+          </ng-template>
+        </p>
+      </div>
+    </ng-container>
+    <div class="flex-grow-1"></div>
+    <div class="d-flex justify-content-center mt-3">
+      <app-button
+        [disabled]="(scriptViewerService.$markedSection | async) === null"
+        label="Abschnitt proben"
+      ></app-button>
+    </div>
+  </form>
 </app-page-layout>

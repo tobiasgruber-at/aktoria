@@ -5,6 +5,7 @@ import {ToastService} from '../../../core/services/toast/toast.service';
 import {AuthService} from '../../../core/services/auth/auth-service';
 import {fixedAppearAnimations} from '../../animations/fixed-appear-animations';
 import {appearAnimations} from '../../animations/appear-animations';
+import {HelpersService} from '../../../core/services/helpers/helpers.service';
 
 /**
  * Common page layout, including header and footer.
@@ -27,7 +28,8 @@ export class PageLayoutComponent implements OnInit {
   constructor(
     public authService: AuthService,
     private router: Router,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private helpersService: HelpersService
   ) {}
 
   ngOnInit(): void {}
@@ -39,5 +41,9 @@ export class PageLayoutComponent implements OnInit {
       theme: Theme.primary
     });
     this.authService.logoutUser();
+  }
+
+  onScrollMain(e): void {
+    this.helpersService.setMainScrollPosY(e.target.scrollTop);
   }
 }
