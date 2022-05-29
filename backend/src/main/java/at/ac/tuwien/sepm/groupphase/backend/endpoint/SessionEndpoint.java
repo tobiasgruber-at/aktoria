@@ -29,7 +29,7 @@ import java.util.stream.Stream;
 @RequestMapping(path = SessionEndpoint.path)
 @Slf4j
 public class SessionEndpoint {
-    public static final String path = "/api/v1/session";
+    public static final String path = "/api/v1/sessions";
     public final SessionService sessionService;
 
     public SessionEndpoint(SessionService sessionService) {
@@ -68,19 +68,13 @@ public class SessionEndpoint {
         return sessionService.findById(id);
     }
 
-    @GetMapping(path = "/past")
-    @ResponseStatus(HttpStatus.OK)
-    @Secured(Permission.verified)
-    public Stream<SessionDto> getPastSessions(@RequestParam Boolean deprecated, @RequestParam Long sectionId) {
-        log.info("GET {}/past?deprecated={}&sectionId={}", path, deprecated, sectionId);
-        return sessionService.findPastSessions(deprecated, sectionId);
-    }
-
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @Secured(Permission.verified)
-    public Stream<SessionDto> getAllSessions() {
-        log.info("GET {}", path);
-        return sessionService.findAll();
+    public Stream<SessionDto> getQuerySessions(@RequestParam(required = false) Boolean deprecated,
+                                              @RequestParam(required = false) Long sectionId,
+                                              @RequestParam(required = false) Boolean past) {
+        log.info("GET {}/past?deprecated={}&sectionId={}&past={}", path, deprecated, sectionId, past);
+        return sessionService.findQuerySessions(deprecated, sectionId, past);
     }
 }
