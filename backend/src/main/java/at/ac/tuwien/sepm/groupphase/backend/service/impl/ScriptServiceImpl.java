@@ -47,7 +47,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -289,24 +288,8 @@ public class ScriptServiceImpl implements ScriptService {
         if (script.isPresent() && !script.get().getOwner().getId().equals(user.getId())) {
             throw new UnauthorizedException("Dieser User ist nicht berechtigt diese Datei zu löschen");
         }
+
         scriptRepository.deleteById(id);
-    }
-
-    @Override
-    @Transactional
-    public ScriptDto patch(ScriptDto scriptDto, Long id) {
-        log.trace("patch(id = {})", id);
-
-        User user = authorizationService.getLoggedInUser();
-        if (user == null) {
-            throw new UnauthorizedException();
-        }
-        Optional<Script> script = scriptRepository.findById(id);
-        if (script.isEmpty()) {
-            throw new NotFoundException();
-        }
-        //TODO: fertig machen
-        return null;
     }
 
     @Override
