@@ -62,13 +62,13 @@ public class SessionServiceUnitTest {
             Long curLineId = sessionOpt.get().getCurrentLine().getId() + 1;
             UpdateSessionDto updateSessionDto = new UpdateSessionDto();
             updateSessionDto.setDeprecated(true);
-            updateSessionDto.setSelfAssessment(AssessmentType.poor);
+            updateSessionDto.setSelfAssessment(AssessmentType.POOR);
             updateSessionDto.setCurrentLineId(curLineId);
 
             SessionDto result = sessionService.update(updateSessionDto, 1L);
             assertThat(result.getId()).isEqualTo(1L);
             assertThat(result.getDeprecated()).isEqualTo(true);
-            assertThat(result.getSelfAssessment()).isEqualTo(AssessmentType.poor);
+            assertThat(result.getSelfAssessment()).isEqualTo(AssessmentType.POOR);
             assertThat(result.getCurrentLineId()).isEqualTo(curLineId);
         } else {
             throw new Exception();
@@ -110,7 +110,7 @@ public class SessionServiceUnitTest {
     @Test
     @DirtiesContext
     @DisplayName("findPastSessions() finds all past user sessions correctly")
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified})
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
     public void findPastSessions() {
         List<SessionDto> sessions = sessionService.findPastSessions(null, 1L).toList();
         assertThat(sessions).isNotNull();

@@ -4,6 +4,7 @@ import at.ac.tuwien.sepm.groupphase.backend.datagenerator.UserDataGenerator;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.UserMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Script;
 import at.ac.tuwien.sepm.groupphase.backend.entity.SecureToken;
+import at.ac.tuwien.sepm.groupphase.backend.entity.User;
 import at.ac.tuwien.sepm.groupphase.backend.enums.Role;
 import at.ac.tuwien.sepm.groupphase.backend.enums.TokenType;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
@@ -14,7 +15,6 @@ import at.ac.tuwien.sepm.groupphase.backend.service.ScriptService;
 import at.ac.tuwien.sepm.groupphase.backend.service.SecureTokenService;
 import at.ac.tuwien.sepm.groupphase.backend.service.UserService;
 import at.ac.tuwien.sepm.groupphase.backend.testhelpers.UserTestHelper;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -134,7 +134,7 @@ public class ScriptServiceUnitTest {
             Script script = scriptOptional.get();
             assertTrue(script.getParticipants().contains(user));
 
-            scriptService.deleteParticipant(2L,"test11@test.com");
+            scriptService.deleteParticipant(2L, "test11@test.com");
 
             scriptOptional = scriptRepository.findById(2L);
             assertTrue(scriptOptional.isPresent());
@@ -147,7 +147,7 @@ public class ScriptServiceUnitTest {
         @DisplayName("adding Participant throws NotFoundException")
         @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "4" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "2", roles = { Role.user, Role.verified, Role.admin })
         public void addingParticipantNotFound() {
-            assertThrows(NotFoundException.class, () -> scriptService.deleteParticipant(2L,"notfound@test.com"));
+            assertThrows(NotFoundException.class, () -> scriptService.deleteParticipant(2L, "notfound@test.com"));
         }
     }
 }

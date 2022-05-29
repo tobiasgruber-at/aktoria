@@ -10,7 +10,6 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Script;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Section;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Session;
 import at.ac.tuwien.sepm.groupphase.backend.entity.User;
-import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.UnauthorizedException;
@@ -28,7 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -49,18 +47,21 @@ public class SessionServiceImpl implements SessionService {
     private final SectionRepository sectionRepository;
     private final RoleRepository roleRepository;
     private final LineRepository lineRepository;
-    private final AuthorizationService authorizationService;
     private final SessionMapper sessionMapper;
 
-    public SessionServiceImpl(SessionRepository sessionRepository, SectionRepository sectionRepository,
-                              RoleRepository roleRepository, LineRepository lineRepository,
-                              AuthorizationService authorizationService, SessionMapper sessionMapper) {
+    public SessionServiceImpl(AuthorizationService authorizationService,
+                              SessionRepository sessionRepository,
+                              ScriptRepository scriptRepository,
+                              SectionRepository sectionRepository,
+                              RoleRepository roleRepository,
+                              LineRepository lineRepository,
+                              SessionMapper sessionMapper) {
+        this.authorizationService = authorizationService;
         this.sessionRepository = sessionRepository;
         this.scriptRepository = scriptRepository;
         this.sectionRepository = sectionRepository;
         this.roleRepository = roleRepository;
         this.lineRepository = lineRepository;
-        this.authorizationService = authorizationService;
         this.sessionMapper = sessionMapper;
     }
 
