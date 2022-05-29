@@ -385,8 +385,12 @@ public class ScriptServiceImpl implements ScriptService {
                 Set<Script> scripts = user.getParticipatesIn();
                 scripts.add(script);
                 user.setParticipatesIn(scripts);
-
                 userRepository.saveAndFlush(user);
+
+                Set<User> users = script.getParticipants();
+                users.add(user);
+                script.setParticipants(users);
+                scriptRepository.saveAndFlush(script);
                 return;
             }
         }
@@ -434,10 +438,15 @@ public class ScriptServiceImpl implements ScriptService {
                 script.setOwner(newOwner);
                 return;
             }
+
+            Set<Script> scripts = user.getParticipatesIn();
+            scripts.remove(script);
+            user.setParticipatesIn(scripts);
+            userRepository.saveAndFlush(user);
+
             Set<User> participants = script.getParticipants();
             participants.remove(user);
             script.setParticipants(participants);
-
             scriptRepository.saveAndFlush(script);
             return;
         }
