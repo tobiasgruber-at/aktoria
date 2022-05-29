@@ -59,7 +59,7 @@ public interface SessionService {
      * Gets all past sessions for user according to the params.
      *
      * @param deprecated if deprecated sessions should be included in the query (default: false)
-     * @param sectionId of an specific section (default: none)
+     * @param sectionId  of an specific section (default: none)
      * @return a stream of all sessions found
      */
     Stream<SessionDto> findPastSessions(Boolean deprecated, Long sectionId);

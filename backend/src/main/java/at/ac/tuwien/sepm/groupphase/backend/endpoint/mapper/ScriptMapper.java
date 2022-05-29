@@ -11,8 +11,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 
-import java.util.List;
-
 @Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR, uses = { RoleMapper.class, PageMapper.class })
 public interface ScriptMapper {
     SimpleScriptDto parsedScriptToSimpleScriptDto(ParsedScript parsedScript, String name);
