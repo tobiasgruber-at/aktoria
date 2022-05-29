@@ -7,6 +7,7 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.UserMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Line;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Role;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Script;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Session;
 import at.ac.tuwien.sepm.groupphase.backend.entity.User;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.UnauthorizedException;
@@ -14,6 +15,7 @@ import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.LineRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.RoleRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ScriptRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.SessionRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.AuthorizationService;
 import at.ac.tuwien.sepm.groupphase.backend.service.RoleService;
 import at.ac.tuwien.sepm.groupphase.backend.service.ScriptService;
@@ -42,9 +44,10 @@ public class RoleServiceImpl implements RoleService {
     private final ScriptService scriptService;
     private final UserMapper userMapper;
     private final ScriptRepository scriptRepository;
+    private final SessionRepository sessionRepository;
 
     public RoleServiceImpl(RoleRepository roleRepository, RoleValidation roleValidation, LineRepository lineRepository, RoleMapper roleMapper, AuthorizationService authorizationService,
-                           ScriptService scriptService, UserMapper userMapper, ScriptRepository scriptRepository) {
+                           ScriptService scriptService, UserMapper userMapper, ScriptRepository scriptRepository, SessionRepository sessionRepository) {
         this.roleRepository = roleRepository;
         this.roleValidation = roleValidation;
         this.lineRepository = lineRepository;
@@ -53,6 +56,7 @@ public class RoleServiceImpl implements RoleService {
         this.scriptService = scriptService;
         this.userMapper = userMapper;
         this.scriptRepository = scriptRepository;
+        this.sessionRepository = sessionRepository;
     }
 
     @Override
@@ -116,6 +120,16 @@ public class RoleServiceImpl implements RoleService {
 
         for (int i = 0; i < allReplaceRoles.size(); i++) {
             allReplaceRoles.get(i).setLines(null);
+        }
+
+        List<Session> sessions = new LinkedList<>();
+        for (int i = 0; i < allReplaceRoles.size(); i++) {
+            sessions.addAll(allReplaceRoles.get(i).getSessions());
+        }
+
+        for (int i = 0; i < sessions.size(); i++) {
+            sessions.get(i).setRole(keep);
+            sessionRepository.save(sessions.get(i));
         }
 
         Script script = scriptRepository.getById(sid);

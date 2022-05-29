@@ -306,9 +306,12 @@ public class ScriptServiceImpl implements ScriptService {
             throw new NotFoundException();
         }
 
+        //remove script from owner
         User owner = script1.getOwner();
         owner.getScripts().remove(script1);
         userRepository.save(owner);
+
+
         scriptRepository.deleteById(id);
     }
 
