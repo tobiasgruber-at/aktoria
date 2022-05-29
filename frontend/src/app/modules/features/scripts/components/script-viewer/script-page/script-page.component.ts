@@ -65,7 +65,8 @@ export class ScriptPageComponent implements OnInit, OnDestroy {
   isNotInSection(line: Line): boolean {
     return (
       this.section &&
-      (line.index < this.section.startLine || line.index > this.section.endLine)
+      (line.index < this.section.startLine.index ||
+        line.index > this.section.endLine.index)
     );
   }
 

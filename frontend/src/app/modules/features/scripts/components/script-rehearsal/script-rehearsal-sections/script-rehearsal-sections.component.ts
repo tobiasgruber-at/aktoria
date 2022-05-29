@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { SimpleScript } from '../../../../../shared/dtos/script-dtos';
+import { Line, SimpleScript } from '../../../../../shared/dtos/script-dtos';
 import { ScriptViewerService } from '../../../services/script-viewer.service';
 import { ScriptService } from '../../../../../core/services/script/script.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -76,7 +76,11 @@ export class ScriptRehearsalSectionsComponent implements OnInit, OnDestroy {
     if (this.curStep === Step.createSection) {
       this.scriptViewerService.setIsMarkingSection('start');
       this.scriptViewerService.setMarkedSection({
-        section: new SimpleSection(null, null, Infinity),
+        section: new SimpleSection(
+          null,
+          new Line(null, null, null, null, null, null),
+          new Line(Infinity, null, null, null, null, null)
+        ),
         scrollTo: false
       });
     } else if (this.curStep === Step.selectSection) {

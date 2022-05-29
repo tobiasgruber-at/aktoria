@@ -109,7 +109,7 @@ export class ScriptLineComponent implements OnInit, OnDestroy {
           this.section &&
           this.scrollAnchorRef &&
           markedSection.scrollTo &&
-          this.line.index === this.section.startLine
+          this.line.index === this.section.startLine.index
         ) {
           this.scrollAnchorRef.nativeElement.scrollIntoView({
             behavior: 'smooth',
@@ -124,12 +124,12 @@ export class ScriptLineComponent implements OnInit, OnDestroy {
     if (this.isMarkingSection) {
       const updatedSection: SimpleSection = this.section;
       if (this.isMarkingSection === 'start') {
-        updatedSection.startLine = this.line.index;
+        updatedSection.startLine = this.line;
       } else if (
         this.isMarkingSection === 'end' &&
-        this.line.index >= this.section.startLine
+        this.line.index >= this.section.startLine.index
       ) {
-        updatedSection.endLine = this.line.index;
+        updatedSection.endLine = this.line;
       }
       this.scriptViewerService.setMarkedSection({
         section: updatedSection,

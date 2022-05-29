@@ -28,7 +28,11 @@ export class SimpleScript {
 }
 
 export class ScriptPreview {
-  constructor(public readonly id: number, public readonly name: string, public readonly owner: boolean) {}
+  constructor(
+    public readonly id: number,
+    public readonly name: string,
+    public readonly owner: boolean
+  ) {}
 }
 
 export class DetailedScript extends SimpleScript {
@@ -54,12 +58,14 @@ export class Page {
 }
 
 export class Line {
-  id?: number;
-  index: number;
-  roles: Role[];
-  content: string;
-  audioSnippet: AudioBuffer;
-  active: boolean;
+  constructor(
+    public index: number,
+    public roles: Role[],
+    public content: string,
+    public audioSnippet: AudioBuffer,
+    public active: boolean,
+    public id?: number
+  ) {}
 }
 
 export class UpdateLine {

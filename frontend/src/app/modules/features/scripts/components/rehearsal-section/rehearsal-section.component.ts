@@ -35,13 +35,13 @@ export class RehearsalSectionComponent implements OnInit, OnDestroy {
 
   get startLinePercentage(): number {
     return this.script && this.section
-      ? (this.section.startLine / this.script.getLastLineIdx()) * 100
+      ? (this.section.startLine.index / this.script.getLastLineIdx()) * 100
       : 0;
   }
 
   get endLinePercentage(): number {
     return this.script && this.section
-      ? (this.section.endLine / this.script?.getLastLineIdx()) * 100
+      ? (this.section.endLine.index / this.script?.getLastLineIdx()) * 100
       : 0;
   }
 
@@ -72,12 +72,14 @@ export class RehearsalSectionComponent implements OnInit, OnDestroy {
   }
 
   startRehearsal(): void {
+    // TODO: create rehearsal
     this.scriptRehearsalService.setSession(
       new SimpleSession(
         null,
-        this.section.startLine,
-        this.section.endLine,
-        this.section.startLine,
+        null,
+        null,
+        this.section,
+        this.section.startLine.index,
         this.script.roles[0]
       )
     );
