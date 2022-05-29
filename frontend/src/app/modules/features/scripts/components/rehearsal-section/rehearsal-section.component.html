@@ -1,14 +1,27 @@
-<div class="card overflow-hidden position-relative" style="width: 18rem">
+<div class="card position-relative">
   <div class="card-body py-3 px-3">
-    <h5
-      class="card-title mb-0 d-flex justify-content-between align-items-center"
-    >
-      {{ isCreate ? 'Abschnitt erstellen' : section?.name }}
-    </h5>
-    <h6 *ngIf="!isCreate" class="mb-0">
-      Seite {{ section?.getStartPage(this.script) }} -
-      {{ section?.getEndPage(this.script) }}
-    </h6>
+    <div class="w-100 d-flex justify-content-between align-items-center">
+      <div>
+        <h5
+          class="card-title mb-0 d-flex justify-content-between align-items-center"
+        >
+          {{ isCreate ? 'Abschnitt erstellen' : section?.name }}
+        </h5>
+        <h6 *ngIf="!isCreate" class="mb-0">
+          Seite {{ section?.getStartPage(this.script) }} -
+          {{ section?.getEndPage(this.script) }}
+        </h6>
+      </div>
+      <div
+        (click)="startRehearsal()"
+        *ngIf="!isCreate"
+        class="start-rehearsal py-2 px-1"
+        ngbTooltip="Proben"
+        placement="top"
+      >
+        <bi name="caret-right-fill"></bi>
+      </div>
+    </div>
   </div>
   <div *ngIf="!isCreate" class="section-span w-100 position-relative">
     <div
