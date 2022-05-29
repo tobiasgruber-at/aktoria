@@ -42,7 +42,7 @@ public interface SessionService {
      * Updates a session in the data storage.
      *
      * @param updateSessionDto the session that contains the changes
-     * @param id         the id of the session
+     * @param id               the id of the session
      * @return the updated session
      */
     SessionDto update(UpdateSessionDto updateSessionDto, Long id);
@@ -74,7 +74,7 @@ public interface SessionService {
      * Gets all past sessions for user according to the params.
      *
      * @param deprecated if deprecated sessions should be included in the query (default: false)
-     * @param sectionId of a specific section (default: none)
+     * @param sectionId  of a specific section (default: none)
      * @return a stream of all sessions found
      */
     Stream<SessionDto> findPastSessions(Boolean deprecated, Long sectionId);

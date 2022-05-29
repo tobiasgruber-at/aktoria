@@ -9,6 +9,7 @@ import at.ac.tuwien.sepm.groupphase.backend.enums.Role;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ScriptRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.SectionRepository;
 import at.ac.tuwien.sepm.groupphase.backend.testhelpers.UserTestHelper;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -40,7 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author Julia Bernold
  */
 @SpringBootTest
-@ActiveProfiles({"test", "datagen"})
+@ActiveProfiles({ "test", "datagen" })
 @EnableWebMvc
 @WebAppConfiguration
 class SectionEndpointIntegrationTest {
@@ -77,7 +78,7 @@ class SectionEndpointIntegrationTest {
             if (input.isPresent()) {
                 byte[] body = mockMvc
                     .perform(MockMvcRequestBuilders
-                        .get("/api/v1/scripts/sections/" + input.get().getId())
+                        .get("/api/v1/sections/" + input.get().getId())
                         .accept(MediaType.APPLICATION_JSON)
                     ).andExpect(status().isOk())
                     .andReturn().getResponse().getContentAsByteArray();
@@ -93,7 +94,7 @@ class SectionEndpointIntegrationTest {
         @DisplayName("Get a Section with invalid Id")
         void getSectionInvalidId() throws Exception {
             mockMvc.perform(MockMvcRequestBuilders
-                .get("/api/v1/scripts/sections/{id}", -1L)
+                .get("/api/v1/sections/{id}", -1L)
                 .accept(MediaType.APPLICATION_JSON)
             ).andExpect(status().isNotFound());
         }
@@ -111,11 +112,12 @@ class SectionEndpointIntegrationTest {
             //List<SectionDto> expected = sectionMapper.sectionListToSectionDtoList(sectionRepository.findAll());
             byte[] body = mockMvc
                 .perform(MockMvcRequestBuilders
-                    .get("/api/v1/scripts/sections")
+                    .get("/api/v1/sections")
                     .accept(MediaType.APPLICATION_JSON)
                 ).andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsByteArray();
-            List<SectionDto> sectionResult = objectMapper.readerFor(SectionDto.class).<SectionDto>readValues(body).readAll();
+            List<SectionDto> sectionResult = objectMapper.readValue(body, new TypeReference<List<SectionDto>>() {
+            });
             assertNotNull(sectionResult);
         }
     }
@@ -133,7 +135,7 @@ class SectionEndpointIntegrationTest {
             User user = script.getOwner();
             byte[] body = mockMvc
                 .perform(MockMvcRequestBuilders
-                    .post("/api/v1/scripts/sections")
+                    .post("/api/v1/sections")
                     .accept(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsBytes(new SectionDto(null, "Szene Fünf", user.getId(), 1L, 3L, null)))
                     .contentType(MediaType.APPLICATION_JSON)
@@ -152,7 +154,7 @@ class SectionEndpointIntegrationTest {
         @DisplayName("Save a section without a user")
         void saveSectionNoUser() throws Exception {
             mockMvc.perform(MockMvcRequestBuilders
-                .post("/api/v1/scripts/sections")
+                .post("/api/v1/sections")
                 .accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(new SectionDto(null, "Szene Fünf", 0L, 1L, 3L, null)))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -168,7 +170,7 @@ class SectionEndpointIntegrationTest {
             Script script = scriptList.get(0);
             User user = script.getOwner();
             mockMvc.perform(MockMvcRequestBuilders
-                .post("/api/v1/scripts/sections")
+                .post("/api/v1/sections")
                 .accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(new SectionDto(null, "Szene Fünf", user.getId(), 0L, 1L, null)))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -185,7 +187,7 @@ class SectionEndpointIntegrationTest {
             User user = script.getOwner();
             //before the first page, and the start is "below" the end
             mockMvc.perform(MockMvcRequestBuilders
-                .post("/api/v1/scripts/sections")
+                .post("/api/v1/sections")
                 .accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(new SectionDto(null, "Szene Fünf", user.getId(), 1L, -2L, null)))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -201,7 +203,7 @@ class SectionEndpointIntegrationTest {
             User user = script.getOwner();
             //lines not from the same script
             mockMvc.perform(MockMvcRequestBuilders
-                .post("/api/v1/scripts/sections")
+                .post("/api/v1/sections")
                 .accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(new SectionDto(null, "Szene Fünf", user.getId(), 1L, 200L, null)))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -216,7 +218,7 @@ class SectionEndpointIntegrationTest {
             Script script = scriptList.get(0);
             User user = script.getOwner();
             mockMvc.perform(MockMvcRequestBuilders
-                .post("/api/v1/scripts/sections")
+                .post("/api/v1/sections")
                 .accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(new SectionDto(null, "a".repeat(101), user.getId(), 1L, 80L, null)))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -231,7 +233,7 @@ class SectionEndpointIntegrationTest {
             Script script = scriptList.get(0);
             User user = script.getOwner();
             mockMvc.perform(MockMvcRequestBuilders
-                .post("/api/v1/scripts/sections")
+                .post("/api/v1/sections")
                 .accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(new SectionDto(null, "    ", user.getId(), 1L, 20L, null)))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -245,7 +247,7 @@ class SectionEndpointIntegrationTest {
         @DisplayName("Save a section with lines from a nonexistent script")
         void saveSectionNonexistentScript() throws Exception {
             mockMvc.perform(MockMvcRequestBuilders
-                .post("/api/v1/scripts/sections")
+                .post("/api/v1/sections")
                 .accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(new SectionDto(null, "Szene Fünf", 1L, -1L, -2L, null)))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -259,7 +261,7 @@ class SectionEndpointIntegrationTest {
         @DisplayName("Save a section with a starting line that is after the ending line")
         void saveSectionStartAfterEnd() throws Exception {
             mockMvc.perform(MockMvcRequestBuilders
-                .post("/api/v1/scripts/sections")
+                .post("/api/v1/sections")
                 .accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(new SectionDto(null, "Szene Fünf", 1L, 20L, 2L, null)))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -278,7 +280,7 @@ class SectionEndpointIntegrationTest {
         @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = Role.verified)
         void deleteSection() throws Exception {
             mockMvc.perform(MockMvcRequestBuilders
-                .delete("/api/v1/scripts/sections/1")
+                .delete("/api/v1/sections/1")
                 .accept(MediaType.APPLICATION_JSON)
             ).andExpect(status().isNoContent());
         }
@@ -289,7 +291,7 @@ class SectionEndpointIntegrationTest {
         @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = Role.verified)
         void deleteSectionInvalidId() throws Exception {
             mockMvc.perform(MockMvcRequestBuilders
-                .delete("/api/v1/scripts/sections/0")
+                .delete("/api/v1/sections/0")
                 .accept(MediaType.APPLICATION_JSON)
             ).andExpect(status().isNotFound());
         }
