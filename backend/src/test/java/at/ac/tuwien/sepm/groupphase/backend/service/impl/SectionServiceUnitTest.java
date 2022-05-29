@@ -16,8 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
 
+import javax.transaction.Transactional;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @author Julia Bernold
  */
 
-@ActiveProfiles({"test", "datagen"})
+@ActiveProfiles({ "test", "datagen" })
 @SpringBootTest
 class SectionServiceUnitTest {
 
@@ -40,11 +40,9 @@ class SectionServiceUnitTest {
     @Autowired
     SectionRepository sectionRepository;
 
-
     @Nested
-    @SpringBootTest
     @DisplayName("getSection()")
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {Role.user, Role.verified, Role.admin})
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user, Role.verified, Role.admin })
     class GetSectionTest {
         @Test
         @Transactional
@@ -61,14 +59,12 @@ class SectionServiceUnitTest {
         void getNonexistentSection() {
             assertThrows(NotFoundException.class, () -> sectionService.getSection(0L));
         }
-
     }
 
 
     @Nested
     @DisplayName("createSection()")
-    @SpringBootTest
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {Role.user, Role.verified, Role.admin})
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user, Role.verified, Role.admin })
     class CreateSectionTest {
         @Test
         @Transactional
@@ -135,8 +131,7 @@ class SectionServiceUnitTest {
 
     @Nested
     @DisplayName("deleteSection()")
-    @SpringBootTest
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {Role.user, Role.verified, Role.admin})
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user, Role.verified, Role.admin })
     class DeleteSectionTest {
         @Test
         @Transactional

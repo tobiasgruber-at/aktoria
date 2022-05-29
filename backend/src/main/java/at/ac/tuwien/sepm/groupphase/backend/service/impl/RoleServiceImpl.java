@@ -85,7 +85,7 @@ public class RoleServiceImpl implements RoleService {
         } else {
             throw new NotFoundException("Rolle exisitiert nicht!");
         }
-        
+
         if (allReplaceRoles.size() == 1 && allReplaceRoles.get(0).getId().equals(idToKeep)) {
             return roleMapper.roleToRoleDto(keep);
         }

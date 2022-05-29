@@ -71,14 +71,14 @@ public interface ScriptService {
      * Sends an invitation to join the script as participant.
      *
      * @param scriptId id of the script
-     * @param email email the invitation is sent to
+     * @param email    email the invitation is sent to
      */
     void invite(Long scriptId, String email);
 
     /**
      * Accepts an invitaion and add user to participants.
      *
-     * @param id of the new participant
+     * @param id    of the new participant
      * @param token to verify that an invitation was received
      */
     void addParticipant(Long id, String token);

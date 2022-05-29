@@ -15,7 +15,7 @@ import org.mapstruct.Mappings;
 
 @Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR, uses = SessionMapper.class)
 public interface SectionMapper {
-    
+
     @Mappings({
         @Mapping(target = "owner", source = "owner.id"),
         @Mapping(target = "endLine", source = "endLine.id"),
