@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -46,7 +45,6 @@ class RoleServiceUnitTest {
     RoleRepository roleRepository;
 
     @Test
-    @Transactional
     @DisplayName("mergeRoles")
     @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
     void mergeRoles() {
@@ -65,7 +63,6 @@ class RoleServiceUnitTest {
     }
 
     @Test
-    @Transactional
     @DisplayName("mergeRoles with only 1 role")
     @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
     void mergeRolesIsNotNeeded() {

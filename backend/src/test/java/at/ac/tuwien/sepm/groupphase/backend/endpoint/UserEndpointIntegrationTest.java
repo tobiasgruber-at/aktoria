@@ -35,7 +35,6 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
@@ -112,7 +111,7 @@ class UserEndpointIntegrationTest {
         }
 
         @Test
-        @Transactional
+
         @DisplayName("post a user correctly")
         void postUserSuccessful() throws Exception {
             byte[] body = mockMvc
@@ -131,7 +130,7 @@ class UserEndpointIntegrationTest {
         }
 
         @Test
-        @Transactional
+
         @DisplayName("returns UnprocessableEntity for too short password")
         void postUserFailedPassword() throws Exception {
             mockMvc.perform(MockMvcRequestBuilders
@@ -143,7 +142,7 @@ class UserEndpointIntegrationTest {
         }
 
         @ParameterizedTest
-        @Transactional
+
         @DisplayName("returns UnprocessableEntity for null values")
         @MethodSource("userRegistrationDtoNullProvider")
         void postUserFailedName(UserRegistrationDto input) throws Exception {
@@ -156,7 +155,7 @@ class UserEndpointIntegrationTest {
         }
 
         @ParameterizedTest
-        @Transactional
+
         @DisplayName("returns UnprocessableEntity for invalid email")
         @MethodSource("userRegistrationDtoProvider")
         void postUserFailedEmail(UserRegistrationDto input) throws Exception {
@@ -169,7 +168,7 @@ class UserEndpointIntegrationTest {
         }
 
         @Test
-        @Transactional
+
         @DisplayName("return UnprocessableEntity for total invalid values")
         void postUserTooLong() throws Exception {
             String s = "a".repeat(101);
@@ -182,7 +181,7 @@ class UserEndpointIntegrationTest {
         }
 
         @Test
-        @Transactional
+
         @DisplayName("posts user with edge values correctly")
         void postUserEdgeCase() throws Exception {
             String s1 = "a".repeat(100);
@@ -203,7 +202,7 @@ class UserEndpointIntegrationTest {
         }
 
         @Test
-        @Transactional
+
         @DisplayName("return BadRequest for empty body")
         void postUserBodyNull() throws Exception {
             mockMvc.perform(MockMvcRequestBuilders
@@ -219,7 +218,7 @@ class UserEndpointIntegrationTest {
     @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user, Role.user, Role.verified, Role.admin })
     class GetUser {
         @Test
-        @Transactional
+
         @DisplayName("gets a user correctly")
         void getUserSuccessful() throws Exception {
             User input = userList.get(0);
@@ -239,7 +238,7 @@ class UserEndpointIntegrationTest {
         }
 
         @Test
-        @Transactional
+
         @DisplayName("returns NotFound on non existing user")
         void getNonexistentUser() throws Exception {
             mockMvc.perform(MockMvcRequestBuilders
@@ -264,7 +263,7 @@ class UserEndpointIntegrationTest {
         }
 
         @Test
-        @Transactional
+
         @DisplayName("changes user and password correctly")
         void patchUserAndPassword() throws Exception {
             User u = userList.get(0);
@@ -307,7 +306,7 @@ class UserEndpointIntegrationTest {
         }
 
         @Test
-        @Transactional
+
         @DisplayName("returns BadRequest on empty body")
         void patchUserBodyNull() throws Exception {
             mockMvc.perform(MockMvcRequestBuilders
@@ -317,7 +316,7 @@ class UserEndpointIntegrationTest {
         }
 
         @Test
-        @Transactional
+
         @DisplayName("returns NotFound on non existing user")
         void patchNonexistentUser() throws Exception {
             mockMvc.perform(MockMvcRequestBuilders
@@ -329,7 +328,7 @@ class UserEndpointIntegrationTest {
         }
 
         @ParameterizedTest
-        @Transactional
+
         @DisplayName("returns UnprocessableEntity")
         @MethodSource("invalidUpdateUserDtoProvider")
         void patchUserInvalidEmail(UpdateUserDto input) throws Exception {
@@ -342,7 +341,7 @@ class UserEndpointIntegrationTest {
         }
 
         @Test
-        @Transactional
+
         @DisplayName("changes user and password correctly for edge cases")
         void patchUserEdgeCase() throws Exception {
             User u = userList.get(0);
@@ -387,7 +386,7 @@ class UserEndpointIntegrationTest {
     class DeleteUser {
 
         @Test
-        @Transactional
+
         @DisplayName("deletes a user correctly")
         void deleteUserSuccessful() throws Exception {
             User u = userList.get(0);
@@ -407,7 +406,7 @@ class UserEndpointIntegrationTest {
         }
 
         @Test
-        @Transactional
+
         @DisplayName("returns NotFound on non existing user")
         void deleteNonexistentUser() throws Exception {
             mockMvc
@@ -438,7 +437,7 @@ class UserEndpointIntegrationTest {
         }
 
         @ParameterizedTest
-        @Transactional
+
         @DisplayName("returns UnprocessableEntity")
         @MethodSource("forgottenPasswordInvalidProvider")
         void forgottenPasswordInvalidEmail(PasswordChangeDto input) throws Exception {
@@ -456,7 +455,7 @@ class UserEndpointIntegrationTest {
         }
 
         @ParameterizedTest
-        @Transactional
+
         @DisplayName("changes password correctly")
         @MethodSource("forgottenPasswordValidProvider")
         void forgottenPasswordSuccessful(PasswordChangeDto input) throws Exception {

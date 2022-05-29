@@ -16,7 +16,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,7 +31,6 @@ public class SessionServiceUnitTest {
     private SessionRepository sessionRepository;
 
     @Test
-    @Transactional
     @DisplayName("saveSession() saves the session correctly")
     @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
     public void saveSession() {
@@ -53,7 +51,6 @@ public class SessionServiceUnitTest {
     }
 
     @Test
-    @Transactional
     @DisplayName("updateSession() updates session correctly")
     @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
     public void updateSession() throws Exception {
@@ -76,7 +73,6 @@ public class SessionServiceUnitTest {
     }
 
     @Test
-    @Transactional
     @DisplayName("finishSession() ends session correctly")
     @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
     public void finishSession() {
@@ -85,7 +81,6 @@ public class SessionServiceUnitTest {
     }
 
     @Test
-    @Transactional
     @DisplayName("findSessionById() finds session correctly")
     @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
     public void findSessionById() {
@@ -95,7 +90,6 @@ public class SessionServiceUnitTest {
     }
 
     @Test
-    @Transactional
     @DisplayName("findAllSessions() finds all user sessions correctly")
     @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
     public void findAllSessions() {

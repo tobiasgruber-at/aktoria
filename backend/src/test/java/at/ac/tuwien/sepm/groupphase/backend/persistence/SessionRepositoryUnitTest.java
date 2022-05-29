@@ -7,9 +7,9 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
@@ -19,6 +19,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest
 @ActiveProfiles({ "test", "datagen" })
+@DataJpaTest
 public class SessionRepositoryUnitTest {
 
     @Autowired
@@ -27,7 +28,7 @@ public class SessionRepositoryUnitTest {
     private UserRepository userRepository;
 
     @Test
-    @Transactional
+
     @DisplayName("find all sessions for a user correctly")
     public void findAllByUserCorrectly() {
         Set<Session> expected = new HashSet<>();

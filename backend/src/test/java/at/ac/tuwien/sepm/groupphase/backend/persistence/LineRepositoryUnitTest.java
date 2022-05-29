@@ -8,9 +8,9 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.ScriptRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
@@ -21,6 +21,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest
 @ActiveProfiles({ "test", "datagen" })
+@DataJpaTest
 public class LineRepositoryUnitTest {
 
     @Autowired
@@ -29,7 +30,6 @@ public class LineRepositoryUnitTest {
     private ScriptRepository scriptRepository;
 
     @Test
-    @Transactional
     @DisplayName("find all lines in a script")
     public void findByScriptIdCorrectly() throws Exception {
         Optional<Script> script = scriptRepository.findById(1L);
@@ -47,7 +47,6 @@ public class LineRepositoryUnitTest {
     }
 
     @Test
-    @Transactional
     @DisplayName("find all lines between two other lines in the same script")
     public void findByStartLineAndEndLineCorrectly() throws Exception {
         Optional<Script> script = scriptRepository.findById(1L);

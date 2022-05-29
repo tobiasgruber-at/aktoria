@@ -21,7 +21,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 
-import javax.transaction.Transactional;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -59,7 +58,6 @@ public class ScriptServiceUnitTest {
     class DeleteScriptTest {
 
         @Test
-        @Transactional
         @DisplayName("is ok")
         @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "1" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "1", roles = { Role.user, Role.verified, Role.admin })
         public void deleteScriptIsOk() {
@@ -71,7 +69,6 @@ public class ScriptServiceUnitTest {
         }
 
         @Test
-        @Transactional
         @DisplayName("throws Exception")
         @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user, Role.verified, Role.admin })
         public void deleteScriptThrowsException() {
@@ -84,7 +81,6 @@ public class ScriptServiceUnitTest {
     class AddingParticipantTest {
 
         @Test
-        @Transactional
         @DisplayName("adding Participant works")
         @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "4" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "2", roles = { Role.user, Role.verified, Role.admin })
         public void addingParticipantWorks() {
@@ -103,7 +99,6 @@ public class ScriptServiceUnitTest {
         }
 
         @Test
-        @Transactional
         @DisplayName("adding Participant throws UnauthorizedException")
         @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "4" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "2", roles = { Role.user, Role.verified, Role.admin })
         public void addingParticipantNotFound() {
