@@ -7,17 +7,19 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@SpringBootTest
-@ActiveProfiles({"test", "datagen"})
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+@DataJpaTest
+@ActiveProfiles({ "test", "datagen" })
 public class SessionRepositoryUnitTest {
 
     @Autowired
@@ -26,7 +28,7 @@ public class SessionRepositoryUnitTest {
     private UserRepository userRepository;
 
     @Test
-    @Transactional
+    @DirtiesContext
     @DisplayName("find all sessions for a user correctly")
     public void findAllByUserCorrectly() {
         Set<Session> expected = new HashSet<>();
@@ -38,6 +40,11 @@ public class SessionRepositoryUnitTest {
             }
         }
         Set<Session> actual = new HashSet<>(sessionRepository.findAllByUser(user));
-        assertThat(actual).isEqualTo(expected);
+
+        List<Long> expectedIds = expected.stream().map(Session::getId).toList();
+        List<Long> actualIds = actual.stream().map(Session::getId).toList();
+
+        assertEquals(expectedIds.size(), actualIds.size());
+        assertTrue(expectedIds.containsAll(actualIds));
     }
 }

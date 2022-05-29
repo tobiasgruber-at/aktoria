@@ -44,7 +44,6 @@ export class ScriptOverviewComponent implements OnInit {
       } else {
         this.scriptService.getOne(id).subscribe({
           next: (script) => {
-            console.log(script);
             this.script = script;
             this.members = [];
             this.members.push(script.owner);
