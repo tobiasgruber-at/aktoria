@@ -111,14 +111,14 @@ export class ScriptService {
    *
    * @param script to be saved
    */
-  save(script): Observable<DetailedScript> {
+  save(script: SimpleScript): Observable<DetailedScript> {
     return this.http
       .post<DetailedScript>(this.baseUri, script)
       .pipe(tap((s: DetailedScript) => this.setScripts([...this.scripts, s])));
   }
 
   /**
-   * Deletes the specified script
+   * Deletes the specified script.
    *
    * @param id id of script to be deleted
    */

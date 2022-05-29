@@ -11,6 +11,7 @@ import { FormBase } from '../../../../../shared/classes/form-base';
 import { ToastService } from '../../../../../core/services/toast/toast.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
+import { SectionService } from '../../../../../core/services/section/section.service';
 
 enum Step {
   selectSection,
@@ -28,11 +29,7 @@ export class ScriptRehearsalSectionsComponent
   implements OnInit, OnDestroy {
   getLoading = true;
   script: SimpleScript = null;
-  sections: SimpleSection[] = [
-    new SimpleSection('Kapitel 1', 3, 40),
-    new SimpleSection('Kapitel 2', 60, 98),
-    new SimpleSection('Kapitel 3', 40, 45)
-  ];
+  sections: SimpleSection[];
   curStep: Step = /* Step.createSection ||*/ Step.selectSection;
   isMarkingSection: IsMarkingSection = null;
   markedSection: SimpleSection = null;
@@ -42,6 +39,7 @@ export class ScriptRehearsalSectionsComponent
   constructor(
     public scriptViewerService: ScriptViewerService,
     private scriptService: ScriptService,
+    private sectionService: SectionService,
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
     private router: Router,
@@ -65,6 +63,11 @@ export class ScriptRehearsalSectionsComponent
       .pipe(takeUntil(this.$destroy))
       .subscribe((script) => {
         this.script = script;
+        this.sectionService
+          .getAll(this.script.getId())
+          .subscribe((sections) => {
+            this.sections = sections;
+          });
       });
     this.form = this.formBuilder.group({
       sectionName: ['', [Validators.required, Validators.maxLength(100)]]

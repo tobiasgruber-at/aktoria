@@ -16,6 +16,13 @@
         *ngFor="let section of sections"
         [section]="section"
       ></app-rehearsal-section>
+      <div class="flex-grow-1"></div>
+      <div class="d-flex justify-content-center mt-3">
+        <app-button
+          [disabled]="(scriptViewerService.$markedSection | async) === null"
+          label="Abschnitt proben"
+        ></app-button>
+      </div>
     </ng-container>
     <ng-container *ngIf="curStep === steps.createSection">
       <div class="form-group mb-4">
@@ -74,13 +81,15 @@
           </ng-template>
         </p>
       </div>
+      <div class="flex-grow-1"></div>
+      <div class="d-flex justify-content-center mt-3">
+        <app-button
+          [disabled]="hasError()"
+          [loading]="loading"
+          label="Abschnitt proben"
+          type="submit"
+        ></app-button>
+      </div>
     </ng-container>
-    <div class="flex-grow-1"></div>
-    <div class="d-flex justify-content-center mt-3">
-      <app-button
-        [disabled]="(scriptViewerService.$markedSection | async) === null"
-        label="Abschnitt proben"
-      ></app-button>
-    </div>
   </form>
 </app-page-layout>
