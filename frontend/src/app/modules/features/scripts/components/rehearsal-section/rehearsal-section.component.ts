@@ -38,6 +38,7 @@ export class RehearsalSectionComponent implements OnInit, OnDestroy {
       : 0;
   }
 
+  // eslint-disable-next-line @typescript-eslint/member-ordering
   @HostBinding('class')
   private get classes(): string[] {
     const classes = ['mb-2'];
@@ -64,6 +65,7 @@ export class RehearsalSectionComponent implements OnInit, OnDestroy {
     this.$destroy.complete();
   }
 
+  // eslint-disable-next-line @typescript-eslint/member-ordering
   @HostListener('click', ['$event'])
   private selectSection(): void {
     this.scriptViewerService.setMarkedSection(
