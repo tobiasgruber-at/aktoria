@@ -107,6 +107,6 @@ public interface ScriptService {
      * @return a script
      */
     ScriptDto getBySessionId(Long id);
-    
+
     void deleteParticipant(Long scriptId, String email);
 }

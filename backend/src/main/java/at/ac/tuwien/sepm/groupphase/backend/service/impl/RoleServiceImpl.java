@@ -17,11 +17,9 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.LineRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.RoleRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ScriptRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.SessionRepository;
-import at.ac.tuwien.sepm.groupphase.backend.repository.SessionRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.AuthorizationService;
 import at.ac.tuwien.sepm.groupphase.backend.service.RoleService;
 import at.ac.tuwien.sepm.groupphase.backend.service.ScriptService;
-import at.ac.tuwien.sepm.groupphase.backend.service.SessionService;
 import at.ac.tuwien.sepm.groupphase.backend.service.SessionService;
 import at.ac.tuwien.sepm.groupphase.backend.validation.RoleValidation;
 import lombok.extern.slf4j.Slf4j;
@@ -131,15 +129,15 @@ public class RoleServiceImpl implements RoleService {
             sessionRepository.save(sessions.get(i));
         }
 
-        Script script = scriptRepository.getById(sid);
+        Script script1 = scriptRepository.getById(sid);
 
-        allReplaceRoles.forEach(script.getRoles()::remove);
-        scriptRepository.save(script);
+        allReplaceRoles.forEach(script1.getRoles()::remove);
+        scriptRepository.save(script1);
         roleRepository.deleteAllById(idsToDelete);
         roleValidation.validateRoleName(mergeRolesDto.getNewName());
         keep.setName(mergeRolesDto.getNewName());
         roleRepository.saveAndFlush(keep);
-        sessionService.deprecateAffected(script.getId());
+        sessionService.deprecateAffected(script1.getId());
         return roleMapper.roleToRoleDto(keep);
     }
 

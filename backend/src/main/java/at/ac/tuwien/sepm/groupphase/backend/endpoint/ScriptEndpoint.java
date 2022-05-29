@@ -42,7 +42,7 @@ public class ScriptEndpoint {
         this.scriptService = scriptService;
     }
 
-    @PostMapping(path = "/new", produces = { MediaType.APPLICATION_JSON_VALUE }, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    @PostMapping(path = "/new", produces = {MediaType.APPLICATION_JSON_VALUE}, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @ResponseStatus(HttpStatus.OK)
     @Secured(Permission.verified)
     public SimpleScriptDto uploadScript(@RequestPart("file") MultipartFile multipartFile, @RequestPart(value = "startPage", required = false) String startPage) {
