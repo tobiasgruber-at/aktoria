@@ -6,14 +6,22 @@ import { AlertComponent } from './components/alert/alert.component';
 import { PageLayoutComponent } from './components/page-layout/page-layout.component';
 import { CardComponent } from './components/card/card.component';
 import { ButtonComponent } from './components/button/button.component';
-import { PersonCircle, PlayFill, ThreeDots } from 'ng-bootstrap-icons/icons';
+import {
+  CaretLeftFill,
+  CaretRightFill,
+  PersonCircle,
+  PlayFill,
+  ThreeDots,
+  XLg
+} from 'ng-bootstrap-icons/icons';
 import { BootstrapIconsModule } from 'ng-bootstrap-icons';
 import { FormErrorComponent } from './components/form-errors/form-error/form-error.component';
 import { FormErrorsComponent } from './components/form-errors/form-errors.component';
 import { ModalComponent } from './components/modal/modal.component';
 import {
   NgbCollapseModule,
-  NgbDropdownModule
+  NgbDropdownModule,
+  NgbTooltipModule
 } from '@ng-bootstrap/ng-bootstrap';
 
 const icons = {
@@ -22,7 +30,13 @@ const icons = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   ThreeDots,
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  PlayFill
+  PlayFill,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  CaretLeftFill,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  CaretRightFill,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  XLg
 };
 const sharedDeclarations = [
   PageLayoutComponent,
@@ -39,7 +53,8 @@ const sharedImports = [
   ReactiveFormsModule,
   RouterModule,
   NgbCollapseModule,
-  NgbDropdownModule
+  NgbDropdownModule,
+  NgbTooltipModule
 ];
 
 @NgModule({

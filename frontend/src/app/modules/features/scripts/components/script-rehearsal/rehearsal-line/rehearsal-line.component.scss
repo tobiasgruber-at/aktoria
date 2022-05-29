@@ -1,0 +1,35 @@
+:host {
+  display: flex;
+  /*
+    Necessary to have the appearAnimations work properly. Because the parent's height shrinks to 0,
+    the children, that stick on the bottom, are shifted upwards.
+  */
+  align-items: flex-end;
+
+  &:not(.is-active) {
+    .role-name,
+    p {
+      opacity: 25%;
+    }
+  }
+
+  &.is-highlighted {
+    .role-name {
+      color: var(--bs-primary);
+    }
+  }
+
+  &.is-instruction {
+    font-style: italic;
+  }
+}
+
+.role-name,
+p {
+  transition: opacity 200ms ease-in-out;
+  font-size: 1.8rem;
+}
+
+.role-name {
+  font-weight: 600;
+}

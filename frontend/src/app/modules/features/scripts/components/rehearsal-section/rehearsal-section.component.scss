@@ -1,9 +1,19 @@
 :host {
+  transition: box-shadow 150ms ease-in-out;
   display: block;
   cursor: pointer;
 
-  &:hover {
+  &:hover,
+  &.is-active {
     box-shadow: 0 0 10px rgb(0 0 0 / 5%);
+
+    h5 {
+      color: var(--bs-primary);
+    }
+
+    .section-span .indicator {
+      background-color: var(--bs-primary);
+    }
   }
 }
 
@@ -12,19 +22,25 @@ bi {
 }
 
 h5 {
-  font-weight: 400;
+  transition: color 150ms ease-in-out;
+  font-weight: 500;
 }
 
-.marking {
-  transition: transform 200ms ease;
-  width: 100%;
-  height: 0.3rem;
-  background-color: var(--bs-primary);
-  position: absolute;
-  bottom: 0;
-  left: 0;
+h6 {
+  font-weight: 400;
+  color: rgb(0 0 0 / 35%);
+}
 
-  &:not(.active) {
-    transform: translateY(100%);
+.section-span {
+  height: 0.5rem;
+  background-color: rgb(0 0 0 / 7%);
+
+  .indicator {
+    transition: background-color 150ms ease-in-out;
+    border-radius: 3px;
+    background-color: var(--bs-secondary);
+    position: absolute;
+    top: 0;
+    bottom: 0;
   }
 }
