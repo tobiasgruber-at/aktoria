@@ -23,7 +23,10 @@
       </div>
     </div>
   </div>
-  <div *ngIf="!isCreate" class="section-span w-100 position-relative">
+  <div
+    *ngIf="!isCreate"
+    class="section-span w-100 position-relative overflow-hidden"
+  >
     <div
       [style.left.%]="startLinePercentage"
       [style.right.%]="100 - endLinePercentage"
