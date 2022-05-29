@@ -80,7 +80,7 @@ export class ScriptService {
     return this.scripts?.length > 0
       ? of(this.scripts)
       : this.http.get<ScriptPreview[]>(this.baseUri).pipe(
-          map((scripts) => scripts.map((s) => new ScriptPreview(s.id, s.name))),
+          map((scripts) => scripts.map((s) => new ScriptPreview(s.id, s.name, s.owner))),
           tap((scripts) => this.setScripts(scripts))
         );
   }
