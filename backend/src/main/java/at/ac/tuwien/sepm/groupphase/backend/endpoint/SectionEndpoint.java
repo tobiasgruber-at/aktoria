@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * Section endpoint.
  *
@@ -38,6 +40,14 @@ public class SectionEndpoint {
         log.info("GET {}/{}", path, id);
         SectionDto sectionDto = sectionService.getSection(id);
         return sectionDto;
+    }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    @Secured(Permission.verified)
+    public List<SectionDto> getAllSections() {
+        log.info("GET{}", path);
+        return sectionService.getAllSections();
     }
 
     @PostMapping

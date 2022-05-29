@@ -3,6 +3,8 @@ package at.ac.tuwien.sepm.groupphase.backend.service;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SectionDto;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Service for section.
  *
@@ -33,4 +35,11 @@ public interface SectionService {
      * @return the section with the specified ID
      */
     SectionDto getSection(Long id);
+
+    /**
+     * Gets all sections stored in the database.
+     *
+     * @return all sections stored in the database
+     */
+    List<SectionDto> getAllSections();
 }

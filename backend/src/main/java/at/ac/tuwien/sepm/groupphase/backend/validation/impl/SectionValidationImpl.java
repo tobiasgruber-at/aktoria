@@ -40,7 +40,7 @@ public class SectionValidationImpl implements SectionValidation {
     public void validateCreateSection(SectionDto sectionDto) {
         try {
             validateName(sectionDto.getName());
-            validateOwner(sectionDto.getOwner());
+            validateOwner(sectionDto.getOwner(), sectionDto.getStartLine());
             validateLines(sectionDto.getStartLine(), sectionDto.getEndLine());
             ownerLoggedIn(sectionDto.getOwner());
         } catch (ValidationException e) {
@@ -62,7 +62,8 @@ public class SectionValidationImpl implements SectionValidation {
         }
     }
 
-    private void validateOwner(Long ownerId) throws NotFoundException {
+    @Override
+    public void validateOwner(Long ownerId, Long startId) throws NotFoundException {
         if (ownerId == null) {
             throw new ValidationException("Lernabschnitt hat keinen Besitzer");
         }
@@ -70,6 +71,13 @@ public class SectionValidationImpl implements SectionValidation {
         if (user.isEmpty()) {
             throw new ValidationException("Besitzer des Lernabschnitts existiert nicht!");
         }
+        Optional<Line> start = lineRepository.findById(startId);
+        if (start.isEmpty()) {
+            throw new ValidationException("Anfang des Lernabschnitts existiert nicht");
+        }
+        Script script = start.get().getPage().getScript();
+        authorizationService.checkMemberAuthorization(script.getId());
+
     }
 
     private void validateLines(Long startId, Long endId) throws ValidationException {

@@ -23,4 +23,12 @@ public interface SectionValidation {
      * @param owner the ID of the owner of the section
      */
     void ownerLoggedIn(Long owner);
+
+    /**
+     * Validates if the user is a participant of the script.
+     *
+     * @param ownerId the user that wants to create the section
+     * @param startId the starting line of the section
+     */
+    void validateOwner(Long ownerId, Long startId);
 }
