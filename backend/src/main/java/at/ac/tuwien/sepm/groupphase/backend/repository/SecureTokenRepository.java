@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface SecureTokenRepository extends JpaRepository<SecureToken, Long> {
     Optional<SecureToken> findByToken(String token);
 
-    Long removeByToken(String token);
+    Long deleteByToken(String token);
 
     @Modifying
     @Query("DELETE FROM SecureToken t where t.expireAt <= ?1")

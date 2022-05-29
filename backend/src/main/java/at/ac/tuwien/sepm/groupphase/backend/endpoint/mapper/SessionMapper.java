@@ -7,6 +7,9 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 
+import java.util.List;
+import java.util.Set;
+
 @Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface SessionMapper {
 
@@ -16,4 +19,7 @@ public interface SessionMapper {
         @Mapping(target = "currentLineId", source = "currentLine.id")
     })
     SessionDto sessionToSessionDto(Session session);
+
+    @Mapping(target = "sectionId", source = "section.id")
+    List<SessionDto> setOfSessionToListOfSessionDto(Set<Session> sessionSet);
 }
