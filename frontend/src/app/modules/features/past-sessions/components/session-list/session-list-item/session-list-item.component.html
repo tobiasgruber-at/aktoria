@@ -1,0 +1,43 @@
+<div *ngIf="section">
+  <div (click)="openModal(content)" role="button">
+    <div [class.bg-light]="true" class="card">
+      <div class="d-flex align-items-center justify-content-center h-100 p-3">
+        <img
+          [alt]="section.name + ' (' + startDate + ')'"
+          [style.opacity]="1"
+          class="card-img"
+        />
+      </div>
+      <div *ngIf="true" class="card-img-overlay"></div>
+    </div>
+  </div>
+
+  <ng-template #content let-modal>
+    <app-modal
+      (confirm)="modal.dismiss()"
+      (decline)="modal.dismiss()"
+      [showDecline]="false"
+      [title]="section.name"
+      confirmBtnLabel="Schließen"
+    >
+      <p>Du hast diesen Abschnitt am {{ startDate }} erstellt.</p>
+      <div *ngIf="session.role">
+        <p>Du hast die Rolle "{{ session.role }}" geübt.</p>
+      </div>
+      <div *ngIf="session.coverage">
+        <p>
+          {{ session.coverage * 100 }}% des gesprochenen Textes wurden erkannt.
+        </p>
+      </div>
+      <div *ngIf="session.selfAssessment">
+        <p>So hast du dich dabei gefühlt: {{ session.selfAssessment }}</p>
+      </div>
+
+      <p>
+        An dieser Stelle sollten sich hoffentlich bald Infos über diese Session
+        befinden :)
+      </p>
+      <!--TODO: insert Progress bar here-->
+    </app-modal>
+  </ng-template>
+</div>

@@ -23,6 +23,7 @@ import {
   NgbDropdownModule,
   NgbTooltipModule
 } from '@ng-bootstrap/ng-bootstrap';
+import { SectionComponent } from './components/section/section.component';
 
 const icons = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -45,7 +46,8 @@ const sharedDeclarations = [
   ButtonComponent,
   FormErrorComponent,
   FormErrorsComponent,
-  ModalComponent
+  ModalComponent,
+  SectionComponent
 ];
 const sharedImports = [
   CommonModule,

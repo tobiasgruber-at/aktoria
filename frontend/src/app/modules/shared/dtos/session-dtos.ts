@@ -7,10 +7,10 @@ export class SimpleSession {
     public id: number,
     public start: number,
     public end: number,
-    //public selfAssessment: AssessmentType,
-    //public deprecated: boolean,
-    //public coverage: number,
-    //public section: SimpleSection,
+    public selfAssessment: AssessmentType,
+    public deprecated: boolean,
+    public coverage: number,
+    public sectionId: number,
     public currentLine: number,
     public role: Role
   ) {}

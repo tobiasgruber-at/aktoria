@@ -72,11 +72,16 @@ export class RehearsalSectionComponent implements OnInit, OnDestroy {
   }
 
   startRehearsal(): void {
+    //TODO: replace null with actual values
     this.scriptRehearsalService.setSession(
       new SimpleSession(
         null,
         this.section.startLine,
         this.section.endLine,
+        null,
+        false,
+        null,
+        null,
         this.section.startLine,
         this.script.roles[0]
       )
