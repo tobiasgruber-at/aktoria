@@ -7,6 +7,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 
+import java.util.List;
+
 /**
  * Describes a section mapper.
  *
@@ -22,4 +24,6 @@ public interface SectionMapper {
         @Mapping(target = "startLine", source = "startLine.id")
     })
     SectionDto sectionToSectionDto(Section section);
+
+    List<SectionDto> sectionListToSectionDtoList(List<Section> sections);
 }

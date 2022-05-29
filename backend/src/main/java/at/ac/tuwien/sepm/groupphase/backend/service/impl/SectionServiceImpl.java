@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -59,6 +60,7 @@ public class SectionServiceImpl implements SectionService {
         if (user == null) {
             throw new UnauthorizedException();
         }
+        authorizationService.checkBasicAuthorization(user.getId());
         try {
             sectionValidation.validateCreateSection(sectionDto);
         } catch (NotFoundException e) {
@@ -95,6 +97,7 @@ public class SectionServiceImpl implements SectionService {
         } catch (UnauthorizedException e) {
             throw new UnauthorizedException(e.getMessage(), e);
         }
+        sectionValidation.validateOwner(user.getId(), section.get().getStartLine().getId());
         sectionRepository.deleteById(id);
     }
 
@@ -116,6 +119,19 @@ public class SectionServiceImpl implements SectionService {
         } catch (UnauthorizedException e) {
             throw new UnauthorizedException(e.getMessage(), e);
         }
-        return sectionMapper.sectionToSectionDto(section.get());
+        SectionDto sectionDto = sectionMapper.sectionToSectionDto(section.get());
+        sectionValidation.validateOwner(user.getId(), sectionDto.getStartLine());
+        return sectionDto;
+    }
+
+    @Override
+    public List<SectionDto> getAllSections() {
+        log.trace("getAllSections()");
+        User user = authorizationService.getLoggedInUser();
+        if (user == null) {
+            throw new UnauthorizedException();
+        }
+        authorizationService.checkBasicAuthorization(user.getId());
+        return sectionMapper.sectionListToSectionDtoList(sectionRepository.findByOwner(user));
     }
 }

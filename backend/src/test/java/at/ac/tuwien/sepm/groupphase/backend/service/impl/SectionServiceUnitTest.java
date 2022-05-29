@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
 import at.ac.tuwien.sepm.groupphase.backend.datagenerator.SectionDataGenerator;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SectionDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.SectionMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Section;
 import at.ac.tuwien.sepm.groupphase.backend.enums.Role;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
@@ -18,6 +19,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -31,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @author Julia Bernold
  */
 
-@ActiveProfiles({ "test", "datagen" })
+@ActiveProfiles({"test", "datagen"})
 @SpringBootTest
 class SectionServiceUnitTest {
 
@@ -39,10 +41,12 @@ class SectionServiceUnitTest {
     SectionService sectionService;
     @Autowired
     SectionRepository sectionRepository;
+    @Autowired
+    SectionMapper sectionMapper;
 
     @Nested
     @DisplayName("getSection()")
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user, Role.verified, Role.admin })
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {Role.user, Role.verified, Role.admin})
     class GetSectionTest {
         @Test
         @DirtiesContext
@@ -64,7 +68,7 @@ class SectionServiceUnitTest {
 
     @Nested
     @DisplayName("createSection()")
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user, Role.verified, Role.admin })
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {Role.user, Role.verified, Role.admin})
     class CreateSectionTest {
         @Test
         @DirtiesContext
@@ -131,7 +135,7 @@ class SectionServiceUnitTest {
 
     @Nested
     @DisplayName("deleteSection()")
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user, Role.verified, Role.admin })
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {Role.user, Role.verified, Role.admin})
     class DeleteSectionTest {
         @Test
         @DirtiesContext
@@ -151,4 +155,21 @@ class SectionServiceUnitTest {
             assertThrows(NotFoundException.class, () -> sectionService.deleteSection(0L));
         }
     }
+
+    @Nested
+    @DisplayName("getAllSections()")
+    @SpringBootTest
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {Role.user, Role.verified, Role.admin})
+    class AllSectionsTest {
+        @Test
+        @DirtiesContext
+        @DisplayName("Gets all sections")
+        void getAllSections() {
+            // List<SectionDto> expected = sectionMapper.sectionListToSectionDtoList(sectionRepository.findAll());
+            List<SectionDto> received = sectionService.getAllSections();
+            //assertTrue(received.containsAll(expected));
+            assertNotNull(received);
+        }
+    }
+
 }

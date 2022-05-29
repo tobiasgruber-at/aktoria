@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SectionDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.SectionMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Script;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Section;
 import at.ac.tuwien.sepm.groupphase.backend.entity.User;
@@ -39,7 +40,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author Julia Bernold
  */
 @SpringBootTest
-@ActiveProfiles({ "test", "datagen" })
+@ActiveProfiles({"test", "datagen"})
 @EnableWebMvc
 @WebAppConfiguration
 class SectionEndpointIntegrationTest {
@@ -48,6 +49,8 @@ class SectionEndpointIntegrationTest {
     ObjectMapper objectMapper;
     @Autowired
     SectionRepository sectionRepository;
+    @Autowired
+    SectionMapper sectionMapper;
     @Autowired
     private WebApplicationContext webAppContext;
     private MockMvc mockMvc;
@@ -93,6 +96,27 @@ class SectionEndpointIntegrationTest {
                 .get("/api/v1/scripts/sections/{id}", -1L)
                 .accept(MediaType.APPLICATION_JSON)
             ).andExpect(status().isNotFound());
+        }
+    }
+
+    //TESTING GET ALL
+    @Nested
+    @DisplayName("getAllSections()")
+    class GetAllSections {
+        @Test
+        @DirtiesContext
+        @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = Role.verified)
+        @DisplayName("Get all Sections")
+        void getSectionById() throws Exception {
+            //List<SectionDto> expected = sectionMapper.sectionListToSectionDtoList(sectionRepository.findAll());
+            byte[] body = mockMvc
+                .perform(MockMvcRequestBuilders
+                    .get("/api/v1/scripts/sections")
+                    .accept(MediaType.APPLICATION_JSON)
+                ).andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsByteArray();
+            List<SectionDto> sectionResult = objectMapper.readerFor(SectionDto.class).<SectionDto>readValues(body).readAll();
+            assertNotNull(sectionResult);
         }
     }
 
