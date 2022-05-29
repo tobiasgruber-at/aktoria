@@ -39,7 +39,7 @@
         [alt]="member.firstName + ' ' + member.lastName"
         [style.opacity]="0.1"
         class="card-img"
-        src="../../../../../../assets/illustrations/user.svg"
+        src="../../../../../../assets/illustrations/{{ (member === owner) ? 'owner.svg' : 'user.svg' }}"
       />
     </div>
     <div class="card-img-overlay">

@@ -2,15 +2,20 @@ package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SessionDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleSessionDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UpdateSessionDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.SessionMapper;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Line;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Role;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Script;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Section;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Session;
 import at.ac.tuwien.sepm.groupphase.backend.entity.User;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.UnauthorizedException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
+import at.ac.tuwien.sepm.groupphase.backend.repository.LineRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.RoleRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ScriptRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.SectionRepository;
@@ -24,7 +29,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  * A specific implementation of SessionService.
@@ -41,15 +48,19 @@ public class SessionServiceImpl implements SessionService {
     private final ScriptRepository scriptRepository;
     private final SectionRepository sectionRepository;
     private final RoleRepository roleRepository;
+    private final LineRepository lineRepository;
+    private final AuthorizationService authorizationService;
     private final SessionMapper sessionMapper;
 
-    public SessionServiceImpl(AuthorizationService authorizationService, SessionRepository sessionRepository, ScriptRepository scriptRepository, SectionRepository sectionRepository, RoleRepository roleRepository,
-                              SessionMapper sessionMapper) {
-        this.authorizationService = authorizationService;
+    public SessionServiceImpl(SessionRepository sessionRepository, SectionRepository sectionRepository,
+                              RoleRepository roleRepository, LineRepository lineRepository,
+                              AuthorizationService authorizationService, SessionMapper sessionMapper) {
         this.sessionRepository = sessionRepository;
         this.scriptRepository = scriptRepository;
         this.sectionRepository = sectionRepository;
         this.roleRepository = roleRepository;
+        this.lineRepository = lineRepository;
+        this.authorizationService = authorizationService;
         this.sessionMapper = sessionMapper;
     }
 
@@ -142,17 +153,142 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
-    public SessionDto update(SessionDto sessionDto, Long id) {
-        return null;
+    @Transactional
+    public SessionDto update(UpdateSessionDto updateSessionDto, Long id) {
+        log.trace("update(session = {}, {})", id, updateSessionDto);
+        User user = authorizationService.getLoggedInUser();
+        if (user == null) {
+            throw new UnauthorizedException();
+        }
+        Optional<Session> session = sessionRepository.findById(id);
+        if (session.isEmpty()) {
+            throw new NotFoundException("Session not found");
+        }
+        Session curSession = session.get();
+        if (!curSession.getSection().getOwner().getId().equals(user.getId())) {
+            throw new UnauthorizedException("User not permitted to update this session");
+        }
+        if (updateSessionDto.getDeprecated() != null) {
+            curSession.setDeprecated(updateSessionDto.getDeprecated());
+        }
+        if (updateSessionDto.getCurrentLineId() != null) {
+            Optional<Line> line = lineRepository.findById(updateSessionDto.getCurrentLineId());
+            if (line.isEmpty()) {
+                throw new NotFoundException("Current line not found");
+            }
+            if (!curSession.getSection().getStartLine().getPage().getScript().getId()
+                .equals(line.get().getPage().getScript().getId())) {
+                throw new ValidationException("Current line not in correct script");
+            }
+            if (curSession.getSection().getEndLine().getPage().getIndex() <= line.get().getPage().getIndex()) {
+                if (curSession.getSection().getEndLine().getPage().getIndex() < line.get().getPage().getIndex()
+                    || curSession.getSection().getEndLine().getIndex() < line.get().getIndex()) {
+                    throw new ValidationException("Current line may not be after the end of the section");
+                }
+            }
+            curSession.setCurrentLine(line.get());
+            Double coverage = computeCoverage(curSession.getSection(), line.get());
+            if (coverage == null) {
+                throw new IllegalStateException();
+            }
+            curSession.setCoverage(coverage);
+        }
+        if (updateSessionDto.getSelfAssessment() != null) {
+            curSession.setSelfAssessment(updateSessionDto.getSelfAssessment());
+        }
+        curSession = sessionRepository.save(curSession);
+        return sessionMapper.sessionToSessionDto(curSession);
     }
 
     @Override
+    @Transactional
     public SessionDto finish(Long id) {
-        return null;
+        log.trace("finish(id = {})", id);
+        User user = authorizationService.getLoggedInUser();
+        if (user == null) {
+            throw new UnauthorizedException();
+        }
+        Optional<Session> session = sessionRepository.findById(id);
+        if (session.isEmpty()) {
+            throw new NotFoundException("Session not found");
+        }
+        Session curSession = session.get();
+        if (!curSession.getSection().getOwner().getId().equals(user.getId())) {
+            throw new UnauthorizedException("User not permitted to update this session");
+        }
+        if (curSession.getDeprecated()) {
+            throw new ConflictException("Session is already deprecated");
+        }
+        curSession.setEnd(LocalDateTime.now());
+        curSession = sessionRepository.save(curSession);
+        return sessionMapper.sessionToSessionDto(curSession);
     }
 
     @Override
+    @Transactional
     public SessionDto findById(Long id) {
+        log.trace("findSessionById(id = {})", id);
+        User user = authorizationService.getLoggedInUser();
+        if (user == null) {
+            throw new UnauthorizedException();
+        }
+        Optional<Session> session = sessionRepository.findById(id);
+        if (session.isEmpty()) {
+            throw new NotFoundException("Session not found");
+        }
+        Session curSession = session.get();
+        if (!curSession.getSection().getOwner().getId().equals(user.getId())) {
+            throw new UnauthorizedException("User not permitted to view this session");
+        }
+        return sessionMapper.sessionToSessionDto(curSession);
+    }
+
+    @Override
+    @Transactional
+    public Stream<SessionDto> findAll() {
+        log.trace("findAllSessions()");
+        User user = authorizationService.getLoggedInUser();
+        if (user == null) {
+            throw new UnauthorizedException();
+        }
+        return sessionRepository.findAllByUser(user).stream().map(sessionMapper::sessionToSessionDto);
+    }
+
+    @Override
+    @Transactional
+    public Stream<SessionDto> findPastSessions(Boolean deprecated, Long sectionId) {
+        log.trace("findPastSessions(deprecated = {}, sectionId = {})", deprecated, sectionId);
+        User user = authorizationService.getLoggedInUser();
+        if (user == null) {
+            throw new UnauthorizedException();
+        }
+        List<Session> sessions;
+        if (deprecated == null || !deprecated) {
+            if (sectionId == null) {
+                sessions = sessionRepository.findByDeprecatedAndUser(false, user);
+            } else {
+                sessions = sessionRepository.findBySectionAndDeprecatedAndUser(sectionId, false, user);
+            }
+        } else {
+            if (sectionId == null) {
+                sessions = sessionRepository.findByDeprecatedAndUser(true, user);
+            } else {
+                sessions = sessionRepository.findBySectionAndDeprecatedAndUser(sectionId, true, user);
+            }
+        }
+        return sessions.stream().map(sessionMapper::sessionToSessionDto);
+    }
+
+    private Double computeCoverage(Section section, Line line) {
+        log.trace("computeCoverage(section = {}, line = {})", section, line);
+        Line startLine = section.getStartLine();
+        Line endLine = section.getEndLine();
+        List<Line> linesInBetween = lineRepository.findByStartLineAndEndLine(startLine, endLine);
+        for (int i = 0; i < linesInBetween.size(); i++) {
+            if (linesInBetween.get(i).getIndex().equals(line.getIndex())) {
+                return (double) (i + 1) / linesInBetween.size();
+            }
+        }
         return null;
     }
 }

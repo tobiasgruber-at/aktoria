@@ -20,7 +20,6 @@ public class DataGeneratorController {
     private final ScriptDataGenerator scriptDataGenerator;
     private final SectionDataGenerator sectionDataGenerator;
 
-
     public DataGeneratorController(UserDataGenerator userDataGenerator, ScriptDataGenerator scriptDataGenerator, SectionDataGenerator sectionDataGenerator) {
         this.userDataGenerator = userDataGenerator;
         this.scriptDataGenerator = scriptDataGenerator;
@@ -28,7 +27,7 @@ public class DataGeneratorController {
     }
 
     @PostConstruct
-    private void generateData() {
+    public void generateData() {
         userDataGenerator.generateUser();
         scriptDataGenerator.generateScript();
         scriptDataGenerator.generateSpokenBy();

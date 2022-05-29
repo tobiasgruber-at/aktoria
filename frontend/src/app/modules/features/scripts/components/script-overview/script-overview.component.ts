@@ -15,7 +15,6 @@ import { AuthService } from '../../../../core/services/auth/auth-service';
 })
 export class ScriptOverviewComponent implements OnInit {
   getLoading = true;
-  getError = null;
   deleteLoading = false;
   deleteError = null;
   script: DetailedScript = null;
@@ -29,32 +28,27 @@ export class ScriptOverviewComponent implements OnInit {
     private scriptService: ScriptService,
     private toastService: ToastService,
     private modalService: NgbModal,
-    private authService: AuthService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
       const id = +params.get('id');
-      const handleNotFound = () => {
-        this.getError = 'Skript konnte nicht gefunden werden.';
-        this.getLoading = false;
-      };
-      if (isNaN(id)) {
-        handleNotFound();
-      } else {
-        this.scriptService.getOne(id).subscribe({
-          next: (script) => {
-            console.log(script);
-            this.script = script;
-            this.members = [];
-            this.members.push(script.owner);
-            Array.prototype.push.apply(this.members, script.participants);
-            this.selectedRole = this.script.roles[0];
-            this.getLoading = false;
-          },
-          error: handleNotFound
-        });
-      }
+      this.scriptService.getOne(id).subscribe({
+        next: (script) => {
+          this.script = script;
+          this.members = [];
+          this.members.push(script.owner);
+          Array.prototype.push.apply(this.members, script.participants);
+          this.selectedRole = this.script.roles[0];
+          this.getLoading = false;
+        },
+        error: (err) => {
+          this.toastService.showError(err);
+          this.router.navigateByUrl('/scripts');
+          this.getLoading = false;
+        }
+      });
     });
   }
 
@@ -83,20 +77,22 @@ export class ScriptOverviewComponent implements OnInit {
 
   exitScript(modal: NgbActiveModal): void {
     this.deleteLoading = true;
-    this.scriptService.removeParticipant(this.script.id, this.authService.getEmail()).subscribe({
-      next: () => {
-        modal.dismiss();
-        this.router.navigateByUrl('/scripts');
-        this.toastService.show({
-          message: 'Skript erfolgreich verlassen.',
-          theme: Theme.primary
-        });
-      },
-      error: (err) => {
-        this.deleteLoading = false;
-        this.deleteError = err.error?.message;
-      }
-    });
+    this.scriptService
+      .removeParticipant(this.script.id, this.authService.getEmail())
+      .subscribe({
+        next: () => {
+          modal.dismiss();
+          this.router.navigateByUrl('/scripts');
+          this.toastService.show({
+            message: 'Skript erfolgreich verlassen.',
+            theme: Theme.primary
+          });
+        },
+        error: (err) => {
+          this.deleteLoading = false;
+          this.deleteError = err.error?.message;
+        }
+      });
   }
 
   isOwner() {

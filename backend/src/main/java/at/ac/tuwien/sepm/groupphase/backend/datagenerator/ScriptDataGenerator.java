@@ -54,6 +54,7 @@ public class ScriptDataGenerator {
     private final PageRepository pageRepository;
     private final LineRepository lineRepository;
     private final RoleRepository roleRepository;
+    private long lineIndex = 1;
 
     public ScriptDataGenerator(UserRepository userRepository, ScriptRepository scriptRepository,
                                PageRepository pageRepository, LineRepository lineRepository,
@@ -78,6 +79,7 @@ public class ScriptDataGenerator {
                     .owner(users.get((i - 1) % usersSize)).build();
                 log.debug("saving script {}", script);
                 scriptRepository.save(script);
+                lineIndex = 1;
                 generatePage(script);
                 generateRole(script);
             }
@@ -97,8 +99,9 @@ public class ScriptDataGenerator {
     private void generateLine(Page page) {
         log.debug("generating {} line entries for page {}", NUMBER_OF_LINES_PER_PAGE, page);
         for (int i = 1; i <= NUMBER_OF_LINES_PER_PAGE; i++) {
-            Line line = Line.builder().page(page).index((long) i)
+            Line line = Line.builder().page(page).index(lineIndex)
                 .content(TEST_LINE_CONTENT).active(true).build();
+            lineIndex++;
             log.debug("saving line {}", line);
             lineRepository.save(line);
         }

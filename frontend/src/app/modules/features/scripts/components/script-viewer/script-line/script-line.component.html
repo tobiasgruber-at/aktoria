@@ -18,6 +18,7 @@
         >
       </ng-container>
     </div>
+    <!-- TODO: remove toggle when only viewing mode, as it throws errors -->
     <p
       [class.fst-italic]="isInstruction"
       [class.highlighted]="
@@ -52,11 +53,14 @@
     </ng-template>
   </div>
 </div>
-<div
-  *ngIf="(scriptViewerService.$markedSection | async)?.startLine === line.index"
-  class="marking start-line"
-></div>
-<div
-  *ngIf="(scriptViewerService.$markedSection | async)?.endLine === line.index"
-  class="marking end-line"
-></div>
+<div *ngIf="section?.startLine === line.index" class="marking start-line">
+  <span>{{ section?.name || 'Start' }}</span>
+</div>
+<div *ngIf="section?.endLine === line.index" class="marking end-line">
+  <span>Ende</span>
+</div>
+<!--
+  Line anchor to scroll to. necessary to not scroll directly on the top of the line,
+  but a little further up
+-->
+<div #scrollAnchor class="scroll-anchor"></div>

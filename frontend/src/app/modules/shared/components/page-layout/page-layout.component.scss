@@ -22,7 +22,7 @@ footer {
 
 header,
 footer {
-  z-index: 10000; // greater than bootstrap dropdowns
+  z-index: 10; // greater than content, but less than bootstrap modal
 }
 
 header nav,
@@ -31,14 +31,15 @@ footer {
 }
 
 main {
+  --main-height: calc(100vh - var(--nav-height));
   // 'height' must be specifically defined, as it has 'overflow: auto' and is not scrollable otherwise
-  height: calc(100vh - var(--nav-height));
+  height: var(--main-height);
   margin: 0 auto;
   overflow-y: scroll;
 
   & > .wrapper {
     margin: 0 auto;
-    max-width: 1200px;
+    max-width: var(--max-grid);
   }
 
   &.is-dark-theme::-webkit-scrollbar-thumb {
@@ -56,6 +57,11 @@ main {
   &::-webkit-scrollbar-thumb {
     -webkit-border-radius: 2ex;
   }
+
+  .loading-screen {
+    height: var(--main-height);
+    top: var(--nav-height);
+  }
 }
 
 aside {
@@ -64,7 +70,14 @@ aside {
   overflow-y: scroll;
   top: var(--nav-height);
   right: 0;
-  z-index: 10;
+  z-index: 9; // in front of main and below the header
+
+  .aside-loading-screen {
+    // otherwise content not clickable when loading-spinner away
+    z-index: -1;
+    top: 0;
+    left: 0;
+  }
 }
 
 ul {

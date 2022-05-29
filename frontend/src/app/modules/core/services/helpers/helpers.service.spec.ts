@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { ScriptViewerService } from './script-viewer.service';
+import { HelpersService } from './helpers.service';
 
-describe('ScriptEditService', () => {
-  let service: ScriptViewerService;
+describe('HelpersService', () => {
+  let service: HelpersService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(ScriptViewerService);
+    service = TestBed.inject(HelpersService);
   });
 
   it('should be created', () => {

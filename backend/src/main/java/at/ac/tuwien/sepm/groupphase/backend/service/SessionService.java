@@ -2,7 +2,10 @@ package at.ac.tuwien.sepm.groupphase.backend.service;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SessionDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleSessionDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UpdateSessionDto;
 import org.springframework.stereotype.Service;
+
+import java.util.stream.Stream;
 
 /**
  * Describes a session service component.
@@ -38,11 +41,11 @@ public interface SessionService {
     /**
      * Updates a session in the data storage.
      *
-     * @param sessionDto the session that contains the changes
+     * @param updateSessionDto the session that contains the changes
      * @param id         the id of the session
      * @return the updated session
      */
-    SessionDto update(SessionDto sessionDto, Long id);
+    SessionDto update(UpdateSessionDto updateSessionDto, Long id);
 
     /**
      * Finishes a session in the data storage.
@@ -59,4 +62,20 @@ public interface SessionService {
      * @return the session found in the data storage
      */
     SessionDto findById(Long id);
+
+    /**
+     * Gets all sessions for a user.
+     *
+     * @return all sessions found in the data storage for the user.
+     */
+    Stream<SessionDto> findAll();
+
+    /**
+     * Gets all past sessions for user according to the params.
+     *
+     * @param deprecated if deprecated sessions should be included in the query (default: false)
+     * @param sectionId of a specific section (default: none)
+     * @return a stream of all sessions found
+     */
+    Stream<SessionDto> findPastSessions(Boolean deprecated, Long sectionId);
 }

@@ -80,6 +80,7 @@
     'overflow: hidden' on the root element).
   -->
   <main
+    (scroll)="onScrollMain($event)"
     [class.is-dark-theme]="theme === 'dark'"
     class="w-100 p-5 d-flex flex-column"
   >
@@ -92,7 +93,7 @@
       <div
         *ngIf="loading"
         @fixedAppear
-        class="loading-screen fixed-top vh-100 flex-grow-1 d-flex justify-content-center align-items-center"
+        class="loading-screen fixed-top flex-grow-1 d-flex justify-content-center align-items-center"
       >
         <div class="spinner-border text-secondary" role="status">
           <span class="sr-only"></span>
@@ -107,7 +108,21 @@
     *ngIf="showSidebar"
     class="position-fixed bg-light p-5 d-flex flex-column flex-grow-1"
   >
-    <ng-content select="[role=sidebar]"></ng-content>
+    <div
+      class="aside-loading-screen position-absolute h-100 w-100 flex-grow-1 d-flex justify-content-center align-items-center"
+    >
+      <div
+        *ngIf="loading"
+        @fixedAppear
+        class="spinner-border text-secondary"
+        role="status"
+      >
+        <span class="sr-only"></span>
+      </div>
+    </div>
+    <div *ngIf="!loading" @fixedAppear class="flex-grow-1 d-flex flex-column">
+      <ng-content select="[role=sidebar]"></ng-content>
+    </div>
   </aside>
   <footer *ngIf="showFooter" class="px-5 bg-light"></footer>
 </div>

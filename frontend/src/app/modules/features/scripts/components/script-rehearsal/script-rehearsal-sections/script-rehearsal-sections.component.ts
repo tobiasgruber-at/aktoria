@@ -1,9 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { SimpleScript } from '../../../../../shared/dtos/script-dtos';
 import { ScriptViewerService } from '../../../services/script-viewer.service';
 import { ScriptService } from '../../../../../core/services/script/script.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { SimpleSection } from '../../../../../shared/dtos/section-dtos';
+import { ToastService } from '../../../../../core/services/toast/toast.service';
+import { Subject, takeUntil } from 'rxjs';
+import { SectionService } from '../../../../../core/services/section/section.service';
+import { ScriptRehearsalService } from '../../../services/script-rehearsal.service';
+
+enum Step {
+  selectSection,
+  createSection
+}
 
 @Component({
   selector: 'app-script-rehearsal-sections',
@@ -11,30 +20,23 @@ import { SimpleSection } from '../../../../../shared/dtos/section-dtos';
   styleUrls: ['./script-rehearsal-sections.component.scss'],
   providers: [ScriptViewerService]
 })
-export class ScriptRehearsalSectionsComponent implements OnInit {
+export class ScriptRehearsalSectionsComponent implements OnInit, OnDestroy {
   getLoading = true;
   script: SimpleScript = null;
-  sections: SimpleSection[] = [
-    {
-      name: 'Abschnitt 1',
-      startLine: 1,
-      endLine: 20
-    },
-    {
-      name: 'Abschnitt 2',
-      startLine: 5,
-      endLine: 25
-    }
-  ];
+  sections: SimpleSection[];
+  curStep: Step = Step.selectSection;
+  readonly steps = Step;
+  private $destroy = new Subject<void>();
 
   constructor(
     public scriptViewerService: ScriptViewerService,
+    private scriptRehearsalService: ScriptRehearsalService,
     private scriptService: ScriptService,
-    private route: ActivatedRoute
-  ) {
-    // TODO: remove
-    //this.scriptViewerService.setMarkedSection(this.sections[0]);
-  }
+    private sectionService: SectionService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private toastService: ToastService
+  ) {}
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
@@ -42,18 +44,53 @@ export class ScriptRehearsalSectionsComponent implements OnInit {
       this.scriptService.getOne(id).subscribe({
         next: (script) => {
           this.scriptViewerService.setScript(script);
-          this.getLoading = false;
         },
-        error: () => {
-          // TODO: show error
-          //this.getError = 'Skript konnte nicht gefunden werden.';
-          this.getLoading = false;
+        error: (err) => {
+          this.toastService.showError(err);
+          this.router.navigateByUrl('/scripts');
         }
       });
     });
+
+    this.scriptViewerService.$script
+      .pipe(takeUntil(this.$destroy))
+      .subscribe((script) => {
+        this.script = script;
+        if (this.script) {
+          this.sectionService.getAll(this.script?.getId()).subscribe({
+            next: (sections) => {
+              this.sections = sections;
+              this.getLoading = false;
+            },
+            error: (err) => {
+              this.toastService.showError(err);
+              this.router.navigateByUrl('/scripts');
+            }
+          });
+        }
+      });
   }
 
-  selectSection(section: SimpleSection): void {
-    this.scriptViewerService.setMarkedSection(section);
+  changeStep(step: Step): void {
+    this.curStep = step;
+    if (this.curStep === Step.createSection) {
+      this.scriptViewerService.setIsMarkingSection('start');
+      this.scriptViewerService.setMarkedSection({
+        section: new SimpleSection(null, null, Infinity),
+        scrollTo: false
+      });
+    } else if (this.curStep === Step.selectSection) {
+      this.scriptViewerService.setIsMarkingSection(null);
+      this.scriptViewerService.setMarkedSection(null);
+    }
+  }
+
+  ngOnDestroy() {
+    this.$destroy.next();
+    this.$destroy.complete();
+  }
+
+  backToOverview(): void {
+    this.router.navigateByUrl(`/scripts/${this.script?.getId()}`);
   }
 }

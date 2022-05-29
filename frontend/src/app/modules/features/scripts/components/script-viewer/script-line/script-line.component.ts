@@ -1,31 +1,43 @@
 import {
   Component,
+  ElementRef,
   HostBinding,
+  HostListener,
   Input,
   OnDestroy,
-  OnInit
+  OnInit,
+  ViewChild
 } from '@angular/core';
 import { Line, Role } from '../../../../../shared/dtos/script-dtos';
-import { ScriptViewerService } from '../../../services/script-viewer.service';
+import {
+  IsMarkingSection,
+  ScriptViewerService
+} from '../../../services/script-viewer.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Subject, takeUntil } from 'rxjs';
 import { LineService } from '../../../../../core/services/line/line.service';
 import { ToastService } from '../../../../../core/services/toast/toast.service';
+import { SimpleSection } from '../../../../../shared/dtos/section-dtos';
+import { appearAnimations } from '../../../../../shared/animations/appear-animations';
 
 @Component({
   selector: 'app-script-line',
   templateUrl: './script-line.component.html',
-  styleUrls: ['./script-line.component.scss']
+  styleUrls: ['./script-line.component.scss'],
+  animations: [appearAnimations]
 })
 export class ScriptLineComponent implements OnInit, OnDestroy {
+  @ViewChild('scrollAnchor') scrollAnchorRef: ElementRef;
   @Input() line: Line;
   @Input() prevLine: Line;
   /** @see ScriptViewerService.$isEditingScript */
   isEditingScript = false;
+  section: SimpleSection = null;
   /** Indicates whether the user is actively interacting with this line. */
   private isInteracting = false;
   private isUploading = false;
   private isModalOpened = false;
+  private isMarkingSection: IsMarkingSection = null;
   private $destroy = new Subject<void>();
 
   constructor(
@@ -46,6 +58,9 @@ export class ScriptLineComponent implements OnInit, OnDestroy {
     }
     if (this.isInteracting || this.isModalOpened) {
       classes.push('is-interacting');
+    }
+    if (this.isMarkingSection) {
+      classes.push('is-marking-section');
     }
     return classes;
   }
@@ -81,6 +96,62 @@ export class ScriptLineComponent implements OnInit, OnDestroy {
       .subscribe((isUploading) => {
         this.isUploading = isUploading;
       });
+    this.scriptViewerService.$isMarkingSection
+      .pipe(takeUntil(this.$destroy))
+      .subscribe((isMarkingSection) => {
+        this.isMarkingSection = isMarkingSection;
+      });
+    this.scriptViewerService.$markedSection
+      .pipe(takeUntil(this.$destroy))
+      .subscribe((markedSection) => {
+        this.section = markedSection?.section;
+        if (
+          this.section &&
+          this.scrollAnchorRef &&
+          markedSection.scrollTo &&
+          this.line.index === this.section.startLine
+        ) {
+          this.scrollAnchorRef.nativeElement.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+  }
+
+  @HostListener('mouseenter')
+  updateMarkedSection(): void {
+    if (this.isMarkingSection) {
+      const updatedSection: SimpleSection = this.section;
+      if (this.isMarkingSection === 'start') {
+        updatedSection.startLine = this.line.index;
+      } else if (
+        this.isMarkingSection === 'end' &&
+        this.line.index >= this.section.startLine
+      ) {
+        updatedSection.endLine = this.line.index;
+      }
+      this.scriptViewerService.setMarkedSection({
+        section: updatedSection,
+        scrollTo: false
+      });
+    }
+  }
+
+  @HostListener('click')
+  fixMarkedSection(): void {
+    if (this.isMarkingSection) {
+      if (this.isMarkingSection === 'start') {
+        this.scriptViewerService.setIsMarkingSection('end');
+        this.section.endLine = this.section.startLine;
+        this.scriptViewerService.setMarkedSection({
+          section: this.section,
+          scrollTo: false
+        });
+      } else if (this.isMarkingSection === 'end') {
+        this.scriptViewerService.setIsMarkingSection(null);
+      }
+    }
   }
 
   /** @return Whether a line is highlighted. */

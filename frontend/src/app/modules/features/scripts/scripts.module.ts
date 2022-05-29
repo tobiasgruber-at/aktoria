@@ -26,6 +26,10 @@ import { ScriptRehearsalComponent } from './components/script-rehearsal/script-r
 // eslint-disable-next-line max-len
 import { ScriptRehearsalSectionsComponent } from './components/script-rehearsal/script-rehearsal-sections/script-rehearsal-sections.component';
 import { RehearsalSectionComponent } from './components/rehearsal-section/rehearsal-section.component';
+import { RehearsalLineComponent } from './components/script-rehearsal/rehearsal-line/rehearsal-line.component';
+import { RehearsalControlsComponent } from './components/script-rehearsal/rehearsal-controls/rehearsal-controls.component';
+import { RehearsalSectionCreateComponent } from './components/script-rehearsal/script-rehearsal-sections/rehearsal-section-create/rehearsal-section-create.component';
+import { ScriptRehearsalService } from './services/script-rehearsal.service';
 
 @NgModule({
   declarations: [
@@ -52,8 +56,12 @@ import { RehearsalSectionComponent } from './components/rehearsal-section/rehear
     ChangeLineModalComponent,
     ScriptRehearsalComponent,
     ScriptRehearsalSectionsComponent,
-    RehearsalSectionComponent
+    RehearsalSectionComponent,
+    RehearsalLineComponent,
+    RehearsalControlsComponent,
+    RehearsalSectionCreateComponent
   ],
+  providers: [ScriptRehearsalService],
   imports: [SharedModule, ScriptsRoutingModule]
 })
 export class ScriptsModule {}

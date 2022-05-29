@@ -46,7 +46,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -255,9 +258,18 @@ public class ScriptServiceImpl implements ScriptService {
             throw new UnauthorizedException();
         }
 
-        Stream<ScriptPreviewDto> owner = scriptMapper.listOfScriptToListOfScriptPreviewDto(scriptRepository.getScriptByOwner(user)).stream();
-        Stream<ScriptPreviewDto> participant = scriptMapper.listOfScriptToListOfScriptPreviewDto(scriptRepository.getScriptByParticipant(user)).stream();
-        return Stream.concat(owner, participant);
+        List<ScriptPreviewDto> scripts = new ArrayList<>();
+        List<Script> ownedScripts = scriptRepository.getScriptByOwner(user);
+        for (Script s : ownedScripts) {
+            scripts.add(scriptMapper.scriptToScriptPreviewDto(s, true));
+        }
+
+        List<Script> joinedScripts = scriptRepository.getScriptByParticipant(user);
+        for (Script s : joinedScripts) {
+            scripts.add(scriptMapper.scriptToScriptPreviewDto(s, false));
+        }
+
+        return scripts.stream();
     }
 
     @Transactional
@@ -372,8 +384,12 @@ public class ScriptServiceImpl implements ScriptService {
                 Set<Script> scripts = user.getParticipatesIn();
                 scripts.add(script);
                 user.setParticipatesIn(scripts);
-
                 userRepository.saveAndFlush(user);
+
+                Set<User> users = script.getParticipants();
+                users.add(user);
+                script.setParticipants(users);
+                scriptRepository.saveAndFlush(script);
                 return;
             }
         }
@@ -392,8 +408,7 @@ public class ScriptServiceImpl implements ScriptService {
             secureToken.setScript(script.get());
             secureTokenService.saveSecureToken(secureToken);
 
-            final String link = "http://localhost:4200/#/scripts/" + script.get().getId() + "/join/" + secureToken.getToken();
-            return link;
+            return "http://localhost:4200/#/scripts/" + script.get().getId() + "/join/" + secureToken.getToken();
         } else {
             throw new NotFoundException();
         }
@@ -420,13 +435,18 @@ public class ScriptServiceImpl implements ScriptService {
                 User newOwner = participants.iterator().next();
                 participants.remove(newOwner);
                 script.setOwner(newOwner);
-
-                user = newOwner;
+                return;
             }
-            Set<Script> participatesIn = user.getParticipatesIn();
-            participatesIn.remove(script);
-            user.setParticipatesIn(participatesIn);
 
+            Set<Script> scripts = user.getParticipatesIn();
+            scripts.remove(script);
+            user.setParticipatesIn(scripts);
+            userRepository.saveAndFlush(user);
+
+            Set<User> participants = script.getParticipants();
+            participants.remove(user);
+            script.setParticipants(participants);
+            scriptRepository.saveAndFlush(script);
             return;
         }
         throw new NotFoundException();

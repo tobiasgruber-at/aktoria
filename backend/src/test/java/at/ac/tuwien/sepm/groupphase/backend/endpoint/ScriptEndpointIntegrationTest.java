@@ -29,12 +29,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
@@ -72,7 +72,7 @@ class ScriptEndpointIntegrationTest {
     }
 
     @Test
-    @Transactional
+    @DirtiesContext
     @DisplayName("saveScript() saves the script correctly")
     @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
     void saveScript() {
@@ -137,17 +137,17 @@ class ScriptEndpointIntegrationTest {
     }
 
     @Test
-    @Transactional
+    @DirtiesContext
     @DisplayName("getScriptPreviews() gets the correct previews")
     @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
     void getScriptPreviews() {
         List<ScriptPreviewDto> scriptPreviewDtoList = scriptService.findAllPreviews().toList();
-        assertEquals(new ScriptPreviewDto(1L, ScriptDataGenerator.TEST_SCRIPT_NAME + " 1"), scriptPreviewDtoList.get(0));
+        assertEquals(new ScriptPreviewDto(1L, ScriptDataGenerator.TEST_SCRIPT_NAME + " 1", true), scriptPreviewDtoList.get(0));
         assertEquals(Math.floorDiv(ScriptDataGenerator.NUMBER_OF_SCRIPTS_TO_GENERATE, UserDataGenerator.NUMBER_OF_USERS_TO_GENERATE) + 1 + 1, scriptPreviewDtoList.size());
     }
 
     @Test
-    @Transactional
+    @DirtiesContext
     @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
     @DisplayName("getScriptById() gets the correct script")
     void getScriptById() {
@@ -156,7 +156,7 @@ class ScriptEndpointIntegrationTest {
     }
 
     @Test
-    @Transactional
+    @DirtiesContext
     @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
     @DisplayName("getScriptById() throws UnauthorizedException")
     void getScriptByIdThrowsException() {
@@ -167,7 +167,7 @@ class ScriptEndpointIntegrationTest {
     @DisplayName("parseScript() ")
     class SaveScript {
         @Test
-        @Transactional
+        @DirtiesContext
         @DisplayName("returns the saved script")
         @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
         void saveScriptReturnsCorrectly() throws Exception {
@@ -185,7 +185,7 @@ class ScriptEndpointIntegrationTest {
         }
 
         @Test
-        @Transactional
+        @DirtiesContext
         @DisplayName("returns correct status code for invalid body")
         @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user })
         void saveScriptReturnsCorrectStatusCodeForInvalidInputs() throws Exception {
@@ -206,7 +206,7 @@ class ScriptEndpointIntegrationTest {
     @DisplayName("uploadScript() ")
     class UploadScript {
         @Test
-        @Transactional
+        @DirtiesContext
         @DisplayName("returns the correctly parsed script")
         @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
         void uploadScriptReturnsCorrectly() throws Exception {
@@ -231,7 +231,7 @@ class ScriptEndpointIntegrationTest {
         }
 
         @Test
-        @Transactional
+        @DirtiesContext
         @DisplayName("returns correct status code for corrupted files")
         @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
         void uploadScriptReturnsCorrectStatusCodeForCorruptedFiles() throws Exception {
