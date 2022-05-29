@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 import javax.mail.MessagingException;
@@ -28,6 +29,7 @@ class MailSenderUnitTest {
     private MailSenderImpl mailSender;
 
     @Test
+    @DirtiesContext
     @DisplayName("sendEmail() send the email correctly")
     void sendMail() throws MessagingException {
         mailSender.sendMail("test@email.com", "some subject", "some content");

@@ -54,6 +54,7 @@
                 Ansehen
               </button>
               <button
+                *ngIf="isOwner()"
                 ngbDropdownItem
                 routerLink="/scripts/{{ script?.id }}/edit"
               >

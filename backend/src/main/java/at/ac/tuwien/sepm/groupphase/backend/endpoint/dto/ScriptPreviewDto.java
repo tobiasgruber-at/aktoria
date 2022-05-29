@@ -15,4 +15,5 @@ import lombok.NoArgsConstructor;
 public class ScriptPreviewDto {
     private Long id;
     private String name;
+    private Boolean owner;
 }

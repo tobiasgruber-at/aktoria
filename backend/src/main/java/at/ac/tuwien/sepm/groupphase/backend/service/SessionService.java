@@ -27,7 +27,7 @@ public interface SessionService {
      * Updates a session in the data storage.
      *
      * @param updateSessionDto the session that contains the changes
-     * @param id the id of the session
+     * @param id               the id of the session
      * @return the updated session
      */
     SessionDto update(UpdateSessionDto updateSessionDto, Long id);

@@ -14,8 +14,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,7 +23,7 @@ import java.util.Optional;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest
-@ActiveProfiles({"datagen", "test"})
+@ActiveProfiles({ "datagen", "test" })
 public class SessionServiceUnitTest {
 
     @Autowired
@@ -32,9 +32,9 @@ public class SessionServiceUnitTest {
     private SessionRepository sessionRepository;
 
     @Test
-    @Transactional
+    @DirtiesContext
     @DisplayName("saveSession() saves the session correctly")
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified})
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
     public void saveSession() {
         SimpleSessionDto simpleSessionDto = new SimpleSessionDto();
         simpleSessionDto.setSectionId(1L);
@@ -53,12 +53,12 @@ public class SessionServiceUnitTest {
     }
 
     @Test
-    @Transactional
+    @DirtiesContext
     @DisplayName("updateSession() updates session correctly")
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified})
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
     public void updateSession() throws Exception {
         Optional<Session> sessionOpt = sessionRepository.findById(1L);
-        if(sessionOpt.isPresent()) {
+        if (sessionOpt.isPresent()) {
             Long curLineId = sessionOpt.get().getCurrentLine().getId() + 1;
             UpdateSessionDto updateSessionDto = new UpdateSessionDto();
             updateSessionDto.setDeprecated(true);
@@ -76,18 +76,18 @@ public class SessionServiceUnitTest {
     }
 
     @Test
-    @Transactional
+    @DirtiesContext
     @DisplayName("finishSession() ends session correctly")
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified})
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
     public void finishSession() {
         SessionDto result = sessionService.finish(1L);
         assertThat(result.getEnd()).isNotNull();
     }
 
     @Test
-    @Transactional
+    @DirtiesContext
     @DisplayName("findSessionById() finds session correctly")
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified})
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
     public void findSessionById() {
         SessionDto session = sessionService.findById(1L);
         assertThat(session).isNotNull();
@@ -95,9 +95,9 @@ public class SessionServiceUnitTest {
     }
 
     @Test
-    @Transactional
+    @DirtiesContext
     @DisplayName("findAllSessions() finds all user sessions correctly")
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified})
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
     public void findAllSessions() {
         List<SessionDto> sessions = sessionService.findAll().toList();
         assertThat(sessions).isNotNull();
