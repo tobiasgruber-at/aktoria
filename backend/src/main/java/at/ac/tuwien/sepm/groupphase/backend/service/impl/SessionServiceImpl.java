@@ -4,7 +4,11 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SessionDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleSessionDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UpdateSessionDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.SessionMapper;
-import at.ac.tuwien.sepm.groupphase.backend.entity.*;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Line;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Role;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Section;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Session;
+import at.ac.tuwien.sepm.groupphase.backend.entity.User;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.UnauthorizedException;
@@ -20,10 +24,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Stream;
 
 /**
@@ -147,7 +149,7 @@ public class SessionServiceImpl implements SessionService {
         if (!curSession.getSection().getOwner().getId().equals(user.getId())) {
             throw new UnauthorizedException("User not permitted to update this session");
         }
-        if(curSession.getDeprecated()) {
+        if (curSession.getDeprecated()) {
             throw new ConflictException("Session is already deprecated");
         }
         curSession.setEnd(LocalDateTime.now());
@@ -190,7 +192,7 @@ public class SessionServiceImpl implements SessionService {
         List<Line> linesInBetween = lineRepository.findByStartLineAndEndLine(startLine, endLine);
         for (int i = 0; i < linesInBetween.size(); i++) {
             if (linesInBetween.get(i).getIndex().equals(line.getIndex())) {
-                return (double) (i+1)/linesInBetween.size();
+                return (double) (i + 1) / linesInBetween.size();
             }
         }
         return null;

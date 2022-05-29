@@ -12,8 +12,8 @@ import java.util.List;
 @Repository
 public interface SessionRepository extends JpaRepository<Session, Long> {
 
-    @Query("select s " +
-        "from Session s join Section c on s.section.id = c.id join User u on c.owner.id = u.id " +
-        "where u.id = :#{#user.id}")
+    @Query("select s "
+        + "from Session s join Section c on s.section.id = c.id join User u on c.owner.id = u.id "
+        + "where u.id = :#{#user.id}")
     List<Session> findAllByUser(@Param("user") User user);
 }
