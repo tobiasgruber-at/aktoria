@@ -10,13 +10,12 @@ import org.mapstruct.Mappings;
 import java.util.List;
 import java.util.Set;
 
-@Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR)
+@Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR, uses = RoleMapper.class)
 public interface SessionMapper {
 
     @Mappings({
         @Mapping(target = "sectionId", source = "section.id"),
-        @Mapping(target = "roleId", source = "role.id"),
-        @Mapping(target = "currentLineId", source = "currentLine.id")
+        @Mapping(target = "currentLineIndex", source = "currentLine.index")
     })
     SessionDto sessionToSessionDto(Session session);
 

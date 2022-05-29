@@ -15,7 +15,7 @@ public interface SectionRepository extends JpaRepository<Section, Long> {
 
     @Query("select s "
         + "from Section s join User u on s.owner.id = u.id "
-            + "join Script c on c.id = s.startLine.page.script.id "
+        + "join Script c on c.id = s.startLine.page.script.id "
         + "where u.id = :#{#owner.id} and c.id = :#{#scriptId}")
     List<Section> findByOwnerAndScriptId(@Param("owner") User owner,
                                          @Param("scriptId") Long scriptId);
