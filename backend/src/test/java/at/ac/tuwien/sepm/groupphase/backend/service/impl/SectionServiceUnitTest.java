@@ -166,7 +166,7 @@ class SectionServiceUnitTest {
         @DisplayName("Gets all sections")
         void getAllSections() {
             // List<SectionDto> expected = sectionMapper.sectionListToSectionDtoList(sectionRepository.findAll());
-            List<SectionDto> received = sectionService.getAllSections();
+            List<SectionDto> received = sectionService.getAllSections().toList();
             //assertTrue(received.containsAll(expected));
             assertNotNull(received);
         }
