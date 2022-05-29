@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @ActiveProfiles({ "datagen", "test" })
@@ -48,31 +49,28 @@ public class SessionServiceUnitTest {
         assertThat(result.getStart()).isNotNull();
         assertThat(result.getEnd()).isNull();
         assertThat(result.getSectionId()).isEqualTo(1L);
-        assertThat(result.getRoleId()).isEqualTo(1L);
-        assertThat(result.getCurrentLineId()).isNotNull();
+        assertThat(result.getRole().getId()).isEqualTo(1L);
+        assertThat(result.getCurrentLineIndex()).isNotNull();
     }
 
     @Test
     @DirtiesContext
     @DisplayName("updateSession() updates session correctly")
     @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
-    public void updateSession() throws Exception {
+    public void updateSession() {
         Optional<Session> sessionOpt = sessionRepository.findById(1L);
-        if (sessionOpt.isPresent()) {
-            Long curLineId = sessionOpt.get().getCurrentLine().getId() + 1;
-            UpdateSessionDto updateSessionDto = new UpdateSessionDto();
-            updateSessionDto.setDeprecated(true);
-            updateSessionDto.setSelfAssessment(AssessmentType.poor);
-            updateSessionDto.setCurrentLineId(curLineId);
+        assertTrue(sessionOpt.isPresent());
+        Long curLineId = sessionOpt.get().getCurrentLine().getId() + 1;
+        UpdateSessionDto updateSessionDto = new UpdateSessionDto();
+        updateSessionDto.setDeprecated(true);
+        updateSessionDto.setSelfAssessment(AssessmentType.poor);
+        updateSessionDto.setCurrentLineId(curLineId);
 
-            SessionDto result = sessionService.update(updateSessionDto, 1L);
-            assertThat(result.getId()).isEqualTo(1L);
-            assertThat(result.getDeprecated()).isEqualTo(true);
-            assertThat(result.getSelfAssessment()).isEqualTo(AssessmentType.poor);
-            assertThat(result.getCurrentLineId()).isEqualTo(curLineId);
-        } else {
-            throw new Exception();
-        }
+        SessionDto result = sessionService.update(updateSessionDto, 1L);
+        assertThat(result.getId()).isEqualTo(1L);
+        assertThat(result.getDeprecated()).isEqualTo(true);
+        assertThat(result.getSelfAssessment()).isEqualTo(AssessmentType.poor);
+        assertThat(result.getCurrentLineIndex()).isEqualTo(curLineId);
     }
 
     @Test
@@ -96,14 +94,11 @@ public class SessionServiceUnitTest {
 
     @Test
     @DirtiesContext
-    @DisplayName("findAllSessions() finds all user sessions correctly")
+    @DisplayName("findPastSessions() finds all past user sessions correctly")
     @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
-    public void findAllSessions() {
-        List<SessionDto> sessions = sessionService.findAll().toList();
+    public void findPastSessions() {
+        List<SessionDto> sessions = sessionService.findQuerySessions(null, 1L, null).toList();
         assertThat(sessions).isNotNull();
-        assertThat(sessions.size()).isEqualTo(12);
-        assertThat(sessions.get(0).getId()).isEqualTo(1L);
-        assertThat(sessions.get(1).getId()).isEqualTo(2L);
-        assertThat(sessions.get(2).getId()).isEqualTo(3L);
+        assertThat(sessions.size()).isEqualTo(2);
     }
 }

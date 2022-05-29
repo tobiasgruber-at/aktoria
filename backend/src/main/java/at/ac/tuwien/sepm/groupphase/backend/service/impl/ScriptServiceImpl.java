@@ -48,7 +48,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -273,8 +272,8 @@ public class ScriptServiceImpl implements ScriptService {
         return scripts.stream();
     }
 
-    @Transactional
     @Override
+    @Transactional
     public ScriptDto findById(Long id) {
         log.trace("getById(id = {})", id);
         authorizationService.checkMemberAuthorization(id);
@@ -287,8 +286,8 @@ public class ScriptServiceImpl implements ScriptService {
         return scriptMapper.scriptToScriptDto(script.get());
     }
 
-    @Transactional
     @Override
+    @Transactional
     public void delete(Long id) {
         log.trace("delete(id = {})", id);
 
@@ -318,6 +317,21 @@ public class ScriptServiceImpl implements ScriptService {
         }
         //TODO: fertig machen
         return null;
+    }
+
+    @Override
+    @Transactional
+    public ScriptDto getBySessionId(Long id) {
+        log.trace("getBySessionId(id = {})", id);
+        User user = authorizationService.getLoggedInUser();
+        if (user == null) {
+            throw new UnauthorizedException();
+        }
+        Script script = scriptRepository.getScriptBySessionId(id);
+        if (!script.getOwner().getId().equals(user.getId()) && !script.getParticipants().contains(user)) {
+            throw new UnauthorizedException("User not allowed to view this script");
+        }
+        return scriptMapper.scriptToScriptDto(script);
     }
 
     @Override

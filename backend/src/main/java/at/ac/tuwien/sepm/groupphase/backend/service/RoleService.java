@@ -20,4 +20,13 @@ public interface RoleService {
      * @return the role every role was merged into
      */
     RoleDto mergeRoles(MergeRolesDto mergeRolesDto, Long sid);
+
+    /**
+     * Gets a role by id in a script.
+     *
+     * @param sid id of the script
+     * @param id id of the role
+     * @return a role
+     */
+    RoleDto getById(Long sid, Long id);
 }

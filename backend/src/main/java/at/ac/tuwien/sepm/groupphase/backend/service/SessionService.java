@@ -49,9 +49,12 @@ public interface SessionService {
     SessionDto findById(Long id);
 
     /**
-     * Gets all sessions for a user.
+     * Gets all sessions for user according to the params.
      *
-     * @return all sessions found in the data storage for the user.
+     * @param deprecated if deprecated sessions should be included in the query (default: false)
+     * @param sectionId of an specific section (default: none)
+     * @param past if only past sessions should be sent (default: false)
+     * @return a stream of all sessions found
      */
-    Stream<SessionDto> findAll();
+    Stream<SessionDto> findQuerySessions(Boolean deprecated, Long sectionId, Boolean past);
 }

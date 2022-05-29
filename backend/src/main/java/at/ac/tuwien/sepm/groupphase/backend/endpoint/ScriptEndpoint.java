@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -68,6 +69,14 @@ public class ScriptEndpoint {
     public ScriptDto getScriptById(@PathVariable Long id) {
         log.info("GET {}/{}", path, id);
         return scriptService.findById(id);
+    }
+
+    @GetMapping(path = "/session")
+    @ResponseStatus(HttpStatus.OK)
+    @Secured(Permission.verified)
+    public ScriptDto getScriptBySessionId(@RequestParam Long id) {
+        log.info("GET {}/session?id={}", path, id);
+        return scriptService.getBySessionId(id);
     }
 
     @DeleteMapping(path = "/{id}")
