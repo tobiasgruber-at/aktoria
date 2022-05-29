@@ -135,6 +135,7 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
+    @Transactional
     public SessionDto finish(Long id) {
         log.trace("finish(id = {})", id);
         User user = authorizationService.getLoggedInUser();
@@ -158,6 +159,7 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
+    @Transactional
     public SessionDto findById(Long id) {
         log.trace("findSessionById(id = {})", id);
         User user = authorizationService.getLoggedInUser();
@@ -176,6 +178,7 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
+    @Transactional
     public Stream<SessionDto> findAll() {
         log.trace("findAllSessions()");
         User user = authorizationService.getLoggedInUser();
@@ -183,6 +186,31 @@ public class SessionServiceImpl implements SessionService {
             throw new UnauthorizedException();
         }
         return sessionRepository.findAllByUser(user).stream().map(sessionMapper::sessionToSessionDto);
+    }
+
+    @Override
+    @Transactional
+    public Stream<SessionDto> findPastSessions(Boolean deprecated, Long sectionId) {
+        log.trace("findPastSessions(deprecated = {}, sectionId = {})", deprecated, sectionId);
+        User user = authorizationService.getLoggedInUser();
+        if (user == null) {
+            throw new UnauthorizedException();
+        }
+        List<Session> sessions;
+        if (deprecated == null || !deprecated) {
+            if (sectionId == null) {
+                sessions = sessionRepository.findByDeprecatedAndUser(false, user);
+            } else {
+                sessions = sessionRepository.findBySectionAndDeprecatedAndUser(sectionId, false, user);
+            }
+        } else {
+            if (sectionId == null) {
+                sessions = sessionRepository.findByDeprecatedAndUser(true, user);
+            } else {
+                sessions = sessionRepository.findBySectionAndDeprecatedAndUser(sectionId, true, user);
+            }
+        }
+        return sessions.stream().map(sessionMapper::sessionToSessionDto);
     }
 
     private Double computeCoverage(Section section, Line line) {

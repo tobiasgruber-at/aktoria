@@ -106,4 +106,14 @@ public class SessionServiceUnitTest {
         assertThat(sessions.get(1).getId()).isEqualTo(2L);
         assertThat(sessions.get(2).getId()).isEqualTo(3L);
     }
+
+    @Test
+    @DirtiesContext
+    @DisplayName("findPastSessions() finds all past user sessions correctly")
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified})
+    public void findPastSessions() {
+        List<SessionDto> sessions = sessionService.findPastSessions(null, 1L).toList();
+        assertThat(sessions).isNotNull();
+        assertThat(sessions.size()).isEqualTo(2);
+    }
 }
