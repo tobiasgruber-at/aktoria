@@ -10,7 +10,8 @@ export class ScriptMembersListComponent implements OnInit {
   @Input() members: SimpleUser[];
   @Input() isOwner: boolean;
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit(): void {
   }

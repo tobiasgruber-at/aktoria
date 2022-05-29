@@ -1,14 +1,14 @@
-import { Component, OnDestroy, OnInit, TemplateRef } from '@angular/core';
-import { UserService } from '../../core/services/user/user-service';
-import { SimpleUser } from '../../shared/dtos/user-dtos';
-import { AuthService } from '../../core/services/auth/auth-service';
-import { appearAnimations } from '../../shared/animations/appear-animations';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Theme } from '../../shared/enums/theme.enum';
-import { ToastService } from '../../core/services/toast/toast.service';
-import { FormBuilder } from '@angular/forms';
-import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Subject, takeUntil } from 'rxjs';
+import {Component, OnDestroy, OnInit, TemplateRef} from '@angular/core';
+import {UserService} from '../../core/services/user/user-service';
+import {SimpleUser} from '../../shared/dtos/user-dtos';
+import {AuthService} from '../../core/services/auth/auth-service';
+import {appearAnimations} from '../../shared/animations/appear-animations';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Theme} from '../../shared/enums/theme.enum';
+import {ToastService} from '../../core/services/toast/toast.service';
+import {FormBuilder} from '@angular/forms';
+import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {Subject, takeUntil} from 'rxjs';
 
 @Component({
   selector: 'app-profile',
@@ -31,7 +31,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
     private toastService: ToastService,
     private formBuilder: FormBuilder,
     private modalService: NgbModal
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.userService
@@ -44,7 +45,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   openDeleteModal(modal: TemplateRef<any>) {
     this.deleteError = null;
-    this.modalService.open(modal, { centered: true });
+    this.modalService.open(modal, {centered: true});
   }
 
   deleteUser(modal: NgbActiveModal): void {

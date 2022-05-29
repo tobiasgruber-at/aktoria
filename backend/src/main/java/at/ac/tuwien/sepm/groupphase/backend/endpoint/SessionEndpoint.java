@@ -72,8 +72,8 @@ public class SessionEndpoint {
     @ResponseStatus(HttpStatus.OK)
     @Secured(Permission.verified)
     public Stream<SessionDto> getQuerySessions(@RequestParam(required = false) Boolean deprecated,
-                                              @RequestParam(required = false) Long sectionId,
-                                              @RequestParam(required = false) Boolean past) {
+                                               @RequestParam(required = false) Long sectionId,
+                                               @RequestParam(required = false) Boolean past) {
         log.info("GET {}/past?deprecated={}&sectionId={}&past={}", path, deprecated, sectionId, past);
         return sessionService.findQuerySessions(deprecated, sectionId, past);
     }

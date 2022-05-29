@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { ScriptRehearsalComponent } from './script-rehearsal.component';
+import {ScriptRehearsalComponent} from './script-rehearsal.component';
 
 describe('ScriptRehearsalComponent', () => {
   let component: ScriptRehearsalComponent;
@@ -8,9 +8,9 @@ describe('ScriptRehearsalComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ScriptRehearsalComponent ]
+      declarations: [ScriptRehearsalComponent]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {

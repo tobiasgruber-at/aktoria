@@ -123,7 +123,7 @@ class SectionEndpointIntegrationTest {
             //List<SectionDto> expected = sectionMapper.sectionListToSectionDtoList(sectionRepository.findAll());
             byte[] body = mockMvc
                 .perform(MockMvcRequestBuilders
-                    .get("/api/v1/sections?scriptId=" + 1)
+                    .get("/api/v1/sections?scriptId=1")
                     .accept(MediaType.APPLICATION_JSON)
                 ).andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsByteArray();

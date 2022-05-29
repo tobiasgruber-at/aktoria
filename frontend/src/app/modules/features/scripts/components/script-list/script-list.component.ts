@@ -1,6 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {ScriptService} from '../../../../core/services/script/script.service';
-import {Theme} from '../../../../shared/enums/theme.enum';
 import {ScriptPreview} from '../../../../shared/dtos/script-dtos';
 
 @Component({

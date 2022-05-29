@@ -6,4 +6,5 @@ import {Component} from '@angular/core';
   templateUrl: './form-errors.component.html',
   styleUrls: ['./form-errors.component.scss']
 })
-export class FormErrorsComponent {}
+export class FormErrorsComponent {
+}

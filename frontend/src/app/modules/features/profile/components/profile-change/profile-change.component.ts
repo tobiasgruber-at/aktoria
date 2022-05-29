@@ -58,7 +58,7 @@ export class ProfileChangeComponent
         password: [null, [Validators.minLength(8)]],
         passwordConfirm: [null]
       },
-      { validators: [matchingPasswordsValidator(true)] }
+      {validators: [matchingPasswordsValidator(true)]}
     );
     this.userService
       .$ownUser()
@@ -81,7 +81,7 @@ export class ProfileChangeComponent
   toggleShowPasswordChange(): void {
     this.showPasswordChange = !this.showPasswordChange;
     if (!this.showPasswordChange) {
-      const { oldPassword, password, passwordConfirm } = this.form.value;
+      const {oldPassword, password, passwordConfirm} = this.form.value;
       this.cachedPasswordChangeData = {
         oldPassword,
         password,
@@ -104,8 +104,8 @@ export class ProfileChangeComponent
 
   /** Submits only the changed data. */
   protected processSubmit() {
-    let { firstName, lastName, email } = this.form.value;
-    const { oldPassword, password } = this.form.value;
+    let {firstName, lastName, email} = this.form.value;
+    const {oldPassword, password} = this.form.value;
     if (firstName === this.user.firstName) {
       firstName = null;
     }
