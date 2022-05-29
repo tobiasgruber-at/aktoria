@@ -40,7 +40,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author Julia Bernold
  */
 @SpringBootTest
-@ActiveProfiles({ "test", "datagen" })
+@ActiveProfiles({"test", "datagen"})
 @EnableWebMvc
 @WebAppConfiguration
 class SectionEndpointIntegrationTest {
@@ -104,7 +104,7 @@ class SectionEndpointIntegrationTest {
     @DisplayName("getAllSections()")
     class GetAllSections {
         @Test
-        @Transactional
+        @DirtiesContext
         @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = Role.verified)
         @DisplayName("Get all Sections")
         void getSectionById() throws Exception {
