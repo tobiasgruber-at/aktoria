@@ -23,5 +23,5 @@ public class SectionDto {
     private Long owner;
     private Long startLine;
     private Long endLine;
-    private List<Long> sessionIds;
+    private List<SessionDto> sessions;
 }

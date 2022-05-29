@@ -16,8 +16,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @author Julia Bernold
  */
 
-@ActiveProfiles({"test", "datagen"})
+@ActiveProfiles({ "test", "datagen" })
 @SpringBootTest
 class SectionServiceUnitTest {
 
@@ -44,14 +44,12 @@ class SectionServiceUnitTest {
     @Autowired
     SectionMapper sectionMapper;
 
-
     @Nested
-    @SpringBootTest
     @DisplayName("getSection()")
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {Role.user, Role.verified, Role.admin})
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user, Role.verified, Role.admin })
     class GetSectionTest {
         @Test
-        @Transactional
+        @DirtiesContext
         @DisplayName("Get a section successfully")
         void getSection() {
             SectionDto received = sectionService.getSection(1L);
@@ -60,22 +58,20 @@ class SectionServiceUnitTest {
         }
 
         @Test
-        @Transactional
+        @DirtiesContext
         @DisplayName("Get section throws NotFoundException")
         void getNonexistentSection() {
             assertThrows(NotFoundException.class, () -> sectionService.getSection(0L));
         }
-
     }
 
 
     @Nested
     @DisplayName("createSection()")
-    @SpringBootTest
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {Role.user, Role.verified, Role.admin})
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user, Role.verified, Role.admin })
     class CreateSectionTest {
         @Test
-        @Transactional
+        @DirtiesContext
         @DisplayName("Create new section successfully")
         void createSection() {
             SectionDto section = new SectionDto(null, "Section Name", 1L, 1L, 5L, null);
@@ -88,7 +84,7 @@ class SectionServiceUnitTest {
         }
 
         @Test
-        @Transactional
+        @DirtiesContext
         @DisplayName("Create new section with an invalid user")
         void createSectionInvalidUser() {
             SectionDto section = new SectionDto(null, "Section Name", 0L, 1L, 2L, null);
@@ -96,7 +92,7 @@ class SectionServiceUnitTest {
         }
 
         @Test
-        @Transactional
+        @DirtiesContext
         @DisplayName("Create new section with an invalid name")
         void createSectionInvalidName() {
             SectionDto section = new SectionDto(null, "   ", 0L, 1L, 2L, null);
@@ -104,7 +100,7 @@ class SectionServiceUnitTest {
         }
 
         @Test
-        @Transactional
+        @DirtiesContext
         @DisplayName("Create new section with an invalid starting line")
         void createSectionInvalidStart() {
             SectionDto section = new SectionDto(null, "Section Name", 1L, 0L, 2L, null);
@@ -112,7 +108,7 @@ class SectionServiceUnitTest {
         }
 
         @Test
-        @Transactional
+        @DirtiesContext
         @DisplayName("Create new section with an invalid ending line")
         void createSectionInvalidEnd() {
             SectionDto section = new SectionDto(null, "Section Name", 1L, 1L, 0L, null);
@@ -120,7 +116,7 @@ class SectionServiceUnitTest {
         }
 
         @Test
-        @Transactional
+        @DirtiesContext
         @DisplayName("Create new section with starting and ending lines from different scripts")
         void createSectionDifferentScripts() {
             SectionDto section = new SectionDto(null, "Section Name", 1L, 1L, 200L, null);
@@ -128,7 +124,7 @@ class SectionServiceUnitTest {
         }
 
         @Test
-        @Transactional
+        @DirtiesContext
         @DisplayName("Create new section with a too long name")
         void createSectionTooLongName() {
             SectionDto section = new SectionDto(null, "a".repeat(101), 1L, 1L, 2L, null);
@@ -139,11 +135,10 @@ class SectionServiceUnitTest {
 
     @Nested
     @DisplayName("deleteSection()")
-    @SpringBootTest
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {Role.user, Role.verified, Role.admin})
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user, Role.verified, Role.admin })
     class DeleteSectionTest {
         @Test
-        @Transactional
+        @DirtiesContext
         @DisplayName("Delete section successfully")
         void deleteSection() {
             Optional<Section> section = sectionRepository.findById(1L);
@@ -154,7 +149,7 @@ class SectionServiceUnitTest {
         }
 
         @Test
-        @Transactional
+        @DirtiesContext
         @DisplayName("Delete section throws NotFoundException")
         void deleteNonexistentSection() {
             assertThrows(NotFoundException.class, () -> sectionService.deleteSection(0L));
