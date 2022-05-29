@@ -7,6 +7,7 @@ import at.ac.tuwien.sepm.groupphase.backend.service.parsing.scriptparser.impl.Sc
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.io.IOException;
@@ -21,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ScriptParserImplUnitTest {
 
     @Test
+    @DirtiesContext
     @DisplayName("parse() parses the script correctly")
     void parse() throws IOException {
         final String input = Files.readString(Path.of("./src/test/resources/service/parsing/scriptParser/parse_input.txt"));

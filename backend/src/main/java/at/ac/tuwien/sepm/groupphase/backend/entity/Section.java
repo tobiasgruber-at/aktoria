@@ -46,6 +46,6 @@ public class Section {
     @JoinColumn(name = "end_line", nullable = false)
     private Line endLine;
 
-    @OneToMany(mappedBy = "section", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "section", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Session> sessions;
 }

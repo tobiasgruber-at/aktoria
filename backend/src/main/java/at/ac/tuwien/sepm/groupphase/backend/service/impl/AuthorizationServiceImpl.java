@@ -2,8 +2,8 @@ package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
 import at.ac.tuwien.sepm.groupphase.backend.entity.Script;
 import at.ac.tuwien.sepm.groupphase.backend.entity.User;
-import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.enums.Permission;
+import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.UnauthorizedException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ScriptRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
@@ -62,10 +62,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         Optional<Script> scriptOptional = scriptRepository.findById(scriptId);
         if (scriptOptional.isPresent()) {
             Long ownerId = scriptOptional.get().getOwner().getId();
-            if (isLoggedInAs(ownerId)) {
-                return true;
-            }
-            return false;
+            return isLoggedInAs(ownerId);
         }
         throw new NotFoundException("Skript existiert nicht");
     }
