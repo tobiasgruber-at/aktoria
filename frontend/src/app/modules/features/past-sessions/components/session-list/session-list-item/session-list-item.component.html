@@ -6,7 +6,7 @@
           [alt]="section.name + ' (' + startDate + ')'"
           [style.opacity]="0.1"
           class="card-img"
-          src="../../../../../../assets/illustrations/script_cropped.svg"
+          src="../../../../../../assets/illustrations/study.svg"
         />
       </div>
       <div class="card-img-overlay">
@@ -22,26 +22,29 @@
       (confirm)="modal.dismiss()"
       (decline)="modal.dismiss()"
       [showDecline]="false"
-      [title]="section.name"
+      [title]="script.name + ': ' + section.name"
       confirmBtnLabel="Schließen"
     >
-      <p>Du hast diesen Abschnitt am {{ startDate }} erstellt.</p>
+      <p>
+        Du hast diesen Abschnitt am <strong>{{ startDate }}</strong> erstellt.
+      </p>
       <div *ngIf="session.role">
-        <p>Du hast die Rolle "{{ session.role }}" geübt.</p>
+        <p>
+          Du hast die Rolle <strong>{{ session.role.name }}</strong> geübt.
+        </p>
       </div>
       <div *ngIf="session.coverage">
         <p>
-          {{ session.coverage * 100 }}% des gesprochenen Textes wurden erkannt.
+          <strong>{{ session.coverage * 100 }}%</strong> des gesprochenen Textes
+          wurden erkannt.
         </p>
       </div>
       <div *ngIf="session.selfAssessment">
-        <p>So hast du dich dabei gefühlt: {{ session.selfAssessment }}</p>
+        <p>
+          So hast du dich dabei gefühlt:
+          <strong>{{ session.selfAssessment }}</strong>
+        </p>
       </div>
-
-      <p>
-        An dieser Stelle sollten sich hoffentlich bald Infos über diese Session
-        befinden :)
-      </p>
       <p>Position im Skript:</p>
       <div class="section-span w-100 position-relative">
         <div

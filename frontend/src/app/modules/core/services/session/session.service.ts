@@ -8,7 +8,7 @@ import { SimpleSession } from '../../../shared/dtos/session-dtos';
   providedIn: 'root'
 })
 export class SessionService {
-  private baseUri: string = this.globals.backendUri + '/session';
+  private baseUri: string = this.globals.backendUri + '/sessions';
 
   constructor(private http: HttpClient, private globals: Globals) {}
 
@@ -46,7 +46,7 @@ export class SessionService {
    */
   getAll(): Observable<SimpleSession[]> {
     return this.http
-      .get<SimpleSession[]>(this.baseUri /*TODO+ '/past'*/)
+      .get<SimpleSession[]>(this.baseUri)
       .pipe(
         map((sessions) =>
           sessions.map(
@@ -65,25 +65,5 @@ export class SessionService {
           )
         )
       );
-  }
-
-  /**
-   * Saves a new session
-   *
-   * @param session to be saved
-   */
-  save(session: SimpleSession): Observable<SimpleSession> {
-    //TODO
-    return null;
-  }
-
-  /**
-   * Deletes the session with the specified ID
-   *
-   * @param id the ID of the session to be deleted
-   */
-  delete(id: number): Observable<void> {
-    //TODO
-    return null;
   }
 }
