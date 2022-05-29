@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBase } from '../../../../shared/classes/form-base';
-import { ToastService } from '../../../../core/services/toast/toast.service';
-import { FormBuilder } from '@angular/forms';
-import { UserService } from '../../../../core/services/user/user-service';
-import { Theme } from '../../../../shared/enums/theme.enum';
+import {Component, OnInit} from '@angular/core';
+import {FormBase} from '../../../../shared/classes/form-base';
+import {ToastService} from '../../../../core/services/toast/toast.service';
+import {FormBuilder} from '@angular/forms';
+import {UserService} from '../../../../core/services/user/user-service';
+import {Theme} from '../../../../shared/enums/theme.enum';
 
 @Component({
   selector: 'app-email-verification',

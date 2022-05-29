@@ -6,6 +6,7 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UpdateSessionDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.SessionMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Line;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Role;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Script;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Section;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Session;
 import at.ac.tuwien.sepm.groupphase.backend.entity.User;
@@ -15,6 +16,7 @@ import at.ac.tuwien.sepm.groupphase.backend.exception.UnauthorizedException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.LineRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.RoleRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.ScriptRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.SectionRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.SessionRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.AuthorizationService;
@@ -24,35 +26,100 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
- * Specific implementation of SessionService.
+ * A specific implementation of SessionService.
  *
+ * @author Simon Josef Kreuzpointner
  * @author Marvin Flandorfer
  */
+
 @Service
 @Slf4j
 public class SessionServiceImpl implements SessionService {
-
+    private final AuthorizationService authorizationService;
     private final SessionRepository sessionRepository;
+    private final ScriptRepository scriptRepository;
     private final SectionRepository sectionRepository;
     private final RoleRepository roleRepository;
     private final LineRepository lineRepository;
-    private final AuthorizationService authorizationService;
     private final SessionMapper sessionMapper;
 
-    public SessionServiceImpl(SessionRepository sessionRepository, SectionRepository sectionRepository,
-                              RoleRepository roleRepository, LineRepository lineRepository,
-                              AuthorizationService authorizationService, SessionMapper sessionMapper) {
+    public SessionServiceImpl(AuthorizationService authorizationService,
+                              SessionRepository sessionRepository,
+                              ScriptRepository scriptRepository,
+                              SectionRepository sectionRepository,
+                              RoleRepository roleRepository,
+                              LineRepository lineRepository,
+                              SessionMapper sessionMapper) {
+        this.authorizationService = authorizationService;
         this.sessionRepository = sessionRepository;
+        this.scriptRepository = scriptRepository;
         this.sectionRepository = sectionRepository;
         this.roleRepository = roleRepository;
         this.lineRepository = lineRepository;
-        this.authorizationService = authorizationService;
         this.sessionMapper = sessionMapper;
+    }
+
+    @Transactional
+    @Override
+    public void deprecateAffected(Long id) {
+        log.trace("deprecateAffected(id = {})", id);
+
+        User user = authorizationService.getLoggedInUser();
+        if (user == null) {
+            throw new UnauthorizedException();
+        }
+        Optional<Script> scriptOptional = scriptRepository.findById(id);
+        Script script;
+        if (scriptOptional.isPresent()) {
+            script = scriptOptional.get();
+        } else {
+            throw new NotFoundException();
+        }
+        if (!script.getOwner().getId().equals(user.getId())
+            && script.getParticipants().stream().noneMatch(participant -> participant.getId().equals(user.getId()))) {
+            throw new UnauthorizedException();
+        }
+        List<Section> sectionList = sectionRepository.findAll();
+        List<Section> affected = new LinkedList<>();
+        for (Section s : sectionList) {
+            if (s.getStartLine().getPage().getScript().getId().equals(id)
+                && s.getOwner().getId().equals(user.getId())) {
+                affected.add(s);
+            }
+        }
+        for (Section s : affected) {
+            s.getSessions().forEach(session -> deprecate(session.getId()));
+        }
+    }
+
+    @Transactional
+    @Override
+    public void deprecate(Long id) {
+        log.trace("deprecate(id = {})", id);
+
+        User user = authorizationService.getLoggedInUser();
+        if (user == null) {
+            throw new UnauthorizedException();
+        }
+        Optional<Session> sessionOptional = sessionRepository.findById(id);
+        Session session;
+        if (sessionOptional.isPresent()) {
+            session = sessionOptional.get();
+        } else {
+            throw new NotFoundException();
+        }
+        Section section = session.getSection();
+        if (!section.getOwner().getId().equals(user.getId())) {
+            throw new UnauthorizedException();
+        }
+        session.setDeprecated(true);
+        sessionRepository.save(session);
     }
 
     @Override
@@ -121,11 +188,6 @@ public class SessionServiceImpl implements SessionService {
                 }
             }
             curSession.setCurrentLine(line.get());
-            Double coverage = computeCoverage(curSession.getSection(), line.get());
-            if (coverage == null) {
-                throw new IllegalStateException();
-            }
-            curSession.setCoverage(coverage);
         }
         if (updateSessionDto.getSelfAssessment() != null) {
             curSession.setSelfAssessment(updateSessionDto.getSelfAssessment());
@@ -179,35 +241,40 @@ public class SessionServiceImpl implements SessionService {
 
     @Override
     @Transactional
-    public Stream<SessionDto> findAll() {
-        log.trace("findAllSessions()");
-        User user = authorizationService.getLoggedInUser();
-        if (user == null) {
-            throw new UnauthorizedException();
-        }
-        return sessionRepository.findAllByUser(user).stream().map(sessionMapper::sessionToSessionDto);
-    }
-
-    @Override
-    @Transactional
-    public Stream<SessionDto> findPastSessions(Boolean deprecated, Long sectionId) {
+    public Stream<SessionDto> findQuerySessions(Boolean deprecated, Long sectionId, Boolean past) {
         log.trace("findPastSessions(deprecated = {}, sectionId = {})", deprecated, sectionId);
         User user = authorizationService.getLoggedInUser();
         if (user == null) {
             throw new UnauthorizedException();
         }
         List<Session> sessions;
-        if (deprecated == null || !deprecated) {
-            if (sectionId == null) {
-                sessions = sessionRepository.findByDeprecatedAndUser(false, user);
+        if (past == null || !past) {
+            if (deprecated == null || !deprecated) {
+                if (sectionId == null) {
+                    sessions = sessionRepository.findByDeprecatedAndUser(false, user);
+                } else {
+                    sessions = sessionRepository.findBySectionAndDeprecatedAndUser(sectionId, false, user);
+                }
             } else {
-                sessions = sessionRepository.findBySectionAndDeprecatedAndUser(sectionId, false, user);
+                if (sectionId == null) {
+                    sessions = sessionRepository.findByDeprecatedAndUser(true, user);
+                } else {
+                    sessions = sessionRepository.findBySectionAndDeprecatedAndUser(sectionId, true, user);
+                }
             }
         } else {
-            if (sectionId == null) {
-                sessions = sessionRepository.findByDeprecatedAndUser(true, user);
+            if (deprecated == null || !deprecated) {
+                if (sectionId == null) {
+                    sessions = sessionRepository.findByDeprecatedAndUserAndPast(false, user);
+                } else {
+                    sessions = sessionRepository.findBySectionAndDeprecatedAndUserAndPast(sectionId, false, user);
+                }
             } else {
-                sessions = sessionRepository.findBySectionAndDeprecatedAndUser(sectionId, true, user);
+                if (sectionId == null) {
+                    sessions = sessionRepository.findByDeprecatedAndUserAndPast(true, user);
+                } else {
+                    sessions = sessionRepository.findBySectionAndDeprecatedAndUserAndPast(sectionId, true, user);
+                }
             }
         }
         return sessions.stream().map(sessionMapper::sessionToSessionDto);

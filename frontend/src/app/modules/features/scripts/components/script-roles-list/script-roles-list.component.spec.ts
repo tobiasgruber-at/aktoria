@@ -8,9 +8,8 @@ describe('ScriptRolesListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ScriptRolesListComponent ]
-    })
-    .compileComponents();
+      declarations: [ScriptRolesListComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

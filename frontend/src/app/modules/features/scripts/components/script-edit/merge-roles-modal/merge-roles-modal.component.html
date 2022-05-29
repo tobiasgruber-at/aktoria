@@ -20,7 +20,7 @@
       <app-form-errors>
         <app-form-error
           *ngIf="fieldHasErrors('selectedRoles', 'arrayMinLength')"
-          >Bitte wähle mindestens 2 Rollen aus.
+        >Bitte wähle mindestens 2 Rollen aus.
         </app-form-error>
       </app-form-errors>
     </div>
@@ -36,10 +36,10 @@
       />
       <app-form-errors>
         <app-form-error *ngIf="fieldHasErrors('roleName', 'required')"
-          >Bitte gib eine Bezeichnung an.
+        >Bitte gib eine Bezeichnung an.
         </app-form-error>
         <app-form-error *ngIf="fieldHasErrors('roleName', 'maxlength')"
-          >Bezeichnung zu lange.
+        >Bezeichnung zu lange.
         </app-form-error>
         <!-- TODO: validate if duplicated name -->
         <!--<app-form-error *ngIf="checkDuplicatedRole('roleName')"

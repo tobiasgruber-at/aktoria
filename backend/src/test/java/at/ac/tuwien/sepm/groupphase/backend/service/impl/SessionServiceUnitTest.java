@@ -3,9 +3,11 @@ package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SessionDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleSessionDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UpdateSessionDto;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Line;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Session;
 import at.ac.tuwien.sepm.groupphase.backend.enums.AssessmentType;
 import at.ac.tuwien.sepm.groupphase.backend.enums.Role;
+import at.ac.tuwien.sepm.groupphase.backend.repository.LineRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.SessionRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.SessionService;
 import at.ac.tuwien.sepm.groupphase.backend.testhelpers.UserTestHelper;
@@ -31,6 +33,8 @@ public class SessionServiceUnitTest {
     private SessionService sessionService;
     @Autowired
     private SessionRepository sessionRepository;
+    @Autowired
+    private LineRepository lineRepository;
 
     @Test
     @DirtiesContext
@@ -63,14 +67,17 @@ public class SessionServiceUnitTest {
         Long curLineId = sessionOpt.get().getCurrentLine().getId() + 1;
         UpdateSessionDto updateSessionDto = new UpdateSessionDto();
         updateSessionDto.setDeprecated(true);
-        updateSessionDto.setSelfAssessment(AssessmentType.poor);
+        updateSessionDto.setSelfAssessment(AssessmentType.POOR);
         updateSessionDto.setCurrentLineId(curLineId);
 
+        Optional<Line> lineOptional = lineRepository.findById(curLineId);
+        assertTrue(lineOptional.isPresent());
+        Long curLineIndex = lineOptional.get().getIndex();
         SessionDto result = sessionService.update(updateSessionDto, 1L);
         assertThat(result.getId()).isEqualTo(1L);
         assertThat(result.getDeprecated()).isEqualTo(true);
-        assertThat(result.getSelfAssessment()).isEqualTo(AssessmentType.poor);
-        assertThat(result.getCurrentLineIndex()).isEqualTo(curLineId);
+        assertThat(result.getSelfAssessment()).isEqualTo(AssessmentType.POOR);
+        assertThat(result.getCurrentLineIndex()).isEqualTo(curLineIndex);
     }
 
     @Test
@@ -94,23 +101,10 @@ public class SessionServiceUnitTest {
 
     @Test
     @DirtiesContext
-    @DisplayName("findAllSessions() finds all user sessions correctly")
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
-    public void findAllSessions() {
-        List<SessionDto> sessions = sessionService.findAll().toList();
-        assertThat(sessions).isNotNull();
-        assertThat(sessions.size()).isEqualTo(12);
-        assertThat(sessions.get(0).getId()).isEqualTo(1L);
-        assertThat(sessions.get(1).getId()).isEqualTo(2L);
-        assertThat(sessions.get(2).getId()).isEqualTo(3L);
-    }
-
-    @Test
-    @DirtiesContext
     @DisplayName("findPastSessions() finds all past user sessions correctly")
     @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
     public void findPastSessions() {
-        List<SessionDto> sessions = sessionService.findPastSessions(null, 1L).toList();
+        List<SessionDto> sessions = sessionService.findQuerySessions(null, 1L, null).toList();
         assertThat(sessions).isNotNull();
         assertThat(sessions.size()).isEqualTo(2);
     }

@@ -1,10 +1,10 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
-import at.ac.tuwien.sepm.groupphase.backend.datagenerator.UserDataGenerator;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.LineDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.RoleDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UpdateLineDto;
 import at.ac.tuwien.sepm.groupphase.backend.enums.Role;
+import at.ac.tuwien.sepm.groupphase.backend.testhelpers.UserTestHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -82,7 +82,7 @@ class LineEndpointIntegrationTest {
         @DirtiesContext
         @DisplayName("works correctly")
         @MethodSource("updateLineDtoValidProvider")
-        @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "1" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "1", roles = { Role.verified })
+        @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
         void updateLineIsOk(UpdateLineDto input) throws Exception {
             byte[] body = mockMvc
                 .perform(MockMvcRequestBuilders
@@ -114,7 +114,7 @@ class LineEndpointIntegrationTest {
         @DirtiesContext
         @DisplayName("returns InternalServerError")
         @MethodSource("updateLineDtoInvalidProvider")
-        @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "1" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "1", roles = { Role.verified })
+        @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
         void updateLineThrowsException(UpdateLineDto input) throws Exception {
             mockMvc
                 .perform(MockMvcRequestBuilders
@@ -128,7 +128,7 @@ class LineEndpointIntegrationTest {
         @Test
         @DirtiesContext
         @DisplayName("returns Forbidden")
-        @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "1" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "1", roles = { Role.user })
+        @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user })
         void updateLineThrowsException() throws Exception {
             mockMvc
                 .perform(MockMvcRequestBuilders

@@ -1,18 +1,14 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { ScriptViewerService } from '../../../services/script-viewer.service';
-import {
-  Line,
-  Role,
-  SimpleScript
-} from '../../../../../shared/dtos/script-dtos';
-import { Subject, takeUntil } from 'rxjs';
-import { FormBase } from '../../../../../shared/classes/form-base';
-import { ToastService } from '../../../../../core/services/toast/toast.service';
-import { FormBuilder, Validators } from '@angular/forms';
-import { arrayMinLengthValidator } from '../../../../../shared/validators/array-min-length';
-import { Theme } from '../../../../../shared/enums/theme.enum';
-import { RoleService } from '../../../../../core/services/role/role.service';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import {ScriptViewerService} from '../../../services/script-viewer.service';
+import {Line, Role, SimpleScript} from '../../../../../shared/dtos/script-dtos';
+import {Subject, takeUntil} from 'rxjs';
+import {FormBase} from '../../../../../shared/classes/form-base';
+import {ToastService} from '../../../../../core/services/toast/toast.service';
+import {FormBuilder, Validators} from '@angular/forms';
+import {arrayMinLengthValidator} from '../../../../../shared/validators/array-min-length';
+import {Theme} from '../../../../../shared/enums/theme.enum';
+import {RoleService} from '../../../../../core/services/role/role.service';
 
 @Component({
   selector: 'app-merge-roles-modal',
@@ -69,7 +65,8 @@ export class MergeRolesModalComponent
     });
   }
 
-  ngOnDestroy() {}
+  ngOnDestroy() {
+  }
 
   /*checkDuplicatedRole(fieldName: string): boolean {
     const field = this.form.get(fieldName);
@@ -77,8 +74,8 @@ export class MergeRolesModalComponent
   }*/
 
   protected processSubmit(): void {
-    let { roleName } = this.form.value;
-    const { selectedRoles } = this.form.value;
+    let {roleName} = this.form.value;
+    const {selectedRoles} = this.form.value;
     roleName = roleName.toUpperCase();
     if (this.isUploading) {
       this.updateStateAfterMerge(selectedRoles, {

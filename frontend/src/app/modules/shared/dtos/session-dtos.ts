@@ -1,4 +1,4 @@
-import { Line, Role, SimpleScript } from './script-dtos';
+import {Line, Role, SimpleScript} from './script-dtos';
 import { SimpleSection } from './section-dtos';
 
 export class SimpleSession {
@@ -16,7 +16,8 @@ export class SimpleSession {
     public sectionId: number,
     public currentLineIndex: number,
     public role: Role
-  ) {}
+  ) {
+  }
 
   /** Inits the session. Should be done once after session fetched. */
   init(script: SimpleScript, section: SimpleSection): void {

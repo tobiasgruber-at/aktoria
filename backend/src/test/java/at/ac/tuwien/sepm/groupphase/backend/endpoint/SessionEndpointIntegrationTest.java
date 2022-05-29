@@ -111,7 +111,7 @@ public class SessionEndpointIntegrationTest {
             Long curLineId = sessionOpt.get().getCurrentLine().getId() + 1;
             UpdateSessionDto updateSessionDto = new UpdateSessionDto();
             updateSessionDto.setDeprecated(true);
-            updateSessionDto.setSelfAssessment(AssessmentType.poor);
+            updateSessionDto.setSelfAssessment(AssessmentType.POOR);
             updateSessionDto.setCurrentLineId(curLineId);
 
             byte[] body = mockMvc
@@ -126,7 +126,7 @@ public class SessionEndpointIntegrationTest {
             SessionDto result = objectMapper.readValue(body, SessionDto.class);
             assertThat(result.getId()).isEqualTo(1L);
             assertThat(result.getDeprecated()).isEqualTo(true);
-            assertThat(result.getSelfAssessment()).isEqualTo(AssessmentType.poor);
+            assertThat(result.getSelfAssessment()).isEqualTo(AssessmentType.POOR);
             assertThat(result.getCurrentLineIndex()).isEqualTo(curLineId);
         }
 

@@ -1,6 +1,6 @@
-import { TestBed } from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 
-import { VerifiedGuard } from './verified.guard';
+import {VerifiedGuard} from './verified.guard';
 
 describe('VerifiedGuard', () => {
   let guard: VerifiedGuard;

@@ -107,7 +107,7 @@ public class SectionDataGenerator {
                         .start(LocalDateTime.now())
                         .end(LocalDateTime.now())
                         .coverage(1.0)
-                        .selfAssessment(AssessmentType.good)
+                        .selfAssessment(AssessmentType.GOOD)
                         .deprecated(false)
                         .build();
                     log.debug("save session {}", session);

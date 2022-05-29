@@ -1,5 +1,5 @@
-import { Component, Input } from '@angular/core';
-import { ScriptPreview } from '../../../../../shared/dtos/script-dtos';
+import {Component, Input} from '@angular/core';
+import {ScriptPreview} from '../../../../../shared/dtos/script-dtos';
 
 @Component({
   selector: 'app-script-list-item',

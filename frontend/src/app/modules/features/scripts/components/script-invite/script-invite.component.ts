@@ -1,10 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import {FormBuilder, Validators} from '@angular/forms';
-import {ActivatedRoute, Router} from '@angular/router';
-import {ToastService} from '../../../../core/services/toast/toast.service';
-import {Theme} from '../../../../shared/enums/theme.enum';
-import {FormBase} from '../../../../shared/classes/form-base';
-import {ScriptService} from '../../../../core/services/script/script.service';
+import {Component, OnInit} from '@angular/core';
 
 @Component({
   selector: 'app-script-invite',

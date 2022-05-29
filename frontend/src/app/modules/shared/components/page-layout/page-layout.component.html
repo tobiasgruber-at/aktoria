@@ -14,7 +14,7 @@
             class="nav-link"
             routerLink="/scripts"
             routerLinkActive="active"
-            >Deine Skripte
+          >Deine Skripte
           </a>
         </li>
       </ul>
@@ -22,14 +22,14 @@
         <ng-container *ngIf="!authService.isLoggedIn(); else loggedIn">
           <div class="navbar-nav me-auto mb-lg-0">
             <a class="nav-link" routerLink="/login" routerLinkActive="active"
-              >Login</a
+            >Login</a
             >
             <a
               class="nav-link"
               role="button"
               routerLink="/register"
               routerLinkActive="active"
-              >Registrieren</a
+            >Registrieren</a
             >
           </div>
         </ng-container>
@@ -59,7 +59,7 @@
               >
                 Profil
               </a>
-              <hr class="dropdown-divider" />
+              <hr class="dropdown-divider"/>
               <a
                 (click)="logout()"
                 class="dropdown-item nav-link"

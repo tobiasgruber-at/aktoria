@@ -1,4 +1,4 @@
-import { Line, SimpleScript } from './script-dtos';
+import {Line, SimpleScript } from './script-dtos';
 
 export class SimpleSection {
   private startPage: number = null;
@@ -9,7 +9,8 @@ export class SimpleSection {
     public startLine: Line,
     public endLine: Line,
     public id?: number
-  ) {}
+  ) {
+  }
 
   getStartPage(script: SimpleScript): number {
     if (!this.startPage) {

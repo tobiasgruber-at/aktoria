@@ -1,16 +1,8 @@
-import {
-  Component,
-  ElementRef,
-  HostBinding,
-  Input,
-  OnDestroy,
-  OnInit,
-  ViewChild
-} from '@angular/core';
-import { Line } from '../../../../../shared/dtos/script-dtos';
-import { ScriptRehearsalService } from '../../../services/script-rehearsal.service';
-import { Subject, takeUntil } from 'rxjs';
-import { SimpleSession } from '../../../../../shared/dtos/session-dtos';
+import {Component, ElementRef, HostBinding, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Line} from '../../../../../shared/dtos/script-dtos';
+import {ScriptRehearsalService} from '../../../services/script-rehearsal.service';
+import {Subject, takeUntil} from 'rxjs';
+import {SimpleSession} from '../../../../../shared/dtos/session-dtos';
 
 @Component({
   selector: 'app-rehearsal-line',
@@ -23,7 +15,8 @@ export class RehearsalLineComponent implements OnInit, OnDestroy {
   session: SimpleSession = null;
   private $destroy = new Subject<void>();
 
-  constructor(private scriptRehearsalService: ScriptRehearsalService) {}
+  constructor(private scriptRehearsalService: ScriptRehearsalService) {
+  }
 
   @HostBinding('class')
   get classes(): string[] {

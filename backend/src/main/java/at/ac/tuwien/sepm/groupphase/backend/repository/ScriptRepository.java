@@ -17,4 +17,10 @@ public interface ScriptRepository extends JpaRepository<Script, Long> {
     @Modifying
     @Query("SELECT s FROM Script s WHERE :user IN elements(s.participants)")
     List<Script> getScriptByParticipant(@Param("user") User user);
+
+    @Query("select c "
+        + "from Script c join Page p on p.script.id = c.id join Line l on l.page.id = p.id "
+        + "join Session s on s.currentLine.id = l.id "
+        + "where s.id = ?1")
+    Script getScriptBySessionId(Long sessionId);
 }

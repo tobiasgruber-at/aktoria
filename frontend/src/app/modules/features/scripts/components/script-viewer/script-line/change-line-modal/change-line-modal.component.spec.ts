@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { ChangeLineModalComponent } from './change-line-modal.component';
+import {ChangeLineModalComponent} from './change-line-modal.component';
 
 describe('ChangeLineRolesModalComponent', () => {
   let component: ChangeLineModalComponent;

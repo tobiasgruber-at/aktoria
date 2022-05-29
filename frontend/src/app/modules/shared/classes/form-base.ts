@@ -7,7 +7,8 @@ export abstract class FormBase {
   submitted = false;
   loading = false;
 
-  protected constructor(private ts: ToastService) {}
+  protected constructor(private ts: ToastService) {
+  }
 
   /**
    * Form validation will start after the method is called, additionally an AuthRequest will be sent

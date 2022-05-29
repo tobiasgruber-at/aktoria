@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { ScriptInviteLinkComponent } from './script-invite-link.component';
+import {ScriptInviteLinkComponent} from './script-invite-link.component';
 
 describe('ScriptInviteLinkComponent', () => {
   let component: ScriptInviteLinkComponent;
@@ -8,9 +8,9 @@ describe('ScriptInviteLinkComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ScriptInviteLinkComponent ]
+      declarations: [ScriptInviteLinkComponent]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {

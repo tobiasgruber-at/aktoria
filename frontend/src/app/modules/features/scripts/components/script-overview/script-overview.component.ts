@@ -1,12 +1,12 @@
-import { Component, OnDestroy, OnInit, TemplateRef } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ScriptService } from '../../../../core/services/script/script.service';
-import { DetailedScript, Role } from '../../../../shared/dtos/script-dtos';
-import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ToastService } from '../../../../core/services/toast/toast.service';
-import { Theme } from '../../../../shared/enums/theme.enum';
-import { SimpleUser } from '../../../../shared/dtos/user-dtos';
-import { AuthService } from '../../../../core/services/auth/auth-service';
+import {Component, OnDestroy, OnInit, TemplateRef} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
+import {ScriptService} from '../../../../core/services/script/script.service';
+import {DetailedScript, Role} from '../../../../shared/dtos/script-dtos';
+import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {ToastService} from '../../../../core/services/toast/toast.service';
+import {Theme} from '../../../../shared/enums/theme.enum';
+import {SimpleUser} from '../../../../shared/dtos/user-dtos';
+import {AuthService} from '../../../../core/services/auth/auth-service';
 import {
   ScriptRehearsalService,
   ScriptSelectedRoleMapping
@@ -73,7 +73,7 @@ export class ScriptOverviewComponent implements OnInit, OnDestroy {
 
   openModal(modal: TemplateRef<any>) {
     this.deleteError = null;
-    this.modalService.open(modal, { centered: true });
+    this.modalService.open(modal, {centered: true});
   }
 
   deleteScript(modal: NgbActiveModal): void {

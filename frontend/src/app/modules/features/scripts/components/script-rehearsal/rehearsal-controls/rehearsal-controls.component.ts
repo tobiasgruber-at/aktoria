@@ -1,10 +1,10 @@
-import { Component, OnDestroy, OnInit, TemplateRef } from '@angular/core';
-import { ScriptRehearsalService } from '../../../services/script-rehearsal.service';
-import { Subject, takeUntil } from 'rxjs';
-import { SimpleSession } from '../../../../../shared/dtos/session-dtos';
-import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Router } from '@angular/router';
-import { DetailedScript } from '../../../../../shared/dtos/script-dtos';
+import {Component, OnDestroy, OnInit, TemplateRef} from '@angular/core';
+import {ScriptRehearsalService} from '../../../services/script-rehearsal.service';
+import {Subject, takeUntil} from 'rxjs';
+import {SimpleSession} from '../../../../../shared/dtos/session-dtos';
+import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {Router} from '@angular/router';
+import {DetailedScript} from '../../../../../shared/dtos/script-dtos';
 import { SessionService } from '../../../../../core/services/session/session.service';
 import { ToastService } from '../../../../../core/services/toast/toast.service';
 import { Theme } from '../../../../../shared/enums/theme.enum';
@@ -27,7 +27,8 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
     private modalService: NgbModal,
     private router: Router,
     private toastService: ToastService
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.scriptRehearsalService.$session
@@ -69,7 +70,7 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
   }
 
   openModal(modal: TemplateRef<any>): void {
-    this.modalService.open(modal, { centered: true });
+    this.modalService.open(modal, {centered: true});
   }
 
   stopSession(modal: NgbActiveModal): void {
