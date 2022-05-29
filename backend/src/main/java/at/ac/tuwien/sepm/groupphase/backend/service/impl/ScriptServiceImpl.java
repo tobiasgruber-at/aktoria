@@ -261,13 +261,12 @@ public class ScriptServiceImpl implements ScriptService {
 
         List<ScriptPreviewDto> scripts = new ArrayList<>();
         List<Script> ownedScripts = scriptRepository.getScriptByOwner(user);
-        for (Script s : ownedScripts){
+        for (Script s : ownedScripts) {
             scripts.add(scriptMapper.scriptToScriptPreviewDto(s, true));
         }
 
-        List<ScriptPreviewDto> participant = new ArrayList<>();
         List<Script> joinedScripts = scriptRepository.getScriptByParticipant(user);
-        for (Script s : joinedScripts){
+        for (Script s : joinedScripts) {
             scripts.add(scriptMapper.scriptToScriptPreviewDto(s, false));
         }
 
@@ -435,12 +434,12 @@ public class ScriptServiceImpl implements ScriptService {
                 script.setOwner(newOwner);
                 return;
             }
-             Set<User> participants = script.getParticipants();
-             participants.remove(user);
-             script.setParticipants(participants);
+            Set<User> participants = script.getParticipants();
+            participants.remove(user);
+            script.setParticipants(participants);
 
-             scriptRepository.saveAndFlush(script);
-             return;
+            scriptRepository.saveAndFlush(script);
+            return;
         }
         throw new NotFoundException();
     }
