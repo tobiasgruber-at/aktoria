@@ -15,7 +15,6 @@ import { AuthService } from '../../../../core/services/auth/auth-service';
 })
 export class ScriptOverviewComponent implements OnInit {
   getLoading = true;
-  getError = null;
   deleteLoading = false;
   deleteError = null;
   script: DetailedScript = null;
@@ -35,26 +34,23 @@ export class ScriptOverviewComponent implements OnInit {
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
       const id = +params.get('id');
-      const handleNotFound = () => {
-        this.getError = 'Skript konnte nicht gefunden werden.';
+      const handleNotFound = (err) => {
+        this.toastService.showError(err);
+        this.router.navigateByUrl('/scripts');
         this.getLoading = false;
       };
-      if (isNaN(id)) {
-        handleNotFound();
-      } else {
-        this.scriptService.getOne(id).subscribe({
-          next: (script) => {
-            console.log(script);
-            this.script = script;
-            this.members = [];
-            this.members.push(script.owner);
-            Array.prototype.push.apply(this.members, script.participants);
-            this.selectedRole = this.script.roles[0];
-            this.getLoading = false;
-          },
-          error: handleNotFound
-        });
-      }
+      this.scriptService.getOne(id).subscribe({
+        next: (script) => {
+          console.log(script);
+          this.script = script;
+          this.members = [];
+          this.members.push(script.owner);
+          Array.prototype.push.apply(this.members, script.participants);
+          this.selectedRole = this.script.roles[0];
+          this.getLoading = false;
+        },
+        error: (err) => handleNotFound(err)
+      });
     });
   }
 

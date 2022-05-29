@@ -20,7 +20,7 @@ import { HelpersService } from '../../../../../core/services/helpers/helpers.ser
 export class ScriptPageComponent implements OnInit, OnDestroy {
   @Input() page: Page;
   section: SimpleSection = null;
-  renderedContent = true;
+  renderedContent = false;
   private isEditing = false;
   private $destroy = new Subject<void>();
 
@@ -70,24 +70,27 @@ export class ScriptPageComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Lazy renders page content.
+   * Lazy renders page content when editing.
    *
-   * Only renders the page content when it's near enough to the view, so that for huge scripts
-   * all the line logic does not have to be calculated until it's necessary.
+   * Only renders the page content if not editing (because line have to be rendered for example on scroll-to line),
+   * or when it's near enough to the view, so that for huge scripts all the line logic does not have to be
+   * calculated until it's necessary.
    */
   private lazyRenderContent(): void {
-    // TODO: cannot yet work, because for learn-sections the lines have to be rendered in order to scroll to them.
-    return;
-    /* this.helpersService.$mainScrollPosY
-       .pipe(takeUntil(this.$destroy))
-       .subscribe(() => {
-         if (!this.renderedContent) {
-           const pagePosY = this.ref.nativeElement.getBoundingClientRect().top;
-           const windowHeight = window.innerHeight;
-           if (pagePosY < windowHeight * 3) {
-             this.renderedContent = true;
-           }
-         }
-       });*/
+    if (!this.isEditing) {
+      this.renderedContent = true;
+    } else {
+      this.helpersService.$mainScrollPosY
+        .pipe(takeUntil(this.$destroy))
+        .subscribe(() => {
+          if (!this.renderedContent) {
+            const pagePosY = this.ref.nativeElement.getBoundingClientRect().top;
+            const windowHeight = window.innerHeight;
+            if (pagePosY < windowHeight * 5) {
+              this.renderedContent = true;
+            }
+          }
+        });
+    }
   }
 }

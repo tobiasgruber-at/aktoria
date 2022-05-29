@@ -29,9 +29,9 @@ export class ScriptRehearsalSectionsComponent
   getLoading = true;
   script: SimpleScript = null;
   sections: SimpleSection[] = [
-    new SimpleSection('Kapitel 1', 49, 200),
-    new SimpleSection('Kapitel 2', 0, 600),
-    new SimpleSection('Kapitel 3', 600, 900)
+    new SimpleSection('Kapitel 1', 3, 40),
+    new SimpleSection('Kapitel 2', 60, 98),
+    new SimpleSection('Kapitel 3', 40, 45)
   ];
   curStep: Step = /* Step.createSection ||*/ Step.selectSection;
   isMarkingSection: IsMarkingSection = null;
@@ -45,7 +45,7 @@ export class ScriptRehearsalSectionsComponent
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
     private router: Router,
-    toastService: ToastService
+    private toastService: ToastService
   ) {
     super(toastService);
   }
@@ -76,10 +76,9 @@ export class ScriptRehearsalSectionsComponent
           this.scriptViewerService.setScript(script);
           this.getLoading = false;
         },
-        error: () => {
-          // TODO: show error
-          //this.getError = 'Skript konnte nicht gefunden werden.';
-          this.getLoading = false;
+        error: (err) => {
+          this.handleError(err);
+          this.router.navigateByUrl('/scripts');
         }
       });
     });
