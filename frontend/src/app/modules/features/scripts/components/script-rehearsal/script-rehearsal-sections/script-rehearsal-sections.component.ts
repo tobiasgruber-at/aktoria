@@ -5,7 +5,7 @@ import {
   ScriptViewerService
 } from '../../../services/script-viewer.service';
 import { ScriptService } from '../../../../../core/services/script/script.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { SimpleSection } from '../../../../../shared/dtos/section-dtos';
 import { FormBase } from '../../../../../shared/classes/form-base';
 import { ToastService } from '../../../../../core/services/toast/toast.service';
@@ -44,6 +44,7 @@ export class ScriptRehearsalSectionsComponent
     private scriptService: ScriptService,
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
+    private router: Router,
     toastService: ToastService
   ) {
     super(toastService);
@@ -59,6 +60,11 @@ export class ScriptRehearsalSectionsComponent
       .pipe(takeUntil(this.$destroy))
       .subscribe((isMarkingSection) => {
         this.isMarkingSection = isMarkingSection;
+      });
+    this.scriptViewerService.$script
+      .pipe(takeUntil(this.$destroy))
+      .subscribe((script) => {
+        this.script = script;
       });
     this.form = this.formBuilder.group({
       sectionName: ['', [Validators.required, Validators.maxLength(100)]]
@@ -95,5 +101,7 @@ export class ScriptRehearsalSectionsComponent
     this.$destroy.complete();
   }
 
-  protected processSubmit(): void {}
+  protected processSubmit(): void {
+    this.router.navigateByUrl(`/scripts/${this.script?.getId()}/rehearse`);
+  }
 }

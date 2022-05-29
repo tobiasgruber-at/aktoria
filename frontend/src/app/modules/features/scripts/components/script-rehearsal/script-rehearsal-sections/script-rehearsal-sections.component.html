@@ -48,9 +48,7 @@
           </ng-container>
           <ng-template #markingStartCompleted>
             Seite
-            {{
-              markedSection?.getStartPage(scriptViewerService.$script | async)
-            }}
+            {{ markedSection?.getStartPage(script) }}
           </ng-template>
         </p>
       </div>
@@ -72,7 +70,7 @@
           </ng-container>
           <ng-template #markingEndCompleted>
             Seite
-            {{ markedSection?.getEndPage(scriptViewerService.$script | async) }}
+            {{ markedSection?.getEndPage(script) }}
           </ng-template>
         </p>
       </div>

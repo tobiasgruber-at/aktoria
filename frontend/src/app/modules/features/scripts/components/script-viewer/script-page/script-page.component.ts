@@ -1,4 +1,10 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  HostBinding,
+  Input,
+  OnDestroy,
+  OnInit
+} from '@angular/core';
 import { Line, Page } from '../../../../../shared/dtos/script-dtos';
 import { ScriptViewerService } from '../../../services/script-viewer.service';
 import { Subject, takeUntil } from 'rxjs';
@@ -16,6 +22,15 @@ export class ScriptPageComponent implements OnInit, OnDestroy {
   private $destroy = new Subject<void>();
 
   constructor(private scriptViewerService: ScriptViewerService) {}
+
+  @HostBinding('class')
+  get classes(): string[] {
+    const classes = [];
+    if (this.isEditing) {
+      classes.push('is-editing');
+    }
+    return classes;
+  }
 
   get showPage(): boolean {
     return this.page.lines.some((l) => l.active) || this.isEditing;

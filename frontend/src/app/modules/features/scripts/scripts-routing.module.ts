@@ -6,6 +6,7 @@ import { ScriptOverviewComponent } from './components/script-overview/script-ove
 import { ScriptReadComponent } from './components/script-read/script-read.component';
 import { ScriptEditComponent } from './components/script-edit/script-edit.component';
 import { ScriptRehearsalSectionsComponent } from './components/script-rehearsal/script-rehearsal-sections/script-rehearsal-sections.component';
+import { ScriptRehearsalComponent } from './components/script-rehearsal/script-rehearsal.component';
 
 const routes: Routes = [
   {
@@ -41,6 +42,10 @@ const routes: Routes = [
   {
     path: ':id/rehearse/sections',
     component: ScriptRehearsalSectionsComponent
+  },
+  {
+    path: ':id/rehearse',
+    component: ScriptRehearsalComponent
   }
 ];
 

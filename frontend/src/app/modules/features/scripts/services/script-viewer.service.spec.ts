@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { ScriptViewerService } from './script-viewer.service';
 
-describe('ScriptEditService', () => {
+describe('ScriptViewerService', () => {
   let service: ScriptViewerService;
 
   beforeEach(() => {

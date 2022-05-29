@@ -65,9 +65,7 @@ export class UpdateLine {
 }
 
 export class Role {
-  id: number;
-  name: string;
-  color: string;
+  constructor(public id: number, public name: string, public color: string) {}
 }
 
 export class MergeRoles {
