@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,7 +29,7 @@ import java.util.stream.Stream;
 @RequestMapping(path = SessionEndpoint.path)
 @Slf4j
 public class SessionEndpoint {
-    public static final String path = "/api/v1/session";
+    public static final String path = "/api/v1/sessions";
     public final SessionService sessionService;
 
     public SessionEndpoint(SessionService sessionService) {
@@ -70,8 +71,10 @@ public class SessionEndpoint {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @Secured(Permission.verified)
-    public Stream<SessionDto> getAllSessions() {
-        log.info("GET {}", path);
-        return sessionService.findAll();
+    public Stream<SessionDto> getQuerySessions(@RequestParam(required = false) Boolean deprecated,
+                                               @RequestParam(required = false) Long sectionId,
+                                               @RequestParam(required = false) Boolean past) {
+        log.info("GET {}/past?deprecated={}&sectionId={}&past={}", path, deprecated, sectionId, past);
+        return sessionService.findQuerySessions(deprecated, sectionId, past);
     }
 }

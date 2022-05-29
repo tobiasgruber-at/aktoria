@@ -1,6 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.validation;
 
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SectionDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleSectionDto;
 import org.springframework.stereotype.Component;
 
 /**
@@ -13,9 +13,9 @@ public interface SectionValidation {
     /**
      * Validates input when creating a new section.
      *
-     * @param sectionDto the section to be validated
+     * @param simpleSectionDto the section to be validated
      */
-    void validateCreateSection(SectionDto sectionDto);
+    void validateCreateSection(SimpleSectionDto simpleSectionDto);
 
     /**
      * Validates if the logged-in user is the owner of the section.
@@ -23,4 +23,12 @@ public interface SectionValidation {
      * @param owner the ID of the owner of the section
      */
     void ownerLoggedIn(Long owner);
+
+    /**
+     * Validates if the user is a participant of the script.
+     *
+     * @param ownerId the user that wants to create the section
+     * @param startId the starting line of the section
+     */
+    void validateOwner(Long ownerId, Long startId);
 }

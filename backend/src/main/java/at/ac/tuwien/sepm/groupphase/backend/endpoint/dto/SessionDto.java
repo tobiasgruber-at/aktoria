@@ -26,6 +26,6 @@ public class SessionDto {
     private LocalDateTime end;
     private AssessmentType selfAssessment;
     private Long sectionId;
-    private Long roleId;
-    private Long currentLineId;
+    private RoleDto role;
+    private Long currentLineIndex;
 }

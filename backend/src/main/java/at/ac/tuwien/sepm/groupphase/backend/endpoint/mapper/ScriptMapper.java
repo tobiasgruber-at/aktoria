@@ -11,8 +11,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 
-import java.util.List;
-
 @Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR, uses = { RoleMapper.class, PageMapper.class })
 public interface ScriptMapper {
     SimpleScriptDto parsedScriptToSimpleScriptDto(ParsedScript parsedScript, String name);
@@ -23,7 +21,8 @@ public interface ScriptMapper {
     })
     ScriptDto simpleScriptDtoToScriptDto(SimpleScriptDto simpleScriptDto, Long id, SimpleUserDto owner);
 
-    List<ScriptPreviewDto> listOfScriptToListOfScriptPreviewDto(List<Script> script);
+    @Mapping(target = "owner", source = "owner")
+    ScriptPreviewDto scriptToScriptPreviewDto(Script script, boolean owner);
 
     ScriptDto scriptToScriptDto(Script script);
 }

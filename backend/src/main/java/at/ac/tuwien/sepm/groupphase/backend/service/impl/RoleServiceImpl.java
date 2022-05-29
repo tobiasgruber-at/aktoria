@@ -8,6 +8,7 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Line;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Role;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Script;
 import at.ac.tuwien.sepm.groupphase.backend.entity.User;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.UnauthorizedException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
@@ -122,4 +123,26 @@ public class RoleServiceImpl implements RoleService {
         sessionService.deprecateAffected(script.getId());
         return roleMapper.roleToRoleDto(keep);
     }
+
+    @Override
+    public RoleDto getById(Long sid, Long id) {
+        log.trace("getById(sid = {}, id = {})", sid, id);
+        User user = authorizationService.getLoggedInUser();
+        if (user == null) {
+            throw new UnauthorizedException();
+        }
+        Optional<Role> roleOpt = roleRepository.findById(id);
+        if (roleOpt.isEmpty()) {
+            throw new NotFoundException("Role not found");
+        }
+        Role role = roleOpt.get();
+        if (!role.getScript().getOwner().getId().equals(user.getId()) && !role.getScript().getParticipants().contains(user)) {
+            throw new UnauthorizedException("User is not authorized to view this Role");
+        }
+        if (!role.getScript().getId().equals(sid)) {
+            throw new ConflictException("Role does not belong to this script");
+        }
+        return roleMapper.roleToRoleDto(role);
+    }
+
 }

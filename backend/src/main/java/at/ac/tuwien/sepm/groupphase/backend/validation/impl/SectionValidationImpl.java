@@ -1,6 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.validation.impl;
 
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SectionDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleSectionDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Line;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Script;
 import at.ac.tuwien.sepm.groupphase.backend.entity.User;
@@ -37,12 +37,12 @@ public class SectionValidationImpl implements SectionValidation {
     }
 
     @Override
-    public void validateCreateSection(SectionDto sectionDto) {
+    public void validateCreateSection(SimpleSectionDto simpleSectionDto) {
         try {
-            validateName(sectionDto.getName());
-            validateOwner(sectionDto.getOwner());
-            validateLines(sectionDto.getStartLine(), sectionDto.getEndLine());
-            ownerLoggedIn(sectionDto.getOwner());
+            validateName(simpleSectionDto.getName());
+            validateOwner(simpleSectionDto.getOwnerId(), simpleSectionDto.getStartLineId());
+            validateLines(simpleSectionDto.getStartLineId(), simpleSectionDto.getEndLineId());
+            ownerLoggedIn(simpleSectionDto.getOwnerId());
         } catch (ValidationException e) {
             throw new ValidationException(e.getMessage(), e);
         } catch (UnauthorizedException e) {
@@ -62,7 +62,8 @@ public class SectionValidationImpl implements SectionValidation {
         }
     }
 
-    private void validateOwner(Long ownerId) throws NotFoundException {
+    @Override
+    public void validateOwner(Long ownerId, Long startId) throws NotFoundException {
         if (ownerId == null) {
             throw new ValidationException("Lernabschnitt hat keinen Besitzer");
         }
@@ -70,6 +71,13 @@ public class SectionValidationImpl implements SectionValidation {
         if (user.isEmpty()) {
             throw new ValidationException("Besitzer des Lernabschnitts existiert nicht!");
         }
+        Optional<Line> start = lineRepository.findById(startId);
+        if (start.isEmpty()) {
+            throw new ValidationException("Anfang des Lernabschnitts existiert nicht");
+        }
+        Script script = start.get().getPage().getScript();
+        authorizationService.checkMemberAuthorization(script.getId());
+
     }
 
     private void validateLines(Long startId, Long endId) throws ValidationException {

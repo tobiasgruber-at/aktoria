@@ -188,11 +188,6 @@ public class SessionServiceImpl implements SessionService {
                 }
             }
             curSession.setCurrentLine(line.get());
-            Double coverage = computeCoverage(curSession.getSection(), line.get());
-            if (coverage == null) {
-                throw new IllegalStateException();
-            }
-            curSession.setCoverage(coverage);
         }
         if (updateSessionDto.getSelfAssessment() != null) {
             curSession.setSelfAssessment(updateSessionDto.getSelfAssessment());
@@ -202,6 +197,7 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
+    @Transactional
     public SessionDto finish(Long id) {
         log.trace("finish(id = {})", id);
         User user = authorizationService.getLoggedInUser();
@@ -225,6 +221,7 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
+    @Transactional
     public SessionDto findById(Long id) {
         log.trace("findSessionById(id = {})", id);
         User user = authorizationService.getLoggedInUser();
@@ -243,13 +240,44 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
-    public Stream<SessionDto> findAll() {
-        log.trace("findAllSessions()");
+    @Transactional
+    public Stream<SessionDto> findQuerySessions(Boolean deprecated, Long sectionId, Boolean past) {
+        log.trace("findPastSessions(deprecated = {}, sectionId = {})", deprecated, sectionId);
         User user = authorizationService.getLoggedInUser();
         if (user == null) {
             throw new UnauthorizedException();
         }
-        return sessionRepository.findAllByUser(user).stream().map(sessionMapper::sessionToSessionDto);
+        List<Session> sessions;
+        if (past == null || !past) {
+            if (deprecated == null || !deprecated) {
+                if (sectionId == null) {
+                    sessions = sessionRepository.findByDeprecatedAndUser(false, user);
+                } else {
+                    sessions = sessionRepository.findBySectionAndDeprecatedAndUser(sectionId, false, user);
+                }
+            } else {
+                if (sectionId == null) {
+                    sessions = sessionRepository.findByDeprecatedAndUser(true, user);
+                } else {
+                    sessions = sessionRepository.findBySectionAndDeprecatedAndUser(sectionId, true, user);
+                }
+            }
+        } else {
+            if (deprecated == null || !deprecated) {
+                if (sectionId == null) {
+                    sessions = sessionRepository.findByDeprecatedAndUserAndPast(false, user);
+                } else {
+                    sessions = sessionRepository.findBySectionAndDeprecatedAndUserAndPast(sectionId, false, user);
+                }
+            } else {
+                if (sectionId == null) {
+                    sessions = sessionRepository.findByDeprecatedAndUserAndPast(true, user);
+                } else {
+                    sessions = sessionRepository.findBySectionAndDeprecatedAndUserAndPast(sectionId, true, user);
+                }
+            }
+        }
+        return sessions.stream().map(sessionMapper::sessionToSessionDto);
     }
 
     private Double computeCoverage(Section section, Line line) {

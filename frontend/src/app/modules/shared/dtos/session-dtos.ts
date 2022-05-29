@@ -24,7 +24,7 @@ export class SimpleSession {
           if (line.index > this.end) {
             break pagesLoop;
           }
-          if (line.index >= this.start) {
+          if (line.index >= this.start && line.active) {
             this.lines.push(line);
           }
         }

@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.groupphase.backend.service;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ScriptDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.ScriptPreviewDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleScriptDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UpdateScriptDto;
 import at.ac.tuwien.sepm.groupphase.backend.exception.IllegalFileFormatException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import org.springframework.stereotype.Service;
@@ -68,6 +69,14 @@ public interface ScriptService {
     void delete(Long id);
 
     /**
+     * Updates script with given id.
+     *
+     * @param updateScriptDto the updates to be performed
+     * @return the updated script
+     */
+    ScriptDto update(UpdateScriptDto updateScriptDto, Long id);
+
+    /**
      * Sends an invitation to join the script as participant.
      *
      * @param scriptId id of the script
@@ -93,12 +102,10 @@ public interface ScriptService {
     void deleteParticipant(Long id, String email);
 
     /**
-     * Updates a script. Can change roles, pages, lines and name of the script.
+     * Returns a Script dto of a session.
      *
-     * @param scriptDto the script to update
-     * @param id        the id of the script
-     * @return the patched script
-     * @author Luke Nemeskeri
+     * @param id of the session
+     * @return a script
      */
-    ScriptDto patch(ScriptDto scriptDto, Long id);
+    ScriptDto getBySessionId(Long id);
 }

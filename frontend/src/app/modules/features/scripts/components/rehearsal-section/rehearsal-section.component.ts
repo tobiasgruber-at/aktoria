@@ -10,6 +10,9 @@ import { ScriptViewerService } from '../../services/script-viewer.service';
 import { Subject, takeUntil } from 'rxjs';
 import { SimpleScript } from '../../../../shared/dtos/script-dtos';
 import { SimpleSection } from '../../../../shared/dtos/section-dtos';
+import { SimpleSession } from '../../../../shared/dtos/session-dtos';
+import { ScriptRehearsalService } from '../../services/script-rehearsal.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-rehearsal-section',
@@ -24,7 +27,11 @@ export class RehearsalSectionComponent implements OnInit, OnDestroy {
   script: SimpleScript = null;
   private $destroy = new Subject<void>();
 
-  constructor(private scriptViewerService: ScriptViewerService) {}
+  constructor(
+    private scriptViewerService: ScriptViewerService,
+    private scriptRehearsalService: ScriptRehearsalService,
+    private router: Router
+  ) {}
 
   get startLinePercentage(): number {
     return this.script && this.section
@@ -38,7 +45,6 @@ export class RehearsalSectionComponent implements OnInit, OnDestroy {
       : 0;
   }
 
-  // eslint-disable-next-line @typescript-eslint/member-ordering
   @HostBinding('class')
   private get classes(): string[] {
     const classes = ['mb-2'];
@@ -65,7 +71,19 @@ export class RehearsalSectionComponent implements OnInit, OnDestroy {
     this.$destroy.complete();
   }
 
-  // eslint-disable-next-line @typescript-eslint/member-ordering
+  startRehearsal(): void {
+    this.scriptRehearsalService.setSession(
+      new SimpleSession(
+        null,
+        this.section.startLine,
+        this.section.endLine,
+        this.section.startLine,
+        this.script.roles[0]
+      )
+    );
+    this.router.navigateByUrl(`/scripts/${this.script?.getId()}/rehearse`);
+  }
+
   @HostListener('click', ['$event'])
   private selectSection(): void {
     this.scriptViewerService.setMarkedSection(

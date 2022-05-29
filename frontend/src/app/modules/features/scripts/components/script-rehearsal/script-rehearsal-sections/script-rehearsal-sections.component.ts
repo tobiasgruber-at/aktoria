@@ -1,13 +1,13 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {SimpleScript} from '../../../../../shared/dtos/script-dtos';
-import {IsMarkingSection, ScriptViewerService} from '../../../services/script-viewer.service';
-import {ScriptService} from '../../../../../core/services/script/script.service';
-import {ActivatedRoute, Router} from '@angular/router';
-import {SimpleSection} from '../../../../../shared/dtos/section-dtos';
-import {FormBase} from '../../../../../shared/classes/form-base';
-import {ToastService} from '../../../../../core/services/toast/toast.service';
-import {FormBuilder, Validators} from '@angular/forms';
-import {Subject, takeUntil} from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { SimpleScript } from '../../../../../shared/dtos/script-dtos';
+import { ScriptViewerService } from '../../../services/script-viewer.service';
+import { ScriptService } from '../../../../../core/services/script/script.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { SimpleSection } from '../../../../../shared/dtos/section-dtos';
+import { ToastService } from '../../../../../core/services/toast/toast.service';
+import { Subject, takeUntil } from 'rxjs';
+import { SectionService } from '../../../../../core/services/section/section.service';
+import { ScriptRehearsalService } from '../../../services/script-rehearsal.service';
 
 enum Step {
   selectSection,
@@ -20,66 +20,55 @@ enum Step {
   styleUrls: ['./script-rehearsal-sections.component.scss'],
   providers: [ScriptViewerService]
 })
-export class ScriptRehearsalSectionsComponent
-  extends FormBase
-  implements OnInit, OnDestroy {
+export class ScriptRehearsalSectionsComponent implements OnInit, OnDestroy {
   getLoading = true;
   script: SimpleScript = null;
-  sections: SimpleSection[] = [
-    new SimpleSection('Kapitel 1', 49, 200),
-    new SimpleSection('Kapitel 2', 0, 600),
-    new SimpleSection('Kapitel 3', 600, 900)
-  ];
-  curStep: Step = /* Step.createSection ||*/ Step.selectSection;
-  isMarkingSection: IsMarkingSection = null;
-  markedSection: SimpleSection = null;
+  sections: SimpleSection[];
+  curStep: Step = Step.selectSection;
   readonly steps = Step;
   private $destroy = new Subject<void>();
 
   constructor(
     public scriptViewerService: ScriptViewerService,
+    private scriptRehearsalService: ScriptRehearsalService,
     private scriptService: ScriptService,
+    private sectionService: SectionService,
     private route: ActivatedRoute,
-    private formBuilder: FormBuilder,
     private router: Router,
-    toastService: ToastService
-  ) {
-    super(toastService);
-  }
+    private toastService: ToastService
+  ) {}
 
   ngOnInit(): void {
-    this.scriptViewerService.$markedSection
-      .pipe(takeUntil(this.$destroy))
-      .subscribe((markedSection) => {
-        this.markedSection = markedSection?.section;
-      });
-    this.scriptViewerService.$isMarkingSection
-      .pipe(takeUntil(this.$destroy))
-      .subscribe((isMarkingSection) => {
-        this.isMarkingSection = isMarkingSection;
-      });
-    this.scriptViewerService.$script
-      .pipe(takeUntil(this.$destroy))
-      .subscribe((script) => {
-        this.script = script;
-      });
-    this.form = this.formBuilder.group({
-      sectionName: ['', [Validators.required, Validators.maxLength(100)]]
-    });
     this.route.paramMap.subscribe((params) => {
       const id = +params.get('id');
       this.scriptService.getOne(id).subscribe({
         next: (script) => {
           this.scriptViewerService.setScript(script);
-          this.getLoading = false;
         },
-        error: () => {
-          // TODO: show error
-          //this.getError = 'Skript konnte nicht gefunden werden.';
-          this.getLoading = false;
+        error: (err) => {
+          this.toastService.showError(err);
+          this.router.navigateByUrl('/scripts');
         }
       });
     });
+
+    this.scriptViewerService.$script
+      .pipe(takeUntil(this.$destroy))
+      .subscribe((script) => {
+        this.script = script;
+        if (this.script) {
+          this.sectionService.getAll(this.script?.getId()).subscribe({
+            next: (sections) => {
+              this.sections = sections;
+              this.getLoading = false;
+            },
+            error: (err) => {
+              this.toastService.showError(err);
+              this.router.navigateByUrl('/scripts');
+            }
+          });
+        }
+      });
   }
 
   changeStep(step: Step): void {
@@ -90,6 +79,9 @@ export class ScriptRehearsalSectionsComponent
         section: new SimpleSection(null, null, Infinity),
         scrollTo: false
       });
+    } else if (this.curStep === Step.selectSection) {
+      this.scriptViewerService.setIsMarkingSection(null);
+      this.scriptViewerService.setMarkedSection(null);
     }
   }
 
@@ -98,7 +90,7 @@ export class ScriptRehearsalSectionsComponent
     this.$destroy.complete();
   }
 
-  protected processSubmit(): void {
-    this.router.navigateByUrl(`/scripts/${this.script?.getId()}/rehearse`);
+  backToOverview(): void {
+    this.router.navigateByUrl(`/scripts/${this.script?.getId()}`);
   }
 }

@@ -14,6 +14,7 @@ import {ScriptService} from '../../../../../../core/services/script/script.servi
 export class ScriptMembersItemComponent implements OnInit {
   @Input() member: SimpleUser;
   @Input() isOwner: boolean;
+  @Input() owner: SimpleUser;
   scriptId;
   removed = false;
 
