@@ -7,7 +7,7 @@ import {
   trigger
 } from '@angular/animations';
 
-const voidStyles: { [property: string]: string | number } = {
+export const voidStyles: { [property: string]: string | number } = {
   opacity: 0,
   transform: 'translateY(20px)'
 };

@@ -42,7 +42,6 @@ export class ChangeLineModalComponent
       .pipe(takeUntil(this.$destroy))
       .subscribe((isUploading) => {
         this.isUploading = isUploading;
-        console.log(this.isUploading);
       });
   }
 

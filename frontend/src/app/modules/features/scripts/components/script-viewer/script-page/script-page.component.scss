@@ -1,5 +1,20 @@
-:host:not(:last-of-type) .page {
-  margin-bottom: 3rem;
+:host {
+  &:not(:last-of-type) .page {
+    margin-bottom: 3rem;
+  }
+
+  &:not(.is-editing) {
+    app-script-line:not(.is-not-in-section) {
+      z-index: 1; // to have section markings always on top of other script-lines
+    }
+
+    app-script-line,
+    .page {
+      &.is-not-in-section {
+        background-color: rgba(220, 220, 220) !important;
+      }
+    }
+  }
 }
 
 .page {
@@ -7,4 +22,9 @@
   max-width: 900px;
   aspect-ratio: 21 / 29.7;
   box-shadow: 0 8px 17px 0 rgb(0 0 0 / 8%);
+}
+
+app-script-line,
+.page {
+  background-color: var(--bs-light);
 }

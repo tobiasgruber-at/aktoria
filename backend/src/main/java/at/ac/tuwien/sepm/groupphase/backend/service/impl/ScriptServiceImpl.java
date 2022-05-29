@@ -422,11 +422,22 @@ public class ScriptServiceImpl implements ScriptService {
                 script.setOwner(newOwner);
 
                 user = newOwner;
+                return;
             }
+            /*
             Set<Script> participatesIn = user.getParticipatesIn();
             participatesIn.remove(script);
             user.setParticipatesIn(participatesIn);
 
+            Iterator<Script> iter = user.getParticipatesIn().iterator();
+
+            userRepository.saveAndFlush(user);
+            */
+            Set<User> participants = script.getParticipants();
+            participants.remove(user);
+            script.setParticipants(participants);
+
+            scriptRepository.saveAndFlush(script);
             return;
         }
         throw new NotFoundException();
