@@ -11,7 +11,7 @@ import {
   providedIn: 'root'
 })
 export class SessionService {
-  private baseUri: string = this.globals.backendUri + '/session';
+  private baseUri: string = this.globals.backendUri + '/sessions';
 
   constructor(private http: HttpClient, private globals: Globals) {}
 
