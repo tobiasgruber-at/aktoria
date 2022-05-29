@@ -49,34 +49,11 @@ public class SessionEndpointIntegrationTest {
     @Autowired
     private LineRepository lineRepository;
     @Autowired
-    private SessionService sessionService;
-    @Autowired
     ObjectMapper objectMapper;
 
     @BeforeEach
     public void setup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webAppContext).build();
-    }
-
-    @Test
-    @Transactional
-    @DisplayName("saveSession() saves the session correctly")
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified})
-    public void saveSession() {
-        SimpleSessionDto simpleSessionDto = new SimpleSessionDto();
-        simpleSessionDto.setSectionId(1L);
-        simpleSessionDto.setRoleId(1L);
-
-        SessionDto result = sessionService.save(simpleSessionDto);
-        assertThat(result).isNotNull();
-        assertThat(result.getId()).isNotNull();
-        assertThat(result.getCoverage()).isEqualTo(0.0);
-        assertThat(result.getDeprecated()).isEqualTo(false);
-        assertThat(result.getStart()).isNotNull();
-        assertThat(result.getEnd()).isNull();
-        assertThat(result.getSectionId()).isEqualTo(1L);
-        assertThat(result.getRoleId()).isEqualTo(1L);
-        assertThat(result.getCurrentLineId()).isNotNull();
     }
 
     @Test
@@ -124,29 +101,6 @@ public class SessionEndpointIntegrationTest {
                 .content(objectMapper.writeValueAsBytes(simpleSessionDto))
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isUnprocessableEntity());
-    }
-
-    @Test
-    @Transactional
-    @DisplayName("updateSession() updates session correctly")
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified})
-    public void updateSession() throws Exception {
-        Optional<Session> sessionOpt = sessionRepository.findById(1L);
-        if(sessionOpt.isPresent()) {
-            Long curLineId = sessionOpt.get().getCurrentLine().getId() + 1;
-            UpdateSessionDto updateSessionDto = new UpdateSessionDto();
-            updateSessionDto.setDeprecated(true);
-            updateSessionDto.setSelfAssessment(AssessmentType.poor);
-            updateSessionDto.setCurrentLineId(curLineId);
-
-            SessionDto result = sessionService.update(updateSessionDto, 1L);
-            assertThat(result.getId()).isEqualTo(1L);
-            assertThat(result.getDeprecated()).isEqualTo(true);
-            assertThat(result.getSelfAssessment()).isEqualTo(AssessmentType.poor);
-            assertThat(result.getCurrentLineId()).isEqualTo(curLineId);
-        } else {
-            throw new Exception();
-        }
     }
 
     @Test
@@ -214,5 +168,92 @@ public class SessionEndpointIntegrationTest {
                 .content(objectMapper.writeValueAsBytes(updateSessionDto))
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("returns finished session and 200")
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified})
+    public void finishSessionCorrectly() throws Exception {
+        byte[] body = mockMvc
+            .perform(MockMvcRequestBuilders
+                .post(SessionEndpoint.path + "/1")
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andReturn().getResponse().getContentAsByteArray();
+
+        SessionDto result = objectMapper.readValue(body, SessionDto.class);
+        assertThat(result.getId()).isEqualTo(1L);
+        assertThat(result.getEnd()).isNotNull();
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("finish throws conflict exception and 409")
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified})
+    public void finishSessionThrowsConflictException() throws Exception {
+        Optional<Session> session = sessionRepository.findById(1L);
+        if (session.isPresent()) {
+            Session curSession = session.get();
+            curSession.setDeprecated(true);
+            sessionRepository.save(curSession);
+
+            mockMvc
+                .perform(MockMvcRequestBuilders
+                    .post(SessionEndpoint.path + "/1")
+                    .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isConflict());
+        } else {
+            throw new Exception();
+        }
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("returns found session and 200")
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified})
+    public void findSessionByIdCorrectly() throws Exception {
+        byte[] body = mockMvc
+            .perform(MockMvcRequestBuilders
+                .get(SessionEndpoint.path + "/1")
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andReturn().getResponse().getContentAsByteArray();
+
+        SessionDto result = objectMapper.readValue(body, SessionDto.class);
+        assertThat(result).isNotNull();
+        assertThat(result.getId()).isEqualTo(1L);
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("session not found and 404")
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified})
+    public void findSessionByIdThrowsNotFoundException() throws Exception {
+        mockMvc
+            .perform(MockMvcRequestBuilders
+                .get(SessionEndpoint.path + "/-1")
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("returns all sessions for user and 200")
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified})
+    public void findAllSessionsCorrectly() throws Exception {
+        byte[] body = mockMvc
+            .perform(MockMvcRequestBuilders
+                .get(SessionEndpoint.path)
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andReturn().getResponse().getContentAsByteArray();
+
+        List<SessionDto> sessions = objectMapper.readerFor(SessionDto.class).<SessionDto>readValues(body).readAll();
+        assertThat(sessions).isNotNull();
+        assertThat(sessions.size()).isEqualTo(12);
+        assertThat(sessions.get(0).getId()).isEqualTo(1L);
+        assertThat(sessions.get(1).getId()).isEqualTo(2L);
+        assertThat(sessions.get(2).getId()).isEqualTo(3L);
     }
 }
