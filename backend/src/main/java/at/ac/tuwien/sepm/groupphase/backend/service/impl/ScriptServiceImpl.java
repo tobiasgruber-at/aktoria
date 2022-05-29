@@ -321,6 +321,20 @@ public class ScriptServiceImpl implements ScriptService {
 
     @Override
     @Transactional
+    public ScriptDto getBySessionId(Long id) {
+        log.trace("getBySessionId(id = {})", id);
+        User user = authorizationService.getLoggedInUser();
+        if (user == null) {
+            throw new UnauthorizedException();
+        }
+        Script script = scriptRepository.getScriptBySessionId(id);
+        if (!script.getOwner().getId().equals(user.getId()) && !script.getParticipants().contains(user)) {
+            throw new UnauthorizedException("User not allowed to view this script");
+        }
+        return scriptMapper.scriptToScriptDto(script);
+    }
+
+    @Override
     public void invite(Long scriptId, String email) {
         log.trace("invite(scriptId = {}, email = {})", scriptId, email);
 
