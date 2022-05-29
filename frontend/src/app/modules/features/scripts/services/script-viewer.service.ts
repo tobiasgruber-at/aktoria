@@ -1,6 +1,13 @@
-import {Role, SimpleScript} from '../../../shared/dtos/script-dtos';
-import {BehaviorSubject, Observable} from 'rxjs';
-import {SimpleSection} from '../../../shared/dtos/section-dtos';
+import { Role, SimpleScript } from '../../../shared/dtos/script-dtos';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { SimpleSection } from '../../../shared/dtos/section-dtos';
+
+export interface MarkedSection {
+  section: SimpleSection;
+  scrollTo: boolean;
+}
+
+export type IsMarkingSection = 'start' | 'end';
 
 /** Local service for viewing or editing scripts. */
 export class ScriptViewerService {
@@ -11,8 +18,12 @@ export class ScriptViewerService {
   );
   private isUploading = false;
   private isUploadingSubject = new BehaviorSubject<boolean>(this.isUploading);
-  private markedSection: SimpleSection = null;
-  private markedSectionSubject = new BehaviorSubject<SimpleSection>(
+  private isMarkingSection: IsMarkingSection = null;
+  private isMarkingSectionSubject = new BehaviorSubject<IsMarkingSection>(
+    this.isMarkingSection
+  );
+  private markedSection: MarkedSection = null;
+  private markedSectionSubject = new BehaviorSubject<MarkedSection>(
     this.markedSection
   );
   private script: SimpleScript = null;
@@ -48,7 +59,11 @@ export class ScriptViewerService {
     return this.isUploadingSubject.asObservable();
   }
 
-  get $markedSection(): Observable<SimpleSection> {
+  get $isMarkingSection(): Observable<IsMarkingSection> {
+    return this.isMarkingSectionSubject.asObservable();
+  }
+
+  get $markedSection(): Observable<MarkedSection> {
     return this.markedSectionSubject.asObservable();
   }
 
@@ -76,7 +91,12 @@ export class ScriptViewerService {
     this.isUploadingSubject.next(this.isUploading);
   }
 
-  setMarkedSection(markedSection: SimpleSection): void {
+  setIsMarkingSection(isMarkingSection: IsMarkingSection): void {
+    this.isMarkingSection = isMarkingSection;
+    this.isMarkingSectionSubject.next(this.isMarkingSection);
+  }
+
+  setMarkedSection(markedSection: MarkedSection): void {
     this.markedSection = markedSection;
     this.markedSectionSubject.next(this.markedSection);
   }

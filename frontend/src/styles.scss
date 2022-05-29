@@ -1,5 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 body {
+  --max-grid: 1200px;
   background-color: whitesmoke;
   overflow: hidden;
 }
@@ -68,5 +69,26 @@ label {
   &.badge-xl {
     padding: 0.5rem 1rem;
     font-size: 1.1em;
+  }
+}
+
+.no-select {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none;
+  /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
+}
+
+.tooltip {
+  .tooltip-inner {
+    background-color: rgb(0 0 0 / 90%) !important;
+  }
+
+  .tooltip-arrow::before {
+    border-top-color: rgb(0 0 0 / 90%) !important;
+    transform: translateY(1px);
   }
 }

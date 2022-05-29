@@ -54,17 +54,17 @@ export class ScriptService {
     return loadedScript
       ? of(loadedScript)
       : this.http.get<DetailedScript>(`${this.baseUri}/${id}`).pipe(
-        /*map(
+        map(
           (script) =>
             new DetailedScript(
               script.id,
+              script.owner,
+              script.participants,
               script.pages,
               script.roles,
-              script.name,
-              script.owner,
-              script.participants
+              script.name
             )
-        ),*/
+        ),
         tap((script) => {
           this.fullyLoadedScripts.push(script);
         })
@@ -135,8 +135,10 @@ export class ScriptService {
    * @param scriptId the scriptId of the invitation
    */
   inviteParticipant(email: string, scriptId: string): Observable<void> {
-    return this.http
-      .post<void>(this.baseUri + '/' + scriptId + '/invitations', email);
+    return this.http.post<void>(
+      this.baseUri + '/' + scriptId + '/invitations',
+      email
+    );
   }
 
   /**
@@ -146,8 +148,10 @@ export class ScriptService {
    * @param scriptId id of the script
    */
   addParticipant(token: string, scriptId: string): Observable<void> {
-    return this.http
-      .post<void>(this.baseUri + '/' + scriptId + '/participants', token);
+    return this.http.post<void>(
+      this.baseUri + '/' + scriptId + '/participants',
+      token
+    );
   }
 
   removeParticipant(scriptId, email: string): Observable<void> {
@@ -162,8 +166,12 @@ export class ScriptService {
   }
 
   inviteLink(scriptId): Observable<ArrayBuffer> {
-    // @ts-ignore
-    return this.http.post<ArrayBuffer>(this.baseUri + '/' + scriptId + '/inviteLink', null, { responseType: 'text' });
+    return this.http.post<ArrayBuffer>(
+      this.baseUri + '/' + scriptId + '/inviteLink',
+      null,
+      // @ts-ignore
+      { responseType: 'text' }
+    );
   }
 
   /** Resets the state of this service. */
