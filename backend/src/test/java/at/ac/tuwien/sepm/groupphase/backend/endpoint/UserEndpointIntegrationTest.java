@@ -71,13 +71,22 @@ class UserEndpointIntegrationTest {
     private UserRepository userRepository;
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private UserDataGenerator userDataGenerator;
     private MockMvc mockMvc;
     private List<User> userList;
 
     @BeforeEach
     public void setup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webAppContext).apply(springSecurity()).build();
-        this.userList = userRepository.findAll();
+        int count = 0;
+        while (userList == null || userList.isEmpty()) {
+            this.userList = userRepository.findAll();
+            count++;
+            if (count > 500) {
+                userDataGenerator.generateUser();
+            }
+        }
     }
 
     //TESTING POST
@@ -259,12 +268,17 @@ class UserEndpointIntegrationTest {
         @DisplayName("changes user and password correctly")
         void patchUserAndPassword() throws Exception {
             User u = userList.get(0);
+            if (u.getId() > 20L) {
+                u.setPasswordHash(passwordEncoder.encode("password"));
+                userRepository.save(u);
+            }
+            String password = u.getId() > 20L ? "password" : UserDataGenerator.TEST_USER_PASSWORD + u.getId();
             UpdateUserDto input = new UpdateUserDto(
                 u.getId(),
                 "NewName",
                 "newLastName",
                 "a".repeat(50) + "@mail.com",
-                UserDataGenerator.TEST_USER_PASSWORD + u.getId(),
+                password,
                 "PASSWORD",
                 false
             );
@@ -376,16 +390,17 @@ class UserEndpointIntegrationTest {
         @Transactional
         @DisplayName("deletes a user correctly")
         void deleteUserSuccessful() throws Exception {
+            User u = userList.get(0);
             mockMvc
                 .perform(MockMvcRequestBuilders
-                    .delete("/api/v1/users/" + userList.get(0).getId())
+                    .delete("/api/v1/users/" + u.getId())
                     .accept(MediaType.APPLICATION_JSON)
                     .contentType(MediaType.APPLICATION_JSON)
                 ).andExpect(status().isNoContent());
 
             mockMvc
                 .perform(MockMvcRequestBuilders
-                    .delete("/api/v1/users/" + userList.get(0).getId())
+                    .delete("/api/v1/users/" + u.getId())
                     .accept(MediaType.APPLICATION_JSON)
                     .contentType(MediaType.APPLICATION_JSON)
                 ).andExpect(status().isNotFound());
@@ -427,7 +442,7 @@ class UserEndpointIntegrationTest {
         @DisplayName("returns UnprocessableEntity")
         @MethodSource("forgottenPasswordInvalidProvider")
         void forgottenPasswordInvalidEmail(PasswordChangeDto input) throws Exception {
-            SecureToken secureToken = secureTokenService.createSecureToken(TokenType.RESET_PASSWORD);
+            SecureToken secureToken = secureTokenService.createSecureToken(TokenType.RESET_PASSWORD, 15);
             secureToken.setAccount(userList.get(0));
             secureTokenService.saveSecureToken(secureToken);
             input.setToken(secureToken.getToken());
@@ -445,7 +460,7 @@ class UserEndpointIntegrationTest {
         @DisplayName("changes password correctly")
         @MethodSource("forgottenPasswordValidProvider")
         void forgottenPasswordSuccessful(PasswordChangeDto input) throws Exception {
-            SecureToken secureToken = secureTokenService.createSecureToken(TokenType.RESET_PASSWORD);
+            SecureToken secureToken = secureTokenService.createSecureToken(TokenType.RESET_PASSWORD, 15);
             secureToken.setAccount(userList.get(0));
             secureTokenService.saveSecureToken(secureToken);
             input.setToken(secureToken.getToken());

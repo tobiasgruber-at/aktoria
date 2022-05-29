@@ -49,14 +49,14 @@ class RoleServiceUnitTest {
     @Test
     @Transactional
     @DisplayName("mergeRoles")
-    @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + 2 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + 2,
+    @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + 1 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + 1,
         roles = {Role.verified})
     void mergeRoles() {
         List<Long> rolesToMerge = new LinkedList<Long>(Arrays.asList(2L, 4L, 3L));
         List<Long> rolesToMergeFail = new LinkedList<Long>(Arrays.asList(7L, 4L, 3L));
         assertThrows(ValidationException.class, () -> roleService.mergeRoles(new MergeRolesDto(rolesToMergeFail, "MEROLE"), 1L));
         roleService.mergeRoles(new MergeRolesDto(rolesToMerge, "MERGEROLE"), 1L);
-        
+
         assertEquals(3, scriptService.findById(1L).getRoles().size());
         assertThrows(NotFoundException.class, () -> {
             Optional<at.ac.tuwien.sepm.groupphase.backend.entity.Role> role = roleRepository.findById(4L);
@@ -69,7 +69,7 @@ class RoleServiceUnitTest {
     @Test
     @Transactional
     @DisplayName("mergeRoles with only 1 role")
-    @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + 2 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + 2,
+    @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + 1 + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + 1,
         roles = {Role.verified})
     void mergeRolesIsNotNeeded() {
         List<Long> rolesToMerge = new LinkedList<Long>(Arrays.asList(5L));

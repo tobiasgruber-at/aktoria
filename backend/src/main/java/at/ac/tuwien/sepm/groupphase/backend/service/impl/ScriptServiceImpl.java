@@ -14,21 +14,30 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Line;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Page;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Role;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Script;
+import at.ac.tuwien.sepm.groupphase.backend.entity.SecureToken;
 import at.ac.tuwien.sepm.groupphase.backend.entity.User;
+import at.ac.tuwien.sepm.groupphase.backend.enums.TokenType;
+import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.IllegalFileFormatException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.InvalidTokenException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.UnauthorizedException;
+import at.ac.tuwien.sepm.groupphase.backend.exception.UnprocessableEmailException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.LineRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.PageRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.RoleRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ScriptRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.AuthorizationService;
+import at.ac.tuwien.sepm.groupphase.backend.service.MailSender;
 import at.ac.tuwien.sepm.groupphase.backend.service.ScriptService;
+import at.ac.tuwien.sepm.groupphase.backend.service.SecureTokenService;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.script.ParsedScript;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.script.UnparsedScript;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.scriptparser.ScriptParser;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.scriptparser.impl.ScriptParserImpl;
+import at.ac.tuwien.sepm.groupphase.backend.validation.UserValidation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,7 +45,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -52,28 +64,39 @@ public class ScriptServiceImpl implements ScriptService {
     private final ScriptMapper scriptMapper;
     private final UserMapper userMapper;
     private final ScriptRepository scriptRepository;
+    private final UserRepository userRepository;
     private final PageRepository pageRepository;
     private final LineRepository lineRepository;
     private final RoleRepository roleRepository;
     private final AuthorizationService authorizationService;
+    private final UserValidation userValidation;
+    private final SecureTokenService secureTokenService;
+    private final MailSender mailSender;
 
     @Autowired
     public ScriptServiceImpl(
         ScriptMapper scriptMapper,
         UserMapper userMapper,
         ScriptRepository scriptRepository,
-        PageRepository pageRepository,
+        UserRepository userRepository, PageRepository pageRepository,
         LineRepository lineRepository,
         RoleRepository roleRepository,
-        AuthorizationService authorizationService
+        AuthorizationService authorizationService,
+        UserValidation userValidation,
+        SecureTokenService secureTokenService,
+        MailSender mailSender
     ) {
         this.scriptMapper = scriptMapper;
         this.userMapper = userMapper;
         this.scriptRepository = scriptRepository;
+        this.userRepository = userRepository;
         this.pageRepository = pageRepository;
         this.lineRepository = lineRepository;
         this.roleRepository = roleRepository;
         this.authorizationService = authorizationService;
+        this.userValidation = userValidation;
+        this.secureTokenService = secureTokenService;
+        this.mailSender = mailSender;
     }
 
     @Transactional
@@ -223,8 +246,8 @@ public class ScriptServiceImpl implements ScriptService {
         return scriptMapper.simpleScriptDtoToScriptDto(simpleScriptDto, script.getId(), owner);
     }
 
-    @Transactional
     @Override
+    @Transactional
     public Stream<ScriptPreviewDto> findAllPreviews() {
         log.trace("getAllPreviews()");
 
@@ -233,25 +256,23 @@ public class ScriptServiceImpl implements ScriptService {
             throw new UnauthorizedException();
         }
 
-        return scriptMapper.listOfScriptToListOfScriptPreviewDto(scriptRepository.getScriptByOwner(user)).stream();
+
+        Stream<ScriptPreviewDto> owner = scriptMapper.listOfScriptToListOfScriptPreviewDto(scriptRepository.getScriptByOwner(user)).stream();
+        Stream<ScriptPreviewDto> participant = scriptMapper.listOfScriptToListOfScriptPreviewDto(scriptRepository.getScriptByParticipant(user)).stream();
+        return Stream.concat(owner, participant);
     }
 
     @Transactional
     @Override
     public ScriptDto findById(Long id) {
         log.trace("getById(id = {})", id);
+        authorizationService.checkMemberAuthorization(id);
 
-        User user = authorizationService.getLoggedInUser();
-        if (user == null) {
-            throw new UnauthorizedException();
-        }
         Optional<Script> script = scriptRepository.findById(id);
         if (script.isEmpty()) {
             throw new NotFoundException();
         }
-        if (!script.get().getOwner().getId().equals(user.getId())) {
-            throw new UnauthorizedException("Dieser User ist nicht berechtigt diese Datei zu öffnen");
-        }
+
         return scriptMapper.scriptToScriptDto(script.get());
     }
 
@@ -286,5 +307,130 @@ public class ScriptServiceImpl implements ScriptService {
         }
         //TODO: fertig machen
         return null;
+    }
+
+    @Override
+    public void invite(Long scriptId, String email) {
+        log.trace("invite(scriptId = {}, email = {})", scriptId, email);
+
+        authorizationService.isOwnerOfScript(scriptId);
+
+        Optional<Script> script = scriptRepository.findById(scriptId);
+        if (script.isPresent()) {
+            SecureToken secureToken = secureTokenService.createSecureToken(TokenType.INVITE_PARTICIPANT, 1440);
+            secureToken.setScript(script.get());
+            secureTokenService.saveSecureToken(secureToken);
+
+            final String link = "http://localhost:4200/#/scripts/" + script.get().getId() + "/join/" + secureToken.getToken();
+            try {
+                mailSender.sendMail(email, "Aktoria Einladung",
+                    """
+                            <h1>Hallo,</h1>
+                            %s lädt dich ein bei dem Aktoria Skript "%s" mitzulernen.
+                            <br>
+                            klick auf den folgenden Link, um dem Projekt beizutreten.
+                            <br>
+                            <a href='%s'>Beitreten</a>
+                        """
+                        .formatted(script.get().getOwner().getFirstName(), script.get().getName(), link));
+            } catch (UnprocessableEmailException e) {
+                throw new ServiceException(e.getMessage(), e);
+            }
+
+        } else {
+            throw new NotFoundException();
+        }
+    }
+
+    @Override
+    @Transactional
+    public void addParticipant(Long id, String token) {
+        log.trace("addParticipant(id = {}, token = {})", id, token);
+
+        User user = authorizationService.getLoggedInUser();
+        if (user == null) {
+            throw new UnauthorizedException();
+        }
+
+        SecureToken secureToken = secureTokenService.findByToken(token);
+        secureTokenService.removeToken(token);
+        if (secureToken.getType() == TokenType.INVITE_PARTICIPANT) {
+            if (secureToken.getExpireAt().isAfter(LocalDateTime.now())) {
+
+                Script script = secureToken.getScript();
+                if (script == null) {
+                    throw new UnauthorizedException();
+                }
+                if (!Objects.equals(script.getId(), id)) {
+                    throw new UnauthorizedException();
+                }
+                if (script.getOwner().getId().equals(user.getId())) {
+                    throw new ConflictException("Du kannst nicht deinem eigenen Skript nochmal beitreten!");
+                }
+                if (script.getParticipants().contains(user)) {
+                    throw new ConflictException("Du bist diesem Skript bereits begetreten!");
+                }
+
+                Set<Script> scripts = user.getParticipatesIn();
+                scripts.add(script);
+                user.setParticipatesIn(scripts);
+
+                userRepository.saveAndFlush(user);
+                return;
+            }
+        }
+        throw new InvalidTokenException();
+    }
+
+    @Override
+    public String inviteLink(Long scriptId) {
+        log.trace("invite(scriptId = {})", scriptId);
+
+        authorizationService.isOwnerOfScript(scriptId);
+
+        Optional<Script> script = scriptRepository.findById(scriptId);
+        if (script.isPresent()) {
+            SecureToken secureToken = secureTokenService.createSecureToken(TokenType.INVITE_PARTICIPANT, 1440);
+            secureToken.setScript(script.get());
+            secureTokenService.saveSecureToken(secureToken);
+
+            final String link = "http://localhost:4200/#/scripts/" + script.get().getId() + "/join/" + secureToken.getToken();
+            return link;
+        } else {
+            throw new NotFoundException();
+        }
+    }
+
+    @Override
+    @Transactional
+    public void deleteParticipant(Long scriptId, String email) {
+        authorizationService.checkMemberAuthorization(scriptId, email);
+
+        Optional<User> userOpt = userRepository.findByEmail(email);
+        Optional<Script> scriptOpt = scriptRepository.findById(scriptId);
+
+        if (scriptOpt.isPresent() && userOpt.isPresent()) {
+            Script script = scriptOpt.get();
+            User user = userOpt.get();
+
+            if (script.getOwner().getId().equals(user.getId())) {
+                Set<User> participants = script.getParticipants();
+                if (participants.isEmpty()) {
+                    delete(scriptId);
+                    return;
+                }
+                User newOwner = participants.iterator().next();
+                participants.remove(newOwner);
+                script.setOwner(newOwner);
+
+                user = newOwner;
+            }
+            Set<Script> participatesIn = user.getParticipatesIn();
+            participatesIn.remove(script);
+            user.setParticipatesIn(participatesIn);
+
+            return;
+        }
+        throw new NotFoundException();
     }
 }

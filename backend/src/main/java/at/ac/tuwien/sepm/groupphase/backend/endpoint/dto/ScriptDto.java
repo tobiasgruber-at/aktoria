@@ -23,4 +23,5 @@ public class ScriptDto {
     private List<PageDto> pages;
     private List<RoleDto> roles;
     private SimpleUserDto owner;
+    private List<SimpleUserDto> participants;
 }

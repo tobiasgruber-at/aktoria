@@ -48,7 +48,11 @@ public class SecureToken {
     @Column(updatable = false, nullable = false)
     private LocalDateTime expireAt;
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "account", nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "account")
     private User account;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "script")
+    private Script script;
 }

@@ -6,7 +6,7 @@
   ></app-script-list-item>
   <ng-content></ng-content>
   <app-script-list-item
-    *ngFor="let script of scriptService?.$scripts | async"
+    *ngFor="let script of scriptPreviews"
     [script]="script"
   ></app-script-list-item>
 </div>

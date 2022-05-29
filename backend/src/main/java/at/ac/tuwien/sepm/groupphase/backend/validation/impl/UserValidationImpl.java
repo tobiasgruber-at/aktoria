@@ -99,7 +99,7 @@ public class UserValidationImpl implements UserValidation {
         }
     }
 
-    private void validateEmail(String email) throws ValidationException {
+    public void validateEmail(String email) throws ValidationException {
         if (email != null) {
             if (email.trim().length() <= 0) {
                 throw new ValidationException("Email darf nicht nur aus Leerzeichen bestehen!");

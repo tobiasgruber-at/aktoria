@@ -5,6 +5,8 @@ import { DetailedScript, Role } from '../../../../shared/dtos/script-dtos';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastService } from '../../../../core/services/toast/toast.service';
 import { Theme } from '../../../../shared/enums/theme.enum';
+import { SimpleUser } from '../../../../shared/dtos/user-dtos';
+import { AuthService } from '../../../../core/services/auth/auth-service';
 
 @Component({
   selector: 'app-script-overview',
@@ -18,6 +20,7 @@ export class ScriptOverviewComponent implements OnInit {
   deleteError = null;
   script: DetailedScript = null;
   selectedRole: Role = null;
+  members: SimpleUser[];
   readonly theme = Theme;
 
   constructor(
@@ -25,7 +28,8 @@ export class ScriptOverviewComponent implements OnInit {
     private router: Router,
     private scriptService: ScriptService,
     private toastService: ToastService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -40,7 +44,11 @@ export class ScriptOverviewComponent implements OnInit {
       } else {
         this.scriptService.getOne(id).subscribe({
           next: (script) => {
+            console.log(script);
             this.script = script;
+            this.members = [];
+            this.members.push(script.owner);
+            Array.prototype.push.apply(this.members, script.participants);
             this.selectedRole = this.script.roles[0];
             this.getLoading = false;
           },
@@ -71,6 +79,33 @@ export class ScriptOverviewComponent implements OnInit {
         this.deleteError = err.error?.message;
       }
     });
+  }
+
+  exitScript(modal: NgbActiveModal): void {
+    this.deleteLoading = true;
+    this.scriptService
+      .removeParticipant(this.script.id, this.authService.getEmail())
+      .subscribe({
+        next: () => {
+          modal.dismiss();
+          this.router.navigateByUrl('/scripts');
+          this.toastService.show({
+            message: 'Skript erfolgreich verlassen.',
+            theme: Theme.primary
+          });
+        },
+        error: (err) => {
+          this.deleteLoading = false;
+          this.deleteError = err.error?.message;
+        }
+      });
+  }
+
+  isOwner() {
+    if (this.script) {
+      return this.script.owner.email === this.authService.getEmail();
+    }
+    return false;
   }
 
   selectRole(role: Role): void {

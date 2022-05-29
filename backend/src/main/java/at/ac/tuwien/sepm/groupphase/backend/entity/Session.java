@@ -17,7 +17,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Entity
@@ -33,8 +32,9 @@ public class Session {
     private Long id;
 
     @CreationTimestamp
-    @Column(name = "start_time", updatable = false, columnDefinition = "timestamp without time zone default current_timestamp")
-    private Timestamp start;
+    @Column(name = "start_time", updatable = false, nullable = false,
+        columnDefinition = "timestamp without time zone default current_timestamp")
+    private LocalDateTime start;
 
     @Column(name = "end_time", updatable = false)
     private LocalDateTime end;
@@ -43,10 +43,10 @@ public class Session {
     private AssessmentType selfAssessment;
 
     @Column(name = "deprecated", columnDefinition = "boolean default false")
-    private Boolean deprecated;
+    private Boolean deprecated = false;
 
     @Column(name = "coverage")
-    private Double coverage;
+    private Double coverage = 0.0;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "section", nullable = false)
