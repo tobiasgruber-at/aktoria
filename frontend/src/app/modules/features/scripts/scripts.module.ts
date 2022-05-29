@@ -28,6 +28,8 @@ import { ScriptRehearsalSectionsComponent } from './components/script-rehearsal/
 import { RehearsalSectionComponent } from './components/rehearsal-section/rehearsal-section.component';
 import { RehearsalLineComponent } from './components/script-rehearsal/rehearsal-line/rehearsal-line.component';
 import { RehearsalControlsComponent } from './components/script-rehearsal/rehearsal-controls/rehearsal-controls.component';
+import { RehearsalSectionCreateComponent } from './components/script-rehearsal/script-rehearsal-sections/rehearsal-section-create/rehearsal-section-create.component';
+import { ScriptRehearsalService } from './services/script-rehearsal.service';
 
 @NgModule({
   declarations: [
@@ -56,8 +58,10 @@ import { RehearsalControlsComponent } from './components/script-rehearsal/rehear
     ScriptRehearsalSectionsComponent,
     RehearsalSectionComponent,
     RehearsalLineComponent,
-    RehearsalControlsComponent
+    RehearsalControlsComponent,
+    RehearsalSectionCreateComponent
   ],
+  providers: [ScriptRehearsalService],
   imports: [SharedModule, ScriptsRoutingModule]
 })
 export class ScriptsModule {}

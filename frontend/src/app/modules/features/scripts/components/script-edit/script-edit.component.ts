@@ -78,7 +78,7 @@ export class ScriptEditComponent
 
   ngAfterViewInit() {
     if (this.isUploading) {
-      //this.openModal(this.tutorialModal);
+      this.openModal(this.tutorialModal);
     }
   }
 
@@ -89,10 +89,11 @@ export class ScriptEditComponent
 
   protected processSubmit(): void {
     const { scriptName } = this.form.value;
-    const script = {
-      ...this.script,
-      name: scriptName
-    };
+    const script = new SimpleScript(
+      this.script.pages,
+      this.script.roles,
+      scriptName
+    );
     this.scriptService.save(script).subscribe({
       next: (detailedScript) => {
         this.router.navigateByUrl(`/scripts/${detailedScript.id}`);
@@ -142,10 +143,9 @@ export class ScriptEditComponent
           });
           this.getLoading = false;
         },
-        error: () => {
-          // TODO: show error
-          //this.getError = 'Skript konnte nicht gefunden werden.';
-          this.getLoading = false;
+        error: (err) => {
+          this.toastService.showError(err);
+          this.router.navigateByUrl('/scripts');
         }
       });
     });
