@@ -104,6 +104,7 @@ public interface ScriptService {
 
     /**
      * Returns a Script dto of a session.
+     *
      * @param id of the sesseion
      * @return a script
      */
