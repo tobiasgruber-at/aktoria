@@ -8,6 +8,7 @@ import {
   SimpleScript
 } from '../../../shared/dtos/script-dtos';
 import { tap } from 'rxjs/operators';
+import {AuthService} from '../auth/auth-service';
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +22,7 @@ export class ScriptService {
   private scriptsSubject = new BehaviorSubject<ScriptPreview[]>([]);
   private fullyLoadedScripts: DetailedScript[] = [];
 
-  constructor(private http: HttpClient, private globals: Globals) {}
+  constructor(private http: HttpClient, private globals: Globals, private authService: AuthService) {}
 
   get $stagedScript(): Observable<SimpleScript> {
     const cachedScript = localStorage.getItem('stagedScript');
@@ -50,8 +51,7 @@ export class ScriptService {
    */
   getOne(id: number): Observable<DetailedScript> {
     const loadedScript = this.fullyLoadedScripts.find((f) => f.id === id);
-    console.log(loadedScript);
-    const returnValue = loadedScript
+    return loadedScript
       ? of(loadedScript)
       : this.http.get<DetailedScript>(`${this.baseUri}/${id}`).pipe(
         /*map(
@@ -69,8 +69,6 @@ export class ScriptService {
           this.fullyLoadedScripts.push(script);
         })
       );
-    console.log(returnValue);
-    return returnValue;
   }
 
   /**
@@ -153,7 +151,14 @@ export class ScriptService {
   }
 
   removeParticipant(scriptId, email: string): Observable<void> {
-    return this.http.delete<void>(this.baseUri + '/' + scriptId + '/participants/' + email);
+    if (email === this.authService.getEmail()) {
+      return this.http.delete<void>(this.baseUri + '/' + scriptId + '/participants/' + email)
+        .pipe(
+          tap(() => this.setScripts(this.scripts.filter((s) => s.id !== scriptId)))
+        );
+    } else {
+      return this.http.delete<void>(this.baseUri + '/' + scriptId + '/participants/' + email);
+    }
   }
 
   inviteLink(scriptId): Observable<ArrayBuffer> {
