@@ -21,7 +21,7 @@ public interface ScriptRepository extends JpaRepository<Script, Long> {
 
     @Query("select c "
         + "from Script c join Page p on p.script.id = c.id join Line l on l.page.id = p.id "
-            + "join Session s on s.currentLine.id = l.id "
+        + "join Session s on s.currentLine.id = l.id "
         + "where s.id = ?1")
     Script getScriptBySessionId(Long sessionId);
 }

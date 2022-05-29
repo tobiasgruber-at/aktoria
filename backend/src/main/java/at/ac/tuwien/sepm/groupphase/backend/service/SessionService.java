@@ -68,7 +68,7 @@ public interface SessionService {
      *
      * @param deprecated if deprecated sessions should be included in the query (default: false)
      * @param sectionId  of a specific section (default: none)
-     * @param past if only past sessions should be sent (default: false)
+     * @param past       if only past sessions should be sent (default: false)
      * @return a stream of all sessions found
      */
     Stream<SessionDto> findQuerySessions(Boolean deprecated, Long sectionId, Boolean past);

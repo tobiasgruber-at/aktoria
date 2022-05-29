@@ -40,6 +40,6 @@ public interface SessionRepository extends JpaRepository<Session, Long> {
         + "from Session s join Section c on s.section.id = c.id join User u on c.owner.id = u.id "
         + "where u.id = :#{#user.id} and s.section.id = ?1 and s.deprecated = ?2 and s.end is not null ")
     List<Session> findBySectionAndDeprecatedAndUserAndPast(@Param("section") Long sectionId,
-                                                    @Param("deprecated") Boolean deprecated,
-                                                    @Param("user") User user);
+                                                           @Param("deprecated") Boolean deprecated,
+                                                           @Param("user") User user);
 }

@@ -256,7 +256,7 @@ class ScriptEndpointIntegrationTest {
         @Test
         @DirtiesContext
         @DisplayName("works correctly")
-        @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "2" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "2", roles = { Role.verified })
+        @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
         void patchScriptWorks() throws Exception {
             final UpdateScriptDto input = new UpdateScriptDto("new script name");
             byte[] body = mockMvc
@@ -275,7 +275,7 @@ class ScriptEndpointIntegrationTest {
         @Test
         @DirtiesContext
         @DisplayName("empty dto does not change anything")
-        @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "2" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "2", roles = { Role.verified })
+        @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
         void patchScriptDoesNotChangeAnything() throws Exception {
             final UpdateScriptDto input = new UpdateScriptDto(null);
             byte[] body = mockMvc
@@ -294,7 +294,7 @@ class ScriptEndpointIntegrationTest {
         @ParameterizedTest
         @DirtiesContext
         @DisplayName("returns BadRequest")
-        @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "2" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "2", roles = { Role.verified })
+        @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
         @ValueSource(strings = {
             "      ",
             "\t\t",
@@ -320,7 +320,7 @@ class ScriptEndpointIntegrationTest {
         @Test
         @DirtiesContext
         @DisplayName("returns Unauthorized")
-        @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "1" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "1", roles = { Role.verified })
+        @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "2" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "2", roles = { Role.verified })
         void patchScriptReturnsUnauthorized() throws Exception {
             final UpdateScriptDto input = new UpdateScriptDto("new script name");
             mockMvc

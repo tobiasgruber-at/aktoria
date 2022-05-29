@@ -49,8 +49,8 @@ public class SessionServiceUnitTest {
         assertThat(result.getStart()).isNotNull();
         assertThat(result.getEnd()).isNull();
         assertThat(result.getSectionId()).isEqualTo(1L);
-        assertThat(result.getRoleId()).isEqualTo(1L);
-        assertThat(result.getCurrentLineId()).isNotNull();
+        assertThat(result.getRole().getId()).isEqualTo(1L);
+        assertThat(result.getCurrentLineIndex()).isNotNull();
     }
 
     @Test
@@ -66,11 +66,12 @@ public class SessionServiceUnitTest {
         updateSessionDto.setSelfAssessment(AssessmentType.POOR);
         updateSessionDto.setCurrentLineId(curLineId);
 
+        Long curLineIndex = sessionOpt.get().getCurrentLine().getIndex();
         SessionDto result = sessionService.update(updateSessionDto, 1L);
         assertThat(result.getId()).isEqualTo(1L);
         assertThat(result.getDeprecated()).isEqualTo(true);
         assertThat(result.getSelfAssessment()).isEqualTo(AssessmentType.POOR);
-        assertThat(result.getCurrentLineId()).isEqualTo(curLineId);
+        assertThat(result.getCurrentLineIndex()).isEqualTo(curLineIndex);
     }
 
     @Test

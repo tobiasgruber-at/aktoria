@@ -25,7 +25,7 @@ public interface RoleService {
      * Gets a role by id in a script.
      *
      * @param sid id of the script
-     * @param id id of the role
+     * @param id  id of the role
      * @return a role
      */
     RoleDto getById(Long sid, Long id);
