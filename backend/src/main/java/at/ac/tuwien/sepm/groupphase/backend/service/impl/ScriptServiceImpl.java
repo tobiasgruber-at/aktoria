@@ -47,8 +47,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -436,12 +434,12 @@ public class ScriptServiceImpl implements ScriptService {
 
             userRepository.saveAndFlush(user);
             */
-             Set<User> participants = script.getParticipants();
-             participants.remove(user);
-             script.setParticipants(participants);
+            Set<User> participants = script.getParticipants();
+            participants.remove(user);
+            script.setParticipants(participants);
 
-             scriptRepository.saveAndFlush(script);
-             return;
+            scriptRepository.saveAndFlush(script);
+            return;
         }
         throw new NotFoundException();
     }
