@@ -1,0 +1,27 @@
+:host {
+  padding: 0.7rem 0.7rem;
+  cursor: pointer;
+  opacity: 0.6;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 100%;
+  color: hsl(208deg 7% 38%);
+
+  &.disabled {
+    opacity: 0.19;
+  }
+
+  &:not(.disabled) {
+    &:hover {
+      /*
+        this filter is equal to the primary color, but has to be computed since
+        svg colors can't be changed. here is the link to the color-filter converter:
+        http://localhost:4200/#/scripts/6/rehearse
+      */
+      filter: invert(29%) sepia(70%) saturate(3268%) hue-rotate(210deg)
+        brightness(102%) contrast(102%);
+    }
+  }
+}

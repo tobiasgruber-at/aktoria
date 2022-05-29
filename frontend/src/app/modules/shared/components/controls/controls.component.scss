@@ -1,0 +1,17 @@
+:host {
+  display: flex;
+  justify-content: center;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+}
+
+.controls {
+  border-top-right-radius: 17px;
+  border-top-left-radius: 17px;
+  display: flex;
+  align-items: center;
+  pointer-events: all;
+}

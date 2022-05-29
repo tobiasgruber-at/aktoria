@@ -23,6 +23,9 @@ import {
   NgbDropdownModule,
   NgbTooltipModule
 } from '@ng-bootstrap/ng-bootstrap';
+import { BackButtonComponent } from './components/back-button/back-button.component';
+import { ControlsComponent } from './components/controls/controls.component';
+import { ControlsItemComponent } from './components/controls/controls-item/controls-item.component';
 
 const icons = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -45,7 +48,10 @@ const sharedDeclarations = [
   ButtonComponent,
   FormErrorComponent,
   FormErrorsComponent,
-  ModalComponent
+  ModalComponent,
+  BackButtonComponent,
+  ControlsComponent,
+  ControlsItemComponent
 ];
 const sharedImports = [
   CommonModule,

@@ -92,3 +92,18 @@ label {
     transform: translateY(1px);
   }
 }
+
+app-controls-item {
+  img.icon,
+  svg {
+    height: 1.5rem;
+  }
+
+  bi {
+    color: black;
+
+    svg {
+      height: 1.8rem;
+    }
+  }
+}

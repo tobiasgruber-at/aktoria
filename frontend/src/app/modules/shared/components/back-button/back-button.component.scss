@@ -1,0 +1,26 @@
+:host {
+  margin-top: 0.1rem;
+  margin-bottom: 2rem;
+  transition: opacity 200ms ease-in-out;
+  cursor: pointer;
+  opacity: 0.4;
+  color: black;
+
+  &:hover {
+    opacity: 1;
+
+    img.icon {
+      transform: translateX(-0.1rem);
+    }
+  }
+}
+
+img.icon {
+  transition: transform 200ms ease-in-out;
+  height: 1.3rem;
+}
+
+span.text {
+  font-weight: 500;
+  font-size: 1rem;
+}

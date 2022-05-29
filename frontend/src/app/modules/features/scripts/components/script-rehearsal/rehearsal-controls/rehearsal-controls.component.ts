@@ -28,6 +28,7 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.$destroy))
       .subscribe((session) => {
         this.session = session;
+        // TODO: fetch session?
       });
     this.scriptRehearsalService.$script
       .pipe(takeUntil(this.$destroy))
@@ -46,7 +47,7 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
       return;
     }
     this.interactionDisabled = true;
-    if (line === 'next' && !this.session.isAtEnd()) {
+    if (line === 'next' && !this.session?.isAtEnd()) {
       this.session.currentLine++;
     } else if (line === 'prev' && !this.session.isAtStart()) {
       this.session.currentLine--;

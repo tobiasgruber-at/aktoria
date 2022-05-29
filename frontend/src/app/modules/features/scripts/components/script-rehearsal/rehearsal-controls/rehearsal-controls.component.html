@@ -1,8 +1,7 @@
-<div class="controls d-flex bg-white shadow text-dark">
-  <div
+<app-controls>
+  <app-controls-item
     (click)="changeLine('prev')"
     [class.disabled]="session?.isAtStart()"
-    class="control no-select"
     ngbTooltip="Zurück"
   >
     <img
@@ -10,37 +9,26 @@
       class="icon"
       src="../../../../../../../assets/icons/backward.svg"
     />
-  </div>
-  <div
-    (click)="changeLine('next')"
-    class="control no-select"
-    ngbTooltip="Weiter"
-  >
+  </app-controls-item>
+  <app-controls-item (click)="changeLine('next')" ngbTooltip="Weiter">
     <img
       alt="Überspringen"
       class="icon"
       src="../../../../../../../assets/icons/forward.svg"
     />
-  </div>
-  <div
-    (click)="openModal(stopSessionModal)"
-    class="control no-select"
-    ngbTooltip="Beenden"
-  >
+  </app-controls-item>
+  <app-controls-item (click)="openModal(stopSessionModal)" ngbTooltip="Beenden">
     <img
       alt="Beenden"
       class="icon"
       src="../../../../../../../assets/icons/cross.svg"
     />
-  </div>
-  <div [class.disabled]="true" class="control no-select">
+  </app-controls-item>
+  <app-controls-item [class.disabled]="true">
     <bi name="three-dots"></bi>
-  </div>
-</div>
+  </app-controls-item>
+</app-controls>
 <ng-template #stopSessionModal let-modal>
-  <!--"
-  [loading]="deleteLoading"
-  [theme]="theme.danger"-->
   <app-modal
     (confirm)="stopSession(modal)"
     (decline)="modal.dismiss()"

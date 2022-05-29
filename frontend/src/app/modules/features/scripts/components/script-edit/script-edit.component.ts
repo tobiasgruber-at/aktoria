@@ -87,6 +87,10 @@ export class ScriptEditComponent
     this.$destroy.complete();
   }
 
+  backToOverview(): void {
+    this.router.navigateByUrl(`/scripts/${this.script?.getId()}`);
+  }
+
   protected processSubmit(): void {
     const { scriptName } = this.form.value;
     const script = new SimpleScript(
