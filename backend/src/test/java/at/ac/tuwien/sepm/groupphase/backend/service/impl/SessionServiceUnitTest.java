@@ -108,7 +108,7 @@ public class SessionServiceUnitTest {
     }
 
     @Test
-    @Transactional
+    @DirtiesContext
     @DisplayName("findPastSessions() finds all past user sessions correctly")
     @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified})
     public void findPastSessions() {
