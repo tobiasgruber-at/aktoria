@@ -14,6 +14,7 @@ export class ScriptRolesListComponent {
   @Input() selectedRoles: Role[] = [];
   @Input() size: 'lg' | 'xl' = 'lg';
   @Input() theme: 'primary' | 'secondary' = 'secondary';
+  @Input() showTooltips = false;
   @Output() roleClicked = new EventEmitter<Role>();
 
   onRoleClicked(role: Role): void {

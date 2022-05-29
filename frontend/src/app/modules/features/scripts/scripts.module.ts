@@ -31,6 +31,7 @@ import { RehearsalControlsComponent } from './components/script-rehearsal/rehear
 import { RehearsalSectionCreateComponent } from './components/script-rehearsal/script-rehearsal-sections/rehearsal-section-create/rehearsal-section-create.component';
 import { ScriptRehearsalService } from './services/script-rehearsal.service';
 import { ScriptReadControlsComponent } from './components/script-read/script-read-controls/script-read-controls.component';
+import { SelectLineTextComponent } from './components/script-rehearsal/script-rehearsal-sections/rehearsal-section-create/select-line-text/select-line-text.component';
 
 @NgModule({
   declarations: [
@@ -61,7 +62,8 @@ import { ScriptReadControlsComponent } from './components/script-read/script-rea
     RehearsalLineComponent,
     RehearsalControlsComponent,
     RehearsalSectionCreateComponent,
-    ScriptReadControlsComponent
+    ScriptReadControlsComponent,
+    SelectLineTextComponent
   ],
   providers: [ScriptRehearsalService],
   imports: [SharedModule, ScriptsRoutingModule]

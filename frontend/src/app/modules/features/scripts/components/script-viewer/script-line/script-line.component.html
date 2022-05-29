@@ -36,7 +36,7 @@
       </button>
       <button
         (click)="removeRoles()"
-        *ngIf="line.roles.length > 0"
+        *ngIf="line.roles?.length > 0"
         ngbDropdownItem
       >
         Als Instruktion markieren

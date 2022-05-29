@@ -5,7 +5,6 @@ export class SimpleSession {
   private lines: Line[];
   private section: SimpleSection;
   private script: SimpleScript;
-  private role: Role;
 
   constructor(
     public id: number,
@@ -16,22 +15,13 @@ export class SimpleSession {
     public coverage: number,
     public sectionId: number,
     public currentLineIndex: number,
-    public roleId: number
+    public role: Role
   ) {}
 
-  setScript(script: SimpleScript): void {
-    this.script = script;
-  }
-
-  /** Sets the section. Should be done once after session fetched. */
-  setSection(section: SimpleSection): void {
+  /** Inits the session. Should be done once after session fetched. */
+  init(script: SimpleScript, section: SimpleSection): void {
     this.section = section;
-  }
-
-  getRole(): Role {
-    return (
-      this.role || this.script?.roles.find((r) => r.id === this.roleId) || null
-    );
+    this.script = script;
   }
 
   getLines(): Line[] {
@@ -68,5 +58,6 @@ export enum AssessmentType {
 }
 
 export class CreateSession {
-  constructor(public sectionId: number, public roleId: number) {}
+  constructor(public sectionId: number, public roleId: number) {
+  }
 }

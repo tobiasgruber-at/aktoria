@@ -122,7 +122,10 @@ export class ScriptOverviewComponent implements OnInit, OnDestroy {
   }
 
   selectRole(role: Role): void {
-    this.scriptRehearsalService.setSelectedRole(this.script, role);
+    this.scriptRehearsalService.setSelectedRole(
+      this.script,
+      this.selectedRole?.name === role.name ? null : role
+    );
   }
 
   ngOnDestroy() {

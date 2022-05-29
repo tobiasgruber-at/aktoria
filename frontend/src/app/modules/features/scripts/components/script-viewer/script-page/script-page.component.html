@@ -4,7 +4,10 @@
  -->
 <div
   *ngIf="showPage"
-  [class.is-not-in-section]="isNotInSection(page?.lines[page.lines.length - 1])"
+  [class.is-not-in-section]="
+    isNotInSection(page?.lines[page.lines.length - 1]) ||
+    page?.lines[page.lines.length - 1] === section?.endLine
+  "
   class="page mx-auto rounded d-flex flex-column"
 >
   <div

@@ -8,6 +8,7 @@ import { ToastService } from '../../../../../core/services/toast/toast.service';
 import { Subject, takeUntil } from 'rxjs';
 import { SectionService } from '../../../../../core/services/section/section.service';
 import { ScriptRehearsalService } from '../../../services/script-rehearsal.service';
+import { Theme } from '../../../../../shared/enums/theme.enum';
 
 enum Step {
   selectSection,
@@ -51,6 +52,18 @@ export class ScriptRehearsalSectionsComponent implements OnInit, OnDestroy {
         }
       });
     });
+
+    this.scriptRehearsalService.$selectedRole
+      .pipe(takeUntil(this.$destroy))
+      .subscribe((roles) => {
+        if (Object.keys(roles).length === 0) {
+          this.router.navigateByUrl('/scripts');
+          this.toastService.show({
+            message: 'Keine Rolle ausgewählt',
+            theme: Theme.danger
+          });
+        }
+      });
 
     this.scriptViewerService.$script
       .pipe(takeUntil(this.$destroy))

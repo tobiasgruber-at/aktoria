@@ -1,7 +1,7 @@
 <app-controls>
   <app-controls-item
     (click)="changeLine('prev')"
-    [class.disabled]="session?.isAtStart()"
+    [class.disabled]="session?.isAtStart() || endSessionLoading"
     ngbTooltip="Zurück"
   >
     <img
@@ -10,21 +10,29 @@
       src="../../../../../../../assets/icons/backward.svg"
     />
   </app-controls-item>
-  <app-controls-item (click)="changeLine('next')" ngbTooltip="Weiter">
+  <app-controls-item
+    (click)="changeLine('next')"
+    ngbTooltip="Weiter"
+    [class.disabled]="endSessionLoading"
+  >
     <img
       alt="Überspringen"
       class="icon"
       src="../../../../../../../assets/icons/forward.svg"
     />
   </app-controls-item>
-  <app-controls-item (click)="openModal(stopSessionModal)" ngbTooltip="Beenden">
+  <app-controls-item
+    (click)="openModal(stopSessionModal)"
+    ngbTooltip="Beenden"
+    [class.disabled]="endSessionLoading"
+  >
     <img
       alt="Beenden"
       class="icon"
       src="../../../../../../../assets/icons/cross.svg"
     />
   </app-controls-item>
-  <app-controls-item [class.disabled]="true">
+  <app-controls-item [class.disabled]="true || endSessionLoading">
     <bi name="three-dots"></bi>
   </app-controls-item>
 </app-controls>

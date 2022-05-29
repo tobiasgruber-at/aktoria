@@ -3,7 +3,7 @@
   [formGroup]="form"
   class="form d-flex flex-column flex-grow-1"
 >
-  <h2 class="mb-4">Lernabschnitt erstellen</h2>
+  <h3 class="mb-3">Lernabschnitt erstellen</h3>
   <div class="form-group mb-4">
     <label for="input-section-name">Bezeichnung</label>
     <input
@@ -26,17 +26,17 @@
   <div class="form-group mb-4">
     <label for="input-section-name">Start</label>
     <p class="mb-0">
-      <ng-container
+      <app-select-line-text
         *ngIf="isMarkingSection === 'start'; else markingStartCompleted"
-      >
-        Bitte
-        <strong class="text-primary">wähle eine Startzeile</strong> aus.
-      </ng-container>
+        subject="Startzeile"
+        [hasErrors]="fieldHasErrors('startLine', 'required')"
+      ></app-select-line-text>
       <ng-template #markingStartCompleted>
         Seite
         {{ markedSection?.getStartPage(script) }}
       </ng-template>
     </p>
+    <app-form-errors></app-form-errors>
   </div>
   <div
     [class.opacity-50]="isMarkingSection && isMarkingSection !== 'end'"
@@ -44,16 +44,12 @@
   >
     <label for="input-section-name">Ende</label>
     <p class="mb-0">
-      <ng-container *ngIf="isMarkingSection; else markingEndCompleted">
-        Bitte
-        <strong
-          [class]="
-            isMarkingSection === 'end' ? 'text-primary' : 'text-secondary'
-          "
-          >wähle eine Endzeile</strong
-        >
-        aus.
-      </ng-container>
+      <app-select-line-text
+        *ngIf="isMarkingSection; else markingEndCompleted"
+        subject="Endzeile"
+        [disabled]="isMarkingSection !== 'end'"
+        [hasErrors]="fieldHasErrors('endLine', 'required')"
+      ></app-select-line-text>
       <ng-template #markingEndCompleted>
         Seite
         {{ markedSection?.getEndPage(script) }}

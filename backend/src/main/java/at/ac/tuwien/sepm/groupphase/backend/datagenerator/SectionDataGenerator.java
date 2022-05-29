@@ -34,7 +34,7 @@ public class SectionDataGenerator {
     public static final int NUMBER_OF_SECTIONS_PER_USER_PER_SCRIPT = 3;
     public static final int NUMBER_OF_UNFINISHED_SESSIONS_PER_SECTION = 1;
     public static final int NUMBER_OF_FINISHED_SESSION_PER_SECTION = 1;
-    public static final String TEST_SECTION_NAME = "Test Section";
+    public static final String TEST_SECTION_NAME = "Kapitel";
     private final SectionRepository sectionRepository;
     private final SessionRepository sessionRepository;
     private final ScriptRepository scriptRepository;
@@ -65,7 +65,7 @@ public class SectionDataGenerator {
                 for (User user : users) {
                     for (int i = 0; i < NUMBER_OF_SECTIONS_PER_USER_PER_SCRIPT; i++) {
                         Section section = Section.builder()
-                            .name(TEST_SECTION_NAME)
+                            .name(TEST_SECTION_NAME + " " + i)
                             .owner(user)
                             .startLine(lines.get(randomizedLineSelect(0, numberOfLines / 2)))
                             .endLine(lines.get(randomizedLineSelect(numberOfLines / 2, numberOfLines)))

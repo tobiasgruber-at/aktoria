@@ -36,7 +36,7 @@ export class SessionService {
               session.coverage,
               session.sectionId,
               session.currentLineIndex,
-              session.roleId
+              session.role
             )
         )
       );
@@ -63,7 +63,7 @@ export class SessionService {
                 s.coverage,
                 s.sectionId,
                 s.currentLineIndex,
-                s.roleId
+                s.role
               )
           )
         )
@@ -75,8 +75,46 @@ export class SessionService {
    *
    * @param session to be saved
    */
-  save(session: CreateSession): Observable<SimpleSession> {
-    return this.http.post<SimpleSession>(this.baseUri, session);
+  start(session: CreateSession): Observable<SimpleSession> {
+    return this.http
+      .post<SimpleSession>(this.baseUri, session)
+      .pipe(
+        map(
+          (s) =>
+            new SimpleSession(
+              s.id,
+              s.start,
+              s.end,
+              s.selfAssessment,
+              s.deprecated,
+              s.coverage,
+              s.sectionId,
+              s.currentLineIndex,
+              s.role
+            )
+        )
+      );
+  }
+
+  endSession(id: number): Observable<SimpleSession> {
+    return this.http
+      .post<SimpleSession>(`${this.baseUri}/${id}`, null)
+      .pipe(
+        map(
+          (s) =>
+            new SimpleSession(
+              s.id,
+              s.start,
+              s.end,
+              s.selfAssessment,
+              s.deprecated,
+              s.coverage,
+              s.sectionId,
+              s.currentLineIndex,
+              s.role
+            )
+        )
+      );
   }
 
   /**

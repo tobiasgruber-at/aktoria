@@ -18,7 +18,6 @@ import {
 import { Router } from '@angular/router';
 import { SessionService } from '../../../../core/services/session/session.service';
 import { ToastService } from '../../../../core/services/toast/toast.service';
-import { Theme } from '../../../../shared/enums/theme.enum';
 
 @Component({
   selector: 'app-rehearsal-section',
@@ -76,13 +75,6 @@ export class RehearsalSectionComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.$destroy))
       .subscribe((roles) => {
         this.selectedRoles = roles;
-        if (!this.selectedRoles) {
-          this.router.navigateByUrl('/scripts');
-          this.toastService.show({
-            message: 'Keine Rolle ausgewählt',
-            theme: Theme.danger
-          });
-        }
       });
   }
 
@@ -91,17 +83,16 @@ export class RehearsalSectionComponent implements OnInit, OnDestroy {
     this.$destroy.complete();
   }
 
+  /** Starts a new rehearsal with this section. */
   startRehearsal(): void {
-    const selectedRoleID = this.selectedRoles?.[this.script.getId()];
     const session: CreateSession = {
       sectionId: this.section.id,
-      roleId: selectedRoleID
+      roleId: this.selectedRoles?.[this.script.getId()]
     };
-    this.sessionService.save(session).subscribe({
-      next: (s) => {
-        s.setSection(this.section);
-        s.setScript(this.script);
-        this.scriptRehearsalService.setSession(s);
+    this.sessionService.start(session).subscribe({
+      next: (createdSession) => {
+        createdSession.init(this.script, this.section);
+        this.scriptRehearsalService.setSession(createdSession);
         this.router.navigateByUrl(`/scripts/${this.script?.getId()}/rehearse`);
       },
       error: (err) => {

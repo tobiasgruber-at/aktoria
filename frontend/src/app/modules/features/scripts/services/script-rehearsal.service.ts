@@ -51,7 +51,7 @@ export class ScriptRehearsalService {
   }
 
   setSelectedRole(script: SimpleScript, role: Role): void {
-    this.selectedRoles[script.getId()] = role.id;
+    this.selectedRoles[script.getId()] = role?.id;
     this.selectedRoleSubject.next(this.selectedRoles);
     localStorage.setItem(
       scriptSelectedRoleMappingLSKey,
