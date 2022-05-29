@@ -48,7 +48,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -297,9 +296,19 @@ public class ScriptServiceImpl implements ScriptService {
             throw new UnauthorizedException();
         }
         Optional<Script> script = scriptRepository.findById(id);
-        if (script.isPresent() && !script.get().getOwner().getId().equals(user.getId())) {
-            throw new UnauthorizedException("Dieser User ist nicht berechtigt diese Datei zu löschen");
+        Script script1 = null;
+        if (script.isPresent()) {
+            script1 = script.get();
+            if (!script.get().getOwner().getId().equals(user.getId())) {
+                throw new UnauthorizedException("Dieser User ist nicht berechtigt diese Datei zu löschen");
+            }
+        } else {
+            throw new NotFoundException();
         }
+
+        User owner = script1.getOwner();
+        owner.getScripts().remove(script1);
+        userRepository.save(owner);
         scriptRepository.deleteById(id);
     }
 
