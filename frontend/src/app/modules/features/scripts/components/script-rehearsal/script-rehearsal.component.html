@@ -1,1 +1,14 @@
-<p>script-rehearsal works!</p>
+<!-- TODO: loading spinner -->
+<div
+  class="layout vh-100 bg-light overflow-hidden d-flex flex-column align-items-center px-5"
+>
+  <div class="grid">
+    <ng-container *ngFor="let line of session?.getLines(script)">
+      <app-rehearsal-line
+        [@lineAppear]="line.index >= session?.currentLine ? 'active' : 'hidden'"
+        [line]="line"
+      ></app-rehearsal-line>
+    </ng-container>
+  </div>
+</div>
+<app-rehearsal-controls></app-rehearsal-controls>

@@ -29,7 +29,7 @@ export class ScriptOverviewComponent implements OnInit {
     private scriptService: ScriptService,
     private toastService: ToastService,
     private modalService: NgbModal,
-    private authService: AuthService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -44,7 +44,6 @@ export class ScriptOverviewComponent implements OnInit {
       } else {
         this.scriptService.getOne(id).subscribe({
           next: (script) => {
-            console.log(script);
             this.script = script;
             this.members = [];
             this.members.push(script.owner);
@@ -83,20 +82,22 @@ export class ScriptOverviewComponent implements OnInit {
 
   exitScript(modal: NgbActiveModal): void {
     this.deleteLoading = true;
-    this.scriptService.removeParticipant(this.script.id, this.authService.getEmail()).subscribe({
-      next: () => {
-        modal.dismiss();
-        this.router.navigateByUrl('/scripts');
-        this.toastService.show({
-          message: 'Skript erfolgreich verlassen.',
-          theme: Theme.primary
-        });
-      },
-      error: (err) => {
-        this.deleteLoading = false;
-        this.deleteError = err.error?.message;
-      }
-    });
+    this.scriptService
+      .removeParticipant(this.script.id, this.authService.getEmail())
+      .subscribe({
+        next: () => {
+          modal.dismiss();
+          this.router.navigateByUrl('/scripts');
+          this.toastService.show({
+            message: 'Skript erfolgreich verlassen.',
+            theme: Theme.primary
+          });
+        },
+        error: (err) => {
+          this.deleteLoading = false;
+          this.deleteError = err.error?.message;
+        }
+      });
   }
 
   isOwner() {

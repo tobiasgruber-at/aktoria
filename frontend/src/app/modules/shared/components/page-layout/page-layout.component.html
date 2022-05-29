@@ -80,6 +80,8 @@
     'overflow: hidden' on the root element).
   -->
   <main
+    (load)="onScrollMain($event)"
+    (scroll)="onScrollMain($event)"
     [class.is-dark-theme]="theme === 'dark'"
     class="w-100 p-5 d-flex flex-column"
   >
