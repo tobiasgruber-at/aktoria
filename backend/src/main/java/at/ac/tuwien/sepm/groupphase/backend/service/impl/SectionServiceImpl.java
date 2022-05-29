@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  * Service for Section.
@@ -125,13 +126,23 @@ public class SectionServiceImpl implements SectionService {
     }
 
     @Override
-    public List<SectionDto> getAllSections() {
+    public Stream<SectionDto> getAllSections() {
         log.trace("getAllSections()");
+        User user = authorizationService.getLoggedInUser();
+        return sectionRepository.findByOwner(user).stream().map(sectionMapper::sectionToSectionDto);
+    }
+
+    @Override
+    public Stream<SectionDto> getAllSectionsByScript(Long id) {
+        log.trace("getAllSectionsByScript(id = {})", id);
         User user = authorizationService.getLoggedInUser();
         if (user == null) {
             throw new UnauthorizedException();
         }
         authorizationService.checkBasicAuthorization(user.getId());
-        return sectionMapper.sectionListToSectionDtoList(sectionRepository.findByOwner(user));
+        if (id == null) {
+            return getAllSections();
+        }
+        return sectionRepository.findByOwnerAndScriptId(user, id).stream().map(sectionMapper::sectionToSectionDto);
     }
 }
