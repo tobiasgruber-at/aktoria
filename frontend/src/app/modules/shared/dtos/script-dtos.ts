@@ -1,10 +1,12 @@
-import {SimpleUser} from './user-dtos';
+import { SimpleUser } from './user-dtos';
 
 export class UploadScript {
   constructor(public readonly file: File) {}
 }
 
 export class SimpleScript {
+  private lastLineIdx: number = null;
+
   constructor(
     public pages: Page[],
     public roles: Role[],
@@ -14,6 +16,15 @@ export class SimpleScript {
   getId(): number {
     return null;
   }
+
+  getLastLineIdx(): number {
+    if (!this.lastLineIdx) {
+      const lastPage = this.pages[this.pages.length - 1];
+      const lastLine = lastPage.lines[lastPage.lines.length - 1];
+      this.lastLineIdx = lastLine.index;
+    }
+    return this.lastLineIdx;
+  }
 }
 
 export class ScriptPreview {
@@ -21,16 +32,13 @@ export class ScriptPreview {
 }
 
 export class DetailedScript extends SimpleScript {
-  owner: SimpleUser;
-  participants: SimpleUser[];
-
   constructor(
     public readonly id: number,
+    public owner: SimpleUser,
+    public participants: SimpleUser[],
     pages: Page[],
     roles: Role[],
-    name: string,
-    owner: SimpleUser,
-    participants: SimpleUser[]
+    name: string
   ) {
     super(pages, roles, name);
   }
@@ -61,9 +69,7 @@ export class UpdateLine {
 }
 
 export class Role {
-  id: number;
-  name: string;
-  color: string;
+  constructor(public id: number, public name: string, public color: string) {}
 }
 
 export class MergeRoles {

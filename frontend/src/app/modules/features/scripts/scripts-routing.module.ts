@@ -8,6 +8,7 @@ import { ScriptInviteComponent } from './components/script-invite/script-invite.
 import { ScriptInviteAcceptComponent } from './components/script-invite-accept/script-invite-accept.component';
 import { ScriptEditComponent } from './components/script-edit/script-edit.component';
 import { ScriptRehearsalSectionsComponent } from './components/script-rehearsal/script-rehearsal-sections/script-rehearsal-sections.component';
+import { ScriptRehearsalComponent } from './components/script-rehearsal/script-rehearsal.component';
 
 const routes: Routes = [
   {
@@ -43,6 +44,10 @@ const routes: Routes = [
   {
     path: ':id/rehearse/sections',
     component: ScriptRehearsalSectionsComponent
+  },
+  {
+    path: ':id/rehearse',
+    component: ScriptRehearsalComponent
   },
   {
     path: ':id/invite',
