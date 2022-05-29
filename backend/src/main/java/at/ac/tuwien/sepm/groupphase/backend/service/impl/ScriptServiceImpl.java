@@ -48,7 +48,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -273,8 +272,8 @@ public class ScriptServiceImpl implements ScriptService {
         return scripts.stream();
     }
 
-    @Transactional
     @Override
+    @Transactional
     public ScriptDto findById(Long id) {
         log.trace("getById(id = {})", id);
         authorizationService.checkMemberAuthorization(id);
@@ -287,8 +286,8 @@ public class ScriptServiceImpl implements ScriptService {
         return scriptMapper.scriptToScriptDto(script.get());
     }
 
-    @Transactional
     @Override
+    @Transactional
     public void delete(Long id) {
         log.trace("delete(id = {})", id);
 
