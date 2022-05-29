@@ -1,0 +1,69 @@
+:host {
+  transition: box-shadow 150ms ease-in-out;
+  display: block;
+  cursor: pointer;
+
+  &:hover,
+  &.is-active {
+    box-shadow: 0 0 10px rgb(0 0 0 / 5%);
+
+    h5 {
+      color: var(--bs-primary);
+    }
+
+    .section-span .indicator {
+      background-color: var(--bs-primary);
+    }
+  }
+}
+
+bi {
+  height: 1.6em;
+}
+
+h5 {
+  transition: color 150ms ease-in-out;
+  font-weight: 500;
+}
+
+h6 {
+  font-weight: 400;
+  color: rgb(0 0 0 / 35%);
+}
+
+.start-rehearsal {
+  transition: color 200ms ease-in-out;
+
+  &:hover {
+    color: var(--bs-primary);
+  }
+}
+
+.section-span {
+  height: 0.5rem;
+  background-color: rgb(0 0 0 / 7%);
+
+  .indicator {
+    transition: background-color 150ms ease-in-out;
+    border-radius: 3px;
+    background-color: var(--bs-secondary);
+    position: absolute;
+    top: 0;
+    bottom: 0;
+  }
+}
+
+:host {
+  display: flex;
+  justify-content: center;
+}
+
+.card {
+  transition: box-shadow 300ms ease-in-out;
+  width: 11rem;
+  height: 11rem;
+
+  &:hover {
+    box-shadow: 0 8px 17px 0 rgb(0 0 0 / 8%);
+  }
+}

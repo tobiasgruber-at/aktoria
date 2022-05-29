@@ -25,18 +25,17 @@ export class SessionListItemComponent implements OnInit {
     private modalService: NgbModal
   ) {}
 
-  /*
-    get startLinePercentage(): number {
-      return this.script && this.section
-        ? (this.section.startLine / this.script.getLastLineIdx()) * 100
-        : 0;
-    }
+  get startLinePercentage(): number {
+    return this.script && this.section
+      ? (this.section.startLine / this.script.getLastLineIdx()) * 100
+      : 0;
+  }
 
-    get endLinePercentage(): number {
-      return this.script && this.section
-        ? (this.section.endLine / this.script?.getLastLineIdx()) * 100
-        : 0;
-    }*/
+  get endLinePercentage(): number {
+    return this.script && this.section
+      ? (this.section.endLine / this.script?.getLastLineIdx()) * 100
+      : 0;
+  }
 
   ngOnInit(): void {
     this.sectionService.getOne(this.session.sectionId).subscribe({

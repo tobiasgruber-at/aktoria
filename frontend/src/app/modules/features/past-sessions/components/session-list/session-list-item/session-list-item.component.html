@@ -4,11 +4,16 @@
       <div class="d-flex align-items-center justify-content-center h-100 p-3">
         <img
           [alt]="section.name + ' (' + startDate + ')'"
-          [style.opacity]="1"
+          [style.opacity]="0.1"
           class="card-img"
+          src="../../../../../../assets/illustrations/script_cropped.svg"
         />
       </div>
-      <div *ngIf="true" class="card-img-overlay"></div>
+      <div class="card-img-overlay">
+        <h5 class="card-title text-truncate">
+          {{ section.name }} ({{ startDate }})
+        </h5>
+      </div>
     </div>
   </div>
 
@@ -37,7 +42,14 @@
         An dieser Stelle sollten sich hoffentlich bald Infos über diese Session
         befinden :)
       </p>
-      <!--TODO: insert Progress bar here-->
+      <p>Position im Skript:</p>
+      <div class="section-span w-100 position-relative">
+        <div
+          [style.left.%]="startLinePercentage"
+          [style.right.%]="100 - endLinePercentage"
+          class="indicator"
+        ></div>
+      </div>
     </app-modal>
   </ng-template>
 </div>
