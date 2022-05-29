@@ -107,7 +107,7 @@ public class ScriptEndpoint {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Secured(Permission.verified)
     public void deleteParticipant(@PathVariable Long id, @PathVariable String email) {
-        log.info("POST /{}/participants/{}", id, email);
+        log.info("DELETE /{}/participants/{}", id, email);
         scriptService.deleteParticipant(id, email);
     }
 }
