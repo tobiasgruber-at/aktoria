@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { MergeRolesModalComponent } from './merge-roles-modal.component';
+import {MergeRolesModalComponent} from './merge-roles-modal.component';
 
 describe('MergeRolesModalComponent', () => {
   let component: MergeRolesModalComponent;
@@ -8,9 +8,9 @@ describe('MergeRolesModalComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ MergeRolesModalComponent ]
+      declarations: [MergeRolesModalComponent]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {

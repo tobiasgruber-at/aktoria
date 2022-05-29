@@ -82,6 +82,41 @@ export class ScriptLineComponent implements OnInit, OnDestroy {
     );
   }
 
+  @HostListener('mouseenter')
+  updateMarkedSection(): void {
+    if (this.isMarkingSection) {
+      const updatedSection: SimpleSection = this.section;
+      if (this.isMarkingSection === 'start') {
+        updatedSection.startLine = this.line.index;
+      } else if (
+        this.isMarkingSection === 'end' &&
+        this.line.index >= this.section.startLine
+      ) {
+        updatedSection.endLine = this.line.index;
+      }
+      this.scriptViewerService.setMarkedSection({
+        section: updatedSection,
+        scrollTo: false
+      });
+    }
+  }
+
+  @HostListener('click')
+  fixMarkedSection(): void {
+    if (this.isMarkingSection) {
+      if (this.isMarkingSection === 'start') {
+        this.scriptViewerService.setIsMarkingSection('end');
+        this.section.endLine = this.section.startLine;
+        this.scriptViewerService.setMarkedSection({
+          section: this.section,
+          scrollTo: false
+        });
+      } else if (this.isMarkingSection === 'end') {
+        this.scriptViewerService.setIsMarkingSection(null);
+      }
+    }
+  }
+
   ngOnInit() {
     if (this.line.roles === null) {
       this.line.roles = [];
@@ -117,41 +152,6 @@ export class ScriptLineComponent implements OnInit, OnDestroy {
           });
         }
       });
-  }
-
-  @HostListener('mouseenter')
-  updateMarkedSection(): void {
-    if (this.isMarkingSection) {
-      const updatedSection: SimpleSection = this.section;
-      if (this.isMarkingSection === 'start') {
-        updatedSection.startLine = this.line.index;
-      } else if (
-        this.isMarkingSection === 'end' &&
-        this.line.index >= this.section.startLine
-      ) {
-        updatedSection.endLine = this.line.index;
-      }
-      this.scriptViewerService.setMarkedSection({
-        section: updatedSection,
-        scrollTo: false
-      });
-    }
-  }
-
-  @HostListener('click')
-  fixMarkedSection(): void {
-    if (this.isMarkingSection) {
-      if (this.isMarkingSection === 'start') {
-        this.scriptViewerService.setIsMarkingSection('end');
-        this.section.endLine = this.section.startLine;
-        this.scriptViewerService.setMarkedSection({
-          section: this.section,
-          scrollTo: false
-        });
-      } else if (this.isMarkingSection === 'end') {
-        this.scriptViewerService.setIsMarkingSection(null);
-      }
-    }
   }
 
   /** @return Whether a line is highlighted. */

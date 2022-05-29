@@ -7,6 +7,7 @@ import { ScriptReadComponent } from './components/script-read/script-read.compon
 import { ScriptInviteComponent } from './components/script-invite/script-invite.component';
 import { ScriptInviteAcceptComponent } from './components/script-invite-accept/script-invite-accept.component';
 import { ScriptEditComponent } from './components/script-edit/script-edit.component';
+// eslint-disable-next-line max-len
 import { ScriptRehearsalSectionsComponent } from './components/script-rehearsal/script-rehearsal-sections/script-rehearsal-sections.component';
 import { ScriptRehearsalComponent } from './components/script-rehearsal/script-rehearsal.component';
 

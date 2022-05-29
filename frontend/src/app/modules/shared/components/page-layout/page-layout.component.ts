@@ -30,9 +30,11 @@ export class PageLayoutComponent implements OnInit {
     private router: Router,
     private toastService: ToastService,
     private helpersService: HelpersService
-  ) {}
+  ) {
+  }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+  }
 
   logout(): void {
     this.router.navigateByUrl('/login');

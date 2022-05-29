@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
-import { FormBase } from '../../../../shared/classes/form-base';
-import { Router } from '@angular/router';
-import { ToastService } from '../../../../core/services/toast/toast.service';
-import { ScriptService } from '../../../../core/services/script/script.service';
-import { appearAnimations } from '../../../../shared/animations/appear-animations';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, Validators} from '@angular/forms';
+import {FormBase} from '../../../../shared/classes/form-base';
+import {Router} from '@angular/router';
+import {ToastService} from '../../../../core/services/toast/toast.service';
+import {ScriptService} from '../../../../core/services/script/script.service';
+import {appearAnimations} from '../../../../shared/animations/appear-animations';
 
 @Component({
   selector: 'app-script-upload',
@@ -35,7 +35,7 @@ export class ScriptUploadComponent extends FormBase implements OnInit {
   }
 
   onFileChanged(file: File) {
-    this.form.patchValue({ file });
+    this.form.patchValue({file});
   }
 
   onFileRemoved(fileInputNode) {
@@ -44,7 +44,7 @@ export class ScriptUploadComponent extends FormBase implements OnInit {
   }
 
   protected processSubmit() {
-    const { file, startPage } = this.form.value;
+    const {file, startPage} = this.form.value;
     this.scriptService.parse(file, startPage).subscribe({
       next: (script) => {
         this.scriptService.setStagedScript(script);

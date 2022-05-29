@@ -1,12 +1,12 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { Line, Role } from '../../../../../../shared/dtos/script-dtos';
-import { ScriptViewerService } from '../../../../services/script-viewer.service';
-import { FormBase } from '../../../../../../shared/classes/form-base';
-import { FormBuilder, Validators } from '@angular/forms';
-import { ToastService } from '../../../../../../core/services/toast/toast.service';
-import { Subject, takeUntil } from 'rxjs';
-import { LineService } from '../../../../../../core/services/line/line.service';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import {Line, Role} from '../../../../../../shared/dtos/script-dtos';
+import {ScriptViewerService} from '../../../../services/script-viewer.service';
+import {FormBase} from '../../../../../../shared/classes/form-base';
+import {FormBuilder, Validators} from '@angular/forms';
+import {ToastService} from '../../../../../../core/services/toast/toast.service';
+import {Subject, takeUntil} from 'rxjs';
+import {LineService} from '../../../../../../core/services/line/line.service';
 
 @Component({
   selector: 'app-change-line-modal',
@@ -67,7 +67,7 @@ export class ChangeLineModalComponent
   }
 
   protected processSubmit(): void {
-    const { roles, content } = this.form.value;
+    const {roles, content} = this.form.value;
     if (this.isUploading) {
       this.line.roles = roles;
       this.line.content = content;

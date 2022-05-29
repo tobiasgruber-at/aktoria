@@ -1,6 +1,6 @@
-import { TestBed } from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 
-import { NotVerifiedGuard } from './not-verified.guard';
+import {NotVerifiedGuard} from './not-verified.guard';
 
 describe('NotVerifiedGuard', () => {
   let guard: NotVerifiedGuard;

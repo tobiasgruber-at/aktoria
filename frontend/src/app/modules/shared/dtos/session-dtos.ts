@@ -1,4 +1,4 @@
-import { Line, Role, SimpleScript } from './script-dtos';
+import {Line, Role, SimpleScript} from './script-dtos';
 
 export class SimpleSession {
   private lines: Line[];
@@ -13,7 +13,8 @@ export class SimpleSession {
     public sectionId: number,
     public currentLine: number,
     public role: Role
-  ) {}
+  ) {
+  }
 
   getLines(script: SimpleScript): Line[] {
     if (!this.lines && script) {

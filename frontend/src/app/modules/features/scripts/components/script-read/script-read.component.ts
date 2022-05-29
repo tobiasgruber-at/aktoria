@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ScriptService } from '../../../../core/services/script/script.service';
-import { ScriptViewerService } from '../../services/script-viewer.service';
+import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
+import {ScriptService} from '../../../../core/services/script/script.service';
+import {ScriptViewerService} from '../../services/script-viewer.service';
 
 @Component({
   selector: 'app-script-read',
@@ -18,7 +18,8 @@ export class ScriptReadComponent implements OnInit {
     private router: Router,
     private scriptService: ScriptService,
     private scriptViewerService: ScriptViewerService
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {

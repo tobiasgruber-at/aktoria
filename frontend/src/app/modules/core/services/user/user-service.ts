@@ -1,10 +1,6 @@
-import { Observable } from 'rxjs';
-import {
-  SimpleUser,
-  UpdateUser,
-  UserRegistration
-} from '../../../shared/dtos/user-dtos';
-import { ChangePassword } from '../../../shared/dtos/password-change-dto';
+import {Observable} from 'rxjs';
+import {SimpleUser, UpdateUser, UserRegistration} from '../../../shared/dtos/user-dtos';
+import {ChangePassword} from '../../../shared/dtos/password-change-dto';
 
 export abstract class UserService {
   /** @return Observable of the own user. */

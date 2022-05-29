@@ -6,6 +6,6 @@ package at.ac.tuwien.sepm.groupphase.backend.enums;
  * @author Marvin Flandorfer
  */
 public enum ConflictType {
-    assignmentRequired,
-    verificationRequired
+    ASSIGNMENT_REQUIRED,
+    VERIFICATION_REQUIRED
 }

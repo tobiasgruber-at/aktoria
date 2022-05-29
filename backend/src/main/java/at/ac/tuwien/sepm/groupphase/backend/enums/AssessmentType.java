@@ -6,8 +6,8 @@ package at.ac.tuwien.sepm.groupphase.backend.enums;
  * @author Marvin Flandorfer
  */
 public enum AssessmentType {
-    veryGood,
-    good,
-    needsWork,
-    poor
+    VERY_GOOD,
+    GOOD,
+    NEEDS_WORK,
+    POOR
 }

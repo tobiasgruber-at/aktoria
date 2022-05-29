@@ -12,5 +12,6 @@ export class LandingComponent {
   constructor(
     public authService: AuthService,
     public userService: UserService
-  ) {}
+  ) {
+  }
 }
