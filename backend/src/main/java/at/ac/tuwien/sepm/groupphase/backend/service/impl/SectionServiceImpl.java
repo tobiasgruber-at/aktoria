@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -117,5 +118,16 @@ public class SectionServiceImpl implements SectionService {
             throw new UnauthorizedException(e.getMessage(), e);
         }
         return sectionMapper.sectionToSectionDto(section.get());
+    }
+
+    @Override
+    public List<SectionDto> getAllSections() {
+        log.trace("getAllSections()");
+        User user = authorizationService.getLoggedInUser();
+        if (user == null) {
+            throw new UnauthorizedException();
+        }
+        authorizationService.checkBasicAuthorization(user.getId());
+        return sectionMapper.sectionListToSectionDtoList(sectionRepository.findAll());
     }
 }

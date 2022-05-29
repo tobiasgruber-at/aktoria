@@ -9,6 +9,8 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.Named;
 
+import java.util.List;
+
 /**
  * Describes a section mapper.
  *
@@ -31,4 +33,6 @@ public interface SectionMapper {
         @Mapping(target = "sessionIds", source = "sessions", qualifiedByName = "sessionToId")
     })
     SectionDto sectionToSectionDto(Section section);
+
+    List<SectionDto> sectionListToSectionDtoList(List<Section> sections);
 }

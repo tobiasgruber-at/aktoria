@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
 import at.ac.tuwien.sepm.groupphase.backend.datagenerator.SectionDataGenerator;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SectionDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.SectionMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Section;
 import at.ac.tuwien.sepm.groupphase.backend.enums.Role;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
@@ -18,6 +19,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -39,6 +41,8 @@ class SectionServiceUnitTest {
     SectionService sectionService;
     @Autowired
     SectionRepository sectionRepository;
+    @Autowired
+    SectionMapper sectionMapper;
 
 
     @Nested
@@ -156,4 +160,20 @@ class SectionServiceUnitTest {
             assertThrows(NotFoundException.class, () -> sectionService.deleteSection(0L));
         }
     }
+
+    @Nested
+    @DisplayName("getAllSections()")
+    @SpringBootTest
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {Role.user, Role.verified, Role.admin})
+    class AllSectionsTest {
+        @Test
+        @Transactional
+        @DisplayName("Gets all sections")
+        void getAllSections() {
+            List<SectionDto> expected = sectionMapper.sectionListToSectionDtoList(sectionRepository.findAll());
+            List<SectionDto> received = sectionService.getAllSections();
+            assertTrue(received.containsAll(expected));
+        }
+    }
+
 }

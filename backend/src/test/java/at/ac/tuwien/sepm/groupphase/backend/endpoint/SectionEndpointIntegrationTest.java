@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SectionDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.SectionMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Script;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Section;
 import at.ac.tuwien.sepm.groupphase.backend.entity.User;
@@ -49,6 +50,8 @@ class SectionEndpointIntegrationTest {
     @Autowired
     SectionRepository sectionRepository;
     @Autowired
+    SectionMapper sectionMapper;
+    @Autowired
     private WebApplicationContext webAppContext;
     private MockMvc mockMvc;
     @Autowired
@@ -93,6 +96,28 @@ class SectionEndpointIntegrationTest {
                 .get("/api/v1/scripts/sections/{id}", -1L)
                 .accept(MediaType.APPLICATION_JSON)
             ).andExpect(status().isNotFound());
+        }
+    }
+
+    //TESTING GET ALL
+    @Nested
+    @DisplayName("getAllSections()")
+    class GetAllSections {
+        @Test
+        @Transactional
+        @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = Role.verified)
+        @DisplayName("Get all Sections")
+        void getSectionById() throws Exception {
+            List<SectionDto> expected = sectionMapper.sectionListToSectionDtoList(sectionRepository.findAll());
+            byte[] body = mockMvc
+                .perform(MockMvcRequestBuilders
+                    .get("/api/v1/scripts/sections")
+                    .accept(MediaType.APPLICATION_JSON)
+                ).andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsByteArray();
+            List<SectionDto> sectionResult = objectMapper.readerFor(SectionDto.class).<SectionDto>readValues(body).readAll();
+            assertNotNull(sectionResult);
+            assertEquals(sectionResult.size(), expected.size());
         }
     }
 
