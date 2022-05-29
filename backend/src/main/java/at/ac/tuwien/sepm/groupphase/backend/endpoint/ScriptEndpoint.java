@@ -66,7 +66,7 @@ public class ScriptEndpoint {
     @ResponseStatus(HttpStatus.OK)
     @Secured(Permission.verified)
     public ScriptDto getScriptBySessionId(@RequestParam Long id) {
-        log.info("GET {}/session?sessionId={}", path, id);
+        log.info("GET {}/session?id={}", path, id);
         return scriptService.getBySessionId(id);
     }
 
