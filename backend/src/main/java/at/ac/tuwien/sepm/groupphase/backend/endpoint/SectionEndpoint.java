@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SectionDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleSectionDto;
 import at.ac.tuwien.sepm.groupphase.backend.enums.Permission;
 import at.ac.tuwien.sepm.groupphase.backend.service.SectionService;
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +43,7 @@ public class SectionEndpoint {
         return sectionService.getSection(id);
     }
 
-    @GetMapping
+    @GetMapping()
     @ResponseStatus(HttpStatus.OK)
     @Secured(Permission.verified)
     public Stream<SectionDto> getAllSectionsByScript(@RequestParam Long scriptId) {
@@ -53,9 +54,9 @@ public class SectionEndpoint {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Secured(Permission.verified)
-    public SectionDto saveSection(@RequestBody SectionDto sectionDto) {
+    public SectionDto saveSection(@RequestBody SimpleSectionDto simpleSectionDto) {
         log.info("POST {}", path);
-        return sectionService.createSection(sectionDto);
+        return sectionService.createSection(simpleSectionDto);
     }
 
     @DeleteMapping(path = "/{id}")

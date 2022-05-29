@@ -32,6 +32,7 @@ public class MailSenderImpl implements MailSender {
     private String port;
 
     @Transactional
+    @Override
     public void sendMail(String receiver, String subject, String content) {
         Properties properties = new Properties();
 

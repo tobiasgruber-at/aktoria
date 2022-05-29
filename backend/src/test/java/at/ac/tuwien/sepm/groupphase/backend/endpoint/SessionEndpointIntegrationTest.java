@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -85,19 +86,15 @@ public class SessionEndpointIntegrationTest {
         @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
         public void finishSessionThrowsConflictException() throws Exception {
             Optional<Session> session = sessionRepository.findById(1L);
-            if (session.isPresent()) {
-                Session curSession = session.get();
-                curSession.setDeprecated(true);
-                sessionRepository.save(curSession);
-
-                mockMvc
-                    .perform(MockMvcRequestBuilders
-                        .post(SessionEndpoint.path + "/1")
-                        .accept(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isConflict());
-            } else {
-                throw new Exception();
-            }
+            assertTrue(session.isPresent());
+            Session curSession = session.get();
+            curSession.setDeprecated(true);
+            sessionRepository.save(curSession);
+            mockMvc
+                .perform(MockMvcRequestBuilders
+                    .post(SessionEndpoint.path + "/1")
+                    .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isConflict());
         }
     }
 
@@ -110,30 +107,27 @@ public class SessionEndpointIntegrationTest {
         @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
         public void updateSessionCorrectly() throws Exception {
             Optional<Session> sessionOpt = sessionRepository.findById(1L);
-            if (sessionOpt.isPresent()) {
-                Long curLineId = sessionOpt.get().getCurrentLine().getId() + 1;
-                UpdateSessionDto updateSessionDto = new UpdateSessionDto();
-                updateSessionDto.setDeprecated(true);
-                updateSessionDto.setSelfAssessment(AssessmentType.POOR);
-                updateSessionDto.setCurrentLineId(curLineId);
+            assertTrue(sessionOpt.isPresent());
+            Long curLineId = sessionOpt.get().getCurrentLine().getId() + 1;
+            UpdateSessionDto updateSessionDto = new UpdateSessionDto();
+            updateSessionDto.setDeprecated(true);
+            updateSessionDto.setSelfAssessment(AssessmentType.POOR);
+            updateSessionDto.setCurrentLineId(curLineId);
 
-                byte[] body = mockMvc
-                    .perform(MockMvcRequestBuilders
-                        .patch(SessionEndpoint.path + "/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(updateSessionDto))
-                        .accept(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isOk())
-                    .andReturn().getResponse().getContentAsByteArray();
+            byte[] body = mockMvc
+                .perform(MockMvcRequestBuilders
+                    .patch(SessionEndpoint.path + "/1")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsBytes(updateSessionDto))
+                    .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsByteArray();
 
-                SessionDto result = objectMapper.readValue(body, SessionDto.class);
-                assertThat(result.getId()).isEqualTo(1L);
-                assertThat(result.getDeprecated()).isEqualTo(true);
-                assertThat(result.getSelfAssessment()).isEqualTo(AssessmentType.POOR);
-                assertThat(result.getCurrentLineId()).isEqualTo(curLineId);
-            } else {
-                throw new Exception();
-            }
+            SessionDto result = objectMapper.readValue(body, SessionDto.class);
+            assertThat(result.getId()).isEqualTo(1L);
+            assertThat(result.getDeprecated()).isEqualTo(true);
+            assertThat(result.getSelfAssessment()).isEqualTo(AssessmentType.POOR);
+            assertThat(result.getCurrentLineIndex()).isEqualTo(curLineId);
         }
 
         @Test
@@ -201,8 +195,8 @@ public class SessionEndpointIntegrationTest {
             assertThat(actual.getStart()).isNotNull();
             assertThat(actual.getEnd()).isNull();
             assertThat(actual.getSectionId()).isEqualTo(1L);
-            assertThat(actual.getRoleId()).isEqualTo(1L);
-            assertThat(actual.getCurrentLineId()).isNotNull();
+            assertThat(actual.getRole().getId()).isEqualTo(1L);
+            assertThat(actual.getCurrentLineIndex()).isNotNull();
         }
 
         @Test
@@ -297,8 +291,8 @@ public class SessionEndpointIntegrationTest {
             assertThat(actual.getStart()).isNotNull();
             assertThat(actual.getEnd()).isNull();
             assertThat(actual.getSectionId()).isEqualTo(1L);
-            assertThat(actual.getRoleId()).isEqualTo(1L);
-            assertThat(actual.getCurrentLineId()).isNotNull();
+            assertThat(actual.getRole().getId()).isEqualTo(1L);
+            assertThat(actual.getCurrentLineIndex()).isNotNull();
         }
     }
 }
