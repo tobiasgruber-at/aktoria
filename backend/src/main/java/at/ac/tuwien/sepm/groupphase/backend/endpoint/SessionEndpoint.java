@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -65,6 +66,14 @@ public class SessionEndpoint {
     public SessionDto getSessionById(@PathVariable Long id) {
         log.info("GET {}/{}", path, id);
         return sessionService.findById(id);
+    }
+
+    @GetMapping(path = "/past")
+    @ResponseStatus(HttpStatus.OK)
+    @Secured(Permission.verified)
+    public Stream<SessionDto> getPastSessions(@RequestParam Boolean deprecated, @RequestParam Long sectionId) {
+        log.info("GET {}/past?deprecated={}&sectionId={}", path, deprecated, sectionId);
+        return sessionService.findPastSessions(deprecated, sectionId);
     }
 
     @GetMapping

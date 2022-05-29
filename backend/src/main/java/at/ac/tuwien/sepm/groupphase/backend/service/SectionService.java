@@ -4,6 +4,7 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SectionDto;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * Service for section.
@@ -41,5 +42,13 @@ public interface SectionService {
      *
      * @return all sections stored in the database
      */
-    List<SectionDto> getAllSections();
+    Stream<SectionDto> getAllSections();
+
+    /**
+     * Gets all sections stored in the database by script.
+     *
+     * @param id of the script
+     * @return all sections by script
+     */
+    Stream<SectionDto> getAllSectionsByScript(Long id);
 }
