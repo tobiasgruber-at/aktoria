@@ -60,6 +60,7 @@ public class SectionServiceImpl implements SectionService {
         if (user == null) {
             throw new UnauthorizedException();
         }
+        authorizationService.checkBasicAuthorization(user.getId());
         try {
             sectionValidation.validateCreateSection(sectionDto);
         } catch (NotFoundException e) {
@@ -96,6 +97,7 @@ public class SectionServiceImpl implements SectionService {
         } catch (UnauthorizedException e) {
             throw new UnauthorizedException(e.getMessage(), e);
         }
+        sectionValidation.validateOwner(user.getId(), section.get().getStartLine().getId());
         sectionRepository.deleteById(id);
     }
 
@@ -117,7 +119,9 @@ public class SectionServiceImpl implements SectionService {
         } catch (UnauthorizedException e) {
             throw new UnauthorizedException(e.getMessage(), e);
         }
-        return sectionMapper.sectionToSectionDto(section.get());
+        SectionDto sectionDto = sectionMapper.sectionToSectionDto(section.get());
+        sectionValidation.validateOwner(user.getId(), sectionDto.getStartLine());
+        return sectionDto;
     }
 
     @Override
@@ -128,6 +132,6 @@ public class SectionServiceImpl implements SectionService {
             throw new UnauthorizedException();
         }
         authorizationService.checkBasicAuthorization(user.getId());
-        return sectionMapper.sectionListToSectionDtoList(sectionRepository.findAll());
+        return sectionMapper.sectionListToSectionDtoList(sectionRepository.findByOwner(user));
     }
 }
