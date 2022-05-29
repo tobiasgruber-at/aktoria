@@ -47,8 +47,7 @@ public class SectionEndpoint {
     @Secured(Permission.verified)
     public List<SectionDto> getAllSections() {
         log.info("GET{}", path);
-        List<SectionDto> sectionDtos = sectionService.getAllSections();
-        return sectionDtos;
+        return sectionService.getAllSections();
     }
 
     @PostMapping
