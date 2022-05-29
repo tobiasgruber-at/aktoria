@@ -101,4 +101,11 @@ public interface ScriptService {
      * @author Luke Nemeskeri
      */
     ScriptDto patch(ScriptDto scriptDto, Long id);
+
+    /**
+     * Returns a Script dto of a session.
+     * @param id of the sesseion
+     * @return a script
+     */
+    ScriptDto getBySessionId(Long id);
 }
