@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -65,6 +66,7 @@ class SectionEndpointIntegrationTest {
     @DisplayName("getSectionById()")
     class GetSectionById {
         @Test
+        @DirtiesContext
         @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = Role.verified)
         @DisplayName("Get a Section with a valid Id")
         void getSectionById() throws Exception {
@@ -83,6 +85,7 @@ class SectionEndpointIntegrationTest {
         }
 
         @Test
+        @DirtiesContext
         @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = Role.verified)
         @DisplayName("Get a Section with invalid Id")
         void getSectionInvalidId() throws Exception {
@@ -98,6 +101,7 @@ class SectionEndpointIntegrationTest {
     @DisplayName("saveSection()")
     class SaveSection {
         @Test
+        @DirtiesContext
         @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = Role.verified)
         @DisplayName("Save a section successfully")
         void saveSection() throws Exception {
@@ -119,6 +123,7 @@ class SectionEndpointIntegrationTest {
         }
 
         @Test
+        @DirtiesContext
         @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = Role.verified)
         @DisplayName("Save a section without a user")
         void saveSectionNoUser() throws Exception {
@@ -132,6 +137,7 @@ class SectionEndpointIntegrationTest {
 
 
         @Test
+        @DirtiesContext
         @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = Role.verified)
         @DisplayName("Save a section with an invalid starting line")
         void saveSectionInvalidStart() throws Exception {
@@ -147,6 +153,7 @@ class SectionEndpointIntegrationTest {
 
 
         @Test
+        @DirtiesContext
         @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = Role.verified)
         @DisplayName("Save a section with an invalid ending line")
         void saveSectionInvalidEnd() throws Exception {
@@ -162,6 +169,7 @@ class SectionEndpointIntegrationTest {
         }
 
         @Test
+        @DirtiesContext
         @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = Role.verified)
         @DisplayName("Save a section with two lines from different scripts")
         void saveSectionFalseScript() throws Exception {
@@ -177,6 +185,7 @@ class SectionEndpointIntegrationTest {
         }
 
         @Test
+        @DirtiesContext
         @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = Role.verified)
         @DisplayName("Save a section with too long name")
         void saveSectionTooLongName() throws Exception {
@@ -191,6 +200,7 @@ class SectionEndpointIntegrationTest {
         }
 
         @Test
+        @DirtiesContext
         @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = Role.verified)
         @DisplayName("Save a section with blank name")
         void saveSectionBlankName() throws Exception {
@@ -206,6 +216,7 @@ class SectionEndpointIntegrationTest {
 
 
         @Test
+        @DirtiesContext
         @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = Role.verified)
         @DisplayName("Save a section with lines from a nonexistent script")
         void saveSectionNonexistentScript() throws Exception {
@@ -219,6 +230,7 @@ class SectionEndpointIntegrationTest {
 
 
         @Test
+        @DirtiesContext
         @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = Role.verified)
         @DisplayName("Save a section with a starting line that is after the ending line")
         void saveSectionStartAfterEnd() throws Exception {
@@ -237,6 +249,7 @@ class SectionEndpointIntegrationTest {
     @DisplayName("deleteSection()")
     class DeleteSection {
         @Test
+        @DirtiesContext
         @DisplayName("Delete a section")
         @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = Role.verified)
         void deleteSection() throws Exception {
@@ -247,6 +260,7 @@ class SectionEndpointIntegrationTest {
         }
 
         @Test
+        @DirtiesContext
         @DisplayName("Delete a section with invalid Id")
         @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = Role.verified)
         void deleteSectionInvalidId() throws Exception {

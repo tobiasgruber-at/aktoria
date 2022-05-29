@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -35,7 +36,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @EnableWebMvc
 @WebAppConfiguration
-@WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user, Role.verified, Role.admin })
 public class UserVerificationIntegrationTest {
     @RegisterExtension
     static GreenMailExtension greenMail = new GreenMailExtension(ServerSetupTest.SMTP)
@@ -54,8 +54,9 @@ public class UserVerificationIntegrationTest {
     }
 
     @Test
-
+    @DirtiesContext
     @DisplayName("verification works correctly")
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user, Role.verified, Role.admin })
     void verify() throws Exception {
         //register new user
         byte[] body = mockMvc
@@ -68,22 +69,20 @@ public class UserVerificationIntegrationTest {
             .andReturn().getResponse().getContentAsByteArray();
 
         SimpleUserDto response = objectMapper.readValue(body, SimpleUserDto.class);
-        final SimpleUserDto expectedUnverfied = new SimpleUserDto(response.getId(), "Varok", "Saurfang", "varok.saurfang@email.com", false);
+        final SimpleUserDto expectedUnverified = new SimpleUserDto(response.getId(), "Varok", "Saurfang", "varok.saurfang@email.com", false);
 
         assertNotNull(response);
-        assertEquals(response, expectedUnverfied);
-
-        //assert that new user is saved with verified false
+        assertEquals(response, expectedUnverified);
 
         body = mockMvc
             .perform(MockMvcRequestBuilders
-                .get("/api/v1/users?email=" + expectedUnverfied.getEmail())
+                .get("/api/v1/users?email=" + expectedUnverified.getEmail())
             ).andExpect(status().isOk())
             .andReturn().getResponse().getContentAsByteArray();
 
         response = objectMapper.readValue(body, SimpleUserDto.class);
         assertNotNull(response);
-        assertEquals(response, expectedUnverfied);
+        assertEquals(response, expectedUnverified);
 
         //check email inbox for token
         final MimeMessage[] receivedMessages = greenMail.getReceivedMessages();
@@ -103,16 +102,16 @@ public class UserVerificationIntegrationTest {
             .andReturn().getResponse().getContentAsByteArray();
 
         //assert that user is verified
-        final SimpleUserDto expectedVerfied = new SimpleUserDto(response.getId(), "Varok", "Saurfang", "varok.saurfang@email.com", true);
+        final SimpleUserDto expectedVerified = new SimpleUserDto(response.getId(), "Varok", "Saurfang", "varok.saurfang@email.com", true);
 
         body = mockMvc
             .perform(MockMvcRequestBuilders
-                .get("/api/v1/users?email=" + expectedUnverfied.getEmail())
+                .get("/api/v1/users?email=" + expectedUnverified.getEmail())
             ).andExpect(status().isOk())
             .andReturn().getResponse().getContentAsByteArray();
 
         response = objectMapper.readValue(body, SimpleUserDto.class);
         assertNotNull(response);
-        assertEquals(response, expectedVerfied);
+        assertEquals(response, expectedVerified);
     }
 }

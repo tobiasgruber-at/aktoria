@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
@@ -31,6 +32,7 @@ public class SessionServiceUnitTest {
     private SessionRepository sessionRepository;
 
     @Test
+    @DirtiesContext
     @DisplayName("saveSession() saves the session correctly")
     @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
     public void saveSession() {
@@ -51,6 +53,7 @@ public class SessionServiceUnitTest {
     }
 
     @Test
+    @DirtiesContext
     @DisplayName("updateSession() updates session correctly")
     @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
     public void updateSession() throws Exception {
@@ -73,6 +76,7 @@ public class SessionServiceUnitTest {
     }
 
     @Test
+    @DirtiesContext
     @DisplayName("finishSession() ends session correctly")
     @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
     public void finishSession() {
@@ -81,6 +85,7 @@ public class SessionServiceUnitTest {
     }
 
     @Test
+    @DirtiesContext
     @DisplayName("findSessionById() finds session correctly")
     @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
     public void findSessionById() {
@@ -90,6 +95,7 @@ public class SessionServiceUnitTest {
     }
 
     @Test
+    @DirtiesContext
     @DisplayName("findAllSessions() finds all user sessions correctly")
     @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
     public void findAllSessions() {

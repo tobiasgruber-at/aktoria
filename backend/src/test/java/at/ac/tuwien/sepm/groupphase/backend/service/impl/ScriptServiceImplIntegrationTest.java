@@ -21,6 +21,7 @@ import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -63,6 +64,7 @@ class ScriptServiceImplIntegrationTest {
     }
 
     @Test
+    @DirtiesContext
     @DisplayName("newScript() returns the correct DTO")
     void newScript() throws ServiceException, IOException, IllegalFileFormatException {
         final List<Line> expectedLines = new LinkedList<>();

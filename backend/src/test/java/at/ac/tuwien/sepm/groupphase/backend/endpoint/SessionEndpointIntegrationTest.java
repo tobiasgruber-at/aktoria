@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -62,6 +63,7 @@ public class SessionEndpointIntegrationTest {
     @DisplayName("finish session")
     class FinishSession {
         @Test
+        @DirtiesContext
         @DisplayName("returns finished session and 200")
         @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
         public void finishSessionCorrectly() throws Exception {
@@ -78,6 +80,7 @@ public class SessionEndpointIntegrationTest {
         }
 
         @Test
+        @DirtiesContext
         @DisplayName("finish throws conflict exception and 409")
         @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
         public void finishSessionThrowsConflictException() throws Exception {
@@ -102,6 +105,7 @@ public class SessionEndpointIntegrationTest {
     @DisplayName("update session")
     class UpdateSession {
         @Test
+        @DirtiesContext
         @DisplayName("returns updated session correctly and 200")
         @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
         public void updateSessionCorrectly() throws Exception {
@@ -133,6 +137,7 @@ public class SessionEndpointIntegrationTest {
         }
 
         @Test
+        @DirtiesContext
         @DisplayName("throws exception and returns 422")
         @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
         public void updateSessionThrowsUnprocessableEntityException() throws Exception {
@@ -150,6 +155,7 @@ public class SessionEndpointIntegrationTest {
         }
 
         @Test
+        @DirtiesContext
         @DisplayName("throws exception and returns 404")
         @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
         public void updateSessionThrowsNotFoundException() throws Exception {
@@ -170,6 +176,7 @@ public class SessionEndpointIntegrationTest {
     @DisplayName("start session")
     class StartSession {
         @Test
+        @DirtiesContext
         @DisplayName("return saved session correctly and 201")
         @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
         public void startSessionCorrectly() throws Exception {
@@ -199,6 +206,7 @@ public class SessionEndpointIntegrationTest {
         }
 
         @Test
+        @DirtiesContext
         @DisplayName("throws unprocessable entity exception and returns 422")
         @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
         public void startSessionThrowsUnprocessableEntityException() throws Exception {
@@ -219,6 +227,7 @@ public class SessionEndpointIntegrationTest {
     @DisplayName("get session")
     class GetSession {
         @Test
+        @DirtiesContext
         @DisplayName("returns found session and 200")
         @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
         public void findSessionByIdCorrectly() throws Exception {
@@ -235,6 +244,7 @@ public class SessionEndpointIntegrationTest {
         }
 
         @Test
+        @DirtiesContext
         @DisplayName("returns 404")
         @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
         public void findSessionByIdThrowsNotFoundException() throws Exception {
@@ -246,6 +256,7 @@ public class SessionEndpointIntegrationTest {
         }
 
         @Test
+        @DirtiesContext
         @DisplayName("returns all sessions for user and 200")
         @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
         public void findAllSessionsCorrectly() throws Exception {
@@ -270,6 +281,7 @@ public class SessionEndpointIntegrationTest {
     @DisplayName("save session")
     class SaveSession {
         @Test
+        @DirtiesContext
         @DisplayName("saves the session correctly")
         @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
         public void saveSession() {

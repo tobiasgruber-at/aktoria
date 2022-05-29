@@ -30,6 +30,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -72,6 +73,7 @@ class ScriptEndpointIntegrationTest {
     }
 
     @Test
+    @DirtiesContext
     @DisplayName("saveScript() saves the script correctly")
     @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
     void saveScript() {
@@ -136,6 +138,7 @@ class ScriptEndpointIntegrationTest {
     }
 
     @Test
+    @DirtiesContext
     @DisplayName("getScriptPreviews() gets zero previews for user with no scripts")
     @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
     void getScriptPreviewsReturnsZero() {
@@ -144,6 +147,7 @@ class ScriptEndpointIntegrationTest {
     }
 
     @Test
+    @DirtiesContext
     @Disabled
     @DisplayName("getScriptPreviews() gets the correct previews")
     @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "1" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "1", roles = { Role.verified })
@@ -154,6 +158,7 @@ class ScriptEndpointIntegrationTest {
     }
 
     @Test
+    @DirtiesContext
     @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "1" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "1", roles = { Role.verified })
     @DisplayName("getScriptById() gets the correct script")
     void getScriptById() {
@@ -162,6 +167,7 @@ class ScriptEndpointIntegrationTest {
     }
 
     @Test
+    @DirtiesContext
     @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "1" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "1", roles = { Role.verified })
     @DisplayName("getScriptById() throws UnauthorizedException")
     void getScriptByIdThrowsException() {
@@ -172,6 +178,7 @@ class ScriptEndpointIntegrationTest {
     @DisplayName("parseScript() ")
     class SaveScript {
         @Test
+        @DirtiesContext
         @DisplayName("returns the saved script")
         @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
         void saveScriptReturnsCorrectly() throws Exception {
@@ -189,6 +196,7 @@ class ScriptEndpointIntegrationTest {
         }
 
         @Test
+        @DirtiesContext
         @DisplayName("returns correct status code for invalid body")
         @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user })
         void saveScriptReturnsCorrectStatusCodeForInvalidInputs() throws Exception {
@@ -209,6 +217,7 @@ class ScriptEndpointIntegrationTest {
     @DisplayName("uploadScript() ")
     class UploadScript {
         @Test
+        @DirtiesContext
         @DisplayName("returns the correctly parsed script")
         @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
         void uploadScriptReturnsCorrectly() throws Exception {
@@ -233,6 +242,7 @@ class ScriptEndpointIntegrationTest {
         }
 
         @Test
+        @DirtiesContext
         @DisplayName("returns correct status code for corrupted files")
         @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
         void uploadScriptReturnsCorrectStatusCodeForCorruptedFiles() throws Exception {

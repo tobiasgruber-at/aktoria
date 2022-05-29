@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -78,6 +79,7 @@ class LineEndpointIntegrationTest {
         }
 
         @ParameterizedTest
+        @DirtiesContext
         @DisplayName("works correctly")
         @MethodSource("updateLineDtoValidProvider")
         @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "1" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "1", roles = { Role.verified })
@@ -109,6 +111,7 @@ class LineEndpointIntegrationTest {
         }
 
         @ParameterizedTest
+        @DirtiesContext
         @DisplayName("returns InternalServerError")
         @MethodSource("updateLineDtoInvalidProvider")
         @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "1" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "1", roles = { Role.verified })
@@ -123,6 +126,7 @@ class LineEndpointIntegrationTest {
         }
 
         @Test
+        @DirtiesContext
         @DisplayName("returns Forbidden")
         @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "1" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "1", roles = { Role.user })
         void updateLineThrowsException() throws Exception {
