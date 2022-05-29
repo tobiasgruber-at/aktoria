@@ -7,7 +7,8 @@ export class SimpleSection {
   constructor(
     public name: string,
     public startLine: Line,
-    public endLine: Line
+    public endLine: Line,
+    public id?: number
   ) {}
 
   getStartPage(script: SimpleScript): number {

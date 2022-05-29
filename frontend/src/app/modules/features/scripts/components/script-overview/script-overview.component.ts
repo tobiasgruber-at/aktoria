@@ -1,4 +1,4 @@
-import { Component, OnInit, TemplateRef } from '@angular/core';
+import { Component, OnDestroy, OnInit, TemplateRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ScriptService } from '../../../../core/services/script/script.service';
 import { DetailedScript, Role } from '../../../../shared/dtos/script-dtos';
@@ -7,20 +7,26 @@ import { ToastService } from '../../../../core/services/toast/toast.service';
 import { Theme } from '../../../../shared/enums/theme.enum';
 import { SimpleUser } from '../../../../shared/dtos/user-dtos';
 import { AuthService } from '../../../../core/services/auth/auth-service';
+import {
+  ScriptRehearsalService,
+  ScriptSelectedRoleMapping
+} from '../../services/script-rehearsal.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-script-overview',
   templateUrl: './script-overview.component.html',
   styleUrls: ['./script-overview.component.scss']
 })
-export class ScriptOverviewComponent implements OnInit {
+export class ScriptOverviewComponent implements OnInit, OnDestroy {
   getLoading = true;
   deleteLoading = false;
   deleteError = null;
   script: DetailedScript = null;
-  selectedRole: Role = null;
   members: SimpleUser[];
   readonly theme = Theme;
+  private selectedRoles: ScriptSelectedRoleMapping = {};
+  private $destroy = new Subject<void>();
 
   constructor(
     private route: ActivatedRoute,
@@ -28,8 +34,17 @@ export class ScriptOverviewComponent implements OnInit {
     private scriptService: ScriptService,
     private toastService: ToastService,
     private modalService: NgbModal,
-    private authService: AuthService
+    private authService: AuthService,
+    private scriptRehearsalService: ScriptRehearsalService
   ) {}
+
+  get selectedRole(): Role {
+    if (!(this.script && this.selectedRoles)) {
+      return null;
+    }
+    const selectedRoleID = this.selectedRoles?.[this.script.getId()];
+    return this.script.roles.find((r) => r.id === selectedRoleID);
+  }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
@@ -40,7 +55,6 @@ export class ScriptOverviewComponent implements OnInit {
           this.members = [];
           this.members.push(script.owner);
           Array.prototype.push.apply(this.members, script.participants);
-          this.selectedRole = this.script.roles[0];
           this.getLoading = false;
         },
         error: (err) => {
@@ -50,6 +64,11 @@ export class ScriptOverviewComponent implements OnInit {
         }
       });
     });
+    this.scriptRehearsalService.$selectedRole
+      .pipe(takeUntil(this.$destroy))
+      .subscribe((roles) => {
+        this.selectedRoles = roles;
+      });
   }
 
   openModal(modal: TemplateRef<any>) {
@@ -103,6 +122,11 @@ export class ScriptOverviewComponent implements OnInit {
   }
 
   selectRole(role: Role): void {
-    this.selectedRole = role;
+    this.scriptRehearsalService.setSelectedRole(this.script, role);
+  }
+
+  ngOnDestroy() {
+    this.$destroy.next();
+    this.$destroy.complete();
   }
 }

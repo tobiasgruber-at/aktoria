@@ -48,9 +48,9 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
     }
     this.interactionDisabled = true;
     if (line === 'next' && !this.session?.isAtEnd()) {
-      this.session.currentLine++;
+      this.session.currentLineIndex++;
     } else if (line === 'prev' && !this.session.isAtStart()) {
-      this.session.currentLine--;
+      this.session.currentLineIndex--;
     }
     this.scriptRehearsalService.setSession(this.session);
     setTimeout(() => {

@@ -12,14 +12,20 @@
         ></app-script-roles-list>
       </div>
       <div class="col-3 d-flex flex-column align-items-end">
-        <button
-          class="btn btn-primary me-3"
-          class="start-rehearsal btn btn-primary btn-lg mt-2 d-flex align-items-center justify-content-between mb-3"
-          routerLink="/scripts/{{ script?.id }}/rehearse/sections"
+        <div
+          class="mb-3 mt-2"
+          [ngbTooltip]="!selectedRole ? 'Bitte wähle eine Rolle aus' : ''"
+          placement="bottom"
         >
-          Rolle proben
-          <bi name="play-fill"></bi>
-        </button>
+          <button
+            [disabled]="!selectedRole"
+            class="start-rehearsal btn btn-primary btn-lg d-flex align-items-center justify-content-between"
+            routerLink="/scripts/{{ script?.id }}/rehearse/sections"
+          >
+            Rolle proben
+            <bi name="play-fill"></bi>
+          </button>
+        </div>
         <!--<button
           class="btn btn-outline-primary btn-lg mb-3"
           routerLink="/scripts/{{ script?.id }}/view"

@@ -13,7 +13,7 @@
         </h6>
       </div>
       <div
-        (click)="startRehearsal()"
+        (click)="$event.stopPropagation(); startRehearsal()"
         *ngIf="!isCreate"
         class="start-rehearsal py-2 px-1"
         ngbTooltip="Proben"
