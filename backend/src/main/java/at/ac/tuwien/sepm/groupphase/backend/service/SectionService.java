@@ -1,9 +1,10 @@
 package at.ac.tuwien.sepm.groupphase.backend.service;
 
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SectionDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleSectionDto;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * Service for section.
@@ -16,10 +17,10 @@ public interface SectionService {
     /**
      * Creates a new section.
      *
-     * @param sectionDto the section to be created
+     * @param simpleSectionDto the section to be created
      * @return the section that was created
      */
-    SectionDto createSection(SectionDto sectionDto);
+    SectionDto createSection(SimpleSectionDto simpleSectionDto);
 
     /**
      * Deletes an existing section.
@@ -41,5 +42,13 @@ public interface SectionService {
      *
      * @return all sections stored in the database
      */
-    List<SectionDto> getAllSections();
+    Stream<SectionDto> getAllSections();
+
+    /**
+     * Gets all sections stored in the database by script.
+     *
+     * @param id of the script
+     * @return all sections by script
+     */
+    Stream<SectionDto> getAllSectionsByScript(Long id);
 }

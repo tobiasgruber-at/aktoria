@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { ScriptViewerService } from '../../services/script-viewer.service';
+import {Component} from '@angular/core';
+import {ScriptViewerService} from '../../services/script-viewer.service';
 
 @Component({
   selector: 'app-script-viewer',
@@ -7,5 +7,6 @@ import { ScriptViewerService } from '../../services/script-viewer.service';
   styleUrls: ['./script-viewer.component.scss']
 })
 export class ScriptViewerComponent {
-  constructor(public scriptViewerService: ScriptViewerService) {}
+  constructor(public scriptViewerService: ScriptViewerService) {
+  }
 }

@@ -5,7 +5,7 @@ import {AbstractControl, ValidationErrors} from '@angular/forms';
  */
 export const arrayMinLengthValidator =
   (minLength: number) =>
-  (control: AbstractControl): ValidationErrors | null => {
-    const array = control.value;
-    return array?.length >= minLength ? null : { arrayMinLength: true };
-  };
+    (control: AbstractControl): ValidationErrors | null => {
+      const array = control.value;
+      return array?.length >= minLength ? null : {arrayMinLength: true};
+    };

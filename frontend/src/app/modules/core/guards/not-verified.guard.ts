@@ -7,7 +7,8 @@ import {AuthService} from '../services/auth/auth-service';
   providedIn: 'root'
 })
 export class NotVerifiedGuard implements CanActivate {
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router) {
+  }
 
   canActivate(): boolean {
     if (!this.authService.isVerified()) {

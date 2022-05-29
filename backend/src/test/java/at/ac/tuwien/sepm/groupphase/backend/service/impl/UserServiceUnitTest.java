@@ -321,7 +321,6 @@ class UserServiceUnitTest {
         @DirtiesContext
         @DisplayName("expired token throws InvalidTokenException")
         void verifyEmailWithExpiredToken() {
-
             Optional<User> userOptional = userRepository.findById(5L);
             assertTrue(userOptional.isPresent());
             User user = userOptional.get();
@@ -340,7 +339,6 @@ class UserServiceUnitTest {
         @DirtiesContext
         @DisplayName("expired token throws InvalidTokenException")
         void verifyEmailWithWrongTokenType() {
-
             Optional<User> userOptional = userRepository.findById(5L);
             assertTrue(userOptional.isPresent());
             User user = userOptional.get();
@@ -359,7 +357,6 @@ class UserServiceUnitTest {
         @DirtiesContext
         @DisplayName("send verification email")
         void verifyEmailWithValidToken() {
-
             Optional<User> userOptional = userRepository.findById(5L);
             assertTrue(userOptional.isPresent());
             User user = userOptional.get();

@@ -10,10 +10,25 @@ import java.util.stream.Stream;
 /**
  * Describes a session service component.
  *
+ * @author Simon Josef Kreuzpointner
  * @author Marvin Flandorfer
  */
 @Service
 public interface SessionService {
+    /**
+     * Sets the deprecated flag of every session,
+     * that is associated with the script id.
+     *
+     * @param id the script id
+     */
+    void deprecateAffected(Long id);
+
+    /**
+     * Sets the deprecated flag of the given session.
+     *
+     * @param id the session id
+     */
+    void deprecate(Long id);
 
     /**
      * Starts a new session and saves it in the data storage.
@@ -49,9 +64,12 @@ public interface SessionService {
     SessionDto findById(Long id);
 
     /**
-     * Gets all sessions for a user.
+     * Gets all sessions for user according to the params.
      *
-     * @return all sessions found in the data storage for the user.
+     * @param deprecated if deprecated sessions should be included in the query (default: false)
+     * @param sectionId  of a specific section (default: none)
+     * @param past       if only past sessions should be sent (default: false)
+     * @return a stream of all sessions found
      */
-    Stream<SessionDto> findAll();
+    Stream<SessionDto> findQuerySessions(Boolean deprecated, Long sectionId, Boolean past);
 }

@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { ScriptMembersItemComponent } from './script-members-item.component';
+import {ScriptMembersItemComponent} from './script-members-item.component';
 
 describe('ScriptMembersItemComponent', () => {
   let component: ScriptMembersItemComponent;
@@ -8,9 +8,9 @@ describe('ScriptMembersItemComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ScriptMembersItemComponent ]
+      declarations: [ScriptMembersItemComponent]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {

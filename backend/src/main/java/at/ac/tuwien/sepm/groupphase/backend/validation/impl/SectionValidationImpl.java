@@ -1,6 +1,6 @@
 package at.ac.tuwien.sepm.groupphase.backend.validation.impl;
 
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SectionDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleSectionDto;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Line;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Script;
 import at.ac.tuwien.sepm.groupphase.backend.entity.User;
@@ -37,12 +37,12 @@ public class SectionValidationImpl implements SectionValidation {
     }
 
     @Override
-    public void validateCreateSection(SectionDto sectionDto) {
+    public void validateCreateSection(SimpleSectionDto simpleSectionDto) {
         try {
-            validateName(sectionDto.getName());
-            validateOwner(sectionDto.getOwner(), sectionDto.getStartLine());
-            validateLines(sectionDto.getStartLine(), sectionDto.getEndLine());
-            ownerLoggedIn(sectionDto.getOwner());
+            validateName(simpleSectionDto.getName());
+            validateOwner(simpleSectionDto.getOwnerId(), simpleSectionDto.getStartLineId());
+            validateLines(simpleSectionDto.getStartLineId(), simpleSectionDto.getEndLineId());
+            ownerLoggedIn(simpleSectionDto.getOwnerId());
         } catch (ValidationException e) {
             throw new ValidationException(e.getMessage(), e);
         } catch (UnauthorizedException e) {

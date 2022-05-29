@@ -8,6 +8,7 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimplePageDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleRoleDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleScriptDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.UpdateScriptDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ScriptMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.UserMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Line;
@@ -139,7 +140,7 @@ public class ScriptServiceImpl implements ScriptService {
     private boolean isPdfFileType(MultipartFile file) throws IOException {
         log.trace("isPdfFileType(file = {})", file);
 
-        byte[] data = file.getBytes();
+        final byte[] data = file.getBytes();
 
         return (
             data.length >= 4
@@ -257,7 +258,6 @@ public class ScriptServiceImpl implements ScriptService {
             throw new UnauthorizedException();
         }
 
-
         List<ScriptPreviewDto> scripts = new ArrayList<>();
         List<Script> ownedScripts = scriptRepository.getScriptByOwner(user);
         for (Script s : ownedScripts) {
@@ -272,8 +272,8 @@ public class ScriptServiceImpl implements ScriptService {
         return scripts.stream();
     }
 
-    @Transactional
     @Override
+    @Transactional
     public ScriptDto findById(Long id) {
         log.trace("getById(id = {})", id);
         authorizationService.checkMemberAuthorization(id);
@@ -286,8 +286,8 @@ public class ScriptServiceImpl implements ScriptService {
         return scriptMapper.scriptToScriptDto(script.get());
     }
 
-    @Transactional
     @Override
+    @Transactional
     public void delete(Long id) {
         log.trace("delete(id = {})", id);
 
@@ -313,6 +313,44 @@ public class ScriptServiceImpl implements ScriptService {
 
 
         scriptRepository.deleteById(id);
+    }
+
+    @Transactional
+    @Override
+    public ScriptDto update(UpdateScriptDto updateScriptDto, Long id) {
+        log.trace("update(updateScriptDto = {}, id = {})", updateScriptDto, id);
+
+        User user = authorizationService.getLoggedInUser();
+        if (user == null) {
+            throw new UnauthorizedException();
+        }
+        Optional<Script> scriptOptional = scriptRepository.findById(id);
+        if (scriptOptional.isPresent() && !scriptOptional.get().getOwner().getId().equals(user.getId())) {
+            throw new UnauthorizedException("User is not permitted to edit this script");
+        }
+        if (scriptOptional.isEmpty()) {
+            throw new NotFoundException();
+        }
+        Script script = scriptOptional.get();
+        if (updateScriptDto.getName() != null) {
+            script.setName(updateScriptDto.getName());
+        }
+        return scriptMapper.scriptToScriptDto(scriptRepository.save(script));
+    }
+
+    @Override
+    @Transactional
+    public ScriptDto getBySessionId(Long id) {
+        log.trace("getBySessionId(id = {})", id);
+        User user = authorizationService.getLoggedInUser();
+        if (user == null) {
+            throw new UnauthorizedException();
+        }
+        Script script = scriptRepository.getScriptBySessionId(id);
+        if (!script.getOwner().getId().equals(user.getId()) && !script.getParticipants().contains(user)) {
+            throw new UnauthorizedException("User not allowed to view this script");
+        }
+        return scriptMapper.scriptToScriptDto(script);
     }
 
     @Override
@@ -374,7 +412,7 @@ public class ScriptServiceImpl implements ScriptService {
                     throw new ConflictException("Du kannst nicht deinem eigenen Skript nochmal beitreten!");
                 }
                 if (script.getParticipants().contains(user)) {
-                    throw new ConflictException("Du bist diesem Skript bereits begetreten!");
+                    throw new ConflictException("Du bist diesem Skript bereits beigetreten!");
                 }
 
                 Set<Script> scripts = user.getParticipatesIn();

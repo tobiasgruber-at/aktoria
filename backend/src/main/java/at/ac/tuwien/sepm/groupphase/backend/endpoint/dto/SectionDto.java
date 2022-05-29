@@ -20,8 +20,8 @@ import java.util.List;
 public class SectionDto {
     private Long id;
     private String name;
-    private Long owner;
-    private Long startLine;
-    private Long endLine;
+    private SimpleUserDto owner;
+    private LineDto startLine;
+    private LineDto endLine;
     private List<SessionDto> sessions;
 }

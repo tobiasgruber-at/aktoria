@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { ScriptInviteEmailComponent } from './script-invite-email.component';
+import {ScriptInviteEmailComponent} from './script-invite-email.component';
 
 describe('ScriptInviteEmailComponent', () => {
   let component: ScriptInviteEmailComponent;
@@ -8,9 +8,9 @@ describe('ScriptInviteEmailComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ScriptInviteEmailComponent ]
+      declarations: [ScriptInviteEmailComponent]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {

@@ -7,6 +7,7 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.SecureToken;
 import at.ac.tuwien.sepm.groupphase.backend.entity.User;
 import at.ac.tuwien.sepm.groupphase.backend.enums.Role;
 import at.ac.tuwien.sepm.groupphase.backend.enums.TokenType;
+import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.UnauthorizedException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.ScriptRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
@@ -14,7 +15,6 @@ import at.ac.tuwien.sepm.groupphase.backend.service.ScriptService;
 import at.ac.tuwien.sepm.groupphase.backend.service.SecureTokenService;
 import at.ac.tuwien.sepm.groupphase.backend.service.UserService;
 import at.ac.tuwien.sepm.groupphase.backend.testhelpers.UserTestHelper;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -23,9 +23,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -80,10 +82,10 @@ public class ScriptServiceUnitTest {
     @DisplayName("addParticipant()")
     class AddingParticipantTest {
 
-        @Disabled
         @Test
         @DirtiesContext
         @DisplayName("adding Participant works")
+        @Transactional
         @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "4" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "2", roles = { Role.user, Role.verified, Role.admin })
         public void addingParticipantWorks() {
             Optional<Script> scriptOptional = scriptRepository.findById(3L);
@@ -104,12 +106,48 @@ public class ScriptServiceUnitTest {
         @DirtiesContext
         @DisplayName("adding Participant throws UnauthorizedException")
         @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "4" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "2", roles = { Role.user, Role.verified, Role.admin })
-        public void addingParticipantNotFound() {
+        public void addingParticipantInvalidToken() {
             SecureToken token = secureTokenService.createSecureToken(TokenType.INVITE_PARTICIPANT, 15);
             token.setToken("InvalidToken");
             secureTokenService.saveSecureToken(token);
 
             assertThrows(UnauthorizedException.class, () -> scriptService.addParticipant(-3L, "InvalidToken"));
+        }
+    }
+
+    @Nested
+    @DisplayName("deleteParticipant()")
+    class RemovingParticipantTest {
+
+        @Test
+        @DirtiesContext
+        @DisplayName("deleting Participant works")
+        @Transactional
+        @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "4" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "2", roles = { Role.user, Role.verified, Role.admin })
+        public void removingParticipantWorks() {
+            Optional<User> userOptional = userRepository.findByEmail("test11@test.com");
+            assertTrue(userOptional.isPresent());
+            User user = userOptional.get();
+
+            Optional<Script> scriptOptional = scriptRepository.findById(2L);
+            assertTrue(scriptOptional.isPresent());
+            Script script = scriptOptional.get();
+            assertTrue(script.getParticipants().contains(user));
+
+            scriptService.deleteParticipant(2L, "test11@test.com");
+
+            scriptOptional = scriptRepository.findById(2L);
+            assertTrue(scriptOptional.isPresent());
+            script = scriptOptional.get();
+            assertFalse(script.getParticipants().contains(user));
+        }
+
+        @Test
+        @DirtiesContext
+        @DisplayName("adding Participant throws NotFoundException")
+        @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "4" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "2", roles = { Role.user, Role.verified, Role.admin })
+        public void addingParticipantNotFound() {
+            assertThrows(NotFoundException.class, () -> scriptService.deleteParticipant(2L, "notfound@test.com"));
         }
     }
 }

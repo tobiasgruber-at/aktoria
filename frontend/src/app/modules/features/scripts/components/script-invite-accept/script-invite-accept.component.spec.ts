@@ -8,9 +8,8 @@ describe('ScriptInviteAcceptComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ScriptInviteAcceptComponent ]
-    })
-    .compileComponents();
+      declarations: [ScriptInviteAcceptComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

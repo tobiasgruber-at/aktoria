@@ -1,84 +1,68 @@
 <app-page-layout [loading]="getLoading">
-  <app-alert
-    *ngIf="getError; else noError"
-    [closeable]="false"
-    class="mb-1"
-    type="danger"
-  >
-    <strong>Fehler!</strong> Skript wurde nicht gefunden.
-  </app-alert>
-  <ng-template #noError>
-    <div class="d-flex flex-column align-items-start flex-grow-1">
-      <div class="row w-100">
-        <div class="col-9 d-flex flex-column">
-          <h1 class="display-3 mb-3 text-truncate">{{ script?.name }}</h1>
-          <app-script-roles-list
-            (roleClicked)="selectRole($event)"
-            [roles]="script?.roles"
-            [selectedRole]="selectedRole"
-            size="xl"
-            theme="primary"
-          ></app-script-roles-list>
-        </div>
-        <div class="col-3 d-flex flex-column align-items-end">
-          <button
-            class="btn btn-primary me-3"
-            class="start-rehearsal btn btn-primary btn-lg mt-2 d-flex align-items-center justify-content-between mb-3"
-            routerLink="/scripts/{{ script?.id }}/rehearse/sections"
-          >
-            Rolle proben
-            <bi name="play-fill"></bi>
+  <div class="d-flex flex-column align-items-start flex-grow-1">
+    <div class="row w-100">
+      <div class="col-9 d-flex flex-column">
+        <h1 class="display-3 mb-3 text-truncate">{{ script?.name }}</h1>
+        <app-script-roles-list
+          (roleClicked)="selectRole($event)"
+          [roles]="script?.roles"
+          [selectedRole]="selectedRole"
+          size="xl"
+          theme="primary"
+        ></app-script-roles-list>
+      </div>
+      <div class="col-3 d-flex flex-column align-items-end">
+        <button
+          class="btn btn-primary me-3"
+          class="start-rehearsal btn btn-primary btn-lg mt-2 d-flex align-items-center justify-content-between mb-3"
+          routerLink="/scripts/{{ script?.id }}/rehearse/sections"
+        >
+          Rolle proben
+          <bi name="play-fill"></bi>
+        </button>
+        <!--<button
+          class="btn btn-outline-primary btn-lg mb-3"
+          routerLink="/scripts/{{ script?.id }}/view"
+        >
+          Skript ansehen
+        </button>-->
+        <div dropdownClass="dropdown-menu-lg" ngbDropdown>
+          <button class="btn btn-outline-secondary btn-lg" ngbDropdownToggle>
+            Weitere Aktionen
           </button>
-          <!--<button
-            class="btn btn-outline-primary btn-lg mb-3"
-            routerLink="/scripts/{{ script?.id }}/view"
-          >
-            Skript ansehen
-          </button>-->
-          <div dropdownClass="dropdown-menu-lg" ngbDropdown>
-            <button class="btn btn-outline-secondary btn-lg" ngbDropdownToggle>
-              Weitere Aktionen
+          <div ngbDropdownMenu>
+            <button ngbDropdownItem routerLink="/scripts/{{ script?.id }}/view">
+              Ansehen
             </button>
-            <div ngbDropdownMenu>
-              <button
-                ngbDropdownItem
-                routerLink="/scripts/{{ script?.id }}/invite"
-                *ngIf="isOwner()"
-              >
-                Mitglied einladen
-              </button>
-              <button
-                ngbDropdownItem
-                routerLink="/scripts/{{ script?.id }}/view"
-              >
-                Ansehen
-              </button>
-              <button
-                *ngIf="isOwner()"
-                ngbDropdownItem
-                routerLink="/scripts/{{ script?.id }}/edit"
-              >
-                Bearbeiten
-              </button>
-              <button (click)="openModal(deleteModal)"
-                ngbDropdownItem
-                *ngIf="isOwner()"
-              >
-                Löschen
-              </button>
-              <button (click)="openModal(exitModal)" ngbDropdownItem>
-                Austreten
-              </button>
-            </div>
+            <button ngbDropdownItem routerLink="/scripts/{{ script?.id }}/edit">
+              Bearbeiten
+            </button>
+            <button
+              *ngIf="isOwner()"
+              ngbDropdownItem
+              routerLink="/scripts/{{ script?.id }}/invite"
+            >
+              Mitglied einladen
+            </button>
+            <button
+              (click)="openModal(deleteModal)"
+              *ngIf="isOwner()"
+              ngbDropdownItem
+            >
+              Löschen
+            </button>
+            <button (click)="openModal(exitModal)" ngbDropdownItem>
+              Austreten
+            </button>
           </div>
         </div>
-        <app-script-members-list
-          [members] = members
-          [isOwner] = isOwner()
-        ></app-script-members-list>
       </div>
+      <app-script-members-list
+        [isOwner]="isOwner()"
+        [members]="members"
+      ></app-script-members-list>
     </div>
-  </ng-template>
+  </div>
 </app-page-layout>
 <ng-template #deleteModal let-modal>
   <app-modal
@@ -111,12 +95,9 @@
     confirmBtnLabel="Austreten"
     title="Skript verlassen"
   >
-    <app-alert
-      *ngIf="deleteError"
-      [closeable]="false"
-      type="danger"
-    >{{ this.deleteError }}</app-alert
-    >
+    <app-alert *ngIf="deleteError" [closeable]="false" type="danger">{{
+      this.deleteError
+    }}</app-alert>
     Sicher, dass du
     <i>{{ script?.name }} </i>
     verlassen möchtest?

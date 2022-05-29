@@ -1,10 +1,11 @@
-import { SimpleScript } from './script-dtos';
+import {SimpleScript} from './script-dtos';
 
 export class SimpleSection {
   private startPage: number = null;
   private endPage: number = null;
 
-  constructor(public name, public startLine, public endLine) {}
+  constructor(public name, public startLine, public endLine) {
+  }
 
   getStartPage(script: SimpleScript): number {
     if (!this.startPage) {

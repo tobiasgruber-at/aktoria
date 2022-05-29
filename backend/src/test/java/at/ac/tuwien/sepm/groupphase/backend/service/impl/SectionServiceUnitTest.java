@@ -2,14 +2,22 @@ package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 
 import at.ac.tuwien.sepm.groupphase.backend.datagenerator.SectionDataGenerator;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SectionDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleSectionDto;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.LineMapper;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.SectionMapper;
+import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.UserMapper;
+import at.ac.tuwien.sepm.groupphase.backend.entity.Script;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Section;
+import at.ac.tuwien.sepm.groupphase.backend.entity.User;
 import at.ac.tuwien.sepm.groupphase.backend.enums.Role;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
+import at.ac.tuwien.sepm.groupphase.backend.repository.LineRepository;
+import at.ac.tuwien.sepm.groupphase.backend.repository.ScriptRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.SectionRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.SectionService;
 import at.ac.tuwien.sepm.groupphase.backend.testhelpers.UserTestHelper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -33,7 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @author Julia Bernold
  */
 
-@ActiveProfiles({"test", "datagen"})
+@ActiveProfiles({ "test", "datagen" })
 @SpringBootTest
 class SectionServiceUnitTest {
 
@@ -42,11 +50,25 @@ class SectionServiceUnitTest {
     @Autowired
     SectionRepository sectionRepository;
     @Autowired
+    ScriptRepository scriptRepository;
+    @Autowired
+    LineRepository lineRepository;
+    @Autowired
     SectionMapper sectionMapper;
+    @Autowired
+    UserMapper userMapper;
+    @Autowired
+    LineMapper lineMapper;
+    private List<Script> scriptList;
+
+    @BeforeEach
+    public void setup() {
+        this.scriptList = scriptRepository.findAll();
+    }
 
     @Nested
     @DisplayName("getSection()")
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {Role.user, Role.verified, Role.admin})
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user, Role.verified, Role.admin })
     class GetSectionTest {
         @Test
         @DirtiesContext
@@ -65,77 +87,77 @@ class SectionServiceUnitTest {
         }
     }
 
-
     @Nested
     @DisplayName("createSection()")
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {Role.user, Role.verified, Role.admin})
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user, Role.verified, Role.admin })
     class CreateSectionTest {
         @Test
         @DirtiesContext
         @DisplayName("Create new section successfully")
         void createSection() {
-            SectionDto section = new SectionDto(null, "Section Name", 1L, 1L, 5L, null);
-            section = sectionService.createSection(section);
-            assertNotNull(section.getId());
-            assertEquals("Section Name", section.getName());
-            assertEquals(1L, section.getOwner());
-            assertEquals(1L, section.getStartLine());
-            assertEquals(5L, section.getEndLine());
+            Script script = scriptList.get(0);
+            User user = script.getOwner();
+            SimpleSectionDto simpleSectionDto = new SimpleSectionDto("Section Name", user.getId(), 1L, 5L, null);
+            SectionDto sectionDto = sectionService.createSection(simpleSectionDto);
+            assertNotNull(sectionDto.getId());
+            assertEquals("Section Name", sectionDto.getName());
+            assertEquals(1L, sectionDto.getOwner().getId());
+            assertEquals(1L, sectionDto.getStartLine().getId());
+            assertEquals(5L, sectionDto.getEndLine().getId());
         }
 
         @Test
         @DirtiesContext
         @DisplayName("Create new section with an invalid user")
         void createSectionInvalidUser() {
-            SectionDto section = new SectionDto(null, "Section Name", 0L, 1L, 2L, null);
-            assertThrows(ValidationException.class, () -> sectionService.createSection(section));
+            SimpleSectionDto simpleSectionDto = new SimpleSectionDto("Section Name", 0L, 1L, 2L, null);
+            assertThrows(ValidationException.class, () -> sectionService.createSection(simpleSectionDto));
         }
 
         @Test
         @DirtiesContext
         @DisplayName("Create new section with an invalid name")
         void createSectionInvalidName() {
-            SectionDto section = new SectionDto(null, "   ", 0L, 1L, 2L, null);
-            assertThrows(ValidationException.class, () -> sectionService.createSection(section));
+            SimpleSectionDto simpleSectionDto = new SimpleSectionDto("   ", 0L, 1L, 2L, null);
+            assertThrows(ValidationException.class, () -> sectionService.createSection(simpleSectionDto));
         }
 
         @Test
         @DirtiesContext
         @DisplayName("Create new section with an invalid starting line")
         void createSectionInvalidStart() {
-            SectionDto section = new SectionDto(null, "Section Name", 1L, 0L, 2L, null);
-            assertThrows(ValidationException.class, () -> sectionService.createSection(section));
+            SimpleSectionDto simpleSectionDto = new SimpleSectionDto("Section Name", 1L, 0L, 2L, null);
+            assertThrows(ValidationException.class, () -> sectionService.createSection(simpleSectionDto));
         }
 
         @Test
         @DirtiesContext
         @DisplayName("Create new section with an invalid ending line")
         void createSectionInvalidEnd() {
-            SectionDto section = new SectionDto(null, "Section Name", 1L, 1L, 0L, null);
-            assertThrows(ValidationException.class, () -> sectionService.createSection(section));
+            SimpleSectionDto simpleSectionDto = new SimpleSectionDto("Section Name", 1L, 1L, 0L, null);
+            assertThrows(ValidationException.class, () -> sectionService.createSection(simpleSectionDto));
         }
 
         @Test
         @DirtiesContext
         @DisplayName("Create new section with starting and ending lines from different scripts")
         void createSectionDifferentScripts() {
-            SectionDto section = new SectionDto(null, "Section Name", 1L, 1L, 200L, null);
-            assertThrows(ValidationException.class, () -> sectionService.createSection(section));
+            SimpleSectionDto simpleSectionDto = new SimpleSectionDto("Section Name", 1L, 1L, 200L, null);
+            assertThrows(ValidationException.class, () -> sectionService.createSection(simpleSectionDto));
         }
 
         @Test
         @DirtiesContext
         @DisplayName("Create new section with a too long name")
         void createSectionTooLongName() {
-            SectionDto section = new SectionDto(null, "a".repeat(101), 1L, 1L, 2L, null);
-            assertThrows(ValidationException.class, () -> sectionService.createSection(section));
+            SimpleSectionDto simpleSectionDto = new SimpleSectionDto("a".repeat(101), 1L, 1L, 2L, null);
+            assertThrows(ValidationException.class, () -> sectionService.createSection(simpleSectionDto));
         }
     }
 
-
     @Nested
     @DisplayName("deleteSection()")
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {Role.user, Role.verified, Role.admin})
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user, Role.verified, Role.admin })
     class DeleteSectionTest {
         @Test
         @DirtiesContext
@@ -159,17 +181,16 @@ class SectionServiceUnitTest {
     @Nested
     @DisplayName("getAllSections()")
     @SpringBootTest
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {Role.user, Role.verified, Role.admin})
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user, Role.verified, Role.admin })
     class AllSectionsTest {
         @Test
         @DirtiesContext
         @DisplayName("Gets all sections")
         void getAllSections() {
             // List<SectionDto> expected = sectionMapper.sectionListToSectionDtoList(sectionRepository.findAll());
-            List<SectionDto> received = sectionService.getAllSections();
+            List<SectionDto> received = sectionService.getAllSections().toList();
             //assertTrue(received.containsAll(expected));
             assertNotNull(received);
         }
     }
-
 }
