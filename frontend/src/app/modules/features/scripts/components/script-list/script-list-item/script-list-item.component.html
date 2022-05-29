@@ -10,7 +10,7 @@
         class="card-img"
         src="../../../../../../assets/illustrations/script_{{
           isCreate ? 'plus_' : ''
-        }}cropped.svg"
+        }}cropped{{ script?.owner ? '_owner' : '' }}.svg"
       />
     </div>
     <div *ngIf="!isCreate" class="card-img-overlay">

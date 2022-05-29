@@ -70,7 +70,7 @@ aside {
   overflow-y: scroll;
   top: var(--nav-height);
   right: 0;
-  z-index: 10;
+  z-index: 9; // in front of main and below the header
 
   .aside-loading-screen {
     // otherwise content not clickable when loading-spinner away

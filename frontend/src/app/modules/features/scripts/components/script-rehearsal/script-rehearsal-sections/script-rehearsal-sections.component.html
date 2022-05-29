@@ -13,13 +13,6 @@
       ></app-rehearsal-section>
       <div class="flex-grow-1"></div>
       <div class="d-flex flex-column align-items-stretch mt-3">
-        <app-button
-          (click)="startRehearsal()"
-          [disabled]="(scriptViewerService.$markedSection | async) === null"
-          [fullWidth]="true"
-          class="mb-2"
-          label="Abschnitt proben"
-        ></app-button>
         <button
           (click)="backToOverview()"
           class="btn btn-outline-secondary"

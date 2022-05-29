@@ -8,7 +8,6 @@ import { ToastService } from '../../../../../core/services/toast/toast.service';
 import { Subject, takeUntil } from 'rxjs';
 import { SectionService } from '../../../../../core/services/section/section.service';
 import { ScriptRehearsalService } from '../../../services/script-rehearsal.service';
-import { SimpleSession } from '../../../../../shared/dtos/session-dtos';
 
 enum Step {
   selectSection,
@@ -26,7 +25,6 @@ export class ScriptRehearsalSectionsComponent implements OnInit, OnDestroy {
   script: SimpleScript = null;
   sections: SimpleSection[];
   curStep: Step = Step.selectSection;
-  markedSection: SimpleSection = null;
   readonly steps = Step;
   private $destroy = new Subject<void>();
 
@@ -46,7 +44,6 @@ export class ScriptRehearsalSectionsComponent implements OnInit, OnDestroy {
       this.scriptService.getOne(id).subscribe({
         next: (script) => {
           this.scriptViewerService.setScript(script);
-          this.getLoading = false;
         },
         error: (err) => {
           this.toastService.showError(err);
@@ -60,18 +57,17 @@ export class ScriptRehearsalSectionsComponent implements OnInit, OnDestroy {
       .subscribe((script) => {
         this.script = script;
         if (this.script) {
-          this.sectionService
-            .getAll(this.script?.getId())
-            .subscribe((sections) => {
+          this.sectionService.getAll(this.script?.getId()).subscribe({
+            next: (sections) => {
               this.sections = sections;
-            });
+              this.getLoading = false;
+            },
+            error: (err) => {
+              this.toastService.showError(err);
+              this.router.navigateByUrl('/scripts');
+            }
+          });
         }
-      });
-
-    this.scriptViewerService.$markedSection
-      .pipe(takeUntil(this.$destroy))
-      .subscribe((markedSection) => {
-        this.markedSection = markedSection?.section;
       });
   }
 
@@ -92,19 +88,6 @@ export class ScriptRehearsalSectionsComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.$destroy.next();
     this.$destroy.complete();
-  }
-
-  startRehearsal(): void {
-    this.scriptRehearsalService.setSession(
-      new SimpleSession(
-        null,
-        this.markedSection.startLine,
-        this.markedSection.endLine,
-        this.markedSection.startLine,
-        this.script.roles[0]
-      )
-    );
-    this.router.navigateByUrl(`/scripts/${this.script?.getId()}/rehearse`);
   }
 
   backToOverview(): void {

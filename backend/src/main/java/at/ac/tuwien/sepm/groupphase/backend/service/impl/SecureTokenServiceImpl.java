@@ -59,6 +59,6 @@ public class SecureTokenServiceImpl implements SecureTokenService {
     @Override
     @Transactional
     public void removeToken(String token) {
-        secureTokenRepository.removeByToken(token);
+        secureTokenRepository.deleteByToken(token);
     }
 }

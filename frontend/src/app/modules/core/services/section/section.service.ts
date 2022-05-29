@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Globals } from '../../global/globals';
-import { Observable, of } from 'rxjs';
+import { map, Observable, of } from 'rxjs';
 import { SimpleSection } from '../../../shared/dtos/section-dtos';
 import { randomDelay } from '../../../shared/functions/random-delay';
 
@@ -37,18 +37,18 @@ export class SectionService {
    * @return observable list of sections
    */
   getAll(scriptId: number): Observable<SimpleSection[]> {
-    return of([
+    /*return of([
       new SimpleSection('Kapitel 1', 3, 40),
       new SimpleSection('Kapitel 2', 60, 98),
       new SimpleSection('Kapitel 3', 40, 45)
-    ]).pipe(randomDelay());
-    /*return this.http
+    ]).pipe(randomDelay());*/
+    return this.http
       .get<SimpleSection[]>(this.baseUri)
       .pipe(
         map((sections) =>
           sections.map((s) => new SimpleSection(s.name, s.startLine, s.endLine))
         )
-      );*/
+      );
   }
 
   /**

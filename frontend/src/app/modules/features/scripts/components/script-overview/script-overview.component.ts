@@ -34,14 +34,8 @@ export class ScriptOverviewComponent implements OnInit {
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
       const id = +params.get('id');
-      const handleNotFound = (err) => {
-        this.toastService.showError(err);
-        this.router.navigateByUrl('/scripts');
-        this.getLoading = false;
-      };
       this.scriptService.getOne(id).subscribe({
         next: (script) => {
-          console.log(script);
           this.script = script;
           this.members = [];
           this.members.push(script.owner);
@@ -49,7 +43,11 @@ export class ScriptOverviewComponent implements OnInit {
           this.selectedRole = this.script.roles[0];
           this.getLoading = false;
         },
-        error: (err) => handleNotFound(err)
+        error: (err) => {
+          this.toastService.showError(err);
+          this.router.navigateByUrl('/scripts');
+          this.getLoading = false;
+        }
       });
     });
   }
