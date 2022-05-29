@@ -22,6 +22,7 @@ import at.ac.tuwien.sepm.groupphase.backend.testhelpers.ScriptTestHelper;
 import at.ac.tuwien.sepm.groupphase.backend.testhelpers.UserTestHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -149,6 +150,7 @@ class ScriptEndpointIntegrationTest {
         assertEquals(Math.floorDiv(ScriptDataGenerator.NUMBER_OF_SCRIPTS_TO_GENERATE, UserDataGenerator.NUMBER_OF_USERS_TO_GENERATE) + 1 + 1, scriptPreviewDtoList.size());
     }
 
+    @Disabled
     @Test
     @DirtiesContext
     @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
