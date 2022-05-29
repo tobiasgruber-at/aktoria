@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
-import { SimpleSession } from '../../../shared/dtos/session-dtos';
-import { DetailedScript, Role } from '../../../shared/dtos/script-dtos';
-import { BehaviorSubject, Observable } from 'rxjs';
+import {Injectable} from '@angular/core';
+import {SimpleSession} from '../../../shared/dtos/session-dtos';
+import {DetailedScript, Role} from '../../../shared/dtos/script-dtos';
+import {BehaviorSubject, Observable} from 'rxjs';
 
 @Injectable()
 export class ScriptRehearsalService {

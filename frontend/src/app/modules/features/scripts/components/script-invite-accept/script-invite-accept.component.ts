@@ -1,10 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {FormBuilder, Validators} from '@angular/forms';
-import {ScriptService} from '../../../../core/services/script/script.service';
-import {ToastService} from '../../../../core/services/toast/toast.service';
-import {Theme} from '../../../../shared/enums/theme.enum';
-import {FormBase} from '../../../../shared/classes/form-base';
+import { ActivatedRoute, Router } from '@angular/router';
+import { FormBuilder } from '@angular/forms';
+import { ScriptService } from '../../../../core/services/script/script.service';
 
 @Component({
   selector: 'app-script-invite-accept',
@@ -12,7 +9,6 @@ import {FormBase} from '../../../../shared/classes/form-base';
   styleUrls: ['./script-invite-accept.component.scss']
 })
 export class ScriptInviteAcceptComponent implements OnInit {
-
   scriptId: string;
   token: string;
   successful: boolean = null;
@@ -21,9 +17,8 @@ export class ScriptInviteAcceptComponent implements OnInit {
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
     private scriptService: ScriptService,
-    private router: Router,
-  ) {
-  }
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.scriptId = this.route.snapshot.paramMap.get('id');

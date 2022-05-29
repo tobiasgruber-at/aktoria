@@ -41,9 +41,9 @@
             </button>
             <div ngbDropdownMenu>
               <button
+                *ngIf="isOwner()"
                 ngbDropdownItem
                 routerLink="/scripts/{{ script?.id }}/invite"
-                *ngIf="isOwner()"
               >
                 Mitglied einladen
               </button>
@@ -61,8 +61,8 @@
                 Bearbeiten
               </button>
               <button (click)="openModal(deleteModal)"
-                ngbDropdownItem
-                *ngIf="isOwner()"
+                      *ngIf="isOwner()"
+                      ngbDropdownItem
               >
                 Löschen
               </button>
@@ -73,8 +73,8 @@
           </div>
         </div>
         <app-script-members-list
-          [members] = members
-          [isOwner] = isOwner()
+          [isOwner]=isOwner()
+          [members]=members
         ></app-script-members-list>
       </div>
     </div>
@@ -94,7 +94,7 @@
       [closeable]="false"
       class="mb-1"
       type="danger"
-      >{{ this.deleteError }}</app-alert
+    >{{ this.deleteError }}</app-alert
     >
     Sicher, dass du
     <i>{{ script?.name }} </i>

@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { ScriptEditComponent } from './script-edit.component';
+import {ScriptEditComponent} from './script-edit.component';
 
 describe('ScriptUploadPreviewComponent', () => {
   let component: ScriptEditComponent;

@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { ScriptViewerComponent } from './script-viewer.component';
+import {ScriptViewerComponent} from './script-viewer.component';
 
 describe('ScriptPlainComponent', () => {
   let component: ScriptViewerComponent;

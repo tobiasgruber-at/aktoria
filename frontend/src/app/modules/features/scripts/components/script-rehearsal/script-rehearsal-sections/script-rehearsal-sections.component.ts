@@ -1,16 +1,13 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { SimpleScript } from '../../../../../shared/dtos/script-dtos';
-import {
-  IsMarkingSection,
-  ScriptViewerService
-} from '../../../services/script-viewer.service';
-import { ScriptService } from '../../../../../core/services/script/script.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { SimpleSection } from '../../../../../shared/dtos/section-dtos';
-import { FormBase } from '../../../../../shared/classes/form-base';
-import { ToastService } from '../../../../../core/services/toast/toast.service';
-import { FormBuilder, Validators } from '@angular/forms';
-import { Subject, takeUntil } from 'rxjs';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {SimpleScript} from '../../../../../shared/dtos/script-dtos';
+import {IsMarkingSection, ScriptViewerService} from '../../../services/script-viewer.service';
+import {ScriptService} from '../../../../../core/services/script/script.service';
+import {ActivatedRoute, Router} from '@angular/router';
+import {SimpleSection} from '../../../../../shared/dtos/section-dtos';
+import {FormBase} from '../../../../../shared/classes/form-base';
+import {ToastService} from '../../../../../core/services/toast/toast.service';
+import {FormBuilder, Validators} from '@angular/forms';
+import {Subject, takeUntil} from 'rxjs';
 
 enum Step {
   selectSection,

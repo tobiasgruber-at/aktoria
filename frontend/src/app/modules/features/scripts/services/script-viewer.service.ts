@@ -1,6 +1,6 @@
-import { Role, SimpleScript } from '../../../shared/dtos/script-dtos';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { SimpleSection } from '../../../shared/dtos/section-dtos';
+import {Role, SimpleScript} from '../../../shared/dtos/script-dtos';
+import {BehaviorSubject, Observable} from 'rxjs';
+import {SimpleSection} from '../../../shared/dtos/section-dtos';
 
 export interface MarkedSection {
   section: SimpleSection;

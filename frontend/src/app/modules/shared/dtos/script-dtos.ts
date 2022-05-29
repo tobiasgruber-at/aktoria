@@ -1,7 +1,8 @@
-import { SimpleUser } from './user-dtos';
+import {SimpleUser} from './user-dtos';
 
 export class UploadScript {
-  constructor(public readonly file: File) {}
+  constructor(public readonly file: File) {
+  }
 }
 
 export class SimpleScript {
@@ -11,7 +12,8 @@ export class SimpleScript {
     public pages: Page[],
     public roles: Role[],
     public name: string
-  ) {}
+  ) {
+  }
 
   getId(): number {
     return null;
@@ -28,7 +30,8 @@ export class SimpleScript {
 }
 
 export class ScriptPreview {
-  constructor(public readonly id: number, public readonly name: string) {}
+  constructor(public readonly id: number, public readonly name: string) {
+  }
 }
 
 export class DetailedScript extends SimpleScript {
@@ -69,7 +72,8 @@ export class UpdateLine {
 }
 
 export class Role {
-  constructor(public id: number, public name: string, public color: string) {}
+  constructor(public id: number, public name: string, public color: string) {
+  }
 }
 
 export class MergeRoles {

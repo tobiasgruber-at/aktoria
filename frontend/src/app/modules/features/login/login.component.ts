@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { AuthRequest } from '../../shared/dtos/auth-request';
-import { ToastService } from '../../core/services/toast/toast.service';
-import { FormBase } from '../../shared/classes/form-base';
-import { AuthService } from '../../core/services/auth/auth-service';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, Validators} from '@angular/forms';
+import {ActivatedRoute, Router} from '@angular/router';
+import {AuthRequest} from '../../shared/dtos/auth-request';
+import {ToastService} from '../../core/services/toast/toast.service';
+import {FormBase} from '../../shared/classes/form-base';
+import {AuthService} from '../../core/services/auth/auth-service';
 
 @Component({
   selector: 'app-login',
@@ -38,7 +38,7 @@ export class LoginComponent extends FormBase implements OnInit {
    * If the authentication was successfully, the user will be forwarded to the message page
    */
   protected processSubmit(): void {
-    const { email, password } = this.form.value;
+    const {email, password} = this.form.value;
     console.log('Try to authenticate user: ' + email);
     this.authService.loginUser(new AuthRequest(email, password)).subscribe({
       next: () => {

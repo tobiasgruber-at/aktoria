@@ -1,11 +1,4 @@
-import {
-  animate,
-  AnimationTriggerMetadata,
-  state,
-  style,
-  transition,
-  trigger
-} from '@angular/animations';
+import {animate, AnimationTriggerMetadata, state, style, transition, trigger} from '@angular/animations';
 
 export const voidStyles: { [property: string]: string | number } = {
   opacity: 0,

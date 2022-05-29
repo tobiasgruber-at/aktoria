@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { ScriptReadComponent } from './script-read.component';
+import {ScriptReadComponent} from './script-read.component';
 
 describe('ScriptReadComponent', () => {
   let component: ScriptReadComponent;
@@ -8,9 +8,9 @@ describe('ScriptReadComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ScriptReadComponent ]
+      declarations: [ScriptReadComponent]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {

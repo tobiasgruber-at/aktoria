@@ -1,21 +1,14 @@
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  OnDestroy,
-  OnInit,
-  ViewChild
-} from '@angular/core';
-import { Subject, takeUntil } from 'rxjs';
-import { ScriptService } from '../../../../core/services/script/script.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ToastService } from '../../../../core/services/toast/toast.service';
-import { Theme } from '../../../../shared/enums/theme.enum';
-import { FormBase } from '../../../../shared/classes/form-base';
-import { FormBuilder, Validators } from '@angular/forms';
-import { ScriptViewerService } from '../../services/script-viewer.service';
-import { SimpleScript } from '../../../../shared/dtos/script-dtos';
-import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Subject, takeUntil} from 'rxjs';
+import {ScriptService} from '../../../../core/services/script/script.service';
+import {ActivatedRoute, Router} from '@angular/router';
+import {ToastService} from '../../../../core/services/toast/toast.service';
+import {Theme} from '../../../../shared/enums/theme.enum';
+import {FormBase} from '../../../../shared/classes/form-base';
+import {FormBuilder, Validators} from '@angular/forms';
+import {ScriptViewerService} from '../../services/script-viewer.service';
+import {SimpleScript} from '../../../../shared/dtos/script-dtos';
+import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-edit-review',
@@ -64,7 +57,7 @@ export class ScriptEditComponent
   }
 
   openModal(modalRef): void {
-    this.modalService.open(modalRef, { centered: true });
+    this.modalService.open(modalRef, {centered: true});
   }
 
   cancelUpload(modal: NgbActiveModal): void {
@@ -88,7 +81,7 @@ export class ScriptEditComponent
   }
 
   protected processSubmit(): void {
-    const { scriptName } = this.form.value;
+    const {scriptName} = this.form.value;
     const script = {
       ...this.script,
       name: scriptName

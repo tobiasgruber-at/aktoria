@@ -1,11 +1,11 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ScriptRehearsalService } from '../../services/script-rehearsal.service';
-import { ActivatedRoute } from '@angular/router';
-import { ScriptService } from '../../../../core/services/script/script.service';
-import { DetailedScript } from '../../../../shared/dtos/script-dtos';
-import { SimpleSession } from '../../../../shared/dtos/session-dtos';
-import { Subject, takeUntil } from 'rxjs';
-import { lineAppearAnimations } from '../../animations/rehearsal-line.animations';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {ScriptRehearsalService} from '../../services/script-rehearsal.service';
+import {ActivatedRoute} from '@angular/router';
+import {ScriptService} from '../../../../core/services/script/script.service';
+import {DetailedScript} from '../../../../shared/dtos/script-dtos';
+import {SimpleSession} from '../../../../shared/dtos/session-dtos';
+import {Subject, takeUntil} from 'rxjs';
+import {lineAppearAnimations} from '../../animations/rehearsal-line.animations';
 
 @Component({
   selector: 'app-script-rehearsal',
@@ -24,7 +24,8 @@ export class ScriptRehearsalComponent implements OnInit, OnDestroy {
     public scriptRehearsalService: ScriptRehearsalService,
     private route: ActivatedRoute,
     private scriptService: ScriptService
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {

@@ -1,13 +1,9 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, map, Observable, of } from 'rxjs';
-import { Globals } from '../../global/globals';
-import {
-  DetailedScript,
-  ScriptPreview,
-  SimpleScript
-} from '../../../shared/dtos/script-dtos';
-import { tap } from 'rxjs/operators';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {BehaviorSubject, map, Observable, of} from 'rxjs';
+import {Globals} from '../../global/globals';
+import {DetailedScript, ScriptPreview, SimpleScript} from '../../../shared/dtos/script-dtos';
+import {tap} from 'rxjs/operators';
 import {AuthService} from '../auth/auth-service';
 
 @Injectable({
@@ -22,7 +18,8 @@ export class ScriptService {
   private scriptsSubject = new BehaviorSubject<ScriptPreview[]>([]);
   private fullyLoadedScripts: DetailedScript[] = [];
 
-  constructor(private http: HttpClient, private globals: Globals, private authService: AuthService) {}
+  constructor(private http: HttpClient, private globals: Globals, private authService: AuthService) {
+  }
 
   get $stagedScript(): Observable<SimpleScript> {
     const cachedScript = localStorage.getItem('stagedScript');
@@ -80,9 +77,9 @@ export class ScriptService {
     return this.scripts?.length > 0
       ? of(this.scripts)
       : this.http.get<ScriptPreview[]>(this.baseUri).pipe(
-          map((scripts) => scripts.map((s) => new ScriptPreview(s.id, s.name))),
-          tap((scripts) => this.setScripts(scripts))
-        );
+        map((scripts) => scripts.map((s) => new ScriptPreview(s.id, s.name))),
+        tap((scripts) => this.setScripts(scripts))
+      );
   }
 
   /**
@@ -170,7 +167,7 @@ export class ScriptService {
       this.baseUri + '/' + scriptId + '/inviteLink',
       null,
       // @ts-ignore
-      { responseType: 'text' }
+      {responseType: 'text'}
     );
   }
 

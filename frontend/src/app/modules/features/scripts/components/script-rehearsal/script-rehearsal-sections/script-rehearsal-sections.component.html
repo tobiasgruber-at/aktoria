@@ -30,10 +30,10 @@
         />
         <app-form-errors>
           <app-form-error *ngIf="fieldHasErrors('sectionName', 'required')"
-            >Bitte gib eine Bezeichnung an.
+          >Bitte gib eine Bezeichnung an.
           </app-form-error>
           <app-form-error *ngIf="fieldHasErrors('sectionName', 'maxlength')"
-            >Bezeichnung zu lange.
+          >Bezeichnung zu lange.
           </app-form-error>
         </app-form-errors>
       </div>
@@ -64,7 +64,7 @@
               [class]="
                 isMarkingSection === 'end' ? 'text-primary' : 'text-secondary'
               "
-              >wähle eine Endzeile</strong
+            >wähle eine Endzeile</strong
             >
             aus.
           </ng-container>
