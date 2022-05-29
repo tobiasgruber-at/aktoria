@@ -50,7 +50,6 @@ export class ScriptService {
    */
   getOne(id: number): Observable<DetailedScript> {
     const loadedScript = this.fullyLoadedScripts.find((f) => f.id === id);
-    console.log(loadedScript);
     const returnValue = loadedScript
       ? of(loadedScript)
       : this.http.get<DetailedScript>(`${this.baseUri}/${id}`).pipe(
@@ -69,7 +68,6 @@ export class ScriptService {
             this.fullyLoadedScripts.push(script);
           })
         );
-    console.log(returnValue);
     return returnValue;
   }
 

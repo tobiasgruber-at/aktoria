@@ -12,7 +12,6 @@ import { ToastService } from '../../../../core/services/toast/toast.service';
   selector: 'app-script-rehearsal',
   templateUrl: './script-rehearsal.component.html',
   styleUrls: ['./script-rehearsal.component.scss'],
-  providers: [ScriptRehearsalService],
   animations: [lineAppearAnimations]
 })
 export class ScriptRehearsalComponent implements OnInit, OnDestroy {
