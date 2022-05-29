@@ -1,8 +1,5 @@
 package at.ac.tuwien.sepm.groupphase.backend.endpoint.dto;
 
-import at.ac.tuwien.sepm.groupphase.backend.entity.Line;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Role;
-import at.ac.tuwien.sepm.groupphase.backend.entity.Section;
 import at.ac.tuwien.sepm.groupphase.backend.enums.AssessmentType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
