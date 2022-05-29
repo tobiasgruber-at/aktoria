@@ -153,7 +153,7 @@ class ScriptEndpointIntegrationTest {
     @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "1" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "1", roles = { Role.verified })
     void getScriptPreviews() {
         List<ScriptPreviewDto> scriptPreviewDtoList = scriptService.findAllPreviews().toList();
-        assertEquals(new ScriptPreviewDto(1L, ScriptDataGenerator.TEST_SCRIPT_NAME + " 1"), scriptPreviewDtoList.get(0));
+        assertEquals(new ScriptPreviewDto(1L, ScriptDataGenerator.TEST_SCRIPT_NAME + " 1", true), scriptPreviewDtoList.get(0));
         assertEquals(Math.floorDiv(ScriptDataGenerator.NUMBER_OF_SCRIPTS_TO_GENERATE, UserDataGenerator.NUMBER_OF_USERS_TO_GENERATE) + 1, scriptPreviewDtoList.size());
     }
 
