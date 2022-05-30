@@ -27,13 +27,13 @@ export class SessionListItemComponent implements OnInit {
 
   get startLinePercentage(): number {
     return this.script && this.section
-      ? (this.section.startLine / this.script.getLastLineIdx()) * 100
+      ? (this.section.startLine.index / this.script.getLastLineIdx()) * 100
       : 0;
   }
 
   get endLinePercentage(): number {
     return this.script && this.section
-      ? (this.section.endLine / this.script?.getLastLineIdx()) * 100
+      ? (this.section.endLine.index / this.script?.getLastLineIdx()) * 100
       : 0;
   }
 
