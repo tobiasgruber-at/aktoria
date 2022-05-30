@@ -16,6 +16,7 @@ import { BackButtonComponent } from './components/back-button/back-button.compon
 import { ControlsComponent } from './components/controls/controls.component';
 import { ControlsItemComponent } from './components/controls/controls-item/controls-item.component';
 
+import { SectionComponent } from './components/section/section.component';
 const icons = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   PersonCircle,
@@ -40,7 +41,9 @@ const sharedDeclarations = [
   ModalComponent,
   BackButtonComponent,
   ControlsComponent,
-  ControlsItemComponent
+  ControlsItemComponent,
+  ModalComponent,
+  SectionComponent
 ];
 const sharedImports = [
   CommonModule,

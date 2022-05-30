@@ -1,0 +1,58 @@
+<div *ngIf="section">
+  <div (click)="openModal(content)" role="button">
+    <div [class.bg-light]="true" class="card">
+      <div class="d-flex align-items-center justify-content-center h-100 p-3">
+        <img
+          [alt]="section.name + ' (' + startDate + ')'"
+          [style.opacity]="0.1"
+          class="card-img"
+          src="../../../../../../assets/illustrations/study.svg"
+        />
+      </div>
+      <div class="card-img-overlay">
+        <h5 class="card-title text-truncate">
+          {{ section.name }} ({{ startDate }})
+        </h5>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #content let-modal>
+    <app-modal
+      (confirm)="modal.dismiss()"
+      (decline)="modal.dismiss()"
+      [showDecline]="false"
+      [title]="script.name + ': ' + section.name"
+      confirmBtnLabel="Schließen"
+    >
+      <p>
+        Du hast diesen Abschnitt am <strong>{{ startDate }}</strong> erstellt.
+      </p>
+      <div *ngIf="session.role">
+        <p>
+          Du hast die Rolle <strong>{{ session.role.name }}</strong> geübt.
+        </p>
+      </div>
+      <div *ngIf="session.coverage">
+        <p>
+          <strong>{{ session.coverage * 100 }}%</strong> des gesprochenen Textes
+          wurden erkannt.
+        </p>
+      </div>
+      <div *ngIf="session.selfAssessment">
+        <p>
+          So hast du dich dabei gefühlt:
+          <strong>{{ session.selfAssessment }}</strong>
+        </p>
+      </div>
+      <p>Position im Skript:</p>
+      <div class="section-span w-100 position-relative">
+        <div
+          [style.left.%]="startLinePercentage"
+          [style.right.%]="100 - endLinePercentage"
+          class="indicator"
+        ></div>
+      </div>
+    </app-modal>
+  </ng-template>
+</div>

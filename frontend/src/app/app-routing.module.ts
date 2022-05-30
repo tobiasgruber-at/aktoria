@@ -65,6 +65,14 @@ const routes: Routes = [
         './modules/features/password/restore-password/restore-password.module'
       ).then((m) => m.RestorePasswordModule)
   },
+  {
+    path: 'sessions',
+    canActivate: [VerifiedGuard],
+    loadChildren: () =>
+      import('./modules/features/past-sessions/past-sessions.module').then(
+        (m) => m.PastSessionsModule
+      )
+  },
   { path: '**', redirectTo: '' }
 ];
 

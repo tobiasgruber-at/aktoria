@@ -23,15 +23,19 @@ export class SectionService {
    * @return section the found section.
    */
   getOne(id: number): Observable<SimpleSection> {
-    return of(null);
-    /*return this.http
+    return this.http
       .get<SimpleSection>(`${this.baseUri}/${id}`)
       .pipe(
         map(
           (section) =>
-            new SimpleSection(section.name, section.startLine, section.endLine, s.id)
+            new SimpleSection(
+              section.name,
+              section.startLine,
+              section.endLine,
+              section.id
+            )
         )
-      );*/
+      );
   }
 
   /**

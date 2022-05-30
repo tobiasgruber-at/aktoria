@@ -8,7 +8,7 @@ import {
   SimpleScript
 } from '../../../shared/dtos/script-dtos';
 import { tap } from 'rxjs/operators';
-import {AuthService} from '../auth/auth-service';
+import { AuthService } from '../auth/auth-service';
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +22,11 @@ export class ScriptService {
   private scriptsSubject = new BehaviorSubject<ScriptPreview[]>([]);
   private fullyLoadedScripts: DetailedScript[] = [];
 
-  constructor(private http: HttpClient, private globals: Globals, private authService: AuthService) {}
+  constructor(
+    private http: HttpClient,
+    private globals: Globals,
+    private authService: AuthService
+  ) {}
 
   get $stagedScript(): Observable<SimpleScript> {
     const cachedScript = localStorage.getItem('stagedScript');
@@ -54,21 +58,21 @@ export class ScriptService {
     return loadedScript
       ? of(loadedScript)
       : this.http.get<DetailedScript>(`${this.baseUri}/${id}`).pipe(
-        map(
-          (script) =>
-            new DetailedScript(
-              script.id,
-              script.owner,
-              script.participants,
-              script.pages,
-              script.roles,
-              script.name
-            )
-        ),
-        tap((script) => {
-          this.fullyLoadedScripts.push(script);
-        })
-      );
+          map(
+            (script) =>
+              new DetailedScript(
+                script.id,
+                script.owner,
+                script.participants,
+                script.pages,
+                script.roles,
+                script.name
+              )
+          ),
+          tap((script) => {
+            this.fullyLoadedScripts.push(script);
+          })
+        );
   }
 
   /**
@@ -80,9 +84,35 @@ export class ScriptService {
     return this.scripts?.length > 0
       ? of(this.scripts)
       : this.http.get<ScriptPreview[]>(this.baseUri).pipe(
-          map((scripts) => scripts.map((s) => new ScriptPreview(s.id, s.name, s.owner))),
+          map((scripts) =>
+            scripts.map((s) => new ScriptPreview(s.id, s.name, s.owner))
+          ),
           tap((scripts) => this.setScripts(scripts))
         );
+  }
+
+  /**
+   * Gets the script of which a section is practiced in the session with the given ID.
+   *
+   * @param id the id of the session
+   * @return the script in which the section practiced in the session with the specified ID lies
+   */
+  getScriptBySession(id): Observable<DetailedScript> {
+    return this.http
+      .get<DetailedScript>(this.baseUri + '/session?id=' + id)
+      .pipe(
+        map(
+          (script) =>
+            new DetailedScript(
+              script.id,
+              script.owner,
+              script.participants,
+              script.pages,
+              script.roles,
+              script.name
+            )
+        )
+      );
   }
 
   /**
@@ -156,12 +186,17 @@ export class ScriptService {
 
   removeParticipant(scriptId, email: string): Observable<void> {
     if (email === this.authService.getEmail()) {
-      return this.http.delete<void>(this.baseUri + '/' + scriptId + '/participants/' + email)
+      return this.http
+        .delete<void>(this.baseUri + '/' + scriptId + '/participants/' + email)
         .pipe(
-          tap(() => this.setScripts(this.scripts.filter((s) => s.id !== scriptId)))
+          tap(() =>
+            this.setScripts(this.scripts.filter((s) => s.id !== scriptId))
+          )
         );
     } else {
-      return this.http.delete<void>(this.baseUri + '/' + scriptId + '/participants/' + email);
+      return this.http.delete<void>(
+        this.baseUri + '/' + scriptId + '/participants/' + email
+      );
     }
   }
 

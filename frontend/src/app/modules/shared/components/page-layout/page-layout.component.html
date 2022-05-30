@@ -17,6 +17,16 @@
           >Deine Skripte
           </a>
         </li>
+        <li class="nav-item">
+          <a
+            *ngIf="authService.isLoggedIn() && authService.isVerified()"
+            [routerLinkActiveOptions]="{ exact: true }"
+            class="nav-link"
+            routerLink="/sessions"
+            routerLinkActive="active"
+            >Lernsessions
+          </a>
+        </li>
       </ul>
       <div>
         <ng-container *ngIf="!authService.isLoggedIn(); else loggedIn">

@@ -16,4 +16,8 @@ export class RoleService {
   mergeRoles(changes: MergeRoles, scriptId: number): Observable<Role> {
     return this.http.patch<Role>(`${this.baseUri}/${scriptId}/roles`, changes);
   }
+
+  getRole(roleId: number, scriptId: number): Observable<Role> {
+    return this.http.get<Role>(`${this.baseUri}/${scriptId}/roles/${roleId}`);
+  }
 }

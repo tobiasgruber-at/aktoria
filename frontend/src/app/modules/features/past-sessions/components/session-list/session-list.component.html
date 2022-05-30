@@ -1,0 +1,7 @@
+<h1 class="display-3 mb-3">Vergangene Lerneinheiten</h1>
+<div class="mb-5 d-flex flex-wrap gap-4">
+  <app-session-list-item
+    *ngFor="let session of sessions"
+    [session]="session"
+  ></app-session-list-item>
+</div>
