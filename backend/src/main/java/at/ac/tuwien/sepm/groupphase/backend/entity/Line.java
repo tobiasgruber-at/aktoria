@@ -1,14 +1,17 @@
 package at.ac.tuwien.sepm.groupphase.backend.entity;
 
+import at.ac.tuwien.sepm.groupphase.backend.entity.listener.LineListener;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -18,6 +21,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PreRemove;
 import javax.persistence.Table;
 import java.util.Set;
 
@@ -33,6 +37,8 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Slf4j
+@EntityListeners(LineListener.class)
 public class Line {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -68,4 +74,9 @@ public class Line {
     @JoinTable(name = "spoken_by", joinColumns = @JoinColumn(name = "line_id"),
         inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> spokenBy;
+
+    @PreRemove
+    public void removeLine() {
+        log.info("delete line: " + id);
+    }
 }

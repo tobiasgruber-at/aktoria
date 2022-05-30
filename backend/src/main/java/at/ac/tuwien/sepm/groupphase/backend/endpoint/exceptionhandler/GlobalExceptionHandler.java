@@ -34,31 +34,31 @@ import java.util.stream.Collectors;
 @Slf4j
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(value = { NotFoundException.class })
+    @ExceptionHandler(value = {NotFoundException.class})
     protected ResponseEntity<Object> handleNotFoundException(RuntimeException e, WebRequest request) {
         log.error(e.getMessage(), e);
         return handleExceptionInternal(e, e.getMessage(), new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
 
-    @ExceptionHandler(value = { ConflictException.class })
+    @ExceptionHandler(value = {ConflictException.class})
     protected ResponseEntity<Object> handleConflictException(RuntimeException e, WebRequest request) {
         log.error(e.getMessage(), e);
         return handleExceptionInternal(e, e.getMessage(), new HttpHeaders(), HttpStatus.CONFLICT, request);
     }
 
-    @ExceptionHandler(value = { IllegalFileFormatException.class, UnprocessableEmailException.class, ValidationException.class, ServiceException.class })
+    @ExceptionHandler(value = {IllegalFileFormatException.class, UnprocessableEmailException.class, ValidationException.class, ServiceException.class})
     protected ResponseEntity<Object> handleUnprocessable(RuntimeException e, WebRequest request) {
         log.error(e.getMessage(), e);
         return handleExceptionInternal(e, e.getMessage(), new HttpHeaders(), HttpStatus.UNPROCESSABLE_ENTITY, request);
     }
 
-    @ExceptionHandler(value = { UnauthorizedException.class })
+    @ExceptionHandler(value = {UnauthorizedException.class})
     protected ResponseEntity<Object> handleUnauthorizedException(RuntimeException e, WebRequest request) {
         log.error(e.getMessage(), e);
         return handleExceptionInternal(e, e.getMessage(), new HttpHeaders(), HttpStatus.UNAUTHORIZED, request);
     }
 
-    @ExceptionHandler(value = { InvalidTokenException.class })
+    @ExceptionHandler(value = {InvalidTokenException.class})
     protected ResponseEntity<Object> handleInvalidTokenException(RuntimeException e, WebRequest request) {
         log.error(e.getMessage(), e);
         return handleExceptionInternal(e, "Invalid token", new HttpHeaders(), HttpStatus.UNPROCESSABLE_ENTITY, request);
