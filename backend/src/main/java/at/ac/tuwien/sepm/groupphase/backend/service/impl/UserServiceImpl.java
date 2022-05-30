@@ -16,6 +16,7 @@ import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.UnprocessableEmailException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
+import at.ac.tuwien.sepm.groupphase.backend.repository.ScriptRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.AuthorizationService;
 import at.ac.tuwien.sepm.groupphase.backend.service.MailSender;
@@ -53,6 +54,7 @@ public class UserServiceImpl implements UserService {
     private final MailSender mailSender;
     private final SecureTokenService secureTokenService;
     private final AuthorizationService authorizationService;
+    private final ScriptRepository scriptRepository;
 
     @Autowired
     public UserServiceImpl(
@@ -62,7 +64,8 @@ public class UserServiceImpl implements UserService {
         UserMapper userMapper,
         MailSender mailSender,
         SecureTokenService secureTokenService,
-        AuthorizationService authorizationService
+        AuthorizationService authorizationService,
+        ScriptRepository scriptRepository
     ) {
         this.userRepository = userRepository;
         this.userValidation = userValidation;
@@ -71,6 +74,7 @@ public class UserServiceImpl implements UserService {
         this.mailSender = mailSender;
         this.secureTokenService = secureTokenService;
         this.authorizationService = authorizationService;
+        this.scriptRepository = scriptRepository;
     }
 
     @Override

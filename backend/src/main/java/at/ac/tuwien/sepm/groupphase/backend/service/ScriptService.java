@@ -99,7 +99,6 @@ public interface ScriptService {
      */
     String inviteLink(Long scriptId);
 
-    void deleteParticipant(Long id, String email);
 
     /**
      * Returns a Script dto of a session.
@@ -108,4 +107,6 @@ public interface ScriptService {
      * @return a script
      */
     ScriptDto getBySessionId(Long id);
+
+    void deleteParticipant(Long scriptId, String email);
 }
