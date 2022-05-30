@@ -7,6 +7,7 @@ import { SimpleSession } from '../../../../shared/dtos/session-dtos';
 import { Subject, takeUntil } from 'rxjs';
 import { lineAppearAnimations } from '../../animations/rehearsal-line.animations';
 import { ToastService } from '../../../../core/services/toast/toast.service';
+import { Theme } from '../../../../shared/enums/theme.enum';
 
 @Component({
   selector: 'app-script-rehearsal',
@@ -47,6 +48,13 @@ export class ScriptRehearsalComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.$destroy))
       .subscribe((session) => {
         this.session = session;
+        if (!this.session) {
+          this.router.navigateByUrl('/scripts');
+          this.toastService.show({
+            message: 'Übungseinheit wurde unterbrochen.',
+            theme: Theme.danger
+          });
+        }
       });
     this.scriptRehearsalService.$script
       .pipe(takeUntil(this.$destroy))

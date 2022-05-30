@@ -21,10 +21,10 @@ export class RehearsalLineComponent implements OnInit, OnDestroy {
   @HostBinding('class')
   get classes(): string[] {
     const classes = [];
-    if (this.line.index === this.session.currentLine) {
+    if (this.line.index === this.session.currentLineIndex) {
       classes.push('is-active');
     }
-    if (this.line.roles.some((r) => r.name === this.session.role.name)) {
+    if (this.line.roles.some((r) => r.name === this.session.role?.name)) {
       classes.push('is-highlighted');
     }
     if (this.line.roles?.length < 1) {

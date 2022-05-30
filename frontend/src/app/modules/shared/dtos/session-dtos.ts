@@ -1,30 +1,39 @@
 import {Line, Role, SimpleScript} from './script-dtos';
+import { SimpleSection } from './section-dtos';
 
 export class SimpleSession {
   private lines: Line[];
+  private section: SimpleSection;
+  private script: SimpleScript;
 
   constructor(
     public id: number,
-    public start: number,
-    public end: number,
+    public start: Date,
+    public end: Date,
     public selfAssessment: AssessmentType,
     public deprecated: boolean,
     public coverage: number,
     public sectionId: number,
-    public currentLine: number,
+    public currentLineIndex: number,
     public role: Role
   ) {
   }
 
-  getLines(script: SimpleScript): Line[] {
-    if (!this.lines && script) {
+  /** Inits the session. Should be done once after session fetched. */
+  init(script: SimpleScript, section: SimpleSection): void {
+    this.section = section;
+    this.script = script;
+  }
+
+  getLines(): Line[] {
+    if (!this.lines && this.script && this.section) {
       this.lines = [];
-      pagesLoop: for (const page of script?.pages) {
+      pagesLoop: for (const page of this.script?.pages) {
         for (const line of page.lines) {
-          if (line.index > this.end) {
+          if (line.index > this.section.endLine.index) {
             break pagesLoop;
           }
-          if (line.index >= this.start && line.active) {
+          if (line.index >= this.section.startLine.index && line.active) {
             this.lines.push(line);
           }
         }
@@ -34,11 +43,11 @@ export class SimpleSession {
   }
 
   isAtStart(): boolean {
-    return this.currentLine === this.start;
+    return this.currentLineIndex === this.section?.startLine.index;
   }
 
   isAtEnd(): boolean {
-    return this.currentLine === this.end;
+    return this.currentLineIndex === this.section?.endLine.index;
   }
 }
 
@@ -47,4 +56,9 @@ export enum AssessmentType {
   good,
   needsWork,
   poor
+}
+
+export class CreateSession {
+  constructor(public sectionId: number, public roleId: number) {
+  }
 }

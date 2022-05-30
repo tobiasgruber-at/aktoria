@@ -6,12 +6,17 @@
     class="form d-flex flex-column flex-grow-1"
     role="sidebar"
   >
-    <h2 class="mb-4">
+    <h2 [class]="isUploading ? 'mb-4' : 'mb-0'">
       <ng-container *ngIf="!isUploading && script">
         <span class="truncate">{{ script?.name }}</span> bearbeiten
       </ng-container>
       <ng-container *ngIf="isUploading"> Skript hochladen</ng-container>
     </h2>
+    <app-back-button
+      (click)="backToOverview()"
+      *ngIf="!isUploading"
+      label="Zurück zur Übersicht"
+    ></app-back-button>
     <div *ngIf="isUploading" class="form-group mb-4">
       <label for="input-script-name">Bezeichnung</label>
       <input

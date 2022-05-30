@@ -10,9 +10,14 @@ import { ScriptViewerService } from '../../services/script-viewer.service';
 import { Subject, takeUntil } from 'rxjs';
 import { SimpleScript } from '../../../../shared/dtos/script-dtos';
 import { SimpleSection } from '../../../../shared/dtos/section-dtos';
-import { SimpleSession } from '../../../../shared/dtos/session-dtos';
-import { ScriptRehearsalService } from '../../services/script-rehearsal.service';
+import { CreateSession } from '../../../../shared/dtos/session-dtos';
+import {
+  ScriptRehearsalService,
+  ScriptSelectedRoleMapping
+} from '../../services/script-rehearsal.service';
 import { Router } from '@angular/router';
+import { SessionService } from '../../../../core/services/session/session.service';
+import { ToastService } from '../../../../core/services/toast/toast.service';
 
 @Component({
   selector: 'app-rehearsal-section',
@@ -25,23 +30,26 @@ export class RehearsalSectionComponent implements OnInit, OnDestroy {
   /** Whether this is just a create-new section button, or an existing session. */
   @Input() isCreate = false;
   script: SimpleScript = null;
+  private selectedRoles: ScriptSelectedRoleMapping = {};
   private $destroy = new Subject<void>();
 
   constructor(
     private scriptViewerService: ScriptViewerService,
     private scriptRehearsalService: ScriptRehearsalService,
-    private router: Router
+    private router: Router,
+    private toastService: ToastService,
+    private sessionService: SessionService
   ) {}
 
   get startLinePercentage(): number {
     return this.script && this.section
-      ? (this.section.startLine / this.script.getLastLineIdx()) * 100
+      ? (this.section.startLine.index / this.script.getLastLineIdx()) * 100
       : 0;
   }
 
   get endLinePercentage(): number {
     return this.script && this.section
-      ? (this.section.endLine / this.script?.getLastLineIdx()) * 100
+      ? (this.section.endLine.index / this.script?.getLastLineIdx()) * 100
       : 0;
   }
 
@@ -60,10 +68,14 @@ export class RehearsalSectionComponent implements OnInit, OnDestroy {
       .subscribe((script) => (this.script = script));
     this.scriptViewerService.$markedSection
       .pipe(takeUntil(this.$destroy))
-      .subscribe(
-        (markedSection) =>
-          (this.isActive = this.section === markedSection?.section)
-      );
+      .subscribe((markedSection) => {
+        this.isActive = this.section === markedSection?.section;
+      });
+    this.scriptRehearsalService.$selectedRole
+      .pipe(takeUntil(this.$destroy))
+      .subscribe((roles) => {
+        this.selectedRoles = roles;
+      });
   }
 
   ngOnDestroy() {
@@ -71,22 +83,22 @@ export class RehearsalSectionComponent implements OnInit, OnDestroy {
     this.$destroy.complete();
   }
 
+  /** Starts a new rehearsal with this section. */
   startRehearsal(): void {
-    //TODO: replace null with actual values
-    this.scriptRehearsalService.setSession(
-      new SimpleSession(
-        null,
-        this.section.startLine,
-        this.section.endLine,
-        null,
-        false,
-        null,
-        null,
-        this.section.startLine,
-        this.script.roles[0]
-      )
-    );
-    this.router.navigateByUrl(`/scripts/${this.script?.getId()}/rehearse`);
+    const session: CreateSession = {
+      sectionId: this.section.id,
+      roleId: this.selectedRoles?.[this.script.getId()]
+    };
+    this.sessionService.start(session).subscribe({
+      next: (createdSession) => {
+        createdSession.init(this.script, this.section);
+        this.scriptRehearsalService.setSession(createdSession);
+        this.router.navigateByUrl(`/scripts/${this.script?.getId()}/rehearse`);
+      },
+      error: (err) => {
+        this.toastService.showError(err);
+      }
+    });
   }
 
   @HostListener('click', ['$event'])

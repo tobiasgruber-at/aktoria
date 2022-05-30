@@ -2,14 +2,17 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Globals } from '../../global/globals';
 import { map, Observable, of } from 'rxjs';
-import { SimpleSection } from '../../../shared/dtos/section-dtos';
+import {
+  CreateSection,
+  SimpleSection
+} from '../../../shared/dtos/section-dtos';
 import { randomDelay } from '../../../shared/functions/random-delay';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SectionService {
-  private baseUri: string = this.globals.backendUri + '/scripts/sections';
+  private baseUri: string = this.globals.backendUri + '/sections';
 
   constructor(private http: HttpClient, private globals: Globals) {}
 
@@ -20,13 +23,13 @@ export class SectionService {
    * @return section the found section.
    */
   getOne(id: number): Observable<SimpleSection> {
-    return of(new SimpleSection('Kapitel 1', 3, 40)).pipe(randomDelay());
+    return of(null);
     /*return this.http
       .get<SimpleSection>(`${this.baseUri}/${id}`)
       .pipe(
         map(
           (section) =>
-            new SimpleSection(section.name, section.startLine, section.endLine)
+            new SimpleSection(section.name, section.startLine, section.endLine, s.id)
         )
       );*/
   }
@@ -37,16 +40,13 @@ export class SectionService {
    * @return observable list of sections
    */
   getAll(scriptId: number): Observable<SimpleSection[]> {
-    /*return of([
-      new SimpleSection('Kapitel 1', 3, 40),
-      new SimpleSection('Kapitel 2', 60, 98),
-      new SimpleSection('Kapitel 3', 40, 45)
-    ]).pipe(randomDelay());*/
     return this.http
-      .get<SimpleSection[]>(this.baseUri)
+      .get<SimpleSection[]>(this.baseUri, { params: { scriptId } })
       .pipe(
         map((sections) =>
-          sections.map((s) => new SimpleSection(s.name, s.startLine, s.endLine))
+          sections.map(
+            (s) => new SimpleSection(s.name, s.startLine, s.endLine, s.id)
+          )
         )
       );
   }
@@ -56,9 +56,8 @@ export class SectionService {
    *
    * @param section to be saved
    */
-  save(section: SimpleSection): Observable<SimpleSection> {
-    return of(section).pipe(randomDelay());
-    /*return this.http.post<DetailedScript>(this.baseUri, section);*/
+  save(section: CreateSection): Observable<SimpleSection> {
+    return this.http.post<SimpleSection>(this.baseUri, section);
     /*.pipe(tap((s: DetailedScript) => this.setScripts([...this.scripts, s])));*/
   }
 

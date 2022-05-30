@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  *
  * @author Luke Nemeskeri
  */
-@ActiveProfiles({ "test", "datagen" })
+@ActiveProfiles({"test", "datagen"})
 @SpringBootTest
 class RoleServiceUnitTest {
 
@@ -48,7 +48,7 @@ class RoleServiceUnitTest {
     @Test
     @DirtiesContext
     @DisplayName("mergeRoles")
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {Role.verified})
     void mergeRoles() {
         List<Long> rolesToMerge = new LinkedList<>(List.of(2L, 4L, 3L));
         List<Long> rolesToMergeFail = new LinkedList<>(List.of(7L, 4L, 3L));
@@ -67,7 +67,7 @@ class RoleServiceUnitTest {
     @Test
     @DirtiesContext
     @DisplayName("mergeRoles with only 1 role")
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {Role.verified})
     void mergeRolesIsNotNeeded() {
         List<Long> rolesToMerge = new LinkedList<>(List.of(5L));
         assertEquals(5L, roleService.mergeRoles(new MergeRolesDto(rolesToMerge, "MERGE"), 1L).getId());

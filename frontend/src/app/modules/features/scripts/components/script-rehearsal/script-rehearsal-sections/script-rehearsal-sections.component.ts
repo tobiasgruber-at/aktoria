@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { SimpleScript } from '../../../../../shared/dtos/script-dtos';
+import { Line, SimpleScript } from '../../../../../shared/dtos/script-dtos';
 import { ScriptViewerService } from '../../../services/script-viewer.service';
 import { ScriptService } from '../../../../../core/services/script/script.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -8,6 +8,7 @@ import { ToastService } from '../../../../../core/services/toast/toast.service';
 import { Subject, takeUntil } from 'rxjs';
 import { SectionService } from '../../../../../core/services/section/section.service';
 import { ScriptRehearsalService } from '../../../services/script-rehearsal.service';
+import { Theme } from '../../../../../shared/enums/theme.enum';
 
 enum Step {
   selectSection,
@@ -52,6 +53,18 @@ export class ScriptRehearsalSectionsComponent implements OnInit, OnDestroy {
       });
     });
 
+    this.scriptRehearsalService.$selectedRole
+      .pipe(takeUntil(this.$destroy))
+      .subscribe((roles) => {
+        if (Object.keys(roles).length === 0) {
+          this.router.navigateByUrl('/scripts');
+          this.toastService.show({
+            message: 'Keine Rolle ausgewählt',
+            theme: Theme.danger
+          });
+        }
+      });
+
     this.scriptViewerService.$script
       .pipe(takeUntil(this.$destroy))
       .subscribe((script) => {
@@ -76,7 +89,11 @@ export class ScriptRehearsalSectionsComponent implements OnInit, OnDestroy {
     if (this.curStep === Step.createSection) {
       this.scriptViewerService.setIsMarkingSection('start');
       this.scriptViewerService.setMarkedSection({
-        section: new SimpleSection(null, null, Infinity),
+        section: new SimpleSection(
+          null,
+          new Line(null, null, null, null, null, null),
+          new Line(Infinity, null, null, null, null, null)
+        ),
         scrollTo: false
       });
     } else if (this.curStep === Step.selectSection) {
