@@ -12,6 +12,9 @@ import {FormErrorComponent} from './components/form-errors/form-error/form-error
 import {FormErrorsComponent} from './components/form-errors/form-errors.component';
 import {ModalComponent} from './components/modal/modal.component';
 import {NgbCollapseModule, NgbDropdownModule, NgbTooltipModule} from '@ng-bootstrap/ng-bootstrap';
+import { BackButtonComponent } from './components/back-button/back-button.component';
+import { ControlsComponent } from './components/controls/controls.component';
+import { ControlsItemComponent } from './components/controls/controls-item/controls-item.component';
 
 const icons = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -34,7 +37,10 @@ const sharedDeclarations = [
   ButtonComponent,
   FormErrorComponent,
   FormErrorsComponent,
-  ModalComponent
+  ModalComponent,
+  BackButtonComponent,
+  ControlsComponent,
+  ControlsItemComponent
 ];
 const sharedImports = [
   CommonModule,

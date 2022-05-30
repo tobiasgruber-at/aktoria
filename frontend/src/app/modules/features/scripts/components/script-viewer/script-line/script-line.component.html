@@ -36,7 +36,7 @@
       </button>
       <button
         (click)="removeRoles()"
-        *ngIf="line.roles.length > 0"
+        *ngIf="line.roles?.length > 0"
         ngbDropdownItem
       >
         Als Instruktion markieren
@@ -53,10 +53,10 @@
     </ng-template>
   </div>
 </div>
-<div *ngIf="section?.startLine === line.index" class="marking start-line">
+<div *ngIf="section?.startLine.index === line.index" class="marking start-line">
   <span>{{ section?.name || 'Start' }}</span>
 </div>
-<div *ngIf="section?.endLine === line.index" class="marking end-line">
+<div *ngIf="section?.endLine.index === line.index" class="marking end-line">
   <span>Ende</span>
 </div>
 <!--

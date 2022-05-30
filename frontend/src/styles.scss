@@ -72,7 +72,8 @@ label {
   }
 }
 
-.no-select {
+.no-select,
+.tooltip {
   -webkit-touch-callout: none; /* iOS Safari */
   -webkit-user-select: none; /* Safari */
   -khtml-user-select: none; /* Konqueror HTML */
@@ -90,5 +91,20 @@ label {
   .tooltip-arrow::before {
     border-top-color: rgb(0 0 0 / 90%) !important;
     transform: translateY(1px);
+  }
+}
+
+app-controls-item {
+  img.icon,
+  svg {
+    height: 1.5rem;
+  }
+
+  bi {
+    color: black;
+
+    svg {
+      height: 1.8rem;
+    }
   }
 }
