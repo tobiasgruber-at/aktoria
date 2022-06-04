@@ -5,6 +5,11 @@ import {Subject, takeUntil} from 'rxjs';
 import {SimpleSection} from '../../../../../shared/dtos/section-dtos';
 import {HelpersService} from '../../../../../core/services/helpers/helpers.service';
 
+/**
+ * Page of a script within the script viewer.
+ *
+ * @see ScriptViewerComponent
+ */
 @Component({
   selector: 'app-script-page',
   templateUrl: './script-page.component.html',

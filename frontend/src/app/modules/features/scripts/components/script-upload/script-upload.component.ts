@@ -6,6 +6,7 @@ import {ToastService} from '../../../../core/services/toast/toast.service';
 import {ScriptService} from '../../../../core/services/script/script.service';
 import {appearAnimations} from '../../../../shared/animations/appear-animations';
 
+/** Script upload form. */
 @Component({
   selector: 'app-script-upload',
   templateUrl: './script-upload.component.html',
@@ -35,7 +36,7 @@ export class ScriptUploadComponent extends FormBase implements OnInit {
   }
 
   onFileChanged(file: File) {
-    this.form.patchValue({file});
+    this.form.patchValue({ file });
   }
 
   onFileRemoved(fileInputNode) {
@@ -44,7 +45,7 @@ export class ScriptUploadComponent extends FormBase implements OnInit {
   }
 
   protected processSubmit() {
-    const {file, startPage} = this.form.value;
+    const { file, startPage } = this.form.value;
     this.scriptService.parse(file, startPage).subscribe({
       next: (script) => {
         this.scriptService.setStagedScript(script);

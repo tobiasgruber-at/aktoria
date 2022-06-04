@@ -1,5 +1,12 @@
-import {animate, AnimationTriggerMetadata, state, style, transition, trigger} from '@angular/animations';
-import {voidStyles} from '../../../shared/animations/fixed-appear-animations';
+import {
+  animate,
+  AnimationTriggerMetadata,
+  state,
+  style,
+  transition,
+  trigger
+} from '@angular/animations';
+import { voidStyles } from '../../../shared/animations/fixed-appear-animations';
 
 const hiddenStyles: { [property: string]: string | number } = {
   opacity: 0,
@@ -10,7 +17,7 @@ const transitionDuration = 500;
 const transitionCurve = 'cubic-bezier(.42, 0, .09, 1)';
 const transitionDelay = 0;
 
-/** Animations, that an element fades out. */
+/** Animations, that an rehearsal line fades out. */
 export const lineAppearAnimations: AnimationTriggerMetadata = trigger(
   'lineAppear',
   [

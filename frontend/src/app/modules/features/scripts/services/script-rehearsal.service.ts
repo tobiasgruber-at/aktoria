@@ -15,19 +15,15 @@ const scriptSelectedRoleMappingLSKey = 'scriptSelectedRoleMapping';
  */
 @Injectable()
 export class ScriptRehearsalService {
-  private script: DetailedScript = null;
-  private scriptSubject = new BehaviorSubject<DetailedScript>(this.script);
-  private session: SimpleSession = null;
-  private sessionSubject = new BehaviorSubject<SimpleSession>(this.session);
-  private selectedRoles: ScriptSelectedRoleMapping = localStorage.getItem(
-    scriptSelectedRoleMappingLSKey
-  )
-    ? JSON.parse(localStorage.getItem(scriptSelectedRoleMappingLSKey))
-    : {};
+  private scriptSubject = new BehaviorSubject<DetailedScript>(null);
+  private sessionSubject = new BehaviorSubject<SimpleSession>(null);
   private selectedRoleSubject = new BehaviorSubject<ScriptSelectedRoleMapping>(
-    this.selectedRoles
+    localStorage.getItem(scriptSelectedRoleMappingLSKey)
+      ? JSON.parse(localStorage.getItem(scriptSelectedRoleMappingLSKey))
+      : {}
   );
 
+  /** @see script */
   get $script(): Observable<DetailedScript> {
     return this.scriptSubject.asObservable();
   }
@@ -39,33 +35,33 @@ export class ScriptRehearsalService {
   get $selectedRole(): Observable<Role> {
     return this.selectedRoleSubject.asObservable().pipe(
       map((scriptSelectedRoles) => {
-        if (!this.script) {
+        const script = this.scriptSubject.getValue();
+        if (!script) {
           return null;
         }
-        const selectedRoleId = scriptSelectedRoles[this.script?.getId()];
-        return this.script.roles.find((r) => r.id === selectedRoleId);
+        const selectedRoleId = scriptSelectedRoles[script?.getId()];
+        return script.roles.find((r) => r.id === selectedRoleId);
       })
     );
   }
 
   setScript(script: DetailedScript): void {
-    this.script = script;
-    this.scriptSubject.next(this.script);
+    this.scriptSubject.next(script);
     // notify roles, as $selectedRole can only be evaluated once the script is loaded
-    this.selectedRoleSubject.next(this.selectedRoles);
+    this.selectedRoleSubject.next(this.selectedRoleSubject.getValue());
   }
 
   setSession(session: SimpleSession): void {
-    this.session = session;
-    this.sessionSubject.next(this.session);
+    this.sessionSubject.next(session);
   }
 
   setSelectedRole(role: Role): void {
-    this.selectedRoles[this.script?.getId()] = role?.id;
-    this.selectedRoleSubject.next(this.selectedRoles);
+    const selectedRoles = this.selectedRoleSubject.getValue();
+    selectedRoles[this.scriptSubject.getValue()?.getId()] = role?.id;
+    this.selectedRoleSubject.next(selectedRoles);
     localStorage.setItem(
       scriptSelectedRoleMappingLSKey,
-      JSON.stringify(this.selectedRoles)
+      JSON.stringify(selectedRoles)
     );
   }
 }

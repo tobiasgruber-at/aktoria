@@ -1,25 +1,18 @@
-import {
-  Component,
-  ElementRef,
-  HostBinding,
-  HostListener,
-  Input,
-  OnDestroy,
-  OnInit,
-  ViewChild
-} from '@angular/core';
-import { Line, Role } from '../../../../../shared/dtos/script-dtos';
-import {
-  IsMarkingSection,
-  ScriptViewerService
-} from '../../../services/script-viewer.service';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Subject, takeUntil } from 'rxjs';
-import { LineService } from '../../../../../core/services/line/line.service';
-import { ToastService } from '../../../../../core/services/toast/toast.service';
-import { SimpleSection } from '../../../../../shared/dtos/section-dtos';
-import { appearAnimations } from '../../../../../shared/animations/appear-animations';
+import {Component, ElementRef, HostBinding, HostListener, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Line, Role} from '../../../../../shared/dtos/script-dtos';
+import {IsMarkingSection, ScriptViewerService} from '../../../services/script-viewer.service';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {Subject, takeUntil} from 'rxjs';
+import {LineService} from '../../../../../core/services/line/line.service';
+import {ToastService} from '../../../../../core/services/toast/toast.service';
+import {SimpleSection} from '../../../../../shared/dtos/section-dtos';
+import {appearAnimations} from '../../../../../shared/animations/appear-animations';
 
+/**
+ * Line of a script within the script viewer.
+ *
+ * @see ScriptViewerComponent
+ */
 @Component({
   selector: 'app-script-line',
   templateUrl: './script-line.component.html',

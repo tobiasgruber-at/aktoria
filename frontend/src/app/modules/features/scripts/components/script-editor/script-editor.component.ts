@@ -1,34 +1,29 @@
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  OnDestroy,
-  OnInit,
-  ViewChild
-} from '@angular/core';
-import { Subject, takeUntil } from 'rxjs';
-import { ScriptService } from '../../../../core/services/script/script.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ToastService } from '../../../../core/services/toast/toast.service';
-import { Theme } from '../../../../shared/enums/theme.enum';
-import { FormBase } from '../../../../shared/classes/form-base';
-import { FormBuilder, Validators } from '@angular/forms';
-import { ScriptViewerService } from '../../services/script-viewer.service';
-import { SimpleScript } from '../../../../shared/dtos/script-dtos';
-import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Subject, takeUntil} from 'rxjs';
+import {ScriptService} from '../../../../core/services/script/script.service';
+import {ActivatedRoute, Router} from '@angular/router';
+import {ToastService} from '../../../../core/services/toast/toast.service';
+import {Theme} from '../../../../shared/enums/theme.enum';
+import {FormBase} from '../../../../shared/classes/form-base';
+import {FormBuilder, Validators} from '@angular/forms';
+import {ScriptViewerService} from '../../services/script-viewer.service';
+import {SimpleScript} from '../../../../shared/dtos/script-dtos';
+import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
+/** Script editor, that renders the editable script viewer and a sidebar with general information. */
 @Component({
-  selector: 'app-edit-review',
-  templateUrl: './script-edit.component.html',
-  styleUrls: ['./script-edit.component.scss'],
+  selector: 'app-script-editor',
+  templateUrl: './script-editor.component.html',
+  styleUrls: ['./script-editor.component.scss'],
   providers: [ScriptViewerService]
 })
-export class ScriptEditComponent
+export class ScriptEditorComponent
   extends FormBase
   implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('tutorialModal') tutorialModal: ElementRef;
   getLoading = true;
   script: SimpleScript = null;
+  /** Whether the user is currently uploading a script. */
   isUploading = false;
   private $destroy = new Subject<void>();
 

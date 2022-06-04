@@ -2,6 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {ScriptService} from '../../../../core/services/script/script.service';
 import {ScriptPreview} from '../../../../shared/dtos/script-dtos';
 
+/** List of all scripts that this user participates in. */
 @Component({
   selector: 'app-script-list',
   templateUrl: './script-list.component.html',
@@ -12,8 +13,7 @@ export class ScriptListComponent implements OnInit {
   @Input() hasUploadButton = false;
   scriptPreviews: ScriptPreview[];
 
-  constructor(public scriptService: ScriptService) {
-  }
+  constructor(public scriptService: ScriptService) {}
 
   ngOnInit(): void {
     this.scriptService.getAll().subscribe({

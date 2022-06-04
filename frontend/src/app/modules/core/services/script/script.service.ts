@@ -15,8 +15,7 @@ import { AuthService } from '../auth/auth-service';
 })
 export class ScriptService {
   private baseUri: string = this.globals.backendUri + '/scripts';
-  /** Script that the user parsed, but is not saved yet. */
-  private stagedScript: SimpleScript = null;
+  /** Script that the user parsed, but that isn't saved yet. */
   private stagedScriptSubject = new BehaviorSubject<SimpleScript>(null);
   private scripts: ScriptPreview[] = [];
   private scriptsSubject = new BehaviorSubject<ScriptPreview[]>([]);
@@ -42,7 +41,6 @@ export class ScriptService {
 
   /** Sets the staged script and notifies the staged-script subject. */
   setStagedScript(script: SimpleScript): void {
-    this.stagedScript = script;
     localStorage.setItem('stagedScript', JSON.stringify(script));
     this.stagedScriptSubject.next(script);
   }
@@ -150,7 +148,7 @@ export class ScriptService {
   }
 
   /**
-   * Adds a new participant to the script
+   * Adds a new participant to the script.
    *
    * @param token token of invitation
    * @param scriptId id of the script
@@ -201,6 +199,7 @@ export class ScriptService {
     this.scriptsSubject.next(this.scripts);
   }
 
+  /** Maps a fetched script to a class. */
   private mapScriptInterfaceToClass(script: DetailedScript): DetailedScript {
     return new DetailedScript(
       script.id,

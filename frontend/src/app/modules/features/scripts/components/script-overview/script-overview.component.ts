@@ -1,15 +1,16 @@
-import { Component, OnDestroy, OnInit, TemplateRef } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ScriptService } from '../../../../core/services/script/script.service';
-import { DetailedScript, Role } from '../../../../shared/dtos/script-dtos';
-import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ToastService } from '../../../../core/services/toast/toast.service';
-import { Theme } from '../../../../shared/enums/theme.enum';
-import { SimpleUser } from '../../../../shared/dtos/user-dtos';
-import { AuthService } from '../../../../core/services/auth/auth-service';
-import { ScriptRehearsalService } from '../../services/script-rehearsal.service';
-import { Subject, takeUntil } from 'rxjs';
+import {Component, OnDestroy, OnInit, TemplateRef} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
+import {ScriptService} from '../../../../core/services/script/script.service';
+import {DetailedScript, Role} from '../../../../shared/dtos/script-dtos';
+import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {ToastService} from '../../../../core/services/toast/toast.service';
+import {Theme} from '../../../../shared/enums/theme.enum';
+import {SimpleUser} from '../../../../shared/dtos/user-dtos';
+import {AuthService} from '../../../../core/services/auth/auth-service';
+import {ScriptRehearsalService} from '../../services/script-rehearsal.service';
+import {Subject, takeUntil} from 'rxjs';
 
+/** Dashboard of the script, which includes general script information as well as all important actions (start rehersal, view, edit, ..). */
 @Component({
   selector: 'app-script-overview',
   templateUrl: './script-overview.component.html',

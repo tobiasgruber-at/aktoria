@@ -1,21 +1,15 @@
-import {
-  Component,
-  HostBinding,
-  HostListener,
-  Input,
-  OnDestroy,
-  OnInit
-} from '@angular/core';
-import { ScriptViewerService } from '../../services/script-viewer.service';
-import { Subject, takeUntil } from 'rxjs';
-import { Role, SimpleScript } from '../../../../shared/dtos/script-dtos';
-import { SimpleSection } from '../../../../shared/dtos/section-dtos';
-import { CreateSession } from '../../../../shared/dtos/session-dtos';
-import { ScriptRehearsalService } from '../../services/script-rehearsal.service';
-import { Router } from '@angular/router';
-import { SessionService } from '../../../../core/services/session/session.service';
-import { ToastService } from '../../../../core/services/toast/toast.service';
+import {Component, HostBinding, HostListener, Input, OnDestroy, OnInit} from '@angular/core';
+import {ScriptViewerService} from '../../services/script-viewer.service';
+import {Subject, takeUntil} from 'rxjs';
+import {Role, SimpleScript} from '../../../../shared/dtos/script-dtos';
+import {SimpleSection} from '../../../../shared/dtos/section-dtos';
+import {CreateSession} from '../../../../shared/dtos/session-dtos';
+import {ScriptRehearsalService} from '../../services/script-rehearsal.service';
+import {Router} from '@angular/router';
+import {SessionService} from '../../../../core/services/session/session.service';
+import {ToastService} from '../../../../core/services/toast/toast.service';
 
+/** Presents information of a rehearsal section. */
 @Component({
   selector: 'app-rehearsal-section',
   templateUrl: './rehearsal-section.component.html',
