@@ -21,6 +21,33 @@
       src="../../../../../../../assets/icons/forward.svg"
     />
   </app-controls-item>
+
+  <app-controls-item
+    (click)="paused = true"
+    ngbTooltip="Pause"
+    [class.disabled]="endSessionLoading"
+    *ngIf="!paused"
+  >
+    <img
+      alt="Pause"
+      class="icon"
+      src="../../../../../../../assets/icons/pause.svg"
+    />
+  </app-controls-item>
+
+  <app-controls-item
+    (click)="paused = false"
+    ngbTooltip="Abspielen"
+    [class.disabled]="endSessionLoading"
+    *ngIf="paused"
+  >
+    <img
+      alt="Pause"
+      class="icon"
+      src="../../../../../../../assets/icons/play.svg"
+    />
+  </app-controls-item>
+
   <app-controls-item
     (click)="openModal(stopSessionModal)"
     ngbTooltip="Beenden"

@@ -19,6 +19,8 @@ export class ScriptRehearsalComponent implements OnInit, OnDestroy {
   session: SimpleSession = null;
   script: DetailedScript = null;
   getLoading = true;
+  synth;
+  cancel: boolean;
   private $destroy = new Subject<void>();
 
   constructor(
@@ -30,6 +32,8 @@ export class ScriptRehearsalComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.synth = window.speechSynthesis;
+
     this.route.paramMap.subscribe((params) => {
       const id = +params.get('id');
       const handleNotFound = (err) => {
@@ -54,6 +58,8 @@ export class ScriptRehearsalComponent implements OnInit, OnDestroy {
             message: 'Übungseinheit wurde unterbrochen.',
             theme: Theme.danger
           });
+        } else {
+          this.readLine();
         }
       });
     this.scriptRehearsalService.$script
@@ -66,5 +72,38 @@ export class ScriptRehearsalComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.$destroy.next();
     this.$destroy.complete();
+    this.cancel = true;
+    this.synth.cancel();
+  }
+
+  readLine() {
+    this.cancel = true;
+    this.synth.cancel();
+
+    const lines = this.session.getLines();
+    let currentLine;
+
+    for (const line of lines) {
+      if (line.index === this.session.currentLineIndex) {
+        currentLine = line;
+        break;
+      }
+    }
+
+    if (!(currentLine.roles.some((r) => r.name === this.session.role?.name))) {
+      const utter = new SpeechSynthesisUtterance(currentLine.content);
+
+      utter.addEventListener('end', () => {
+        if (!this.cancel){
+          this.session.currentLineIndex++;
+          this.readLine();
+        }
+      });
+
+      setTimeout(() => {
+        this.cancel = false;
+        this.synth.speak(utter);
+      }, 10);
+    }
   }
 }

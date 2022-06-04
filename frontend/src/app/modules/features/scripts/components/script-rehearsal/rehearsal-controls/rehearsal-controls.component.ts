@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, TemplateRef} from '@angular/core';
+import {Component, EventEmitter, OnDestroy, OnInit, Output, TemplateRef} from '@angular/core';
 import {ScriptRehearsalService} from '../../../services/script-rehearsal.service';
 import {Subject, takeUntil} from 'rxjs';
 import {SimpleSession} from '../../../../../shared/dtos/session-dtos';
@@ -15,10 +15,12 @@ import { Theme } from '../../../../../shared/enums/theme.enum';
   styleUrls: ['./rehearsal-controls.component.scss']
 })
 export class RehearsalControlsComponent implements OnInit, OnDestroy {
+  @Output() readLine: EventEmitter<any> = new EventEmitter<any>();
   script: DetailedScript = null;
   session: SimpleSession = null;
   interactionDisabled = false;
   endSessionLoading = false;
+  paused: boolean;
   private $destroy = new Subject<void>();
 
   constructor(
@@ -64,6 +66,7 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
       this.session.currentLineIndex--;
     }
     this.scriptRehearsalService.setSession(this.session);
+    this.readLine.emit();
     setTimeout(() => {
       this.interactionDisabled = false;
     }, 300);
