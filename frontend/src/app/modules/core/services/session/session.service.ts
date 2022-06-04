@@ -24,22 +24,7 @@ export class SessionService {
   getOne(id: number): Observable<SimpleSession> {
     return this.http
       .get<SimpleSession>(this.baseUri)
-      .pipe(
-        map(
-          (session) =>
-            new SimpleSession(
-              session.id,
-              session.start,
-              session.end,
-              session.selfAssessment,
-              session.deprecated,
-              session.coverage,
-              session.sectionId,
-              session.currentLineIndex,
-              session.role
-            )
-        )
-      );
+      .pipe(map(this.mapSessionInterfaceToClass));
   }
 
   /**
@@ -50,24 +35,7 @@ export class SessionService {
   getAll(): Observable<SimpleSession[]> {
     return this.http
       .get<SimpleSession[]>(this.baseUri)
-      .pipe(
-        map((sessions) =>
-          sessions.map(
-            (s) =>
-              new SimpleSession(
-                s.id,
-                s.start,
-                s.end,
-                s.selfAssessment,
-                s.deprecated,
-                s.coverage,
-                s.sectionId,
-                s.currentLineIndex,
-                s.role
-              )
-          )
-        )
-      );
+      .pipe(map((sessions) => sessions.map(this.mapSessionInterfaceToClass)));
   }
 
   /**
@@ -78,43 +46,13 @@ export class SessionService {
   start(session: CreateSession): Observable<SimpleSession> {
     return this.http
       .post<SimpleSession>(this.baseUri, session)
-      .pipe(
-        map(
-          (s) =>
-            new SimpleSession(
-              s.id,
-              s.start,
-              s.end,
-              s.selfAssessment,
-              s.deprecated,
-              s.coverage,
-              s.sectionId,
-              s.currentLineIndex,
-              s.role
-            )
-        )
-      );
+      .pipe(map(this.mapSessionInterfaceToClass));
   }
 
   endSession(id: number): Observable<SimpleSession> {
     return this.http
       .post<SimpleSession>(`${this.baseUri}/${id}`, null)
-      .pipe(
-        map(
-          (s) =>
-            new SimpleSession(
-              s.id,
-              s.start,
-              s.end,
-              s.selfAssessment,
-              s.deprecated,
-              s.coverage,
-              s.sectionId,
-              s.currentLineIndex,
-              s.role
-            )
-        )
-      );
+      .pipe(map(this.mapSessionInterfaceToClass));
   }
 
   /**
@@ -125,5 +63,20 @@ export class SessionService {
   delete(id: number): Observable<void> {
     //TODO
     return null;
+  }
+
+  /** Maps a fetched session interface to a class. */
+  private mapSessionInterfaceToClass(session: SimpleSession): SimpleSession {
+    return new SimpleSession(
+      session.id,
+      session.start,
+      session.end,
+      session.selfAssessment,
+      session.deprecated,
+      session.coverage,
+      session.sectionId,
+      session.currentLineIndex,
+      session.role
+    );
   }
 }
