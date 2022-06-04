@@ -30,6 +30,7 @@ import {ScriptRehearsalSectionsComponent} from './components/script-rehearsal/sc
 import {ScriptRehearsalService} from './services/script-rehearsal.service';
 import {ScriptReadControlsComponent} from './components/script-read/script-read-controls/script-read-controls.component';
 import {SelectLineTextComponent} from './components/script-rehearsal/script-rehearsal-sections/rehearsal-section-create/select-line-text/select-line-text.component';
+import {VoiceRecordingService} from './services/voice-recording.service';
 
 /** Scripts module that consists of all script related parts (script viewer, rehearsal, dashboard, scripts list, ..). */
 @NgModule({
@@ -64,7 +65,7 @@ import {SelectLineTextComponent} from './components/script-rehearsal/script-rehe
     ScriptReadControlsComponent,
     SelectLineTextComponent
   ],
-  providers: [ScriptRehearsalService],
+  providers: [ScriptRehearsalService, VoiceRecordingService],
   imports: [SharedModule, ScriptsRoutingModule]
 })
 export class ScriptsModule {}

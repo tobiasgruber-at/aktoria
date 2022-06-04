@@ -23,6 +23,7 @@ export class ScriptRehearsalService {
       ? JSON.parse(localStorage.getItem(scriptSelectedRoleMappingLSKey))
       : {}
   );
+  private isRecordingVoiceSubject = new BehaviorSubject<boolean>(false);
 
   /** @see script */
   get $script(): Observable<DetailedScript> {
@@ -46,6 +47,10 @@ export class ScriptRehearsalService {
     );
   }
 
+  get $isRecordingVoice(): Observable<boolean> {
+    return this.isRecordingVoiceSubject.asObservable();
+  }
+
   setScript(script: DetailedScript): void {
     this.scriptSubject.next(script);
     // notify roles, as $selectedRole can only be evaluated once the script is loaded
@@ -64,5 +69,11 @@ export class ScriptRehearsalService {
       scriptSelectedRoleMappingLSKey,
       JSON.stringify(selectedRoles)
     );
+  }
+
+  setIsRecordingVoice(
+    isRecording: boolean = !this.isRecordingVoiceSubject.getValue()
+  ): void {
+    this.isRecordingVoiceSubject.next(isRecording);
   }
 }

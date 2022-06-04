@@ -58,6 +58,9 @@ export class Page {
 }
 
 export class Line {
+  public temporaryRecording: Blob = null;
+  public temporaryRecordingUrl: string = null;
+
   constructor(
     public index: number,
     public roles: Role[],

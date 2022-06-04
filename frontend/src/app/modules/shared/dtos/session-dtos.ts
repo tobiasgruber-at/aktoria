@@ -41,6 +41,22 @@ export class SimpleSession {
     return this.lines || [];
   }
 
+  getCurrentLine(): Line {
+    if (this.lines && this.script && this.section) {
+      pagesLoop: for (const page of this.script?.pages) {
+        for (const line of page.lines) {
+          if (line.index > this.section.endLine.index) {
+            break pagesLoop;
+          }
+          if (line.index === this.currentLineIndex) {
+            return line;
+          }
+        }
+      }
+    }
+    return null;
+  }
+
   isAtStart(): boolean {
     return this.currentLineIndex === this.section?.startLine.index;
   }
@@ -58,7 +74,8 @@ export enum AssessmentType {
 }
 
 export class CreateSession {
-  constructor(public sectionId: number, public roleId: number) {}
+  constructor(public sectionId: number, public roleId: number) {
+  }
 }
 
 export class UpdateSession {
@@ -66,5 +83,6 @@ export class UpdateSession {
     public deprecated?: boolean,
     public selfAssessment?: AssessmentType,
     public currentLineId?: number
-  ) {}
+  ) {
+  }
 }

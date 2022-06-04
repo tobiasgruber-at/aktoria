@@ -7,9 +7,12 @@ import { PageLayoutComponent } from './components/page-layout/page-layout.compon
 import { CardComponent } from './components/card/card.component';
 import { ButtonComponent } from './components/button/button.component';
 import {
+  ArrowLeft,
+  ArrowRight,
   CaretLeftFill,
   CaretRightFill,
   MicFill,
+  MicMuteFill,
   PersonCircle,
   PlayFill,
   ThreeDots,
@@ -43,7 +46,13 @@ const icons = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   XLg,
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  MicFill
+  MicFill,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  ArrowLeft,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  ArrowRight,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  MicMuteFill
 };
 const sharedDeclarations = [
   PageLayoutComponent,

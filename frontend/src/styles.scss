@@ -95,16 +95,19 @@ label {
 }
 
 app-controls-item {
-  img.icon,
-  svg {
+  img.icon {
     height: 1.5rem;
   }
 
   bi {
     color: black;
 
+    &.smaller {
+      transform: scale(0.9);
+    }
+
     svg {
-      height: 1.8rem;
+      width: 1.9rem;
     }
   }
 }

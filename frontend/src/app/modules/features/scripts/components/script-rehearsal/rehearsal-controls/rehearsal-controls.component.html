@@ -4,33 +4,38 @@
     [class.disabled]="session?.isAtStart() || endSessionLoading"
     ngbTooltip="Zurück"
   >
-    <img
-      alt="Zurück"
-      class="icon"
-      src="../../../../../../../assets/icons/backward.svg"
-    />
+    <bi name="arrow-left"></bi>
   </app-controls-item>
   <app-controls-item
     (click)="changeLine('next')"
     ngbTooltip="Weiter"
     [class.disabled]="endSessionLoading"
   >
-    <img
-      alt="Überspringen"
-      class="icon"
-      src="../../../../../../../assets/icons/forward.svg"
-    />
+    <bi name="arrow-right"></bi>
+  </app-controls-item>
+  <app-controls-item
+    *ngIf="voiceRecordingService.isSupported()"
+    [ngbTooltip]="
+      this.isRecordingVoice ? 'Aufzeichnung abbrechen' : 'Aufzeichnung starten'
+    "
+    [class.disabled]="endSessionLoading"
+    (click)="toggleRecording()"
+  >
+    <bi
+      *ngIf="this.isRecordingVoice; else notRecording"
+      class="smaller"
+      name="mic-fill"
+    ></bi>
+    <ng-template #notRecording>
+      <bi class="smaller" name="mic-mute-fill"></bi>
+    </ng-template>
   </app-controls-item>
   <app-controls-item
     (click)="openModal(stopSessionModal)"
     ngbTooltip="Beenden"
     [class.disabled]="endSessionLoading"
   >
-    <img
-      alt="Beenden"
-      class="icon"
-      src="../../../../../../../assets/icons/cross.svg"
-    />
+    <bi name="x-lg"></bi>
   </app-controls-item>
   <app-controls-item [class.disabled]="true || endSessionLoading">
     <bi name="three-dots"></bi>

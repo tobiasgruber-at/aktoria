@@ -8,6 +8,7 @@ import {DetailedScript} from '../../../../../shared/dtos/script-dtos';
 import {SessionService} from '../../../../../core/services/session/session.service';
 import {ToastService} from '../../../../../core/services/toast/toast.service';
 import {Theme} from '../../../../../shared/enums/theme.enum';
+import {VoiceRecordingService} from '../../../services/voice-recording.service';
 
 /** Control panel for a script rehearsal. */
 @Component({
@@ -20,6 +21,7 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
   session: SimpleSession = null;
   interactionDisabled = false;
   endSessionLoading = false;
+  isRecordingVoice = false;
   private $destroy = new Subject<void>();
 
   constructor(
@@ -27,6 +29,7 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
     private sessionService: SessionService,
     private modalService: NgbModal,
     private router: Router,
+    public voiceRecordingService: VoiceRecordingService,
     private toastService: ToastService
   ) {}
 
@@ -40,6 +43,11 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.$destroy))
       .subscribe((script) => {
         this.script = script;
+      });
+    this.scriptRehearsalService.$isRecordingVoice
+      .pipe(takeUntil(this.$destroy))
+      .subscribe((isRecording) => {
+        this.isRecordingVoice = isRecording;
       });
   }
 
@@ -82,6 +90,14 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
       message: 'Lerneinheit beendet.',
       theme: Theme.primary
     });
+  }
+
+  toggleRecording(): void {
+    if (!this.isRecordingVoice) {
+      this.voiceRecordingService.requestPermissions();
+      // TODO: handle catch
+    }
+    this.scriptRehearsalService.setIsRecordingVoice();
   }
 
   private endSession(): void {
