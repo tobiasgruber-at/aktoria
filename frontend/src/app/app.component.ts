@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { AuthService } from './modules/core/services/auth/auth-service';
+import { AuthService } from './modules/core/services/auth/auth.service';
 import { UserService } from './modules/core/services/user/user-service';
 import { Subject, takeUntil } from 'rxjs';
 import { ToastService } from './modules/core/services/toast/toast.service';

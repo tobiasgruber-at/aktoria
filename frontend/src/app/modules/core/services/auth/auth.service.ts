@@ -1,17 +1,18 @@
-import {Injectable} from '@angular/core';
-import {AuthRequest} from '../../../shared/dtos/auth-request';
-import {BehaviorSubject, Observable} from 'rxjs';
-import {HttpClient} from '@angular/common/http';
-import {tap} from 'rxjs/operators';
+import { Injectable } from '@angular/core';
+import { AuthRequest } from '../../../shared/dtos/auth-request';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { tap } from 'rxjs/operators';
 // @ts-ignore
 import jwt_decode from 'jwt-decode';
-import {Globals} from '../../global/globals';
-import {AuthService} from './auth-service';
-import {DecodedToken} from '../../../shared/interfaces/decoded-token';
-import {UserService} from '../user/user-service';
+import { Globals } from '../../global/globals';
+import { DecodedToken } from '../../../shared/interfaces/decoded-token';
+import { UserService } from '../user/user-service';
 
-@Injectable()
-export class AuthImplService extends AuthService {
+@Injectable({
+  providedIn: 'root'
+})
+export class AuthService {
   private readonly authBaseUri = this.globals.backendUri + '/authentication';
   /** LocalStorage key for the token */
   private readonly tokenLSKey = 'authToken';
@@ -21,18 +22,21 @@ export class AuthImplService extends AuthService {
     private httpClient: HttpClient,
     private globals: Globals,
     private userService: UserService
-  ) {
-    super();
-  }
+  ) {}
 
+  /** @return Observable that notifies on login-state changes. */
   $loginChanges(): Observable<boolean> {
     return this.loginChangesSubject.asObservable();
   }
 
-  /** Logs the user in and stores the jwt on success. */
+  /**
+   * Logs the user in and stores the jwt on success.
+   *
+   * @param authRequest User data
+   */
   loginUser(authRequest: AuthRequest): Observable<string> {
     return this.httpClient
-      .post(this.authBaseUri, authRequest, {responseType: 'text'})
+      .post(this.authBaseUri, authRequest, { responseType: 'text' })
       .pipe(
         tap((authResponse: string) => {
           this.updateLoginState(authResponse);
@@ -45,14 +49,16 @@ export class AuthImplService extends AuthService {
     this.updateLoginState();
   }
 
+  /** Checks if a valid JWT token is saved in the localStorage. */
   isLoggedIn() {
     return (
       !!this.getToken() &&
       this.getTokenExpirationDate(this.getToken()).valueOf() >
-      new Date().valueOf()
+        new Date().valueOf()
     );
   }
 
+  /** Checks if the users email is verified. */
   isVerified(): boolean {
     const role = this.getRole();
     return (
@@ -62,15 +68,18 @@ export class AuthImplService extends AuthService {
     );
   }
 
+  /** Gets the logged-in users jwt token. */
   getToken() {
     return localStorage.getItem('authToken');
   }
 
+  /** Gets the email of the logged-in user from the session. */
   getEmail(): string {
     const decoded: DecodedToken = jwt_decode(this.getToken());
     return decoded?.sub;
   }
 
+  /** Returns the user role based on the current token. */
   getRole() {
     if (this.getToken() != null) {
       const decoded: DecodedToken = jwt_decode(this.getToken());

@@ -6,7 +6,7 @@ import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ToastService} from '../../../../core/services/toast/toast.service';
 import {Theme} from '../../../../shared/enums/theme.enum';
 import {SimpleUser} from '../../../../shared/dtos/user-dtos';
-import {AuthService} from '../../../../core/services/auth/auth-service';
+import {AuthService} from '../../../../core/services/auth/auth.service';
 import {ScriptRehearsalService} from '../../services/script-rehearsal.service';
 import {Subject, takeUntil} from 'rxjs';
 
