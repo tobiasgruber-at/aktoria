@@ -6,8 +6,7 @@ import { ScriptOverviewComponent } from './components/script-overview/script-ove
 import { ScriptReadComponent } from './components/script-read/script-read.component';
 import { ScriptInviteComponent } from './components/script-invite/script-invite.component';
 import { ScriptInviteAcceptComponent } from './components/script-invite-accept/script-invite-accept.component';
-import { ScriptEditComponent } from './components/script-edit/script-edit.component';
-// eslint-disable-next-line max-len
+import { ScriptEditorComponent } from './components/script-editor/script-editor.component';
 import { ScriptRehearsalSectionsComponent } from './components/script-rehearsal/script-rehearsal-sections/script-rehearsal-sections.component';
 import { ScriptRehearsalComponent } from './components/script-rehearsal/script-rehearsal.component';
 
@@ -22,7 +21,7 @@ const routes: Routes = [
   },
   {
     path: 'upload/review',
-    component: ScriptEditComponent,
+    component: ScriptEditorComponent,
     data: {
       isUploading: true
     }
@@ -33,7 +32,7 @@ const routes: Routes = [
   },
   {
     path: ':id/edit',
-    component: ScriptEditComponent,
+    component: ScriptEditorComponent,
     data: {
       isUploading: false
     }

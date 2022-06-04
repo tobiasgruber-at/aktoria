@@ -15,8 +15,7 @@ import { AuthService } from '../auth/auth-service';
 })
 export class ScriptService {
   private baseUri: string = this.globals.backendUri + '/scripts';
-  /** Script that the user parsed, but is not saved yet. */
-  private stagedScript: SimpleScript = null;
+  /** Script that the user parsed, but that isn't saved yet. */
   private stagedScriptSubject = new BehaviorSubject<SimpleScript>(null);
   private scripts: ScriptPreview[] = [];
   private scriptsSubject = new BehaviorSubject<ScriptPreview[]>([]);
@@ -42,7 +41,6 @@ export class ScriptService {
 
   /** Sets the staged script and notifies the staged-script subject. */
   setStagedScript(script: SimpleScript): void {
-    this.stagedScript = script;
     localStorage.setItem('stagedScript', JSON.stringify(script));
     this.stagedScriptSubject.next(script);
   }
@@ -58,17 +56,7 @@ export class ScriptService {
     return loadedScript
       ? of(loadedScript)
       : this.http.get<DetailedScript>(`${this.baseUri}/${id}`).pipe(
-          map(
-            (script) =>
-              new DetailedScript(
-                script.id,
-                script.owner,
-                script.participants,
-                script.pages,
-                script.roles,
-                script.name
-              )
-          ),
+          map(this.mapScriptInterfaceToClass),
           tap((script) => {
             this.fullyLoadedScripts.push(script);
           })
@@ -100,19 +88,7 @@ export class ScriptService {
   getScriptBySession(id): Observable<DetailedScript> {
     return this.http
       .get<DetailedScript>(this.baseUri + '/session?id=' + id)
-      .pipe(
-        map(
-          (script) =>
-            new DetailedScript(
-              script.id,
-              script.owner,
-              script.participants,
-              script.pages,
-              script.roles,
-              script.name
-            )
-        )
-      );
+      .pipe(map(this.mapScriptInterfaceToClass));
   }
 
   /**
@@ -172,7 +148,7 @@ export class ScriptService {
   }
 
   /**
-   * Adds a new participant to the script
+   * Adds a new participant to the script.
    *
    * @param token token of invitation
    * @param scriptId id of the script
@@ -221,5 +197,21 @@ export class ScriptService {
   private setScripts(scripts): void {
     this.scripts = scripts;
     this.scriptsSubject.next(this.scripts);
+  }
+
+  /** Maps a fetched script to a class. */
+  private mapScriptInterfaceToClass(script: DetailedScript): DetailedScript {
+    return new DetailedScript(
+      script.id,
+      script.owner,
+      script.participants.sort((a, b) =>
+        a.firstName < b.firstName ? -1 : a.firstName > b.firstName ? 1 : 0
+      ),
+      script.pages,
+      script.roles.sort((a, b) =>
+        a.name < b.name ? -1 : a.name > b.name ? 1 : 0
+      ),
+      script.name
+    );
   }
 }

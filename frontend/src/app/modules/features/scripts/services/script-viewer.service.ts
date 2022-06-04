@@ -1,6 +1,6 @@
-import {Role, SimpleScript} from '../../../shared/dtos/script-dtos';
-import {BehaviorSubject, Observable} from 'rxjs';
-import {SimpleSection} from '../../../shared/dtos/section-dtos';
+import { Role, SimpleScript } from '../../../shared/dtos/script-dtos';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { SimpleSection } from '../../../shared/dtos/section-dtos';
 
 export interface MarkedSection {
   section: SimpleSection;
@@ -9,27 +9,24 @@ export interface MarkedSection {
 
 export type IsMarkingSection = 'start' | 'end';
 
-/** Local service for viewing or editing scripts. */
+/**
+ * Local service for a script viewer.<br>
+ * Should be <strong>injected to the parent</strong> of a script viewer, so that the state is encapsulated to this
+ * instance of a viewer.<br>
+ * Includes states for viewing, editing and selecting sections.
+ */
 export class ScriptViewerService {
   /** Whether the script viewer is editable, or read-only. */
-  private isEditingScript = false;
-  private isEditingScriptSubject = new BehaviorSubject<boolean>(
-    this.isEditingScript
-  );
-  private isUploading = false;
-  private isUploadingSubject = new BehaviorSubject<boolean>(this.isUploading);
+  private isEditingScriptSubject = new BehaviorSubject<boolean>(null);
+  private isUploadingSubject = new BehaviorSubject<boolean>(null);
   private isMarkingSection: IsMarkingSection = null;
   private isMarkingSectionSubject = new BehaviorSubject<IsMarkingSection>(
     this.isMarkingSection
   );
-  private markedSection: MarkedSection = null;
-  private markedSectionSubject = new BehaviorSubject<MarkedSection>(
-    this.markedSection
-  );
-  private script: SimpleScript = null;
-  private scriptSubject = new BehaviorSubject<SimpleScript>(this.script);
-  private selectedRole: Role = null;
-  private selectedRoleSubject = new BehaviorSubject<Role>(this.selectedRole);
+  /** Section that should be marked on the script viewer. */
+  private markedSectionSubject = new BehaviorSubject<MarkedSection>(null);
+  private scriptSubject = new BehaviorSubject<SimpleScript>(null);
+  private selectedRoleSubject = new BehaviorSubject<Role>(null);
   /**
    * Indicates how many loadings are currently stacked.
    *
@@ -38,6 +35,7 @@ export class ScriptViewerService {
    * the loadings are counted.
    */
   private loadingCounter = 0;
+  /** Indicates whether there are still open loadings. */
   private loadingSubject = new BehaviorSubject<boolean>(
     this.loadingCounter > 0
   );
@@ -63,32 +61,32 @@ export class ScriptViewerService {
     return this.isMarkingSectionSubject.asObservable();
   }
 
+  /** @see markedSection */
   get $markedSection(): Observable<MarkedSection> {
     return this.markedSectionSubject.asObservable();
   }
 
+  /** @see loadingSubject */
   get $loading(): Observable<boolean> {
     return this.loadingSubject.asObservable();
   }
 
   setScript(script: SimpleScript): void {
-    this.script = script;
-    this.scriptSubject.next(this.script);
+    this.scriptSubject.next(script);
   }
 
   setSelectedRole(role: Role): void {
-    this.selectedRole = this.selectedRole?.name === role.name ? null : role;
-    this.selectedRoleSubject.next(this.selectedRole);
+    this.selectedRoleSubject.next(
+      this.selectedRoleSubject.getValue()?.name === role.name ? null : role
+    );
   }
 
   setIsEditingScript(isEditingScript: boolean): void {
-    this.isEditingScript = isEditingScript;
-    this.isEditingScriptSubject.next(this.isEditingScript);
+    this.isEditingScriptSubject.next(isEditingScript);
   }
 
   setIsUploading(isUploading: boolean): void {
-    this.isUploading = isUploading;
-    this.isUploadingSubject.next(this.isUploading);
+    this.isUploadingSubject.next(isUploading);
   }
 
   setIsMarkingSection(isMarkingSection: IsMarkingSection): void {
@@ -97,8 +95,7 @@ export class ScriptViewerService {
   }
 
   setMarkedSection(markedSection: MarkedSection): void {
-    this.markedSection = markedSection;
-    this.markedSectionSubject.next(this.markedSection);
+    this.markedSectionSubject.next(markedSection);
   }
 
   setLoading(loading: boolean): void {

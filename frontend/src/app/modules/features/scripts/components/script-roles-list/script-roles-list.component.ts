@@ -1,6 +1,7 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Role } from '../../../../shared/dtos/script-dtos';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Role} from '../../../../shared/dtos/script-dtos';
 
+/** List of all roles, which are selectable. */
 @Component({
   selector: 'app-script-roles-list',
   templateUrl: './script-roles-list.component.html',

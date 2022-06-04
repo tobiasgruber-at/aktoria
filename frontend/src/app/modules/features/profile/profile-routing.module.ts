@@ -3,6 +3,7 @@ import {RouterModule, Routes} from '@angular/router';
 import {ProfileComponent} from './profile.component';
 import {ProfileChangeComponent} from './components/profile-change/profile-change.component';
 
+/** Profile module that consists of all related parts. */
 const routes: Routes = [
   {
     path: '',
@@ -18,5 +19,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class ProfileRoutingModule {
-}
+export class ProfileRoutingModule {}

@@ -55,8 +55,8 @@ export class ScriptRehearsalSectionsComponent implements OnInit, OnDestroy {
 
     this.scriptRehearsalService.$selectedRole
       .pipe(takeUntil(this.$destroy))
-      .subscribe((roles) => {
-        if (Object.keys(roles).length === 0) {
+      .subscribe((role) => {
+        if (!role) {
           this.router.navigateByUrl('/scripts');
           this.toastService.show({
             message: 'Keine Rolle ausgewählt',

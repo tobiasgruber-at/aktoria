@@ -1,25 +1,18 @@
-import {
-  Component,
-  ElementRef,
-  HostBinding,
-  HostListener,
-  Input,
-  OnDestroy,
-  OnInit,
-  ViewChild
-} from '@angular/core';
-import { Line, Role } from '../../../../../shared/dtos/script-dtos';
-import {
-  IsMarkingSection,
-  ScriptViewerService
-} from '../../../services/script-viewer.service';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Subject, takeUntil } from 'rxjs';
-import { LineService } from '../../../../../core/services/line/line.service';
-import { ToastService } from '../../../../../core/services/toast/toast.service';
-import { SimpleSection } from '../../../../../shared/dtos/section-dtos';
-import { appearAnimations } from '../../../../../shared/animations/appear-animations';
+import {Component, ElementRef, HostBinding, HostListener, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Line, Role} from '../../../../../shared/dtos/script-dtos';
+import {IsMarkingSection, ScriptViewerService} from '../../../services/script-viewer.service';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {Subject, takeUntil} from 'rxjs';
+import {LineService} from '../../../../../core/services/line/line.service';
+import {ToastService} from '../../../../../core/services/toast/toast.service';
+import {SimpleSection} from '../../../../../shared/dtos/section-dtos';
+import {appearAnimations} from '../../../../../shared/animations/appear-animations';
 
+/**
+ * Line of a script within the script viewer.
+ *
+ * @see ScriptViewerComponent
+ */
 @Component({
   selector: 'app-script-line',
   templateUrl: './script-line.component.html',
@@ -82,6 +75,41 @@ export class ScriptLineComponent implements OnInit, OnDestroy {
     );
   }
 
+  @HostListener('mouseenter')
+  updateMarkedSection(): void {
+    if (this.isMarkingSection) {
+      const updatedSection: SimpleSection = this.section;
+      if (this.isMarkingSection === 'start') {
+        updatedSection.startLine = this.line;
+      } else if (
+        this.isMarkingSection === 'end' &&
+        this.line.index >= this.section.startLine.index
+      ) {
+        updatedSection.endLine = this.line;
+      }
+      this.scriptViewerService.setMarkedSection({
+        section: updatedSection,
+        scrollTo: false
+      });
+    }
+  }
+
+  @HostListener('click')
+  fixMarkedSection(): void {
+    if (this.isMarkingSection) {
+      if (this.isMarkingSection === 'start') {
+        this.scriptViewerService.setIsMarkingSection('end');
+        this.section.endLine = this.section.startLine;
+        this.scriptViewerService.setMarkedSection({
+          section: this.section,
+          scrollTo: false
+        });
+      } else if (this.isMarkingSection === 'end') {
+        this.scriptViewerService.setIsMarkingSection(null);
+      }
+    }
+  }
+
   ngOnInit() {
     if (this.line.roles === null) {
       this.line.roles = [];
@@ -117,41 +145,6 @@ export class ScriptLineComponent implements OnInit, OnDestroy {
           });
         }
       });
-  }
-
-  @HostListener('mouseenter')
-  updateMarkedSection(): void {
-    if (this.isMarkingSection) {
-      const updatedSection: SimpleSection = this.section;
-      if (this.isMarkingSection === 'start') {
-        updatedSection.startLine = this.line;
-      } else if (
-        this.isMarkingSection === 'end' &&
-        this.line.index >= this.section.startLine.index
-      ) {
-        updatedSection.endLine = this.line;
-      }
-      this.scriptViewerService.setMarkedSection({
-        section: updatedSection,
-        scrollTo: false
-      });
-    }
-  }
-
-  @HostListener('click')
-  fixMarkedSection(): void {
-    if (this.isMarkingSection) {
-      if (this.isMarkingSection === 'start') {
-        this.scriptViewerService.setIsMarkingSection('end');
-        this.section.endLine = this.section.startLine;
-        this.scriptViewerService.setMarkedSection({
-          section: this.section,
-          scrollTo: false
-        });
-      } else if (this.isMarkingSection === 'end') {
-        this.scriptViewerService.setIsMarkingSection(null);
-      }
-    }
   }
 
   /** @return Whether a line is highlighted. */

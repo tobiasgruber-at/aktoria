@@ -1,14 +1,15 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ScriptRehearsalService } from '../../services/script-rehearsal.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ScriptService } from '../../../../core/services/script/script.service';
-import { DetailedScript } from '../../../../shared/dtos/script-dtos';
-import { SimpleSession } from '../../../../shared/dtos/session-dtos';
-import { Subject, takeUntil } from 'rxjs';
-import { lineAppearAnimations } from '../../animations/rehearsal-line.animations';
-import { ToastService } from '../../../../core/services/toast/toast.service';
-import { Theme } from '../../../../shared/enums/theme.enum';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {ScriptRehearsalService} from '../../services/script-rehearsal.service';
+import {ActivatedRoute, Router} from '@angular/router';
+import {ScriptService} from '../../../../core/services/script/script.service';
+import {DetailedScript} from '../../../../shared/dtos/script-dtos';
+import {SimpleSession} from '../../../../shared/dtos/session-dtos';
+import {Subject, takeUntil} from 'rxjs';
+import {lineAppearAnimations} from '../../animations/rehearsal-line.animations';
+import {ToastService} from '../../../../core/services/toast/toast.service';
+import {Theme} from '../../../../shared/enums/theme.enum';
 
+/** Presents a script rehearsal. */
 @Component({
   selector: 'app-script-rehearsal',
   templateUrl: './script-rehearsal.component.html',
