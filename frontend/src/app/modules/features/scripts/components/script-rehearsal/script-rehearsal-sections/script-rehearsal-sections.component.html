@@ -2,8 +2,11 @@
   <app-script-viewer></app-script-viewer>
   <div class="d-flex flex-column flex-grow-1" role="sidebar">
     <h2 class="mb-0 d-flex">
-      <div class="role-name text-truncate">Mister Breckingham</div>
-      üben
+      <!-- todo -->
+      <div class="role-name text-truncate">
+        {{ (scriptRehearsalService.$selectedRole | async)?.name }}
+      </div>
+      <span class="suffix"> üben</span>
     </h2>
     <app-back-button
       (click)="backToOverview()"

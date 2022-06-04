@@ -1,16 +1,26 @@
-<!-- TODO: loading spinner -->
 <div
-  class="layout vh-100 bg-light overflow-hidden d-flex flex-column align-items-center px-5"
+  *ngIf="getLoading; else notLoading"
+  @fixedAppear
+  class="position-absolute h-100 w-100 d-flex justify-content-center align-items-center"
 >
-  <div class="grid">
-    <ng-container *ngFor="let line of session?.getLines()">
-      <app-rehearsal-line
-        [@lineAppear]="
-          line.index >= session?.currentLineIndex ? 'active' : 'hidden'
-        "
-        [line]="line"
-      ></app-rehearsal-line>
-    </ng-container>
+  <div class="spinner-border text-secondary" role="status">
+    <span class="sr-only"></span>
   </div>
 </div>
-<app-rehearsal-controls></app-rehearsal-controls>
+<ng-template #notLoading>
+  <div
+    class="layout vh-100 bg-light overflow-hidden d-flex flex-column align-items-center px-5"
+  >
+    <div class="grid">
+      <ng-container *ngFor="let line of session?.getLines()">
+        <app-rehearsal-line
+          [@lineAppear]="
+            line.index >= session?.currentLineIndex ? 'active' : 'hidden'
+          "
+          [line]="line"
+        ></app-rehearsal-line>
+      </ng-container>
+    </div>
+  </div>
+  <app-rehearsal-controls @fixedAppear></app-rehearsal-controls>
+</ng-template>
