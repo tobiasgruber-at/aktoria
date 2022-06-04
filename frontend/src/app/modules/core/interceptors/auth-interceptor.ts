@@ -3,7 +3,7 @@ import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/com
 import {Observable} from 'rxjs';
 import {Globals} from '../global/globals';
 import {AuthService} from '../services/auth/auth.service';
-import {UserService} from '../services/user/user-service';
+import {UserService} from '../services/user/user.service';
 
 /**
  * Interceptor, that automatically appends authentication header information.

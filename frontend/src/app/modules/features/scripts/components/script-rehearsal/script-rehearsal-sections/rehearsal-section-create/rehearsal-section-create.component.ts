@@ -21,7 +21,7 @@ import {
 } from '../../../../../../shared/dtos/section-dtos';
 import { SessionService } from '../../../../../../core/services/session/session.service';
 import { SectionService } from '../../../../../../core/services/section/section.service';
-import { UserService } from '../../../../../../core/services/user/user-service';
+import { UserService } from '../../../../../../core/services/user/user.service';
 import { SimpleUser } from '../../../../../../shared/dtos/user-dtos';
 import { CreateSession } from '../../../../../../shared/dtos/session-dtos';
 import { ScriptRehearsalService } from '../../../../services/script-rehearsal.service';

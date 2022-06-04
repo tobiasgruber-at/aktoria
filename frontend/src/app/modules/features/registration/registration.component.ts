@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {ToastService} from '../../core/services/toast/toast.service';
-import {UserService} from '../../core/services/user/user-service';
+import {UserService} from '../../core/services/user/user.service';
 import {UserRegistration} from '../../shared/dtos/user-dtos';
 import {FormBase} from '../../shared/classes/form-base';
 import {Theme} from '../../shared/enums/theme.enum';

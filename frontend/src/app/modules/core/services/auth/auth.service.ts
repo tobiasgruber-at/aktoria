@@ -7,7 +7,7 @@ import { tap } from 'rxjs/operators';
 import jwt_decode from 'jwt-decode';
 import { Globals } from '../../global/globals';
 import { DecodedToken } from '../../../shared/interfaces/decoded-token';
-import { UserService } from '../user/user-service';
+import { UserService } from '../user/user.service';
 
 @Injectable({
   providedIn: 'root'

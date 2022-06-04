@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, TemplateRef } from '@angular/core';
-import { UserService } from '../../core/services/user/user-service';
+import { UserService } from '../../core/services/user/user.service';
 import { SimpleUser } from '../../shared/dtos/user-dtos';
 import { AuthService } from '../../core/services/auth/auth.service';
 import { appearAnimations } from '../../shared/animations/appear-animations';
