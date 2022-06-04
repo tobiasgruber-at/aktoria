@@ -60,3 +60,11 @@ export enum AssessmentType {
 export class CreateSession {
   constructor(public sectionId: number, public roleId: number) {}
 }
+
+export class UpdateSession {
+  constructor(
+    public deprecated?: boolean,
+    public selfAssessment?: AssessmentType,
+    public currentLineId?: number
+  ) {}
+}

@@ -31,7 +31,7 @@ export class ScriptRehearsalSectionsComponent implements OnInit, OnDestroy {
 
   constructor(
     public scriptViewerService: ScriptViewerService,
-    private scriptRehearsalService: ScriptRehearsalService,
+    public scriptRehearsalService: ScriptRehearsalService,
     private scriptService: ScriptService,
     private sectionService: SectionService,
     private route: ActivatedRoute,
@@ -45,6 +45,20 @@ export class ScriptRehearsalSectionsComponent implements OnInit, OnDestroy {
       this.scriptService.getOne(id).subscribe({
         next: (script) => {
           this.scriptViewerService.setScript(script);
+          this.scriptRehearsalService.setScript(script);
+          // subscribe here to selected role, as script is needed to evaluate it
+          this.scriptRehearsalService.$selectedRole
+            .pipe(takeUntil(this.$destroy))
+            .subscribe((role) => {
+              if (!role) {
+                this.router.navigateByUrl('/scripts');
+                this.toastService.show({
+                  message: 'Keine Rolle ausgewählt',
+                  theme: Theme.danger
+                });
+              }
+              this.scriptViewerService.setSelectedRole(role);
+            });
         },
         error: (err) => {
           this.toastService.showError(err);
@@ -52,19 +66,6 @@ export class ScriptRehearsalSectionsComponent implements OnInit, OnDestroy {
         }
       });
     });
-
-    this.scriptRehearsalService.$selectedRole
-      .pipe(takeUntil(this.$destroy))
-      .subscribe((role) => {
-        if (!role) {
-          this.router.navigateByUrl('/scripts');
-          this.toastService.show({
-            message: 'Keine Rolle ausgewählt',
-            theme: Theme.danger
-          });
-        }
-        this.scriptViewerService.setSelectedRole(role);
-      });
 
     this.scriptViewerService.$script
       .pipe(takeUntil(this.$destroy))

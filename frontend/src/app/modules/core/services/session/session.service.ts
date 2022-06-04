@@ -1,17 +1,21 @@
 import { Injectable } from '@angular/core';
 import { Globals } from '../../global/globals';
 import { HttpClient } from '@angular/common/http';
-import { map, Observable } from 'rxjs';
+import { map, Observable, of } from 'rxjs';
 import {
   CreateSession,
-  SimpleSession
+  SimpleSession,
+  UpdateSession
 } from '../../../shared/dtos/session-dtos';
+import { Cache } from '../../../shared/interfaces/cache';
+import { tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SessionService {
   private baseUri: string = this.globals.backendUri + '/sessions';
+  private cachedSessions: Cache<SimpleSession> = {};
 
   constructor(private http: HttpClient, private globals: Globals) {}
 
@@ -22,8 +26,23 @@ export class SessionService {
    * @return the session with the specified ID
    */
   getOne(id: number): Observable<SimpleSession> {
+    const loadedSession = this.cachedSessions[id];
+    return loadedSession
+      ? of(loadedSession)
+      : this.http.get<SimpleSession>(`${this.baseUri}/${id}`).pipe(
+          map(this.mapSessionInterfaceToClass),
+          tap((session) => {
+            this.cachedSessions[session.id] = session;
+          })
+        );
+  }
+
+  patchOne(
+    id: number,
+    updateSession: UpdateSession
+  ): Observable<SimpleSession> {
     return this.http
-      .get<SimpleSession>(this.baseUri)
+      .patch<SimpleSession>(`${this.baseUri}/${id}`, updateSession)
       .pipe(map(this.mapSessionInterfaceToClass));
   }
 

@@ -101,7 +101,7 @@ export class ScriptEditorComponent
           theme: Theme.primary
         });
       },
-      error: (err) => this.handleError(err)
+      error: this.handleError
     });
   }
 

@@ -95,9 +95,9 @@ export class RehearsalSectionComponent implements OnInit, OnDestroy {
     };
     this.sessionService.start(session).subscribe({
       next: (createdSession) => {
-        createdSession.init(this.script, this.section);
-        this.scriptRehearsalService.setSession(createdSession);
-        this.router.navigateByUrl(`/scripts/${this.script?.getId()}/rehearse`);
+        this.router.navigateByUrl(
+          `/scripts/${this.script?.getId()}/rehearse/${createdSession.id}`
+        );
       },
       error: (err) => {
         this.toastService.showError(err);

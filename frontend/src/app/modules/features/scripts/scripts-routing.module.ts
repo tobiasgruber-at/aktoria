@@ -46,7 +46,7 @@ const routes: Routes = [
     component: ScriptRehearsalSectionsComponent
   },
   {
-    path: ':id/rehearse',
+    path: ':scriptId/rehearse/:rehearsalId',
     component: ScriptRehearsalComponent
   },
   {
