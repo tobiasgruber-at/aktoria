@@ -78,6 +78,10 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
     }
     modal.dismiss();
     this.router.navigateByUrl(`/scripts/${this.script.id}`);
+    this.toastService.show({
+      message: 'Lerneinheit beendet.',
+      theme: Theme.primary
+    });
   }
 
   private endSession(): void {

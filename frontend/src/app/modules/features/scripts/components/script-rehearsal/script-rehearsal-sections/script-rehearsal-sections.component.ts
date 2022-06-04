@@ -63,6 +63,7 @@ export class ScriptRehearsalSectionsComponent implements OnInit, OnDestroy {
             theme: Theme.danger
           });
         }
+        this.scriptViewerService.setSelectedRole(role);
       });
 
     this.scriptViewerService.$script

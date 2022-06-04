@@ -13,12 +13,6 @@
     }
   }
 
-  &.is-highlighted {
-    .role-names {
-      color: var(--bs-primary);
-    }
-  }
-
   &.is-instruction {
     font-style: italic;
   }
@@ -33,7 +27,13 @@ p {
 .role-names {
   font-weight: 600;
 
-  .name:not(:last-of-type):after {
-    content: ', ';
+  .name {
+    &.is-highlighted {
+      color: var(--bs-primary);
+    }
+
+    &:not(:last-of-type):after {
+      content: ', ';
+    }
   }
 }
