@@ -34,8 +34,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.userService
-      .$ownUser()
+    this.userService.$ownUser
       .pipe(takeUntil(this.$destroy))
       .subscribe((user) => {
         this.user = user;

@@ -7,6 +7,7 @@ export interface ScriptSelectedRoleMapping {
   [scriptId: number]: number;
 }
 
+/** LocalStorage key for the mapping of selected roles of the respective scripts. */
 const scriptSelectedRoleMappingLSKey = 'scriptSelectedRoleMapping';
 
 /**

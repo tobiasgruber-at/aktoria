@@ -1,21 +1,22 @@
-import { Injectable } from '@angular/core';
-import { AuthRequest } from '../../../shared/dtos/auth-request';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
-import { tap } from 'rxjs/operators';
+import {Injectable} from '@angular/core';
+import {AuthRequest} from '../../../shared/dtos/auth-request';
+import {BehaviorSubject, Observable} from 'rxjs';
+import {HttpClient} from '@angular/common/http';
+import {tap} from 'rxjs/operators';
 // @ts-ignore
 import jwt_decode from 'jwt-decode';
-import { Globals } from '../../global/globals';
-import { DecodedToken } from '../../../shared/interfaces/decoded-token';
-import { UserService } from '../user/user.service';
+import {Globals} from '../../global/globals';
+import {DecodedToken} from '../../../shared/interfaces/decoded-token';
+import {UserService} from '../user/user.service';
+
+/** LocalStorage key for the token. */
+const tokenLSKey = 'authToken';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private readonly authBaseUri = this.globals.backendUri + '/authentication';
-  /** LocalStorage key for the token */
-  private readonly tokenLSKey = 'authToken';
   private loginChangesSubject = new BehaviorSubject<boolean>(this.isLoggedIn());
 
   constructor(
@@ -25,7 +26,7 @@ export class AuthService {
   ) {}
 
   /** @return Observable that notifies on login-state changes. */
-  $loginChanges(): Observable<boolean> {
+  get $loginChanges(): Observable<boolean> {
     return this.loginChangesSubject.asObservable();
   }
 
@@ -64,7 +65,7 @@ export class AuthService {
     return (
       role === 'ADMIN' ||
       role === 'VERIFIED' ||
-      this.userService.getOwnUser()?.verified
+      this.userService.ownUser?.verified
     );
   }
 
@@ -102,9 +103,9 @@ export class AuthService {
    */
   private updateLoginState(token: string = null): void {
     if (token === null) {
-      localStorage.removeItem(this.tokenLSKey);
+      localStorage.removeItem(tokenLSKey);
     } else {
-      localStorage.setItem(this.tokenLSKey, token);
+      localStorage.setItem(tokenLSKey, token);
     }
     this.loginChangesSubject.next(this.isLoggedIn());
   }

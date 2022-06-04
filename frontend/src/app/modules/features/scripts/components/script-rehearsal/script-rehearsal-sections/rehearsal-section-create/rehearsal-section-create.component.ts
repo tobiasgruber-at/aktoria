@@ -87,8 +87,7 @@ export class RehearsalSectionCreateComponent
         }
         this.isMarkingSection = isMarkingSection;
       });
-    this.userService
-      .$ownUser()
+    this.userService.$ownUser
       .pipe(takeUntil(this.$destroy))
       .subscribe((user) => {
         this.user = user;

@@ -60,8 +60,7 @@ export class ProfileChangeComponent
       },
       { validators: [matchingPasswordsValidator(true)] }
     );
-    this.userService
-      .$ownUser()
+    this.userService.$ownUser
       .pipe(takeUntil(this.$destroy))
       .subscribe((user) => {
         this.user = user;

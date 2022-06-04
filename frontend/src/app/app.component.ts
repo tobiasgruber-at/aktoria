@@ -38,8 +38,7 @@ export class AppComponent implements OnInit, OnDestroy {
    * <strong>On Logout: </strong> Resets state of all services.
    */
   private handleLoginChanges(): void {
-    this.authService
-      .$loginChanges()
+    this.authService.$loginChanges
       .pipe(takeUntil(this.$destroy))
       .subscribe((loggedIn) => {
         if (!loggedIn) {

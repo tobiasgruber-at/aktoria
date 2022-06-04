@@ -14,24 +14,22 @@ import { ChangePassword } from 'src/app/modules/shared/dtos/password-change-dto'
 })
 export class UserService {
   private baseUri: string = this.globals.backendUri + '/users';
-  private ownUser: SimpleUser = null;
   private ownUserSubject = new BehaviorSubject<SimpleUser>(null);
 
   constructor(private globals: Globals, private http: HttpClient) {}
 
   /** @return Observable of the own user. */
-  $ownUser(): Observable<SimpleUser> {
+  get $ownUser(): Observable<SimpleUser> {
     return this.ownUserSubject.asObservable();
   }
 
   /** @return Snapshot of the own user. */
-  getOwnUser(): SimpleUser {
-    return this.ownUser;
+  get ownUser(): SimpleUser {
+    return this.ownUserSubject.getValue();
   }
 
   /** Sets the own user. */
   setOwnUser(user: SimpleUser): void {
-    this.ownUser = user;
     this.ownUserSubject.next(user);
   }
 
