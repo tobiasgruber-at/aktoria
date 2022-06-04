@@ -92,8 +92,8 @@ export class ScriptRehearsalSectionsComponent implements OnInit, OnDestroy {
       this.scriptViewerService.setMarkedSection({
         section: new SimpleSection(
           null,
-          new Line(null, null, null, null, null, null),
-          new Line(Infinity, null, null, null, null, null)
+          new Line(null, null, null, null, null, null, null),
+          new Line(Infinity, null, null, null, null, null, null)
         ),
         scrollTo: false
       });

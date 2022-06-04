@@ -3,7 +3,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastService } from '../../../core/services/toast/toast.service';
 import { FormBase } from '../../../shared/classes/form-base';
-import { UserService } from '../../../core/services/user/user-service';
+import { UserService } from '../../../core/services/user/user.service';
 import { Theme } from '../../../shared/enums/theme.enum';
 
 @Component({

@@ -1,4 +1,4 @@
-import {Line, Role, SimpleScript} from './script-dtos';
+import { Line, Role, SimpleScript } from './script-dtos';
 import { SimpleSection } from './section-dtos';
 
 export class SimpleSession {
@@ -8,16 +8,15 @@ export class SimpleSession {
 
   constructor(
     public id: number,
-    public start: Date,
-    public end: Date,
+    public start: string,
+    public end: string,
     public selfAssessment: AssessmentType,
     public deprecated: boolean,
     public coverage: number,
     public sectionId: number,
     public currentLineIndex: number,
     public role: Role
-  ) {
-  }
+  ) {}
 
   /** Inits the session. Should be done once after session fetched. */
   init(script: SimpleScript, section: SimpleSection): void {
@@ -59,6 +58,5 @@ export enum AssessmentType {
 }
 
 export class CreateSession {
-  constructor(public sectionId: number, public roleId: number) {
-  }
+  constructor(public sectionId: number, public roleId: number) {}
 }

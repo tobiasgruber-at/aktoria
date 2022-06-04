@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ToastService } from '../../../core/services/toast/toast.service';
 import { FormBase } from '../../../shared/classes/form-base';
 import { matchingPasswordsValidator } from '../../../shared/validators/matching-passwords-validator';
-import { UserService } from '../../../core/services/user/user-service';
+import { UserService } from '../../../core/services/user/user.service';
 import { ChangePassword } from '../../../shared/dtos/password-change-dto';
 import { Theme } from '../../../shared/enums/theme.enum';
 

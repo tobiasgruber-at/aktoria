@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
-import {AuthService} from '../../core/services/auth/auth-service';
-import {UserService} from '../../core/services/user/user-service';
+import {AuthService} from '../../core/services/auth/auth.service';
+import {UserService} from '../../core/services/user/user.service';
 
 /** @author Tobias Gruber */
 @Component({
@@ -12,6 +12,5 @@ export class LandingComponent {
   constructor(
     public authService: AuthService,
     public userService: UserService
-  ) {
-  }
+  ) {}
 }

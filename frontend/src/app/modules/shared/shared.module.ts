@@ -9,6 +9,7 @@ import { ButtonComponent } from './components/button/button.component';
 import {
   CaretLeftFill,
   CaretRightFill,
+  MicFill,
   PersonCircle,
   PlayFill,
   ThreeDots,
@@ -26,7 +27,6 @@ import {
 import { BackButtonComponent } from './components/back-button/back-button.component';
 import { ControlsComponent } from './components/controls/controls.component';
 import { ControlsItemComponent } from './components/controls/controls-item/controls-item.component';
-
 import { SectionComponent } from './components/section/section.component';
 
 const icons = {
@@ -41,7 +41,9 @@ const icons = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   CaretRightFill,
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  XLg
+  XLg,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  MicFill
 };
 const sharedDeclarations = [
   PageLayoutComponent,
@@ -77,5 +79,4 @@ const sharedImports = [
   imports: [...sharedImports, BootstrapIconsModule.pick(icons)],
   exports: [...sharedImports, ...sharedDeclarations, BootstrapIconsModule]
 })
-export class SharedModule {
-}
+export class SharedModule {}

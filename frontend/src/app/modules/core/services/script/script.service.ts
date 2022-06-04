@@ -8,7 +8,7 @@ import {
   SimpleScript
 } from '../../../shared/dtos/script-dtos';
 import { tap } from 'rxjs/operators';
-import { AuthService } from '../auth/auth-service';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable({
   providedIn: 'root'
