@@ -1,9 +1,7 @@
 <div #content class="content pb-5">
-  <span class="role-name">
-    <ng-container *ngFor="let role of line.roles"
-    >{{ role.name }}
-    </ng-container>
-  </span>
+  <div class="role-names">
+    <span class="name" *ngFor="let role of line.roles">{{ role.name }}</span>
+  </div>
   <p class="mb-0">
     {{ line.content }}
   </p>
