@@ -21,6 +21,7 @@ export class RehearsalSectionComponent implements OnInit, OnDestroy {
   /** Whether this is just a create-new section button, or an existing session. */
   @Input() isCreate = false;
   script: SimpleScript = null;
+
   private selectedRole: Role = null;
   private $destroy = new Subject<void>();
 
@@ -31,6 +32,15 @@ export class RehearsalSectionComponent implements OnInit, OnDestroy {
     private toastService: ToastService,
     private sessionService: SessionService
   ) {}
+
+  @HostBinding('class')
+  private get classes(): string[] {
+    const classes = ['mb-2'];
+    if (this.isActive) {
+      classes.push('is-active');
+    }
+    return classes;
+  }
 
   get startLinePercentage(): number {
     return this.script && this.section
@@ -44,13 +54,16 @@ export class RehearsalSectionComponent implements OnInit, OnDestroy {
       : 0;
   }
 
-  @HostBinding('class')
-  private get classes(): string[] {
-    const classes = ['mb-2'];
-    if (this.isActive) {
-      classes.push('is-active');
-    }
-    return classes;
+  @HostListener('click', ['$event'])
+  private selectSection(): void {
+    this.scriptViewerService.setMarkedSection(
+      this.isActive || this.isCreate
+        ? null
+        : {
+            section: this.section,
+            scrollTo: true
+          }
+    );
   }
 
   ngOnInit(): void {
@@ -90,17 +103,5 @@ export class RehearsalSectionComponent implements OnInit, OnDestroy {
         this.toastService.showError(err);
       }
     });
-  }
-
-  @HostListener('click', ['$event'])
-  private selectSection(): void {
-    this.scriptViewerService.setMarkedSection(
-      this.isActive || this.isCreate
-        ? null
-        : {
-            section: this.section,
-            scrollTo: true
-          }
-    );
   }
 }

@@ -22,11 +22,11 @@ import {ScriptEditorComponent} from './components/script-editor/script-editor.co
 import {MergeRolesModalComponent} from './components/script-editor/merge-roles-modal/merge-roles-modal.component';
 import {ChangeLineModalComponent} from './components/script-viewer/script-line/change-line-modal/change-line-modal.component';
 import {ScriptRehearsalComponent} from './components/script-rehearsal/script-rehearsal.component';
-import {ScriptRehearsalSectionsComponent} from './components/script-rehearsal/script-rehearsal-sections/script-rehearsal-sections.component';
 import {RehearsalSectionComponent} from './components/rehearsal-section/rehearsal-section.component';
 import {RehearsalLineComponent} from './components/script-rehearsal/rehearsal-line/rehearsal-line.component';
 import {RehearsalControlsComponent} from './components/script-rehearsal/rehearsal-controls/rehearsal-controls.component';
 import {RehearsalSectionCreateComponent} from './components/script-rehearsal/script-rehearsal-sections/rehearsal-section-create/rehearsal-section-create.component';
+import {ScriptRehearsalSectionsComponent} from './components/script-rehearsal/script-rehearsal-sections/script-rehearsal-sections.component';
 import {ScriptRehearsalService} from './services/script-rehearsal.service';
 import {ScriptReadControlsComponent} from './components/script-read/script-read-controls/script-read-controls.component';
 import {SelectLineTextComponent} from './components/script-rehearsal/script-rehearsal-sections/rehearsal-section-create/select-line-text/select-line-text.component';

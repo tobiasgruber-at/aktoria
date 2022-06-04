@@ -35,7 +35,6 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.$destroy))
       .subscribe((session) => {
         this.session = session;
-        // TODO: fetch session?
       });
     this.scriptRehearsalService.$script
       .pipe(takeUntil(this.$destroy))

@@ -35,7 +35,12 @@
         "id-blacklist": "off",
         "id-match": "off",
         "no-underscore-dangle": "off",
-        "max-len": ["error", { "code": 200 }]
+        "max-len": [
+          "error",
+          {
+            "code": 200
+          }
+        ]
       }
     },
     {
