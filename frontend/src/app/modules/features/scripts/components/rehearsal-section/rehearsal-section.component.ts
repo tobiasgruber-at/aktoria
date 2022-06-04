@@ -8,13 +8,10 @@ import {
 } from '@angular/core';
 import { ScriptViewerService } from '../../services/script-viewer.service';
 import { Subject, takeUntil } from 'rxjs';
-import { SimpleScript } from '../../../../shared/dtos/script-dtos';
+import { Role, SimpleScript } from '../../../../shared/dtos/script-dtos';
 import { SimpleSection } from '../../../../shared/dtos/section-dtos';
 import { CreateSession } from '../../../../shared/dtos/session-dtos';
-import {
-  ScriptRehearsalService,
-  ScriptSelectedRoleMapping
-} from '../../services/script-rehearsal.service';
+import { ScriptRehearsalService } from '../../services/script-rehearsal.service';
 import { Router } from '@angular/router';
 import { SessionService } from '../../../../core/services/session/session.service';
 import { ToastService } from '../../../../core/services/toast/toast.service';
@@ -30,7 +27,7 @@ export class RehearsalSectionComponent implements OnInit, OnDestroy {
   /** Whether this is just a create-new section button, or an existing session. */
   @Input() isCreate = false;
   script: SimpleScript = null;
-  private selectedRoles: ScriptSelectedRoleMapping = {};
+  private selectedRole: Role = null;
   private $destroy = new Subject<void>();
 
   constructor(
@@ -73,8 +70,8 @@ export class RehearsalSectionComponent implements OnInit, OnDestroy {
       });
     this.scriptRehearsalService.$selectedRole
       .pipe(takeUntil(this.$destroy))
-      .subscribe((roles) => {
-        this.selectedRoles = roles;
+      .subscribe((role) => {
+        this.selectedRole = role;
       });
   }
 
@@ -87,7 +84,7 @@ export class RehearsalSectionComponent implements OnInit, OnDestroy {
   startRehearsal(): void {
     const session: CreateSession = {
       sectionId: this.section.id,
-      roleId: this.selectedRoles?.[this.script.getId()]
+      roleId: this.selectedRole?.id
     };
     this.sessionService.start(session).subscribe({
       next: (createdSession) => {

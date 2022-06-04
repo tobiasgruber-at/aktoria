@@ -58,17 +58,7 @@ export class ScriptService {
     return loadedScript
       ? of(loadedScript)
       : this.http.get<DetailedScript>(`${this.baseUri}/${id}`).pipe(
-          map(
-            (script) =>
-              new DetailedScript(
-                script.id,
-                script.owner,
-                script.participants,
-                script.pages,
-                script.roles,
-                script.name
-              )
-          ),
+          map(this.mapScriptInterfaceToClass),
           tap((script) => {
             this.fullyLoadedScripts.push(script);
           })
@@ -100,19 +90,7 @@ export class ScriptService {
   getScriptBySession(id): Observable<DetailedScript> {
     return this.http
       .get<DetailedScript>(this.baseUri + '/session?id=' + id)
-      .pipe(
-        map(
-          (script) =>
-            new DetailedScript(
-              script.id,
-              script.owner,
-              script.participants,
-              script.pages,
-              script.roles,
-              script.name
-            )
-        )
-      );
+      .pipe(map(this.mapScriptInterfaceToClass));
   }
 
   /**
@@ -221,5 +199,20 @@ export class ScriptService {
   private setScripts(scripts): void {
     this.scripts = scripts;
     this.scriptsSubject.next(this.scripts);
+  }
+
+  private mapScriptInterfaceToClass(script: DetailedScript): DetailedScript {
+    return new DetailedScript(
+      script.id,
+      script.owner,
+      script.participants.sort((a, b) =>
+        a.firstName < b.firstName ? -1 : a.firstName > b.firstName ? 1 : 0
+      ),
+      script.pages,
+      script.roles.sort((a, b) =>
+        a.name < b.name ? -1 : a.name > b.name ? 1 : 0
+      ),
+      script.name
+    );
   }
 }

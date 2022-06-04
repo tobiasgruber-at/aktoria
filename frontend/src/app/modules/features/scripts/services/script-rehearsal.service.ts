@@ -1,11 +1,7 @@
 import { Injectable } from '@angular/core';
 import { SimpleSession } from '../../../shared/dtos/session-dtos';
-import {
-  DetailedScript,
-  Role,
-  SimpleScript
-} from '../../../shared/dtos/script-dtos';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { DetailedScript, Role } from '../../../shared/dtos/script-dtos';
+import { BehaviorSubject, map, Observable } from 'rxjs';
 
 export interface ScriptSelectedRoleMapping {
   [scriptId: number]: number;
@@ -13,6 +9,10 @@ export interface ScriptSelectedRoleMapping {
 
 const scriptSelectedRoleMappingLSKey = 'scriptSelectedRoleMapping';
 
+/**
+ * Service for script rehearsals.<br>
+ * Includes states for the selection of role and section as well as rehearsal info.
+ */
 @Injectable()
 export class ScriptRehearsalService {
   private script: DetailedScript = null;
@@ -36,13 +36,23 @@ export class ScriptRehearsalService {
     return this.sessionSubject.asObservable();
   }
 
-  get $selectedRole(): Observable<ScriptSelectedRoleMapping> {
-    return this.selectedRoleSubject.asObservable();
+  get $selectedRole(): Observable<Role> {
+    return this.selectedRoleSubject.asObservable().pipe(
+      map((scriptSelectedRoles) => {
+        if (!this.script) {
+          return null;
+        }
+        const selectedRoleId = scriptSelectedRoles[this.script?.getId()];
+        return this.script.roles.find((r) => r.id === selectedRoleId);
+      })
+    );
   }
 
   setScript(script: DetailedScript): void {
     this.script = script;
     this.scriptSubject.next(this.script);
+    // notify roles, as $selectedRole can only be evaluated once the script is loaded
+    this.selectedRoleSubject.next(this.selectedRoles);
   }
 
   setSession(session: SimpleSession): void {
@@ -50,8 +60,8 @@ export class ScriptRehearsalService {
     this.sessionSubject.next(this.session);
   }
 
-  setSelectedRole(script: SimpleScript, role: Role): void {
-    this.selectedRoles[script.getId()] = role?.id;
+  setSelectedRole(role: Role): void {
+    this.selectedRoles[this.script?.getId()] = role?.id;
     this.selectedRoleSubject.next(this.selectedRoles);
     localStorage.setItem(
       scriptSelectedRoleMappingLSKey,

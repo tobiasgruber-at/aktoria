@@ -1,6 +1,6 @@
-import {Role, SimpleScript} from '../../../shared/dtos/script-dtos';
-import {BehaviorSubject, Observable} from 'rxjs';
-import {SimpleSection} from '../../../shared/dtos/section-dtos';
+import { Role, SimpleScript } from '../../../shared/dtos/script-dtos';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { SimpleSection } from '../../../shared/dtos/section-dtos';
 
 export interface MarkedSection {
   section: SimpleSection;
@@ -9,7 +9,12 @@ export interface MarkedSection {
 
 export type IsMarkingSection = 'start' | 'end';
 
-/** Local service for viewing or editing scripts. */
+/**
+ * Local service for a script viewer.<br>
+ * Should be <strong>injected to the parent</strong> of a script viewer, so that the state is encapsulated to this
+ * instance of a viewer.<br>
+ * Includes states for viewing, editing and selecting sections.
+ */
 export class ScriptViewerService {
   /** Whether the script viewer is editable, or read-only. */
   private isEditingScript = false;
