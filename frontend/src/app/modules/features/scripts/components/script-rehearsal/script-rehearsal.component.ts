@@ -61,6 +61,8 @@ export class ScriptRehearsalComponent implements OnInit, OnDestroy {
                   this.scriptRehearsalService.setSession(session);
                   session.init(script, section);
                   this.getLoading = false;
+
+                  this.speakLine();
                 },
                 error: handleNotFound
               });
@@ -72,9 +74,6 @@ export class ScriptRehearsalComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.$destroy))
       .subscribe((session) => {
         this.session = session;
-        if (this.session) {
-          this.readLine();
-        }
       });
   }
 
@@ -85,7 +84,7 @@ export class ScriptRehearsalComponent implements OnInit, OnDestroy {
     this.synth.cancel();
   }
 
-  readLine() {
+  speakLine() {
     this.cancel = true;
     this.synth.cancel();
 
@@ -105,7 +104,7 @@ export class ScriptRehearsalComponent implements OnInit, OnDestroy {
       utter.addEventListener('end', () => {
         if (!this.cancel) {
           this.session.currentLineIndex++;
-          this.readLine();
+          this.speakLine();
         }
       });
 
@@ -119,12 +118,12 @@ export class ScriptRehearsalComponent implements OnInit, OnDestroy {
     }
   }
 
-  pauseRead() {
+  pauseSpeak() {
     this.paused = true;
     this.synth.pause();
   }
 
-  resumeRead() {
+  resumeSpeak() {
     this.paused = false;
     this.synth.resume();
   }
