@@ -5,10 +5,11 @@ import {SimpleSession} from '../../../../../shared/dtos/session-dtos';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {Router} from '@angular/router';
 import {DetailedScript} from '../../../../../shared/dtos/script-dtos';
-import { SessionService } from '../../../../../core/services/session/session.service';
-import { ToastService } from '../../../../../core/services/toast/toast.service';
-import { Theme } from '../../../../../shared/enums/theme.enum';
+import {SessionService} from '../../../../../core/services/session/session.service';
+import {ToastService} from '../../../../../core/services/toast/toast.service';
+import {Theme} from '../../../../../shared/enums/theme.enum';
 
+/** Control panel for a script rehearsal. */
 @Component({
   selector: 'app-rehearsal-controls',
   templateUrl: './rehearsal-controls.component.html',
@@ -32,15 +33,13 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
     private modalService: NgbModal,
     private router: Router,
     private toastService: ToastService
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
     this.scriptRehearsalService.$session
       .pipe(takeUntil(this.$destroy))
       .subscribe((session) => {
         this.session = session;
-        // TODO: fetch session?
       });
     this.scriptRehearsalService.$script
       .pipe(takeUntil(this.$destroy))
@@ -76,7 +75,7 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
   }
 
   openModal(modal: TemplateRef<any>): void {
-    this.modalService.open(modal, {centered: true});
+    this.modalService.open(modal, { centered: true });
   }
 
   stopSession(modal: NgbActiveModal): void {
@@ -85,6 +84,10 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
     }
     modal.dismiss();
     this.router.navigateByUrl(`/scripts/${this.script.id}`);
+    this.toastService.show({
+      message: 'Lerneinheit beendet.',
+      theme: Theme.primary
+    });
   }
 
   isHighlighted() {

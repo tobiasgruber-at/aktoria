@@ -1,8 +1,8 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {Router} from '@angular/router';
 import {Theme} from '../../enums/theme.enum';
 import {ToastService} from '../../../core/services/toast/toast.service';
-import {AuthService} from '../../../core/services/auth/auth-service';
+import {AuthService} from '../../../core/services/auth/auth.service';
 import {fixedAppearAnimations} from '../../animations/fixed-appear-animations';
 import {appearAnimations} from '../../animations/appear-animations';
 import {HelpersService} from '../../../core/services/helpers/helpers.service';
@@ -18,7 +18,7 @@ import {HelpersService} from '../../../core/services/helpers/helpers.service';
   styleUrls: ['./page-layout.component.scss'],
   animations: [fixedAppearAnimations, appearAnimations]
 })
-export class PageLayoutComponent implements OnInit {
+export class PageLayoutComponent {
   @Input() showHeader = true;
   @Input() showFooter = false;
   @Input() showSidebar = false;
@@ -30,11 +30,7 @@ export class PageLayoutComponent implements OnInit {
     private router: Router,
     private toastService: ToastService,
     private helpersService: HelpersService
-  ) {
-  }
-
-  ngOnInit(): void {
-  }
+  ) {}
 
   logout(): void {
     this.router.navigateByUrl('/login');

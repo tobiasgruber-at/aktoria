@@ -3,6 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {ScriptService} from '../../../../core/services/script/script.service';
 import {ScriptViewerService} from '../../services/script-viewer.service';
 
+/** Renders the script viewer in read-only mode. */
 @Component({
   selector: 'app-script-read',
   templateUrl: './script-read.component.html',
@@ -18,8 +19,7 @@ export class ScriptReadComponent implements OnInit {
     private router: Router,
     private scriptService: ScriptService,
     private scriptViewerService: ScriptViewerService
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {

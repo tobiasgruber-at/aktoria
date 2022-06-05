@@ -1,22 +1,34 @@
-import {NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {RouterModule} from '@angular/router';
-import {AlertComponent} from './components/alert/alert.component';
-import {PageLayoutComponent} from './components/page-layout/page-layout.component';
-import {CardComponent} from './components/card/card.component';
-import {ButtonComponent} from './components/button/button.component';
-import {CaretLeftFill, CaretRightFill, PersonCircle, PlayFill, ThreeDots, XLg} from 'ng-bootstrap-icons/icons';
-import {BootstrapIconsModule} from 'ng-bootstrap-icons';
-import {FormErrorComponent} from './components/form-errors/form-error/form-error.component';
-import {FormErrorsComponent} from './components/form-errors/form-errors.component';
-import {ModalComponent} from './components/modal/modal.component';
-import {NgbCollapseModule, NgbDropdownModule, NgbTooltipModule} from '@ng-bootstrap/ng-bootstrap';
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+import { AlertComponent } from './components/alert/alert.component';
+import { PageLayoutComponent } from './components/page-layout/page-layout.component';
+import { CardComponent } from './components/card/card.component';
+import { ButtonComponent } from './components/button/button.component';
+import {
+  CaretLeftFill,
+  CaretRightFill,
+  MicFill,
+  PersonCircle,
+  PlayFill,
+  ThreeDots,
+  XLg
+} from 'ng-bootstrap-icons/icons';
+import { BootstrapIconsModule } from 'ng-bootstrap-icons';
+import { FormErrorComponent } from './components/form-errors/form-error/form-error.component';
+import { FormErrorsComponent } from './components/form-errors/form-errors.component';
+import { ModalComponent } from './components/modal/modal.component';
+import {
+  NgbCollapseModule,
+  NgbDropdownModule,
+  NgbTooltipModule
+} from '@ng-bootstrap/ng-bootstrap';
 import { BackButtonComponent } from './components/back-button/back-button.component';
 import { ControlsComponent } from './components/controls/controls.component';
 import { ControlsItemComponent } from './components/controls/controls-item/controls-item.component';
-
 import { SectionComponent } from './components/section/section.component';
+
 const icons = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   PersonCircle,
@@ -29,7 +41,9 @@ const icons = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   CaretRightFill,
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  XLg
+  XLg,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  MicFill
 };
 const sharedDeclarations = [
   PageLayoutComponent,
@@ -55,10 +69,14 @@ const sharedImports = [
   NgbTooltipModule
 ];
 
+/**
+ * Shared module that exports all kinds of shared parts.
+ *
+ * @see https://reset.inso.tuwien.ac.at/repo/2022ss-sepm-pr-group/22ss-sepm-pr-qse-14/-/wikis/Frontend-Architektur
+ */
 @NgModule({
   declarations: [...sharedDeclarations],
   imports: [...sharedImports, BootstrapIconsModule.pick(icons)],
   exports: [...sharedImports, ...sharedDeclarations, BootstrapIconsModule]
 })
-export class SharedModule {
-}
+export class SharedModule {}

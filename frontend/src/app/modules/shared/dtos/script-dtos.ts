@@ -62,10 +62,17 @@ export class Line {
     public index: number,
     public roles: Role[],
     public content: string,
-    public audioSnippet: AudioBuffer,
+    public audio: AudioBuffer,
+    public recordedBy: Role,
     public active: boolean,
+    public conflictType: Conflict,
     public id?: number
   ) {}
+}
+
+enum Conflict {
+  verificationRequired,
+  assignmentRequired
 }
 
 export class UpdateLine {

@@ -1,9 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ScriptViewerService } from '../../../services/script-viewer.service';
-import { Subject, takeUntil } from 'rxjs';
-import { SimpleScript } from '../../../../../shared/dtos/script-dtos';
-import { Router } from '@angular/router';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {ScriptViewerService} from '../../../services/script-viewer.service';
+import {Subject, takeUntil} from 'rxjs';
+import {SimpleScript} from '../../../../../shared/dtos/script-dtos';
+import {Router} from '@angular/router';
 
+/** Control panel for script reading. */
 @Component({
   selector: 'app-script-read-controls',
   templateUrl: './script-read-controls.component.html',

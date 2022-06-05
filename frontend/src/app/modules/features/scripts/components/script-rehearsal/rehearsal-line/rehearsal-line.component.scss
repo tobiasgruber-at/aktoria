@@ -7,15 +7,9 @@
   align-items: flex-end;
 
   &:not(.is-active) {
-    .role-name,
+    .role-names,
     p {
       opacity: 25%;
-    }
-  }
-
-  &.is-highlighted {
-    .role-name {
-      color: var(--bs-primary);
     }
   }
 
@@ -24,12 +18,22 @@
   }
 }
 
-.role-name,
+.role-names,
 p {
   transition: opacity 200ms ease-in-out;
   font-size: 1.8rem;
 }
 
-.role-name {
+.role-names {
   font-weight: 600;
+
+  .name {
+    &.is-highlighted {
+      color: var(--bs-primary);
+    }
+
+    &:not(:last-of-type):after {
+      content: ', ';
+    }
+  }
 }

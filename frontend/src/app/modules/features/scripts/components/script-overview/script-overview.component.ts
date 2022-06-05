@@ -6,13 +6,11 @@ import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ToastService} from '../../../../core/services/toast/toast.service';
 import {Theme} from '../../../../shared/enums/theme.enum';
 import {SimpleUser} from '../../../../shared/dtos/user-dtos';
-import {AuthService} from '../../../../core/services/auth/auth-service';
-import {
-  ScriptRehearsalService,
-  ScriptSelectedRoleMapping
-} from '../../services/script-rehearsal.service';
-import { Subject, takeUntil } from 'rxjs';
+import {AuthService} from '../../../../core/services/auth/auth.service';
+import {ScriptRehearsalService} from '../../services/script-rehearsal.service';
+import {Subject, takeUntil} from 'rxjs';
 
+/** Dashboard of the script, which includes general script information as well as all important actions (start rehersal, view, edit, ..). */
 @Component({
   selector: 'app-script-overview',
   templateUrl: './script-overview.component.html',
@@ -24,8 +22,8 @@ export class ScriptOverviewComponent implements OnInit, OnDestroy {
   deleteError = null;
   script: DetailedScript = null;
   members: SimpleUser[];
+  selectedRole: Role = null;
   readonly theme = Theme;
-  private selectedRoles: ScriptSelectedRoleMapping = {};
   private $destroy = new Subject<void>();
 
   constructor(
@@ -35,16 +33,8 @@ export class ScriptOverviewComponent implements OnInit, OnDestroy {
     private toastService: ToastService,
     private modalService: NgbModal,
     private authService: AuthService,
-    private scriptRehearsalService: ScriptRehearsalService
+    public scriptRehearsalService: ScriptRehearsalService
   ) {}
-
-  get selectedRole(): Role {
-    if (!(this.script && this.selectedRoles)) {
-      return null;
-    }
-    const selectedRoleID = this.selectedRoles?.[this.script.getId()];
-    return this.script.roles.find((r) => r.id === selectedRoleID);
-  }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
@@ -52,6 +42,7 @@ export class ScriptOverviewComponent implements OnInit, OnDestroy {
       this.scriptService.getOne(id).subscribe({
         next: (script) => {
           this.script = script;
+          this.scriptRehearsalService.setScript(script);
           this.members = [];
           this.members.push(script.owner);
           Array.prototype.push.apply(this.members, script.participants);
@@ -66,14 +57,14 @@ export class ScriptOverviewComponent implements OnInit, OnDestroy {
     });
     this.scriptRehearsalService.$selectedRole
       .pipe(takeUntil(this.$destroy))
-      .subscribe((roles) => {
-        this.selectedRoles = roles;
+      .subscribe((role) => {
+        this.selectedRole = role;
       });
   }
 
   openModal(modal: TemplateRef<any>) {
     this.deleteError = null;
-    this.modalService.open(modal, {centered: true});
+    this.modalService.open(modal, { centered: true });
   }
 
   deleteScript(modal: NgbActiveModal): void {
@@ -123,7 +114,6 @@ export class ScriptOverviewComponent implements OnInit, OnDestroy {
 
   selectRole(role: Role): void {
     this.scriptRehearsalService.setSelectedRole(
-      this.script,
       this.selectedRole?.name === role.name ? null : role
     );
   }

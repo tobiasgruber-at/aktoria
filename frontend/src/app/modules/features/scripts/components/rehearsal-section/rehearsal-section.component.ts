@@ -1,24 +1,15 @@
-import {
-  Component,
-  HostBinding,
-  HostListener,
-  Input,
-  OnDestroy,
-  OnInit
-} from '@angular/core';
-import { ScriptViewerService } from '../../services/script-viewer.service';
-import { Subject, takeUntil } from 'rxjs';
-import { SimpleScript } from '../../../../shared/dtos/script-dtos';
-import { SimpleSection } from '../../../../shared/dtos/section-dtos';
-import { CreateSession } from '../../../../shared/dtos/session-dtos';
-import {
-  ScriptRehearsalService,
-  ScriptSelectedRoleMapping
-} from '../../services/script-rehearsal.service';
-import { Router } from '@angular/router';
-import { SessionService } from '../../../../core/services/session/session.service';
-import { ToastService } from '../../../../core/services/toast/toast.service';
+import {Component, HostBinding, HostListener, Input, OnDestroy, OnInit} from '@angular/core';
+import {ScriptViewerService} from '../../services/script-viewer.service';
+import {Subject, takeUntil} from 'rxjs';
+import {Role, SimpleScript} from '../../../../shared/dtos/script-dtos';
+import {SimpleSection} from '../../../../shared/dtos/section-dtos';
+import {CreateSession} from '../../../../shared/dtos/session-dtos';
+import {ScriptRehearsalService} from '../../services/script-rehearsal.service';
+import {Router} from '@angular/router';
+import {SessionService} from '../../../../core/services/session/session.service';
+import {ToastService} from '../../../../core/services/toast/toast.service';
 
+/** Presents information of a rehearsal section. */
 @Component({
   selector: 'app-rehearsal-section',
   templateUrl: './rehearsal-section.component.html',
@@ -30,7 +21,8 @@ export class RehearsalSectionComponent implements OnInit, OnDestroy {
   /** Whether this is just a create-new section button, or an existing session. */
   @Input() isCreate = false;
   script: SimpleScript = null;
-  private selectedRoles: ScriptSelectedRoleMapping = {};
+
+  private selectedRole: Role = null;
   private $destroy = new Subject<void>();
 
   constructor(
@@ -40,6 +32,15 @@ export class RehearsalSectionComponent implements OnInit, OnDestroy {
     private toastService: ToastService,
     private sessionService: SessionService
   ) {}
+
+  @HostBinding('class')
+  private get classes(): string[] {
+    const classes = ['mb-2'];
+    if (this.isActive) {
+      classes.push('is-active');
+    }
+    return classes;
+  }
 
   get startLinePercentage(): number {
     return this.script && this.section
@@ -53,13 +54,16 @@ export class RehearsalSectionComponent implements OnInit, OnDestroy {
       : 0;
   }
 
-  @HostBinding('class')
-  private get classes(): string[] {
-    const classes = ['mb-2'];
-    if (this.isActive) {
-      classes.push('is-active');
-    }
-    return classes;
+  @HostListener('click', ['$event'])
+  private selectSection(): void {
+    this.scriptViewerService.setMarkedSection(
+      this.isActive || this.isCreate
+        ? null
+        : {
+            section: this.section,
+            scrollTo: true
+          }
+    );
   }
 
   ngOnInit(): void {
@@ -73,8 +77,8 @@ export class RehearsalSectionComponent implements OnInit, OnDestroy {
       });
     this.scriptRehearsalService.$selectedRole
       .pipe(takeUntil(this.$destroy))
-      .subscribe((roles) => {
-        this.selectedRoles = roles;
+      .subscribe((role) => {
+        this.selectedRole = role;
       });
   }
 
@@ -87,29 +91,17 @@ export class RehearsalSectionComponent implements OnInit, OnDestroy {
   startRehearsal(): void {
     const session: CreateSession = {
       sectionId: this.section.id,
-      roleId: this.selectedRoles?.[this.script.getId()]
+      roleId: this.selectedRole?.id
     };
     this.sessionService.start(session).subscribe({
       next: (createdSession) => {
-        createdSession.init(this.script, this.section);
-        this.scriptRehearsalService.setSession(createdSession);
-        this.router.navigateByUrl(`/scripts/${this.script?.getId()}/rehearse`);
+        this.router.navigateByUrl(
+          `/scripts/${this.script?.getId()}/rehearse/${createdSession.id}`
+        );
       },
       error: (err) => {
         this.toastService.showError(err);
       }
     });
-  }
-
-  @HostListener('click', ['$event'])
-  private selectSection(): void {
-    this.scriptViewerService.setMarkedSection(
-      this.isActive || this.isCreate
-        ? null
-        : {
-            section: this.section,
-            scrollTo: true
-          }
-    );
   }
 }
