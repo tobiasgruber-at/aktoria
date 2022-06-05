@@ -23,9 +23,9 @@
   </app-controls-item>
 
   <app-controls-item
-    (click)="paused = true"
+    (click)="pause()"
     ngbTooltip="Pause"
-    [class.disabled]="endSessionLoading"
+    [class.disabled]="isHighlighted()"
     *ngIf="!paused"
   >
     <img
@@ -36,9 +36,9 @@
   </app-controls-item>
 
   <app-controls-item
-    (click)="paused = false"
+    (click)="resume()"
     ngbTooltip="Abspielen"
-    [class.disabled]="endSessionLoading"
+    [class.disabled]="isHighlighted()"
     *ngIf="paused"
   >
     <img

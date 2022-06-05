@@ -21,6 +21,7 @@ export class ScriptRehearsalComponent implements OnInit, OnDestroy {
   getLoading = true;
   synth;
   cancel: boolean;
+  paused: boolean;
   private $destroy = new Subject<void>();
 
   constructor(
@@ -94,7 +95,7 @@ export class ScriptRehearsalComponent implements OnInit, OnDestroy {
       const utter = new SpeechSynthesisUtterance(currentLine.content);
 
       utter.addEventListener('end', () => {
-        if (!this.cancel){
+        if (!this.cancel) {
           this.session.currentLineIndex++;
           this.readLine();
         }
@@ -103,7 +104,20 @@ export class ScriptRehearsalComponent implements OnInit, OnDestroy {
       setTimeout(() => {
         this.cancel = false;
         this.synth.speak(utter);
+        if (this.paused) {
+          this.synth.pause();
+        }
       }, 10);
     }
+  }
+
+  pauseRead() {
+    this.paused = true;
+    this.synth.pause();
+  }
+
+  resumeRead() {
+    this.paused = false;
+    this.synth.resume();
   }
 }

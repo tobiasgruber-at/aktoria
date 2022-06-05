@@ -16,6 +16,9 @@ import { Theme } from '../../../../../shared/enums/theme.enum';
 })
 export class RehearsalControlsComponent implements OnInit, OnDestroy {
   @Output() readLine: EventEmitter<any> = new EventEmitter<any>();
+  @Output() pauseRead: EventEmitter<any> = new EventEmitter<any>();
+  @Output() resumeRead: EventEmitter<any> = new EventEmitter<any>();
+
   script: DetailedScript = null;
   session: SimpleSession = null;
   interactionDisabled = false;
@@ -82,6 +85,34 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
     }
     modal.dismiss();
     this.router.navigateByUrl(`/scripts/${this.script.id}`);
+  }
+
+  isHighlighted() {
+    const lines = this.session.getLines();
+    let currentLine;
+
+    for (const line of lines) {
+      if (line.index === this.session.currentLineIndex) {
+        currentLine = line;
+        break;
+      }
+    }
+
+    return currentLine.roles.some((r) => r.name === this.session.role?.name);
+  }
+
+  pause() {
+    if (!this.isHighlighted()) {
+      this.paused = true;
+      this.pauseRead.emit();
+    }
+  }
+
+  resume() {
+    if (!this.isHighlighted()) {
+      this.paused = false;
+      this.resumeRead.emit();
+    }
   }
 
   private endSession(): void {
