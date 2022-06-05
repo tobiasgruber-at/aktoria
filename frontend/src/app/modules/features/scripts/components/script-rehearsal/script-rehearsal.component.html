@@ -22,5 +22,5 @@
       </ng-container>
     </div>
   </div>
-  <app-rehearsal-controls @fixedAppear></app-rehearsal-controls>
+  <app-rehearsal-controls @fixedAppear (readLine)="speakLine()" (pauseRead)="pauseSpeak()" (resumeRead)="resumeSpeak()"></app-rehearsal-controls>
 </ng-template>
