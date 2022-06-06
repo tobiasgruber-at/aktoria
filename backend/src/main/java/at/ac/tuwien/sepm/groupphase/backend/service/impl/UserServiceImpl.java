@@ -10,13 +10,10 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.SecureToken;
 import at.ac.tuwien.sepm.groupphase.backend.entity.User;
 import at.ac.tuwien.sepm.groupphase.backend.enums.Permission;
 import at.ac.tuwien.sepm.groupphase.backend.enums.TokenType;
-import at.ac.tuwien.sepm.groupphase.backend.exception.ConflictException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.InvalidTokenException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ServiceException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.UnprocessableEmailException;
-import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
-import at.ac.tuwien.sepm.groupphase.backend.repository.ScriptRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.UserRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.AuthorizationService;
 import at.ac.tuwien.sepm.groupphase.backend.service.MailSender;
@@ -25,7 +22,6 @@ import at.ac.tuwien.sepm.groupphase.backend.service.UserService;
 import at.ac.tuwien.sepm.groupphase.backend.validation.UserValidation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -54,7 +50,6 @@ public class UserServiceImpl implements UserService {
     private final MailSender mailSender;
     private final SecureTokenService secureTokenService;
     private final AuthorizationService authorizationService;
-    private final ScriptRepository scriptRepository;
 
     @Autowired
     public UserServiceImpl(
@@ -64,8 +59,7 @@ public class UserServiceImpl implements UserService {
         UserMapper userMapper,
         MailSender mailSender,
         SecureTokenService secureTokenService,
-        AuthorizationService authorizationService,
-        ScriptRepository scriptRepository
+        AuthorizationService authorizationService
     ) {
         this.userRepository = userRepository;
         this.userValidation = userValidation;
@@ -74,7 +68,6 @@ public class UserServiceImpl implements UserService {
         this.mailSender = mailSender;
         this.secureTokenService = secureTokenService;
         this.authorizationService = authorizationService;
-        this.scriptRepository = scriptRepository;
     }
 
     @Override
@@ -82,18 +75,10 @@ public class UserServiceImpl implements UserService {
     public SimpleUserDto create(UserRegistrationDto userRegistrationDto) {
         log.trace("createUser(userRegistrationDto = {})", userRegistrationDto);
 
-        try {
-            userValidation.validateCreateUserInput(userRegistrationDto);
-        } catch (ValidationException e) {
-            throw new ValidationException(e.getMessage(), e);
-        } catch (ConflictException e) {
-            throw new ConflictException(e.getMessage(), e);
-        }
-
+        userValidation.validateCreateUserInput(userRegistrationDto);
         User user = userMapper.userRegistrationDtoToUser(userRegistrationDto, false, passwordEncoder.encode(userRegistrationDto.getPassword()));
         User savedUser = userRepository.saveAndFlush(user);
         sendEmailVerificationLink(savedUser);
-
         return userMapper.userToSimpleUserDto(savedUser);
     }
 
@@ -103,12 +88,11 @@ public class UserServiceImpl implements UserService {
         log.trace("getUser(id = {})", id);
 
         authorizationService.checkBasicAuthorization(id);
-
         Optional<User> userOptional = userRepository.findById(id);
         if (userOptional.isPresent()) {
             return userMapper.userToSimpleUserDto(userOptional.get());
         } else {
-            throw new NotFoundException("User existiert nicht!");
+            throw new NotFoundException("Nutzer existiert nicht");
         }
     }
 
@@ -118,21 +102,13 @@ public class UserServiceImpl implements UserService {
         log.trace("patch(updateUserDto = {}, id = {})", updateUserDto, id);
 
         authorizationService.checkBasicAuthorization(id);
-
-        try {
-            userValidation.validatePatchUserInput(updateUserDto);
-        } catch (ValidationException e) {
-            throw new ValidationException(e.getMessage(), e);
-        } catch (ConflictException e) {
-            throw new ConflictException(e.getMessage(), e);
-        }
-
+        userValidation.validatePatchUserInput(updateUserDto);
         Optional<User> userOptional = userRepository.findById(id);
         User update;
         if (userOptional.isPresent()) {
             update = userOptional.get();
         } else {
-            throw new NotFoundException("User existiert nicht!");
+            throw new NotFoundException("Nutzer existiert nicht");
         }
 
         if (updateUserDto.getOldPassword() != null && updateUserDto.getNewPassword() != null) {
@@ -170,12 +146,7 @@ public class UserServiceImpl implements UserService {
         log.trace("deleteUser(id = {})", id);
 
         authorizationService.checkBasicAuthorization(id);
-
-        try {
-            userRepository.deleteById(id);
-        } catch (EmptyResultDataAccessException e) {
-            throw new NotFoundException(e.getMessage(), e);
-        }
+        userRepository.deleteById(id);
     }
 
     @Override
@@ -185,7 +156,7 @@ public class UserServiceImpl implements UserService {
 
         Optional<User> userOptional = userRepository.findByEmail(email);
         if (userOptional.isEmpty()) {
-            throw new NotFoundException("Es existiert kein User mit dieser Mail-Adresse.");
+            throw new NotFoundException("Nutzer mit dieser Mail-Adresse existiert nicht");
         }
         User user = userOptional.get();
 
@@ -217,16 +188,10 @@ public class UserServiceImpl implements UserService {
             log.trace("changePassword(passwordChangeDto = {}, id = {})", passwordChangeDto, id);
         }
 
-        try {
-            if (id != null) {
-                userValidation.validateChangePasswordInput(passwordChangeDto, id);
-            } else {
-                userValidation.validateChangePasswordInput(passwordChangeDto, secureTokenService.findByToken(passwordChangeDto.getToken()).getId());
-            }
-        } catch (ValidationException e) {
-            throw new ValidationException(e.getMessage(), e);
-        } catch (ConflictException e) {
-            throw new ConflictException(e.getMessage(), e);
+        if (id != null) {
+            userValidation.validateChangePasswordInput(passwordChangeDto, id);
+        } else {
+            userValidation.validateChangePasswordInput(passwordChangeDto, secureTokenService.findByToken(passwordChangeDto.getToken()).getId());
         }
 
         String token = passwordChangeDto.getToken();
@@ -247,14 +212,14 @@ public class UserServiceImpl implements UserService {
             }
         } else {
             if (id == null) {
-                throw new NotFoundException("User existiert nicht!");
+                throw new NotFoundException("Nutzer existiert nicht!");
             }
             Optional<User> userOptional = userRepository.findById(id);
             User update;
             if (userOptional.isPresent()) {
                 update = userOptional.get();
             } else {
-                throw new NotFoundException("User existiert nicht!");
+                throw new NotFoundException("Nutzer existiert nicht!");
             }
             update.setPasswordHash(passwordEncoder.encode(passwordChangeDto.getNewPassword()));
             return userMapper.userToDetailedUserDto(update);
@@ -269,7 +234,7 @@ public class UserServiceImpl implements UserService {
         try {
             Optional<User> userOptional = userRepository.findByEmail(email);
             if (userOptional.isEmpty()) {
-                throw new NotFoundException("Es konnte kein Benutzer gefunden werden.");
+                throw new NotFoundException("Nutzername existiert nicht");
             }
             User user = userOptional.get();
             List<GrantedAuthority> grantedAuthorities;
@@ -291,12 +256,11 @@ public class UserServiceImpl implements UserService {
         log.trace("findUserByEmail(email = {})", email);
 
         authorizationService.checkBasicAuthorization(email);
-
         Optional<User> userOptional = userRepository.findByEmail(email);
         if (userOptional.isPresent()) {
             return userMapper.userToSimpleUserDto(userOptional.get());
         } else {
-            throw new NotFoundException("Es konnte kein Benutzer gefunden werden.");
+            throw new NotFoundException("Nutzer existiert nicht");
         }
     }
 
@@ -339,7 +303,7 @@ public class UserServiceImpl implements UserService {
         if (userOptional.isPresent()) {
             sendEmailVerificationLink(userOptional.get());
         } else {
-            throw new NotFoundException("Es konnte kein Benutzer gefunden werden.");
+            throw new NotFoundException("Nutzer existiert nicht");
         }
     }
 

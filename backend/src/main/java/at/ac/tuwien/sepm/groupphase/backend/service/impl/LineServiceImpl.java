@@ -78,24 +78,24 @@ public class LineServiceImpl implements LineService {
         if (lineOptional.isPresent()) {
             line = lineOptional.get();
         } else {
-            throw new NotFoundException("Zeile existiert nicht!");
+            throw new NotFoundException("Zeile existiert nicht");
         }
         Optional<Page> pageOptional = pageRepository.findById(line.getPage().getId());
         Page page;
         if (pageOptional.isPresent()) {
             page = pageOptional.get();
         } else {
-            throw new NotFoundException("Seite existiert nicht!");
+            throw new NotFoundException("Seite existiert nicht");
         }
         Optional<Script> scriptOptional = scriptRepository.findById(page.getScript().getId());
         Script script;
         if (scriptOptional.isPresent()) {
             script = scriptOptional.get();
         } else {
-            throw new NotFoundException();
+            throw new NotFoundException("Skript existiert nicht");
         }
         if (!scriptOptional.get().getOwner().getId().equals(user.getId())) {
-            throw new UnauthorizedException("Der Nutzer darf diese Zeile nicht bearbeiten.");
+            throw new UnauthorizedException("Unberechtigte Überarbeitung");
         }
         if (updateLineDto.getContent() != null) {
             line.setContent(updateLineDto.getContent());

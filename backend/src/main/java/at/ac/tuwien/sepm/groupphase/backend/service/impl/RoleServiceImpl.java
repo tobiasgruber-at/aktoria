@@ -3,7 +3,6 @@ package at.ac.tuwien.sepm.groupphase.backend.service.impl;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.MergeRolesDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.RoleDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.RoleMapper;
-import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.UserMapper;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Line;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Role;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Script;
@@ -19,7 +18,6 @@ import at.ac.tuwien.sepm.groupphase.backend.repository.ScriptRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.SessionRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.AuthorizationService;
 import at.ac.tuwien.sepm.groupphase.backend.service.RoleService;
-import at.ac.tuwien.sepm.groupphase.backend.service.ScriptService;
 import at.ac.tuwien.sepm.groupphase.backend.service.SessionService;
 import at.ac.tuwien.sepm.groupphase.backend.validation.RoleValidation;
 import lombok.extern.slf4j.Slf4j;
@@ -43,21 +41,23 @@ public class RoleServiceImpl implements RoleService {
     private final LineRepository lineRepository;
     private final RoleMapper roleMapper;
     private final AuthorizationService authorizationService;
-    private final ScriptService scriptService;
-    private final UserMapper userMapper;
     private final ScriptRepository scriptRepository;
     private final SessionService sessionService;
     private final SessionRepository sessionRepository;
 
-    public RoleServiceImpl(RoleRepository roleRepository, RoleValidation roleValidation, LineRepository lineRepository, RoleMapper roleMapper, AuthorizationService authorizationService,
-                           ScriptService scriptService, UserMapper userMapper, ScriptRepository scriptRepository, SessionRepository sessionRepository, SessionService sessionService) {
+    public RoleServiceImpl(RoleRepository roleRepository,
+                           RoleValidation roleValidation,
+                           LineRepository lineRepository,
+                           RoleMapper roleMapper,
+                           AuthorizationService authorizationService,
+                           ScriptRepository scriptRepository,
+                           SessionRepository sessionRepository,
+                           SessionService sessionService) {
         this.roleRepository = roleRepository;
         this.roleValidation = roleValidation;
         this.lineRepository = lineRepository;
         this.roleMapper = roleMapper;
         this.authorizationService = authorizationService;
-        this.scriptService = scriptService;
-        this.userMapper = userMapper;
         this.scriptRepository = scriptRepository;
         this.sessionService = sessionService;
         this.sessionRepository = sessionRepository;
@@ -77,10 +77,10 @@ public class RoleServiceImpl implements RoleService {
         if (scriptOptional.isPresent()) {
             script = scriptOptional.get();
         } else {
-            throw new NotFoundException();
+            throw new NotFoundException("Skript existiert nicht");
         }
         if (!script.getOwner().getId().equals(user.getId())) {
-            throw new UnauthorizedException("Dieser User ist nicht berechtigt diese Datei zu bearbeiten");
+            throw new UnauthorizedException("Unberechtigte Überarbeitung");
         }
         List<Role> allReplaceRoles = roleRepository.findAllById(mergeRolesDto.getIds());
         if (!(script.getRoles().containsAll(allReplaceRoles))) {
@@ -92,7 +92,7 @@ public class RoleServiceImpl implements RoleService {
         if (keepOptional.isPresent()) {
             keep = keepOptional.get();
         } else {
-            throw new NotFoundException("Rolle existiert nicht!");
+            throw new NotFoundException("Rolle existiert nicht");
         }
         if (allReplaceRoles.size() == 1
             && allReplaceRoles.get(0).getId().equals(idToKeep)) {
@@ -102,31 +102,31 @@ public class RoleServiceImpl implements RoleService {
         for (Role r : allReplaceRoles) {
             lines.addAll(r.getLines());
         }
-        for (int i = 0; i < lines.size(); i++) {
-            allReplaceRoles.forEach(lines.get(i).getSpokenBy()::remove);
-            lines.get(i).getSpokenBy().add(keep);
-            lineRepository.save(lines.get(i));
-            if (!(keep.getLines().contains(lines.get(i)))) {
-                keep.getLines().add(lineRepository.getById(lines.get(i).getId()));
+        for (Line line : lines) {
+            allReplaceRoles.forEach(line.getSpokenBy()::remove);
+            line.getSpokenBy().add(keep);
+            lineRepository.save(line);
+            if (!(keep.getLines().contains(line))) {
+                keep.getLines().add(lineRepository.getById(line.getId()));
             }
         }
         allReplaceRoles.remove(keep);
         List<Long> idsToDelete = new LinkedList<>();
-        for (int i = 0; i < allReplaceRoles.size(); i++) {
-            idsToDelete.add(allReplaceRoles.get(i).getId());
+        for (Role allReplaceRole : allReplaceRoles) {
+            idsToDelete.add(allReplaceRole.getId());
         }
-        for (int i = 0; i < allReplaceRoles.size(); i++) {
-            allReplaceRoles.get(i).setLines(null);
+        for (Role allReplaceRole : allReplaceRoles) {
+            allReplaceRole.setLines(null);
         }
 
         List<Session> sessions = new LinkedList<>();
-        for (int i = 0; i < allReplaceRoles.size(); i++) {
-            sessions.addAll(allReplaceRoles.get(i).getSessions());
+        for (Role allReplaceRole : allReplaceRoles) {
+            sessions.addAll(allReplaceRole.getSessions());
         }
 
-        for (int i = 0; i < sessions.size(); i++) {
-            sessions.get(i).setRole(keep);
-            sessionRepository.save(sessions.get(i));
+        for (Session session : sessions) {
+            session.setRole(keep);
+            sessionRepository.save(session);
         }
 
         Script script1 = scriptRepository.getById(sid);
@@ -150,14 +150,14 @@ public class RoleServiceImpl implements RoleService {
         }
         Optional<Role> roleOpt = roleRepository.findById(id);
         if (roleOpt.isEmpty()) {
-            throw new NotFoundException("Role not found");
+            throw new NotFoundException("Rolle existiert nicht");
         }
         Role role = roleOpt.get();
         if (!role.getScript().getOwner().getId().equals(user.getId()) && !role.getScript().getParticipants().contains(user)) {
-            throw new UnauthorizedException("User is not authorized to view this Role");
+            throw new UnauthorizedException("Unberechtigte Einsicht");
         }
         if (!role.getScript().getId().equals(sid)) {
-            throw new ConflictException("Role does not belong to this script");
+            throw new ConflictException("Rolle existiert nicht im Skript");
         }
         return roleMapper.roleToRoleDto(role);
     }
