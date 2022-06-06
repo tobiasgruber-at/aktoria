@@ -39,7 +39,7 @@ public class UnparsedScript {
         PDDocument document = PDDocument.load(pdfFile.getBytes());
 
         if (document.isEncrypted()) {
-            throw new IOException("Datei ist verschlüsselt.");
+            throw new IOException("Datei ist verschlüsselt");
         }
 
         PDFTextStripper stripper = new PDFTextStripper();
