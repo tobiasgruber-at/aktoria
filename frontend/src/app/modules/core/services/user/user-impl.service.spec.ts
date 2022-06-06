@@ -1,16 +1,16 @@
-import {TestBed} from '@angular/core/testing';
-import {UserImplService} from './user-impl.service';
-import {SharedTestingModule} from '../../../shared/shared-testing.module';
+import { TestBed } from '@angular/core/testing';
+import { UserService } from './user.service';
+import { SharedTestingModule } from '../../../shared/shared-testing.module';
 
-describe('UserImplService', () => {
-  let service: UserImplService;
+describe('UserService', () => {
+  let service: UserService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [UserImplService],
+      providers: [UserService],
       imports: [SharedTestingModule]
     });
-    service = TestBed.inject(UserImplService);
+    service = TestBed.inject(UserService);
   });
 
   it('should be created', () => {

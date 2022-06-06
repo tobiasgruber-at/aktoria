@@ -49,7 +49,7 @@ public class ScriptDataGenerator {
     //    + "consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
     public static final String TEST_ROLE_NAME = "Role";
     public static final Color TEST_ROLE_COLOR = Color.CYAN;
-    public static final String[] TEST_LINE_CONTENT = {"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    public static final String[] TEST_LINE_CONTENT = { "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
         "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit "
             + "esse cillum dolore eu fugiat nulla pariatur.",
         "Nisl suscipit adipiscing bibendum est ultricies integer quis. Libero enim sed faucibus turpis in eu. Dignissim enim sit amet venenatis urna. Vitae congue eu consequat ac felis donec et. "
@@ -68,7 +68,7 @@ public class ScriptDataGenerator {
         "Dieses Arzneimittel enthält 300 mg Fructose und 523 mg Sorbitol pro Lutschpastille. Sorbitol ist eine Quelle für Fructose.",
         "Sprechen Sie mit Ihrem Arzt bevor Sie (oder Ihr Kind) dieses Arzneimittel einnehmen/erhalten, wenn Ihr Arzt Ihnen mitgeteilt hat, dass Sie (oder Ihr Kind) eine Unverträglichkeit gegenüber einigen "
             + "Zuckern haben oder wenn bei Ihnen eine hereditäre Fructoseintoleranz (HFI) - eine seltene angeborene Erkrankung, bei der Fructose nicht abgebaut werden kann - festgestellt wurde.",
-        "Die Anwendung bei Kindern unter 6 Jahren wird aufgrund fehlender Daten und der Gefahr von unabsichtlichem Verschlucken der ganzen Lutschpastille nicht empfohlen."};
+        "Die Anwendung bei Kindern unter 6 Jahren wird aufgrund fehlender Daten und der Gefahr von unabsichtlichem Verschlucken der ganzen Lutschpastille nicht empfohlen." };
 
     private final UserRepository userRepository;
     private final ScriptRepository scriptRepository;

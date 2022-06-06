@@ -38,7 +38,6 @@ import at.ac.tuwien.sepm.groupphase.backend.service.parsing.script.ParsedScript;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.script.UnparsedScript;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.scriptparser.ScriptParser;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.scriptparser.impl.ScriptParserImpl;
-import at.ac.tuwien.sepm.groupphase.backend.validation.UserValidation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -71,7 +70,6 @@ public class ScriptServiceImpl implements ScriptService {
     private final LineRepository lineRepository;
     private final RoleRepository roleRepository;
     private final AuthorizationService authorizationService;
-    private final UserValidation userValidation;
     private final SecureTokenService secureTokenService;
     private final MailSender mailSender;
 
@@ -84,7 +82,6 @@ public class ScriptServiceImpl implements ScriptService {
         LineRepository lineRepository,
         RoleRepository roleRepository,
         AuthorizationService authorizationService,
-        UserValidation userValidation,
         SecureTokenService secureTokenService,
         MailSender mailSender
     ) {
@@ -96,7 +93,6 @@ public class ScriptServiceImpl implements ScriptService {
         this.lineRepository = lineRepository;
         this.roleRepository = roleRepository;
         this.authorizationService = authorizationService;
-        this.userValidation = userValidation;
         this.secureTokenService = secureTokenService;
         this.mailSender = mailSender;
     }
@@ -280,7 +276,7 @@ public class ScriptServiceImpl implements ScriptService {
 
         Optional<Script> script = scriptRepository.findById(id);
         if (script.isEmpty()) {
-            throw new NotFoundException();
+            throw new NotFoundException("Skript existiert nicht");
         }
 
         return scriptMapper.scriptToScriptDto(script.get());
@@ -295,22 +291,21 @@ public class ScriptServiceImpl implements ScriptService {
         if (user == null) {
             throw new UnauthorizedException();
         }
-        Optional<Script> script = scriptRepository.findById(id);
-        Script script1 = null;
-        if (script.isPresent()) {
-            script1 = script.get();
-            if (!script.get().getOwner().getId().equals(user.getId())) {
-                throw new UnauthorizedException("Dieser User ist nicht berechtigt diese Datei zu löschen");
+        Optional<Script> scriptOptional = scriptRepository.findById(id);
+        Script script;
+        if (scriptOptional.isPresent()) {
+            script = scriptOptional.get();
+            if (!scriptOptional.get().getOwner().getId().equals(user.getId())) {
+                throw new UnauthorizedException("Unberechtigter Löschvorgang");
             }
         } else {
-            throw new NotFoundException();
+            throw new NotFoundException("Skript existiert nicht");
         }
 
         //remove script from owner
-        User owner = script1.getOwner();
-        owner.getScripts().remove(script1);
+        User owner = script.getOwner();
+        owner.getScripts().remove(script);
         userRepository.save(owner);
-
 
         scriptRepository.deleteById(id);
     }
@@ -326,10 +321,10 @@ public class ScriptServiceImpl implements ScriptService {
         }
         Optional<Script> scriptOptional = scriptRepository.findById(id);
         if (scriptOptional.isPresent() && !scriptOptional.get().getOwner().getId().equals(user.getId())) {
-            throw new UnauthorizedException("User is not permitted to edit this script");
+            throw new UnauthorizedException("Unberechtigte Bearbeitung");
         }
         if (scriptOptional.isEmpty()) {
-            throw new NotFoundException();
+            throw new NotFoundException("Skript existiert nicht");
         }
         Script script = scriptOptional.get();
         if (updateScriptDto.getName() != null) {
@@ -348,7 +343,7 @@ public class ScriptServiceImpl implements ScriptService {
         }
         Script script = scriptRepository.getScriptBySessionId(id);
         if (!script.getOwner().getId().equals(user.getId()) && !script.getParticipants().contains(user)) {
-            throw new UnauthorizedException("User not allowed to view this script");
+            throw new UnauthorizedException("Unberechtigte Einsicht");
         }
         return scriptMapper.scriptToScriptDto(script);
     }
@@ -382,7 +377,7 @@ public class ScriptServiceImpl implements ScriptService {
             }
 
         } else {
-            throw new NotFoundException();
+            throw new NotFoundException("Skript existiert nicht");
         }
     }
 
@@ -409,10 +404,10 @@ public class ScriptServiceImpl implements ScriptService {
                     throw new UnauthorizedException();
                 }
                 if (script.getOwner().getId().equals(user.getId())) {
-                    throw new ConflictException("Du kannst nicht deinem eigenen Skript nochmal beitreten!");
+                    throw new ConflictException("Du kannst nicht deinem eigenen Skript nochmal beitreten");
                 }
                 if (script.getParticipants().contains(user)) {
-                    throw new ConflictException("Du bist diesem Skript bereits beigetreten!");
+                    throw new ConflictException("Du bist diesem Skript bereits beigetreten");
                 }
 
                 Set<Script> scripts = user.getParticipatesIn();
@@ -444,7 +439,7 @@ public class ScriptServiceImpl implements ScriptService {
 
             return "http://localhost:4200/#/scripts/" + script.get().getId() + "/join/" + secureToken.getToken();
         } else {
-            throw new NotFoundException();
+            throw new NotFoundException("Skript existiert nicht");
         }
     }
 
@@ -453,12 +448,12 @@ public class ScriptServiceImpl implements ScriptService {
     public void deleteParticipant(Long scriptId, String email) {
         authorizationService.checkMemberAuthorization(scriptId, email);
 
-        Optional<User> userOpt = userRepository.findByEmail(email);
-        Optional<Script> scriptOpt = scriptRepository.findById(scriptId);
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        Optional<Script> scriptOptional = scriptRepository.findById(scriptId);
 
-        if (scriptOpt.isPresent() && userOpt.isPresent()) {
-            Script script = scriptOpt.get();
-            User user = userOpt.get();
+        if (scriptOptional.isPresent() && userOptional.isPresent()) {
+            Script script = scriptOptional.get();
+            User user = userOptional.get();
 
             if (script.getOwner().getId().equals(user.getId())) {
                 Set<User> participants = script.getParticipants();
@@ -483,6 +478,6 @@ public class ScriptServiceImpl implements ScriptService {
             scriptRepository.saveAndFlush(script);
             return;
         }
-        throw new NotFoundException();
+        throw new NotFoundException("Skript oder Nutzer existieren nicht");
     }
 }

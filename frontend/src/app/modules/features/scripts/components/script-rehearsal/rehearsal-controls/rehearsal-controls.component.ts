@@ -1,24 +1,30 @@
-import {Component, OnDestroy, OnInit, TemplateRef} from '@angular/core';
+import {Component, EventEmitter, OnDestroy, OnInit, Output, TemplateRef} from '@angular/core';
 import {ScriptRehearsalService} from '../../../services/script-rehearsal.service';
 import {Subject, takeUntil} from 'rxjs';
 import {SimpleSession} from '../../../../../shared/dtos/session-dtos';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {Router} from '@angular/router';
 import {DetailedScript} from '../../../../../shared/dtos/script-dtos';
-import { SessionService } from '../../../../../core/services/session/session.service';
-import { ToastService } from '../../../../../core/services/toast/toast.service';
-import { Theme } from '../../../../../shared/enums/theme.enum';
+import {SessionService} from '../../../../../core/services/session/session.service';
+import {ToastService} from '../../../../../core/services/toast/toast.service';
+import {Theme} from '../../../../../shared/enums/theme.enum';
 
+/** Control panel for a script rehearsal. */
 @Component({
   selector: 'app-rehearsal-controls',
   templateUrl: './rehearsal-controls.component.html',
   styleUrls: ['./rehearsal-controls.component.scss']
 })
 export class RehearsalControlsComponent implements OnInit, OnDestroy {
+  @Output() readLine: EventEmitter<any> = new EventEmitter<any>();
+  @Output() pauseRead: EventEmitter<any> = new EventEmitter<any>();
+  @Output() resumeRead: EventEmitter<any> = new EventEmitter<any>();
+
   script: DetailedScript = null;
   session: SimpleSession = null;
   interactionDisabled = false;
   endSessionLoading = false;
+  paused: boolean;
   private $destroy = new Subject<void>();
 
   constructor(
@@ -27,15 +33,13 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
     private modalService: NgbModal,
     private router: Router,
     private toastService: ToastService
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
     this.scriptRehearsalService.$session
       .pipe(takeUntil(this.$destroy))
       .subscribe((session) => {
         this.session = session;
-        // TODO: fetch session?
       });
     this.scriptRehearsalService.$script
       .pipe(takeUntil(this.$destroy))
@@ -64,13 +68,14 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
       this.session.currentLineIndex--;
     }
     this.scriptRehearsalService.setSession(this.session);
+    this.readLine.emit();
     setTimeout(() => {
       this.interactionDisabled = false;
     }, 300);
   }
 
   openModal(modal: TemplateRef<any>): void {
-    this.modalService.open(modal, {centered: true});
+    this.modalService.open(modal, { centered: true });
   }
 
   stopSession(modal: NgbActiveModal): void {
@@ -79,6 +84,38 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
     }
     modal.dismiss();
     this.router.navigateByUrl(`/scripts/${this.script.id}`);
+    this.toastService.show({
+      message: 'Lerneinheit beendet.',
+      theme: Theme.primary
+    });
+  }
+
+  isHighlighted() {
+    const lines = this.session.getLines();
+    let currentLine;
+
+    for (const line of lines) {
+      if (line.index === this.session.currentLineIndex) {
+        currentLine = line;
+        break;
+      }
+    }
+
+    return currentLine.roles.some((r) => r.name === this.session.role?.name);
+  }
+
+  pause() {
+    if (!this.isHighlighted()) {
+      this.paused = true;
+      this.pauseRead.emit();
+    }
+  }
+
+  resume() {
+    if (!this.isHighlighted()) {
+      this.paused = false;
+      this.resumeRead.emit();
+    }
   }
 
   private endSession(): void {

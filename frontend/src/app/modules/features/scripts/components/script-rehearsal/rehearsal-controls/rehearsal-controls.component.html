@@ -21,6 +21,33 @@
       src="../../../../../../../assets/icons/forward.svg"
     />
   </app-controls-item>
+
+  <app-controls-item
+    (click)="pause()"
+    ngbTooltip="Pause"
+    [class.disabled]="isHighlighted()"
+    *ngIf="!paused"
+  >
+    <img
+      alt="Pause"
+      class="icon"
+      src="../../../../../../../assets/icons/pause.svg"
+    />
+  </app-controls-item>
+
+  <app-controls-item
+    (click)="resume()"
+    ngbTooltip="Abspielen"
+    [class.disabled]="isHighlighted()"
+    *ngIf="paused"
+  >
+    <img
+      alt="Pause"
+      class="icon"
+      src="../../../../../../../assets/icons/play.svg"
+    />
+  </app-controls-item>
+
   <app-controls-item
     (click)="openModal(stopSessionModal)"
     ngbTooltip="Beenden"
@@ -51,7 +78,7 @@
        >{{ this.deleteError }}</app-alert
      >-->
     Sicher, dass du diese
-    <strong class="text-primary"> Übungseinheit beenden</strong>
-    möchtest?<br/>
+    <strong class="text-primary"> Übungseinheit vorläufig beenden</strong>
+    möchtest?<br />
   </app-modal>
 </ng-template>

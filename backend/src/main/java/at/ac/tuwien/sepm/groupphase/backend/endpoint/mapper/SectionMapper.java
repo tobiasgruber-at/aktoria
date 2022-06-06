@@ -15,7 +15,7 @@ import java.util.List;
  *
  * @author Julia Bernold
  */
-@Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR, uses = {SessionMapper.class, UserMapper.class, LineMapper.class})
+@Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR, uses = { SessionMapper.class, UserMapper.class, LineMapper.class })
 public interface SectionMapper {
 
     SectionDto sectionToSectionDto(Section section);

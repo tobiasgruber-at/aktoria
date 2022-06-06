@@ -52,13 +52,13 @@ public class SectionValidationImpl implements SectionValidation {
 
     private void validateName(String name) throws ValidationException {
         if (name.length() == 0) {
-            throw new ValidationException("Name muss mehr als 0 Zeichen haben!");
+            throw new ValidationException("Name muss mehr als 0 Zeichen haben");
         }
         if (name.trim().length() == 0) {
-            throw new ValidationException("Name darf nicht nur aus Leerzeichen bestehen!");
+            throw new ValidationException("Name darf nicht nur aus Leerzeichen bestehen");
         }
         if (name.length() > 100) {
-            throw new ValidationException("Name darf nicht länger als 100 Zeichen sein!");
+            throw new ValidationException("Name darf nicht länger als 100 Zeichen sein");
         }
     }
 
@@ -69,7 +69,7 @@ public class SectionValidationImpl implements SectionValidation {
         }
         Optional<User> user = userRepository.findById(ownerId);
         if (user.isEmpty()) {
-            throw new ValidationException("Besitzer des Lernabschnitts existiert nicht!");
+            throw new ValidationException("Besitzer des Lernabschnitts existiert nicht");
         }
         Optional<Line> start = lineRepository.findById(startId);
         if (start.isEmpty()) {
@@ -88,7 +88,7 @@ public class SectionValidationImpl implements SectionValidation {
             throw new ValidationException("Lernabschnitt hat kein Ende");
         }
         if (startId > endId) {
-            throw new ValidationException("Anfang muss vor dem Ende liegen!");
+            throw new ValidationException("Anfang muss vor dem Ende liegen");
         }
         Optional<Line> start = lineRepository.findById(startId);
         Optional<Line> end = lineRepository.findById(endId);
@@ -101,14 +101,14 @@ public class SectionValidationImpl implements SectionValidation {
         Script startScript = start.get().getPage().getScript();
         Script endScript = end.get().getPage().getScript();
         if (!Objects.equals(startScript.getId(), endScript.getId())) {
-            throw new ValidationException("Start und Ende müssen im selben Skript liegen!");
+            throw new ValidationException("Start und Ende müssen im selben Skript liegen");
         }
     }
 
     public void ownerLoggedIn(Long ownerId) throws UnauthorizedException {
         User loggedIn = authorizationService.getLoggedInUser();
         if (!Objects.equals(ownerId, loggedIn.getId())) {
-            throw new UnauthorizedException("Ersteller des Lernabschnitts ist nicht der eingeloggte Nutzer!");
+            throw new UnauthorizedException("Ersteller des Lernabschnitts ist nicht der eingeloggte Nutzer");
         }
     }
 }

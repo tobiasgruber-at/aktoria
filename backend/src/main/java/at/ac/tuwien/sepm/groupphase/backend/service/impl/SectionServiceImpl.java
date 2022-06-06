@@ -11,7 +11,6 @@ import at.ac.tuwien.sepm.groupphase.backend.exception.UnauthorizedException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.LineRepository;
 import at.ac.tuwien.sepm.groupphase.backend.repository.SectionRepository;
-import at.ac.tuwien.sepm.groupphase.backend.repository.SessionRepository;
 import at.ac.tuwien.sepm.groupphase.backend.service.AuthorizationService;
 import at.ac.tuwien.sepm.groupphase.backend.service.SectionService;
 import at.ac.tuwien.sepm.groupphase.backend.validation.SectionValidation;
@@ -36,7 +35,6 @@ public class SectionServiceImpl implements SectionService {
     private final SectionMapper sectionMapper;
     private final SectionValidation sectionValidation;
     private final LineRepository lineRepository;
-    private final SessionRepository sessionRepository;
 
     @Autowired
     public SectionServiceImpl(
@@ -44,15 +42,13 @@ public class SectionServiceImpl implements SectionService {
         AuthorizationService authorizationService,
         SectionMapper sectionMapper,
         SectionValidation sectionValidation,
-        LineRepository lineRepository,
-        SessionRepository sessionRepository
+        LineRepository lineRepository
     ) {
         this.sectionRepository = sectionRepository;
         this.authorizationService = authorizationService;
         this.sectionMapper = sectionMapper;
         this.sectionValidation = sectionValidation;
         this.lineRepository = lineRepository;
-        this.sessionRepository = sessionRepository;
     }
 
 
@@ -69,7 +65,7 @@ public class SectionServiceImpl implements SectionService {
         Optional<Line> start = lineRepository.findById(simpleSectionDto.getStartLineId());
         Optional<Line> end = lineRepository.findById(simpleSectionDto.getEndLineId());
         if (start.isEmpty() || end.isEmpty()) {
-            throw new ValidationException("Start oder Ende existiert nicht!");
+            throw new ValidationException("Start oder Ende existiert nicht");
         }
         Section section = Section
             .builder()
@@ -95,7 +91,7 @@ public class SectionServiceImpl implements SectionService {
         authorizationService.checkBasicAuthorization(user.getId());
         Optional<Section> section = sectionRepository.findById(id);
         if (section.isEmpty()) {
-            throw new NotFoundException();
+            throw new NotFoundException("Abschnitt existiert nicht");
         }
         try {
             sectionValidation.ownerLoggedIn(section.get().getOwner().getId());
@@ -118,7 +114,7 @@ public class SectionServiceImpl implements SectionService {
 
         Optional<Section> section = sectionRepository.findById(id);
         if (section.isEmpty()) {
-            throw new NotFoundException();
+            throw new NotFoundException("Abschnitt existiert nicht");
         }
         try {
             sectionValidation.ownerLoggedIn(section.get().getOwner().getId());

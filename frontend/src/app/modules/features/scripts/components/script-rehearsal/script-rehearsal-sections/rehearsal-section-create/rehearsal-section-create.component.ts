@@ -14,20 +14,17 @@ import {
   IsMarkingSection,
   ScriptViewerService
 } from '../../../../services/script-viewer.service';
-import { SimpleScript } from '../../../../../../shared/dtos/script-dtos';
+import { Role, SimpleScript } from '../../../../../../shared/dtos/script-dtos';
 import {
   CreateSection,
   SimpleSection
 } from '../../../../../../shared/dtos/section-dtos';
 import { SessionService } from '../../../../../../core/services/session/session.service';
 import { SectionService } from '../../../../../../core/services/section/section.service';
-import { UserService } from '../../../../../../core/services/user/user-service';
+import { UserService } from '../../../../../../core/services/user/user.service';
 import { SimpleUser } from '../../../../../../shared/dtos/user-dtos';
 import { CreateSession } from '../../../../../../shared/dtos/session-dtos';
-import {
-  ScriptRehearsalService,
-  ScriptSelectedRoleMapping
-} from '../../../../services/script-rehearsal.service';
+import { ScriptRehearsalService } from '../../../../services/script-rehearsal.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -38,14 +35,14 @@ import { Router } from '@angular/router';
 export class RehearsalSectionCreateComponent
   extends FormBase
   implements OnInit, OnDestroy {
+  @Output() private cancel = new EventEmitter<void>();
+  @HostBinding('class') private classes = 'd-flex flex-column flex-grow-1';
   markedSection: SimpleSection = null;
   isMarkingSection: IsMarkingSection = null;
   script: SimpleScript = null;
-  @Output() private cancel = new EventEmitter<void>();
-  @HostBinding('class') private classes = 'd-flex flex-column flex-grow-1';
   private $destroy = new Subject<void>();
   private user: SimpleUser = null;
-  private selectedRoles: ScriptSelectedRoleMapping = {};
+  private selectedRole: Role = null;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -90,16 +87,15 @@ export class RehearsalSectionCreateComponent
         }
         this.isMarkingSection = isMarkingSection;
       });
-    this.userService
-      .$ownUser()
+    this.userService.$ownUser
       .pipe(takeUntil(this.$destroy))
       .subscribe((user) => {
         this.user = user;
       });
     this.scriptRehearsalService.$selectedRole
       .pipe(takeUntil(this.$destroy))
-      .subscribe((roles) => {
-        this.selectedRoles = roles;
+      .subscribe((role) => {
+        this.selectedRole = role;
       });
   }
 
@@ -125,14 +121,12 @@ export class RehearsalSectionCreateComponent
       next: (createdSection) => {
         const session: CreateSession = {
           sectionId: createdSection.id,
-          roleId: this.selectedRoles?.[this.script.getId()]
+          roleId: this.selectedRole?.id
         };
         this.sessionService.start(session).subscribe({
           next: (createdSession) => {
-            createdSession.init(this.script, createdSection);
-            this.scriptRehearsalService.setSession(createdSession);
             this.router.navigateByUrl(
-              `/scripts/${this.script?.getId()}/rehearse`
+              `/scripts/${this.script?.getId()}/rehearse/${createdSession.id}`
             );
           },
           error: (err) => this.handleError(err)

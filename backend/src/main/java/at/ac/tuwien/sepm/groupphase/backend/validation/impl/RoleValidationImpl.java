@@ -13,10 +13,10 @@ public class RoleValidationImpl implements RoleValidation {
     @Override
     public void validateRoleName(String name) {
         if (name == null) {
-            throw new ValidationException("Kein Rollennamen vorhanden!");
+            throw new ValidationException("Kein Rollennamen vorhanden");
         }
         if (!(name.equals(name.toUpperCase(Locale.GERMAN)))) {
-            throw new ValidationException("Rolle muss in Großbuchstaben geschrieben sein!");
+            throw new ValidationException("Rolle muss in Großbuchstaben geschrieben sein");
         }
         if (name.length() > 100) {
             throw new ValidationException("Rolle ist zu lang!");

@@ -1,3 +1,7 @@
 .role-name {
-  max-width: 13em;
+  max-width: 7em;
+
+  & + .suffix {
+    white-space: break-spaces;
+  }
 }

@@ -39,7 +39,6 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
@@ -199,10 +198,11 @@ class ScriptEndpointIntegrationTest {
                 .perform(MockMvcRequestBuilders
                     .post(ScriptEndpoint.path)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content("{\n"
-                        + "    \"id\": 2,\n"
-                        + "    \"name\": \"Stück\",\n"
-                        + "    \"pages\": [")
+                    .content("""
+                        {
+                            "id": 2,
+                            "name": "Stück",
+                            "pages": [""")
                     .accept(MediaType.APPLICATION_JSON)
                 ).andExpect(status().is4xxClientError());
         }

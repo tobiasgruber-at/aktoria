@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { AuthService } from './modules/core/services/auth/auth-service';
-import { UserService } from './modules/core/services/user/user-service';
+import { AuthService } from './modules/core/services/auth/auth.service';
+import { UserService } from './modules/core/services/user/user.service';
 import { Subject, takeUntil } from 'rxjs';
 import { ToastService } from './modules/core/services/toast/toast.service';
 import { Theme } from './modules/shared/enums/theme.enum';
@@ -38,8 +38,7 @@ export class AppComponent implements OnInit, OnDestroy {
    * <strong>On Logout: </strong> Resets state of all services.
    */
   private handleLoginChanges(): void {
-    this.authService
-      .$loginChanges()
+    this.authService.$loginChanges
       .pipe(takeUntil(this.$destroy))
       .subscribe((loggedIn) => {
         if (!loggedIn) {

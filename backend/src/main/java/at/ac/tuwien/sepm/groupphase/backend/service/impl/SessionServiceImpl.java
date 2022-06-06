@@ -79,11 +79,11 @@ public class SessionServiceImpl implements SessionService {
         if (scriptOptional.isPresent()) {
             script = scriptOptional.get();
         } else {
-            throw new NotFoundException();
+            throw new NotFoundException("Skript existiert nicht");
         }
         if (!script.getOwner().getId().equals(user.getId())
             && script.getParticipants().stream().noneMatch(participant -> participant.getId().equals(user.getId()))) {
-            throw new UnauthorizedException();
+            throw new UnauthorizedException("Unberechtigter Zugriff");
         }
         List<Section> sectionList = sectionRepository.findAll();
         List<Section> affected = new LinkedList<>();
@@ -112,11 +112,11 @@ public class SessionServiceImpl implements SessionService {
         if (sessionOptional.isPresent()) {
             session = sessionOptional.get();
         } else {
-            throw new NotFoundException();
+            throw new NotFoundException("Sitzung existiert nicht");
         }
         Section section = session.getSection();
         if (!section.getOwner().getId().equals(user.getId())) {
-            throw new UnauthorizedException();
+            throw new UnauthorizedException("Unberechtigter Zugriff");
         }
         session.setDeprecated(true);
         sessionRepository.save(session);
@@ -132,14 +132,14 @@ public class SessionServiceImpl implements SessionService {
         }
         Optional<Section> section = sectionRepository.findById(simpleSessionDto.getSectionId());
         if (section.isEmpty()) {
-            throw new ValidationException("Section not found");
+            throw new ValidationException("Abschnitt existiert nicht");
         }
         if (!section.get().getOwner().getId().equals(user.getId())) {
-            throw new UnauthorizedException("User not permitted to create session for this section");
+            throw new UnauthorizedException("Unberechtigte Erzeugung");
         }
         Optional<Role> role = roleRepository.findById(simpleSessionDto.getRoleId());
         if (role.isEmpty()) {
-            throw new ValidationException("Role not found");
+            throw new ValidationException("Rolle existiert nicht");
         }
         Session session = Session.builder()
             .start(LocalDateTime.now())
@@ -163,11 +163,11 @@ public class SessionServiceImpl implements SessionService {
         }
         Optional<Session> session = sessionRepository.findById(id);
         if (session.isEmpty()) {
-            throw new NotFoundException("Session not found");
+            throw new NotFoundException("Sitzung existiert nicht");
         }
         Session curSession = session.get();
         if (!curSession.getSection().getOwner().getId().equals(user.getId())) {
-            throw new UnauthorizedException("User not permitted to update this session");
+            throw new UnauthorizedException("Unberechtigte Überarbeitung");
         }
         if (updateSessionDto.getDeprecated() != null) {
             curSession.setDeprecated(updateSessionDto.getDeprecated());
@@ -175,16 +175,16 @@ public class SessionServiceImpl implements SessionService {
         if (updateSessionDto.getCurrentLineId() != null) {
             Optional<Line> line = lineRepository.findById(updateSessionDto.getCurrentLineId());
             if (line.isEmpty()) {
-                throw new NotFoundException("Current line not found");
+                throw new NotFoundException("Zeile existiert nicht");
             }
             if (!curSession.getSection().getStartLine().getPage().getScript().getId()
                 .equals(line.get().getPage().getScript().getId())) {
-                throw new ValidationException("Current line not in correct script");
+                throw new ValidationException("Zeile existiert nicht im angegebenen Skript");
             }
             if (curSession.getSection().getEndLine().getPage().getIndex() <= line.get().getPage().getIndex()) {
                 if (curSession.getSection().getEndLine().getPage().getIndex() < line.get().getPage().getIndex()
                     || curSession.getSection().getEndLine().getIndex() < line.get().getIndex()) {
-                    throw new ValidationException("Current line may not be after the end of the section");
+                    throw new ValidationException("Zeile muss innerhalb des Abschnittes liegen");
                 }
             }
             curSession.setCurrentLine(line.get());
@@ -206,14 +206,14 @@ public class SessionServiceImpl implements SessionService {
         }
         Optional<Session> session = sessionRepository.findById(id);
         if (session.isEmpty()) {
-            throw new NotFoundException("Session not found");
+            throw new NotFoundException("Sitzung existiert nicht");
         }
         Session curSession = session.get();
         if (!curSession.getSection().getOwner().getId().equals(user.getId())) {
-            throw new UnauthorizedException("User not permitted to update this session");
+            throw new UnauthorizedException("Unberechtigte Überarbeitung");
         }
         if (curSession.getDeprecated()) {
-            throw new ConflictException("Session is already deprecated");
+            throw new ConflictException("Sitzung ist veraltet");
         }
         curSession.setEnd(LocalDateTime.now());
         curSession = sessionRepository.save(curSession);
@@ -230,11 +230,11 @@ public class SessionServiceImpl implements SessionService {
         }
         Optional<Session> session = sessionRepository.findById(id);
         if (session.isEmpty()) {
-            throw new NotFoundException("Session not found");
+            throw new NotFoundException("Sitzung existiert nicht");
         }
         Session curSession = session.get();
         if (!curSession.getSection().getOwner().getId().equals(user.getId())) {
-            throw new UnauthorizedException("User not permitted to view this session");
+            throw new UnauthorizedException("Unberechtigte Einsicht");
         }
         return sessionMapper.sessionToSessionDto(curSession);
     }

@@ -8,19 +8,19 @@ import {
   SimpleScript
 } from '../../../shared/dtos/script-dtos';
 import { tap } from 'rxjs/operators';
-import { AuthService } from '../auth/auth-service';
+import { AuthService } from '../auth/auth.service';
+import { Cache } from '../../../shared/interfaces/cache';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ScriptService {
   private baseUri: string = this.globals.backendUri + '/scripts';
-  /** Script that the user parsed, but is not saved yet. */
-  private stagedScript: SimpleScript = null;
+  /** Script that the user parsed, but that isn't saved yet. */
   private stagedScriptSubject = new BehaviorSubject<SimpleScript>(null);
   private scripts: ScriptPreview[] = [];
   private scriptsSubject = new BehaviorSubject<ScriptPreview[]>([]);
-  private fullyLoadedScripts: DetailedScript[] = [];
+  private cachedScripts: Cache<DetailedScript> = {};
 
   constructor(
     private http: HttpClient,
@@ -42,7 +42,6 @@ export class ScriptService {
 
   /** Sets the staged script and notifies the staged-script subject. */
   setStagedScript(script: SimpleScript): void {
-    this.stagedScript = script;
     localStorage.setItem('stagedScript', JSON.stringify(script));
     this.stagedScriptSubject.next(script);
   }
@@ -54,23 +53,13 @@ export class ScriptService {
    * @return script the found script.
    */
   getOne(id: number): Observable<DetailedScript> {
-    const loadedScript = this.fullyLoadedScripts.find((f) => f.id === id);
+    const loadedScript = this.cachedScripts[id];
     return loadedScript
       ? of(loadedScript)
       : this.http.get<DetailedScript>(`${this.baseUri}/${id}`).pipe(
-          map(
-            (script) =>
-              new DetailedScript(
-                script.id,
-                script.owner,
-                script.participants,
-                script.pages,
-                script.roles,
-                script.name
-              )
-          ),
+          map(this.mapScriptInterfaceToClass),
           tap((script) => {
-            this.fullyLoadedScripts.push(script);
+            this.cachedScripts[script.id] = script;
           })
         );
   }
@@ -100,19 +89,7 @@ export class ScriptService {
   getScriptBySession(id): Observable<DetailedScript> {
     return this.http
       .get<DetailedScript>(this.baseUri + '/session?id=' + id)
-      .pipe(
-        map(
-          (script) =>
-            new DetailedScript(
-              script.id,
-              script.owner,
-              script.participants,
-              script.pages,
-              script.roles,
-              script.name
-            )
-        )
-      );
+      .pipe(map(this.mapScriptInterfaceToClass));
   }
 
   /**
@@ -172,7 +149,7 @@ export class ScriptService {
   }
 
   /**
-   * Adds a new participant to the script
+   * Adds a new participant to the script.
    *
    * @param token token of invitation
    * @param scriptId id of the script
@@ -213,7 +190,7 @@ export class ScriptService {
   resetState(): void {
     this.setScripts([]);
     this.setStagedScript(null);
-    this.fullyLoadedScripts = [];
+    this.cachedScripts = {};
     localStorage.setItem('stagedScript', null);
   }
 
@@ -221,5 +198,21 @@ export class ScriptService {
   private setScripts(scripts): void {
     this.scripts = scripts;
     this.scriptsSubject.next(this.scripts);
+  }
+
+  /** Maps a fetched script to a class. */
+  private mapScriptInterfaceToClass(script: DetailedScript): DetailedScript {
+    return new DetailedScript(
+      script.id,
+      script.owner,
+      script.participants.sort((a, b) =>
+        a.firstName < b.firstName ? -1 : a.firstName > b.firstName ? 1 : 0
+      ),
+      script.pages,
+      script.roles.sort((a, b) =>
+        a.name < b.name ? -1 : a.name > b.name ? 1 : 0
+      ),
+      script.name
+    );
   }
 }

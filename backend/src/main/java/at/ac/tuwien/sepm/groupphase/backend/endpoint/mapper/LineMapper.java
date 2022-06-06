@@ -15,7 +15,7 @@ import java.util.List;
  *
  * @author Simon Josef Kreuzpointner
  */
-@Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR, uses = {RoleMapper.class})
+@Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR, uses = { RoleMapper.class })
 public interface LineMapper {
 
     SimpleLineDto lineToSimpleLineDto(Line line);

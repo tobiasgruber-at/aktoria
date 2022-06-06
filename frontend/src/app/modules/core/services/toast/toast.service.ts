@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
-import {Toast} from '../../../shared/interfaces/toast.interface';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {Theme} from '../../../shared/enums/theme.enum';
+import {Toast} from '../../../shared/interfaces/toast';
 
 /** @author Tobias Gruber */
 @Injectable({
