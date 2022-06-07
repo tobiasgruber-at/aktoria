@@ -62,7 +62,6 @@ build-image:
     - mvn -B jib:build -Djib.to.image=registry.reset.inso-w.at/$CI_PROJECT_PATH -Djib.to.tags=$CI_PIPELINE_ID -Djib.to.auth.username=$CI_REGISTRY_USER -Djib.to.auth.password=$CI_REGISTRY_PASSWORD
   only:
     - master
-    - feature/#63-database-migration
 
 deploy:
   stage: deploy
@@ -72,4 +71,3 @@ deploy:
     curl -H 'X-DeployToken: '$DEPLOY_TOKEN -H 'Content-type: application/json' -vf -XPUT --data '{"image": "'$CI_PROJECT_PATH'", "tag": "'$CI_PIPELINE_ID'"}' https://reset.inso.tuwien.ac.at/api/dockerDeployment
   only:
     - master
-    - feature/#63-database-migration
