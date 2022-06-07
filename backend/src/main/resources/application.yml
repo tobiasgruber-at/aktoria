@@ -6,9 +6,9 @@ logging:
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/aktoria
-    driver-class-name: org.postgresql.Driver
-    username: postgres
+    url: jdbc:h2:file:./database/db;AUTO_SERVER=TRUE;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: admin
     password: password
   jpa:
     # Set this property to true if you want to see the executed queries
@@ -19,8 +19,6 @@ spring:
     # is disabled since it breaks the principle of the least astonishment and leads to bad performance. To learn more,
     # follow this link: https://bit.ly/2LaX9ku
     open-in-view: false
-    database: postgresql
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
   mail:
     password: RMjj3XJqM5@b45Ba
     username: aktoria.norepl@gmx.at
