@@ -94,17 +94,43 @@ label {
   }
 }
 
-app-controls-item {
-  img.icon,
-  svg {
+app-controls app-controls-item {
+  &:not(.disabled):hover bi {
+    color: var(--bs-primary) !important;
+  }
+
+  &.pulsing bi {
+    animation: pulsing;
+    animation-duration: 1.5s;
+    animation-iteration-count: infinite;
+  }
+
+  img.icon {
     height: 1.5rem;
   }
 
   bi {
-    color: black;
+    transition: color 200ms ease-in-out;
+    color: var(--bs-dark);
+
+    &.smaller {
+      transform: scale(0.9);
+    }
 
     svg {
-      height: 1.8rem;
+      width: 1.9rem;
+    }
+  }
+
+  @keyframes pulsing {
+    0% {
+      color: var(--bs-dark);
+    }
+    50% {
+      color: var(--bs-danger);
+    }
+    100% {
+      color: var(--bs-dark);
     }
   }
 }

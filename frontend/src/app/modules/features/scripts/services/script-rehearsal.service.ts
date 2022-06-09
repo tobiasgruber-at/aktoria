@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { SimpleSession } from '../../../shared/dtos/session-dtos';
-import { DetailedScript, Role } from '../../../shared/dtos/script-dtos';
-import { BehaviorSubject, map, Observable } from 'rxjs';
+import { DetailedScript, Line, Role } from '../../../shared/dtos/script-dtos';
+import { BehaviorSubject, map, Observable, Subscription } from 'rxjs';
+import { VoiceRecordingService } from './voice-recording.service';
 
 export interface ScriptSelectedRoleMapping {
   [scriptId: number]: number;
@@ -23,6 +24,29 @@ export class ScriptRehearsalService {
       ? JSON.parse(localStorage.getItem(scriptSelectedRoleMappingLSKey))
       : {}
   );
+  /** Whether generally recording mode is active (does not imply, that a line is currently recorded). */
+  private isRecordingModeSubject = new BehaviorSubject<boolean>(false);
+  /** Whether a line is currently recorded. */
+  private isRecordingSubject = new BehaviorSubject<boolean>(false);
+
+  constructor(private voiceRecordingService: VoiceRecordingService) {
+    let curLineIdxSubscription: Subscription;
+    this.sessionSubject.subscribe((session) => {
+      curLineIdxSubscription?.unsubscribe();
+      if (session) {
+        curLineIdxSubscription = session.$currentLineIndex.subscribe(() => {
+          const curLine: Line = session.getCurrentLine();
+          /*if (
+            curLine.roles?.some(
+              (r) =>
+                r.name === this.selectedRoleSubject.getValue()?.name
+            )
+          ) {
+          }*/
+        });
+      }
+    });
+  }
 
   /** @see script */
   get $script(): Observable<DetailedScript> {
@@ -46,6 +70,35 @@ export class ScriptRehearsalService {
     );
   }
 
+  /** @see isRecordingModeSubject */
+  get $isRecordingMode(): Observable<boolean> {
+    return this.isRecordingModeSubject.asObservable();
+  }
+
+  /** @see isRecordingSubject */
+  get $isRecording(): Observable<boolean> {
+    return this.isRecordingSubject.asObservable();
+  }
+
+  /**
+   * Starts recording mode.
+   *
+   * @throws AudioNotSupportedError If browser doesn't support microphone access
+   * @throws AudioNotAllowedError If user rejected microphone access
+   */
+  async startRecordingMode(): Promise<void> {
+    if (this.isRecordingModeSubject.getValue()) {
+      return;
+    }
+    await this.voiceRecordingService.requestPermissions();
+    this.isRecordingModeSubject.next(true);
+  }
+
+  /** Stops recording mode. */
+  stopRecordingMode(): void {
+    this.isRecordingModeSubject.next(false);
+  }
+
   setScript(script: DetailedScript): void {
     this.scriptSubject.next(script);
     // notify roles, as $selectedRole can only be evaluated once the script is loaded
@@ -56,6 +109,7 @@ export class ScriptRehearsalService {
     this.sessionSubject.next(session);
   }
 
+  /** Sets a selected role and caches it in the local storage. */
   setSelectedRole(role: Role): void {
     const selectedRoles = this.selectedRoleSubject.getValue();
     selectedRoles[this.scriptSubject.getValue()?.getId()] = role?.id;

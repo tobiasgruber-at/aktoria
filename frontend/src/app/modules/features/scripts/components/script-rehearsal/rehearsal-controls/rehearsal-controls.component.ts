@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnDestroy, OnInit, Output, TemplateRef} from '@angular/core';
+import {Component, OnDestroy, OnInit, TemplateRef} from '@angular/core';
 import {ScriptRehearsalService} from '../../../services/script-rehearsal.service';
 import {Subject, takeUntil} from 'rxjs';
 import {SimpleSession} from '../../../../../shared/dtos/session-dtos';
@@ -8,6 +8,8 @@ import {DetailedScript} from '../../../../../shared/dtos/script-dtos';
 import {SessionService} from '../../../../../core/services/session/session.service';
 import {ToastService} from '../../../../../core/services/toast/toast.service';
 import {Theme} from '../../../../../shared/enums/theme.enum';
+import {VoiceRecordingService} from '../../../services/voice-recording.service';
+import {VoiceSpeakingService} from '../../../services/voice-speaking.service';
 
 /** Control panel for a script rehearsal. */
 @Component({
@@ -16,15 +18,12 @@ import {Theme} from '../../../../../shared/enums/theme.enum';
   styleUrls: ['./rehearsal-controls.component.scss']
 })
 export class RehearsalControlsComponent implements OnInit, OnDestroy {
-  @Output() readLine: EventEmitter<any> = new EventEmitter<any>();
-  @Output() pauseRead: EventEmitter<any> = new EventEmitter<any>();
-  @Output() resumeRead: EventEmitter<any> = new EventEmitter<any>();
-
   script: DetailedScript = null;
   session: SimpleSession = null;
   interactionDisabled = false;
   endSessionLoading = false;
-  paused: boolean;
+  isRecordingMode = false;
+  speakingPaused = true;
   private $destroy = new Subject<void>();
 
   constructor(
@@ -32,7 +31,9 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
     private sessionService: SessionService,
     private modalService: NgbModal,
     private router: Router,
-    private toastService: ToastService
+    public voiceRecordingService: VoiceRecordingService,
+    private toastService: ToastService,
+    public voiceSpeakingService: VoiceSpeakingService
   ) {}
 
   ngOnInit(): void {
@@ -46,6 +47,16 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
       .subscribe((script) => {
         this.script = script;
       });
+    this.scriptRehearsalService.$isRecordingMode
+      .pipe(takeUntil(this.$destroy))
+      .subscribe((isRecordingMode) => {
+        this.isRecordingMode = isRecordingMode;
+      });
+    this.voiceSpeakingService.$paused
+      .pipe(takeUntil(this.$destroy))
+      .subscribe((paused) => {
+        this.speakingPaused = paused;
+      });
   }
 
   ngOnDestroy() {
@@ -58,17 +69,18 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
       return;
     }
     this.interactionDisabled = true;
+    this.voiceSpeakingService.stopSpeak();
     if (line === 'next') {
       if (this.session?.isAtEnd()) {
         this.endSession();
       } else {
         this.session.currentLineIndex++;
+        this.voiceSpeakingService.speakLine();
       }
     } else if (line === 'prev' && !this.session.isAtStart()) {
       this.session.currentLineIndex--;
+      this.voiceSpeakingService.speakLine();
     }
-    this.scriptRehearsalService.setSession(this.session);
-    this.readLine.emit();
     setTimeout(() => {
       this.interactionDisabled = false;
     }, 300);
@@ -90,31 +102,34 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
     });
   }
 
-  isHighlighted() {
-    const lines = this.session.getLines();
-    let currentLine;
-
-    for (const line of lines) {
-      if (line.index === this.session.currentLineIndex) {
-        currentLine = line;
-        break;
-      }
-    }
-
-    return currentLine.roles.some((r) => r.name === this.session.role?.name);
+  /** Whether the current line is spoken by the users role. */
+  isSelectedRoleSpeaking() {
+    return this.session
+      .getCurrentLine()
+      .roles.some((r) => r.name === this.session.role?.name);
   }
 
   pause() {
-    if (!this.isHighlighted()) {
-      this.paused = true;
-      this.pauseRead.emit();
+    if (!this.isSelectedRoleSpeaking()) {
+      this.voiceSpeakingService.pauseSpeak();
     }
   }
 
   resume() {
-    if (!this.isHighlighted()) {
-      this.paused = false;
-      this.resumeRead.emit();
+    if (!this.isSelectedRoleSpeaking()) {
+      this.voiceSpeakingService.resumeSpeak();
+    }
+  }
+
+  async toggleRecordingMode(): Promise<void> {
+    if (!this.isRecordingMode) {
+      try {
+        await this.scriptRehearsalService.startRecordingMode();
+      } catch (err) {
+        this.toastService.showError(err);
+      }
+    } else {
+      this.scriptRehearsalService.stopRecordingMode();
     }
   }
 

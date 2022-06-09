@@ -7,12 +7,19 @@ import { PageLayoutComponent } from './components/page-layout/page-layout.compon
 import { CardComponent } from './components/card/card.component';
 import { ButtonComponent } from './components/button/button.component';
 import {
+  ArrowLeft,
+  ArrowRight,
   CaretLeftFill,
   CaretRightFill,
   MicFill,
+  MicMuteFill,
+  PauseFill,
   PersonCircle,
   PlayFill,
   ThreeDots,
+  VolumeMuteFill,
+  VolumeOffFill,
+  VolumeUpFill,
   XLg
 } from 'ng-bootstrap-icons/icons';
 import { BootstrapIconsModule } from 'ng-bootstrap-icons';
@@ -37,13 +44,27 @@ const icons = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   PlayFill,
   // eslint-disable-next-line @typescript-eslint/naming-convention
+  PauseFill,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   CaretLeftFill,
   // eslint-disable-next-line @typescript-eslint/naming-convention
   CaretRightFill,
   // eslint-disable-next-line @typescript-eslint/naming-convention
   XLg,
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  MicFill
+  MicFill,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  ArrowLeft,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  ArrowRight,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  MicMuteFill,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  VolumeUpFill,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  VolumeOffFill,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  VolumeMuteFill
 };
 const sharedDeclarations = [
   PageLayoutComponent,

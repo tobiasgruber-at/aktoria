@@ -1,10 +1,10 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {FormBuilder, Validators} from '@angular/forms';
-import {ScriptService} from '../../../../../core/services/script/script.service';
-import {ToastService} from '../../../../../core/services/toast/toast.service';
-import {Theme} from '../../../../../shared/enums/theme.enum';
-import {FormBase} from '../../../../../shared/classes/form-base';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { FormBuilder, Validators } from '@angular/forms';
+import { ScriptService } from '../../../../../core/services/script/script.service';
+import { ToastService } from '../../../../../core/services/toast/toast.service';
+import { Theme } from '../../../../../shared/enums/theme.enum';
+import { FormBase } from '../../../../../shared/classes/form-base';
 
 @Component({
   selector: 'app-script-invite-email',
@@ -12,7 +12,6 @@ import {FormBase} from '../../../../../shared/classes/form-base';
   styleUrls: ['./script-invite-email.component.scss']
 })
 export class ScriptInviteEmailComponent extends FormBase implements OnInit {
-
   scriptId: string;
 
   constructor(
@@ -33,7 +32,7 @@ export class ScriptInviteEmailComponent extends FormBase implements OnInit {
   }
 
   protected processSubmit(): void {
-    const {email} = this.form.value;
+    const { email } = this.form.value;
     this.scriptService.inviteParticipant(email, this.scriptId).subscribe({
       next: () => {
         this.toggleLoading(false);
@@ -44,7 +43,5 @@ export class ScriptInviteEmailComponent extends FormBase implements OnInit {
       },
       error: (err) => this.handleError(err)
     });
-    console.log('test');
   }
-
 }
