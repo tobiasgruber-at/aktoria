@@ -145,6 +145,8 @@ public interface Line extends CharSequence {
     /**
      * The type of possible conflict for a line.
      */
-    3
+    enum ConflictType {
+        VERIFICATION_REQUIRED, ASSIGNMENT_REQUIRED
+    }
 }
 
