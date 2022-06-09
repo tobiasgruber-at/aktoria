@@ -69,17 +69,23 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
       return;
     }
     this.interactionDisabled = true;
+    /** Whether if was speaking before stopped */
+    const wasSpeaking = !this.speakingPaused;
     this.voiceSpeakingService.stopSpeak();
     if (line === 'next') {
       if (this.session?.isAtEnd()) {
         this.endSession();
       } else {
         this.session.currentLineIndex++;
-        this.voiceSpeakingService.speakLine();
+        if (wasSpeaking) {
+          this.voiceSpeakingService.speakLine();
+        }
       }
     } else if (line === 'prev' && !this.session.isAtStart()) {
       this.session.currentLineIndex--;
-      this.voiceSpeakingService.speakLine();
+      if (wasSpeaking) {
+        this.voiceSpeakingService.speakLine();
+      }
     }
     setTimeout(() => {
       this.interactionDisabled = false;
