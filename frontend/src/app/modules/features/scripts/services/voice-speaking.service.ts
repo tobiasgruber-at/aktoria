@@ -18,16 +18,13 @@ export class VoiceSpeakingService implements OnDestroy {
   private canceledCurSynth: boolean;
   private session: SimpleSession;
   private $destroy = new Subject<void>();
-  private pausedSubject = new BehaviorSubject<boolean>(false);
+  private pausedSubject = new BehaviorSubject<boolean>(true);
 
   constructor(private scriptRehearsalService: ScriptRehearsalService) {
     this.scriptRehearsalService.$session
       .pipe(takeUntil(this.$destroy))
       .subscribe((session) => {
         this.session = session;
-        if (session) {
-          this.speakLine();
-        }
       });
   }
 
