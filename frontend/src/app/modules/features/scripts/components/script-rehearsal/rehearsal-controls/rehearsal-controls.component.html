@@ -1,7 +1,4 @@
 <app-controls>
-  <app-controls-item>
-    <bi class="smaller" name="volume-up-fill"></bi>
-  </app-controls-item>
   <app-controls-item
     *ngIf="voiceRecordingService.isSupported()"
     [ngbTooltip]="
@@ -21,6 +18,14 @@
     </ng-template>
   </app-controls-item>
   <app-controls-item
+    (click)="speakingPaused ? resume() : pause()"
+    [ngbTooltip]="speakingPaused ? 'Abspielen' : 'Pause'"
+    [class.disabled]="isSelectedRoleSpeaking()"
+  >
+    <bi *ngIf="!speakingPaused" name="pause-fill"></bi>
+    <bi *ngIf="speakingPaused" name="play-fill"></bi>
+  </app-controls-item>
+  <app-controls-item
     (click)="changeLine('prev')"
     [class.disabled]="session?.isAtStart() || endSessionLoading"
     ngbTooltip="Zurück"
@@ -34,33 +39,6 @@
   >
     <bi name="arrow-right"></bi>
   </app-controls-item>
-
-  <app-controls-item
-    (click)="pause()"
-    ngbTooltip="Pause"
-    [class.disabled]="isHighlighted()"
-    *ngIf="!paused"
-  >
-    <img
-      alt="Pause"
-      class="icon"
-      src="../../../../../../../assets/icons/pause.svg"
-    />
-  </app-controls-item>
-
-  <app-controls-item
-    (click)="resume()"
-    ngbTooltip="Abspielen"
-    [class.disabled]="isHighlighted()"
-    *ngIf="paused"
-  >
-    <img
-      alt="Pause"
-      class="icon"
-      src="../../../../../../../assets/icons/play.svg"
-    />
-  </app-controls-item>
-
   <app-controls-item
     (click)="openModal(stopSessionModal)"
     ngbTooltip="Beenden"

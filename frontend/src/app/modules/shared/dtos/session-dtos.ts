@@ -60,15 +60,11 @@ export class SimpleSession {
   }
 
   getCurrentLine(): Line {
-    if (this.lines && this.script && this.section) {
-      pagesLoop: for (const page of this.script?.pages) {
-        for (const line of page.lines) {
-          if (line.index > this.section.endLine.index) {
-            break pagesLoop;
-          }
-          if (line.index === this.currentLineIndex) {
-            return line;
-          }
+    const lines = this.getLines();
+    if (lines) {
+      for (const line of lines) {
+        if (line.index === this.currentLineIndex) {
+          return line;
         }
       }
     }

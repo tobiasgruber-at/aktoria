@@ -13,6 +13,7 @@ import {
   CaretRightFill,
   MicFill,
   MicMuteFill,
+  PauseFill,
   PersonCircle,
   PlayFill,
   ThreeDots,
@@ -42,6 +43,8 @@ const icons = {
   ThreeDots,
   // eslint-disable-next-line @typescript-eslint/naming-convention
   PlayFill,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  PauseFill,
   // eslint-disable-next-line @typescript-eslint/naming-convention
   CaretLeftFill,
   // eslint-disable-next-line @typescript-eslint/naming-convention
