@@ -15,14 +15,8 @@
   }
 
   &:not(.disabled) {
-    &:hover {
-      /*
-        this filter is equal to the primary color, but has to be computed since
-        svg colors can't be changed. here is the link to the color-filter converter:
-        http://localhost:4200/#/scripts/6/rehearse
-      */
-      filter: invert(29%) sepia(70%) saturate(3268%) hue-rotate(210deg)
-        brightness(102%) contrast(102%);
+    &:hover bi {
+      color: var(--bs-primary) !important;
     }
   }
 }

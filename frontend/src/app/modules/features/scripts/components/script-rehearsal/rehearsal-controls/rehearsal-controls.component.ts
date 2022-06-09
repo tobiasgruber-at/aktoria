@@ -21,7 +21,7 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
   session: SimpleSession = null;
   interactionDisabled = false;
   endSessionLoading = false;
-  isRecordingVoice = false;
+  isRecordingMode = false;
   private $destroy = new Subject<void>();
 
   constructor(
@@ -44,10 +44,10 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
       .subscribe((script) => {
         this.script = script;
       });
-    this.scriptRehearsalService.$isRecordingVoice
+    this.scriptRehearsalService.$isRecordingMode
       .pipe(takeUntil(this.$destroy))
-      .subscribe((isRecording) => {
-        this.isRecordingVoice = isRecording;
+      .subscribe((isRecordingMode) => {
+        this.isRecordingMode = isRecordingMode;
       });
   }
 
@@ -92,12 +92,16 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
     });
   }
 
-  toggleRecording(): void {
-    if (!this.isRecordingVoice) {
-      this.voiceRecordingService.requestPermissions();
-      // TODO: handle catch
+  async toggleRecordingMode(): Promise<void> {
+    if (!this.isRecordingMode) {
+      try {
+        await this.scriptRehearsalService.startRecordingMode();
+      } catch (err) {
+        this.toastService.showError(err);
+      }
+    } else {
+      this.scriptRehearsalService.stopRecordingMode();
     }
-    this.scriptRehearsalService.setIsRecordingVoice();
   }
 
   private endSession(): void {

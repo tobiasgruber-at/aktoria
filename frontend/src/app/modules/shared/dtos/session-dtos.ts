@@ -1,10 +1,12 @@
 import { Line, Role, SimpleScript } from './script-dtos';
 import { SimpleSection } from './section-dtos';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 export class SimpleSession {
   private lines: Line[];
   private section: SimpleSection;
   private script: SimpleScript;
+  private currentLineIndexSubject: BehaviorSubject<number>;
 
   constructor(
     public id: number,
@@ -14,9 +16,25 @@ export class SimpleSession {
     public deprecated: boolean,
     public coverage: number,
     public sectionId: number,
-    public currentLineIndex: number,
+    currentLineIndex: number,
     public role: Role
-  ) {}
+  ) {
+    this.currentLineIndexSubject = new BehaviorSubject<number>(
+      currentLineIndex
+    );
+  }
+
+  get $currentLineIndex(): Observable<number> {
+    return this.currentLineIndexSubject.asObservable();
+  }
+
+  get currentLineIndex(): number {
+    return this.currentLineIndexSubject.getValue();
+  }
+
+  set currentLineIndex(idx: number) {
+    this.currentLineIndexSubject.next(idx);
+  }
 
   /** Inits the session. Should be done once after session fetched. */
   init(script: SimpleScript, section: SimpleSection): void {
@@ -74,8 +92,7 @@ export enum AssessmentType {
 }
 
 export class CreateSession {
-  constructor(public sectionId: number, public roleId: number) {
-  }
+  constructor(public sectionId: number, public roleId: number) {}
 }
 
 export class UpdateSession {
@@ -83,6 +100,5 @@ export class UpdateSession {
     public deprecated?: boolean,
     public selfAssessment?: AssessmentType,
     public currentLineId?: number
-  ) {
-  }
+  ) {}
 }

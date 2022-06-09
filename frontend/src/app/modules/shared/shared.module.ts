@@ -16,6 +16,9 @@ import {
   PersonCircle,
   PlayFill,
   ThreeDots,
+  VolumeMuteFill,
+  VolumeOffFill,
+  VolumeUpFill,
   XLg
 } from 'ng-bootstrap-icons/icons';
 import { BootstrapIconsModule } from 'ng-bootstrap-icons';
@@ -52,7 +55,13 @@ const icons = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   ArrowRight,
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  MicMuteFill
+  MicMuteFill,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  VolumeUpFill,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  VolumeOffFill,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  VolumeMuteFill
 };
 const sharedDeclarations = [
   PageLayoutComponent,

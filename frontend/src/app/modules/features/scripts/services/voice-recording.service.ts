@@ -1,7 +1,7 @@
 import {Injectable, OnDestroy} from '@angular/core';
-import {ScriptRehearsalService} from './script-rehearsal.service';
 import {SimpleSession} from '../../../shared/dtos/session-dtos';
-import {Subject, takeUntil} from 'rxjs';
+import {Subject} from 'rxjs';
+import {AudioNotAllowedError, AudioNotSupportedError} from '../errors/audio-errors';
 
 /**
  * Service for recording the role voices of script phrases.<br>
@@ -17,25 +17,6 @@ export class VoiceRecordingService implements OnDestroy {
   private session: SimpleSession = null;
   private $destroy = new Subject<void>();
 
-  constructor(scriptRehearsalService: ScriptRehearsalService) {
-    scriptRehearsalService.$session
-      .pipe(takeUntil(this.$destroy))
-      .subscribe((session) => {
-        this.mediaRecorder?.stop();
-        this.session = session;
-        this.mediaRecorder?.start();
-      });
-    scriptRehearsalService.$isRecordingVoice
-      .pipe(takeUntil(this.$destroy))
-      .subscribe((isRecording) => {
-        if (isRecording) {
-          this.startRecording();
-        } else {
-          this.stopRecording();
-        }
-      });
-  }
-
   /** @return Whether voice recordings are supported by the browser. */
   isSupported(): boolean {
     return !!navigator.mediaDevices.getUserMedia;
@@ -45,13 +26,25 @@ export class VoiceRecordingService implements OnDestroy {
    * Requests for permission to record audio.
    *
    * @return Promise that resolves with the stream if permissions granted, or rejects otherwise.
-   * */
-  requestPermissions(): Promise<any> {
-    return navigator.mediaDevices
-      .getUserMedia({audio: true})
-      .then((stream) => {
-        this.initMediaRecorder(stream);
-      });
+   * @throws AudioNotSupportedError If browser doesn't support microphone access
+   * @throws AudioNotAllowedError If user rejected microphone access
+   */
+  async requestPermissions(): Promise<void> {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      this.initMediaRecorder(stream);
+    } catch (err: any) {
+      switch (err.name) {
+        case 'NotAllowedError':
+          throw new AudioNotAllowedError(
+            'Bitte aktiviere Berechtigungen für das Mirkofon.'
+          );
+        case 'NotFoundError':
+          throw new AudioNotSupportedError(
+            'Sprachaufnahmen werden von deinem Browser nicht unterstützt.'
+          );
+      }
+    }
   }
 
   ngOnDestroy() {
@@ -71,6 +64,9 @@ export class VoiceRecordingService implements OnDestroy {
 
   /** Initializes the media recorder. */
   private initMediaRecorder(stream: MediaStream): void {
+    if (this.mediaRecorder) {
+      return;
+    }
     this.mediaRecorder = new MediaRecorder(stream);
     this.mediaRecorder.onstop = (e) => {
       const curLine = this.session.getCurrentLine();

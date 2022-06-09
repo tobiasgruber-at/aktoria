@@ -1,4 +1,25 @@
 <app-controls>
+  <app-controls-item>
+    <bi class="smaller" name="volume-up-fill"></bi>
+  </app-controls-item>
+  <app-controls-item
+    *ngIf="voiceRecordingService.isSupported()"
+    [ngbTooltip]="
+      this.isRecordingMode ? 'Aufzeichnungen abbrechen' : 'Text einsprechen'
+    "
+    [class.disabled]="endSessionLoading"
+    class="pulsing"
+    (click)="toggleRecordingMode()"
+  >
+    <bi
+      *ngIf="this.isRecordingMode; else notRecording"
+      class="smaller"
+      name="mic-fill"
+    ></bi>
+    <ng-template #notRecording>
+      <bi class="smaller" name="mic-mute-fill"></bi>
+    </ng-template>
+  </app-controls-item>
   <app-controls-item
     (click)="changeLine('prev')"
     [class.disabled]="session?.isAtStart() || endSessionLoading"
@@ -12,23 +33,6 @@
     [class.disabled]="endSessionLoading"
   >
     <bi name="arrow-right"></bi>
-  </app-controls-item>
-  <app-controls-item
-    *ngIf="voiceRecordingService.isSupported()"
-    [ngbTooltip]="
-      this.isRecordingVoice ? 'Aufzeichnung abbrechen' : 'Aufzeichnung starten'
-    "
-    [class.disabled]="endSessionLoading"
-    (click)="toggleRecording()"
-  >
-    <bi
-      *ngIf="this.isRecordingVoice; else notRecording"
-      class="smaller"
-      name="mic-fill"
-    ></bi>
-    <ng-template #notRecording>
-      <bi class="smaller" name="mic-mute-fill"></bi>
-    </ng-template>
   </app-controls-item>
   <app-controls-item
     (click)="openModal(stopSessionModal)"
