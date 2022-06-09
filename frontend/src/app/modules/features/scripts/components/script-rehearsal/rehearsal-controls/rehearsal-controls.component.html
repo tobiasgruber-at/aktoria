@@ -34,6 +34,33 @@
   >
     <bi name="arrow-right"></bi>
   </app-controls-item>
+
+  <app-controls-item
+    (click)="pause()"
+    ngbTooltip="Pause"
+    [class.disabled]="isHighlighted()"
+    *ngIf="!paused"
+  >
+    <img
+      alt="Pause"
+      class="icon"
+      src="../../../../../../../assets/icons/pause.svg"
+    />
+  </app-controls-item>
+
+  <app-controls-item
+    (click)="resume()"
+    ngbTooltip="Abspielen"
+    [class.disabled]="isHighlighted()"
+    *ngIf="paused"
+  >
+    <img
+      alt="Pause"
+      class="icon"
+      src="../../../../../../../assets/icons/play.svg"
+    />
+  </app-controls-item>
+
   <app-controls-item
     (click)="openModal(stopSessionModal)"
     ngbTooltip="Beenden"

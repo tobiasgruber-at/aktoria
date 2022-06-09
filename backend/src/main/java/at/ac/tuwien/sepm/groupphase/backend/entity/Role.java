@@ -55,7 +55,7 @@ public class Role {
     @Column(name = "color")
     private Color color;
 
-    @OneToMany(mappedBy = "role", fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @OneToMany(mappedBy = "role", fetch = FetchType.LAZY, cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
     private Set<Session> sessions;
 
     @ManyToMany(mappedBy = "spokenBy", cascade = CascadeType.ALL)

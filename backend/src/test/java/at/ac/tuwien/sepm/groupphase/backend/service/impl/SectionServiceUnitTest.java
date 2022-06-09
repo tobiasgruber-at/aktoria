@@ -76,7 +76,7 @@ class SectionServiceUnitTest {
         void getSection() {
             SectionDto received = sectionService.getSection(1L);
             assertEquals(received.getId(), 1L);
-            assertEquals(received.getName() + 1, SectionDataGenerator.TEST_SECTION_NAME + 1);
+            assertEquals(received.getName() + 1, SectionDataGenerator.TEST_SECTION_NAME + " 01");
         }
 
         @Test
