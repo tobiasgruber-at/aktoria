@@ -1,11 +1,11 @@
-import {Injectable, OnDestroy} from '@angular/core';
-import {ScriptRehearsalService} from './script-rehearsal.service';
-import {SimpleSession} from '../../../shared/dtos/session-dtos';
-import {BehaviorSubject, Observable, Subject, takeUntil} from 'rxjs';
-import {Theme} from '../../../shared/enums/theme.enum';
-import {ToastService} from '../../../core/services/toast/toast.service';
-import {SessionService} from '../../../core/services/session/session.service';
-import {Router} from '@angular/router';
+import { Injectable, OnDestroy } from '@angular/core';
+import { ScriptRehearsalService } from './script-rehearsal.service';
+import { SimpleSession } from '../../../shared/dtos/session-dtos';
+import { BehaviorSubject, Observable, Subject, takeUntil } from 'rxjs';
+import { Theme } from '../../../shared/enums/theme.enum';
+import { ToastService } from '../../../core/services/toast/toast.service';
+import { SessionService } from '../../../core/services/session/session.service';
+import { Router } from '@angular/router';
 
 /**
  * Service for speaking the roles voices of script phrases.<br>
@@ -18,6 +18,7 @@ import {Router} from '@angular/router';
 export class VoiceSpeakingService implements OnDestroy {
   /** @see SpeechSynthesis */
   private synth: SpeechSynthesis = window.speechSynthesis;
+  private voice;
   /** Whether the currently spoken synthesis should be canceled once it's completed. */
   private canceledCurSynth: boolean;
   private session: SimpleSession;
@@ -29,7 +30,7 @@ export class VoiceSpeakingService implements OnDestroy {
     private toastService: ToastService,
     private sessionService: SessionService,
     private router: Router
-              ) {
+  ) {
     this.scriptRehearsalService.$session
       .pipe(takeUntil(this.$destroy))
       .subscribe((session) => {
