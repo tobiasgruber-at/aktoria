@@ -9,10 +9,10 @@ import { Router } from '@angular/router';
 
 /**
  * Service for speaking the roles voices of script phrases.<br>
- * Implemented by use of the SpeechSynthesis API.
+ * Implemented by use of the SpeechSynthesis API or the recorded audio.
  *
  * @see https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesis
- * @author Nik Peter, Tobias Gruber
+ * @author Nik Peter, Tobias Gruber, Luke Nemeskeri
  */
 @Injectable()
 export class VoiceSpeakingService implements OnDestroy {
@@ -56,14 +56,17 @@ export class VoiceSpeakingService implements OnDestroy {
     ) {
       if (currentLine.audio) {
         this.isAutomatedVoiceSpeaking = false;
-        // todo: luke
-        // https://www.w3schools.com/tags/ref_av_dom.asp
         const audio = window.URL.createObjectURL(currentLine.audio);
         this.curAudioEl = document.createElement('audio');
         this.curAudioEl.setAttribute('controls', '');
         this.curAudioEl.controls = true;
         this.curAudioEl.src = audio;
-        this.curAudioEl.play();
+        if (this.curAudioEl.canPlayType(audio) === 'probably' || 'maybe') {
+          this.curAudioEl.play();
+        }
+        if (this.pausedSubject.getValue()) {
+          this.curAudioEl.pause();
+        }
       } else {
         this.isAutomatedVoiceSpeaking = true;
         const utter = this.initUtterance(currentLine.content);
@@ -78,36 +81,36 @@ export class VoiceSpeakingService implements OnDestroy {
     }
   }
 
-  /** Pauses the current synthesis. */
+  /** Pauses the current synthesis or audio. */
   pauseSpeak() {
     this.pausedSubject.next(true);
     if (this.isAutomatedVoiceSpeaking) {
-      // todo: luke
-    } else {
       this.synth.pause();
+    } else {
+      this.curAudioEl.pause();
     }
   }
 
-  /** Resumes the current synthesis. */
+  /** Resumes the current synthesis or audio. */
   resumeSpeak() {
     if (!this.synth.pending) {
       this.speakLine();
     }
     this.pausedSubject.next(false);
     if (this.isAutomatedVoiceSpeaking) {
-      // todo: luke
-    } else {
       this.synth.resume();
+    } else {
+      this.curAudioEl.play();
     }
   }
 
-  /** Stops the current synthesis. */
+  /** Stops the current synthesis or audio. */
   stopSpeak() {
     this.canceledCurSynth = true;
     if (this.isAutomatedVoiceSpeaking) {
-      // todo: luke
-    } else {
       this.synth.cancel();
+    } else {
+      this.curAudioEl.pause();
     }
   }
 

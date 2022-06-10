@@ -65,7 +65,7 @@ export class Line {
     public index: number,
     public roles: Role[],
     public content: string,
-    public audio: AudioBuffer,
+    public audio: Blob,
     public recordedBy: Role,
     public active: boolean,
     public conflictType: Conflict,
