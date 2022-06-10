@@ -19,7 +19,7 @@ export class VoiceSpeakingService implements OnDestroy {
   /** @see SpeechSynthesis */
   private synth: SpeechSynthesis = window.speechSynthesis;
   private curAudioEl;
-  private isAutomatedVoiceSpeaking = false;
+  private isAutomatedVoiceSpeaking = true;
   /** Whether the currently spoken synthesis should be canceled once it's completed. */
   private canceledCurSynth: boolean;
   private session: SimpleSession;
