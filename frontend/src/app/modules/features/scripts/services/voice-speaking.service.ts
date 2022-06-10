@@ -2,6 +2,10 @@ import {Injectable, OnDestroy} from '@angular/core';
 import {ScriptRehearsalService} from './script-rehearsal.service';
 import {SimpleSession} from '../../../shared/dtos/session-dtos';
 import {BehaviorSubject, Observable, Subject, takeUntil} from 'rxjs';
+import {Theme} from '../../../shared/enums/theme.enum';
+import {ToastService} from '../../../core/services/toast/toast.service';
+import {SessionService} from '../../../core/services/session/session.service';
+import {Router} from '@angular/router';
 
 /**
  * Service for speaking the roles voices of script phrases.<br>
@@ -20,7 +24,12 @@ export class VoiceSpeakingService implements OnDestroy {
   private $destroy = new Subject<void>();
   private pausedSubject = new BehaviorSubject<boolean>(true);
 
-  constructor(private scriptRehearsalService: ScriptRehearsalService) {
+  constructor(
+    private scriptRehearsalService: ScriptRehearsalService,
+    private toastService: ToastService,
+    private sessionService: SessionService,
+    private router: Router
+              ) {
     this.scriptRehearsalService.$session
       .pipe(takeUntil(this.$destroy))
       .subscribe((session) => {
@@ -62,6 +71,9 @@ export class VoiceSpeakingService implements OnDestroy {
 
   /** Resumes the current synthesis. */
   resumeSpeak() {
+    if (!this.synth.pending) {
+      this.speakLine();
+    }
     this.pausedSubject.next(false);
     this.synth.resume();
   }
@@ -88,10 +100,30 @@ export class VoiceSpeakingService implements OnDestroy {
     }
     utter.addEventListener('end', () => {
       if (!this.canceledCurSynth) {
-        this.session.currentLineIndex++;
-        this.speakLine();
+        if (this.session?.isAtEnd()) {
+          this.endSession();
+        } else {
+          this.session.currentLineIndex++;
+          this.speakLine();
+        }
       }
     });
     return utter;
+  }
+
+  private endSession(): void {
+    this.stopSpeak();
+    this.sessionService.endSession(this.session.id).subscribe({
+      next: () => {
+        this.router.navigateByUrl(`/scripts/${this.session.getScriptId()}`);
+        this.toastService.show({
+          message: 'Lerneinheit abgeschlossen.',
+          theme: Theme.primary
+        });
+      },
+      error: (err) => {
+        this.toastService.showError(err);
+      }
+    });
   }
 }
