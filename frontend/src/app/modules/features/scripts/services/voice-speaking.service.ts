@@ -14,6 +14,8 @@ import {BehaviorSubject, Observable, Subject, takeUntil} from 'rxjs';
 export class VoiceSpeakingService implements OnDestroy {
   /** @see SpeechSynthesis */
   private synth: SpeechSynthesis = window.speechSynthesis;
+  private curAudioEl;
+  private isAutomatedVoiceSpeaking = false;
   /** Whether the currently spoken synthesis should be canceled once it's completed. */
   private canceledCurSynth: boolean;
   private session: SimpleSession;
@@ -43,33 +45,58 @@ export class VoiceSpeakingService implements OnDestroy {
       currentLine &&
       !currentLine.roles.some((r) => r.name === this.session.role?.name)
     ) {
-      const utter = this.initUtterance(currentLine.content);
-      setTimeout(() => {
-        this.canceledCurSynth = false;
-        this.synth.speak(utter);
-        if (this.pausedSubject.getValue()) {
-          this.synth.pause();
-        }
-      }, 10);
+      if (currentLine.audio) {
+        this.isAutomatedVoiceSpeaking = false;
+        // todo: luke
+        // https://www.w3schools.com/tags/ref_av_dom.asp
+        const audio = window.URL.createObjectURL(currentLine.audio);
+        this.curAudioEl = document.createElement('audio');
+        this.curAudioEl.setAttribute('controls', '');
+        this.curAudioEl.controls = true;
+        this.curAudioEl.src = audio;
+        this.curAudioEl.play();
+      } else {
+        this.isAutomatedVoiceSpeaking = true;
+        const utter = this.initUtterance(currentLine.content);
+        setTimeout(() => {
+          this.canceledCurSynth = false;
+          this.synth.speak(utter);
+          if (this.pausedSubject.getValue()) {
+            this.synth.pause();
+          }
+        }, 10);
+      }
     }
   }
 
   /** Pauses the current synthesis. */
   pauseSpeak() {
     this.pausedSubject.next(true);
-    this.synth.pause();
+    if (this.isAutomatedVoiceSpeaking) {
+      // todo: luke
+    } else {
+      this.synth.pause();
+    }
   }
 
   /** Resumes the current synthesis. */
   resumeSpeak() {
     this.pausedSubject.next(false);
-    this.synth.resume();
+    if (this.isAutomatedVoiceSpeaking) {
+      // todo: luke
+    } else {
+      this.synth.resume();
+    }
   }
 
   /** Stops the current synthesis. */
   stopSpeak() {
     this.canceledCurSynth = true;
-    this.synth.cancel();
+    if (this.isAutomatedVoiceSpeaking) {
+      // todo: luke
+    } else {
+      this.synth.cancel();
+    }
   }
 
   ngOnDestroy() {
