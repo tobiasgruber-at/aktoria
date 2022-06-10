@@ -69,23 +69,18 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
       return;
     }
     this.interactionDisabled = true;
-    /** Whether if was speaking before stopped */
-    const wasSpeaking = !this.speakingPaused;
     this.voiceSpeakingService.stopSpeak();
     if (line === 'next') {
       if (this.session?.isAtEnd()) {
         this.endSession();
       } else {
         this.session.currentLineIndex++;
-        if (wasSpeaking) {
-          this.voiceSpeakingService.speakLine();
-        }
+        this.voiceSpeakingService.speakLine();
       }
     } else if (line === 'prev' && !this.session.isAtStart()) {
       this.session.currentLineIndex--;
-      if (wasSpeaking) {
-        this.voiceSpeakingService.speakLine();
-      }
+
+      this.voiceSpeakingService.speakLine();
     }
     setTimeout(() => {
       this.interactionDisabled = false;
@@ -116,15 +111,11 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
   }
 
   pause() {
-    if (!this.isSelectedRoleSpeaking()) {
-      this.voiceSpeakingService.pauseSpeak();
-    }
+    this.voiceSpeakingService.pauseSpeak();
   }
 
   resume() {
-    if (!this.isSelectedRoleSpeaking()) {
-      this.voiceSpeakingService.resumeSpeak();
-    }
+    this.voiceSpeakingService.resumeSpeak();
   }
 
   async toggleRecordingMode(): Promise<void> {

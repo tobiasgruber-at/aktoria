@@ -78,6 +78,10 @@ export class SimpleSession {
   isAtEnd(): boolean {
     return this.currentLineIndex === this.section?.endLine.index;
   }
+
+  getScriptId(): number {
+    return this.script.getId();
+  }
 }
 
 export enum AssessmentType {
