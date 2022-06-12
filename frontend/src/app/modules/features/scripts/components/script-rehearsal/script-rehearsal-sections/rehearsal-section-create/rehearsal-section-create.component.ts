@@ -1,31 +1,18 @@
-import {
-  Component,
-  EventEmitter,
-  HostBinding,
-  OnDestroy,
-  OnInit,
-  Output
-} from '@angular/core';
-import { FormBase } from '../../../../../../shared/classes/form-base';
-import { ToastService } from '../../../../../../core/services/toast/toast.service';
-import { FormBuilder, Validators } from '@angular/forms';
-import { Subject, takeUntil } from 'rxjs';
-import {
-  IsMarkingSection,
-  ScriptViewerService
-} from '../../../../services/script-viewer.service';
-import { Role, SimpleScript } from '../../../../../../shared/dtos/script-dtos';
-import {
-  CreateSection,
-  SimpleSection
-} from '../../../../../../shared/dtos/section-dtos';
-import { SessionService } from '../../../../../../core/services/session/session.service';
-import { SectionService } from '../../../../../../core/services/section/section.service';
-import { UserService } from '../../../../../../core/services/user/user.service';
-import { SimpleUser } from '../../../../../../shared/dtos/user-dtos';
-import { CreateSession } from '../../../../../../shared/dtos/session-dtos';
-import { ScriptRehearsalService } from '../../../../services/script-rehearsal.service';
-import { Router } from '@angular/router';
+import {Component, EventEmitter, HostBinding, OnDestroy, OnInit, Output} from '@angular/core';
+import {FormBase} from '../../../../../../shared/classes/form-base';
+import {ToastService} from '../../../../../../core/services/toast/toast.service';
+import {FormBuilder, Validators} from '@angular/forms';
+import {Subject, takeUntil} from 'rxjs';
+import {IsMarkingSection, ScriptViewerService} from '../../../../services/script-viewer.service';
+import {Role, SimpleScript} from '../../../../../../shared/dtos/script-dtos';
+import {CreateSection, SimpleSection} from '../../../../../../shared/dtos/section-dtos';
+import {SessionService} from '../../../../../../core/services/session/session.service';
+import {SectionService} from '../../../../../../core/services/section/section.service';
+import {UserService} from '../../../../../../core/services/user/user.service';
+import {SimpleUser} from '../../../../../../shared/dtos/user-dtos';
+import {CreateSession} from '../../../../../../shared/dtos/session-dtos';
+import {ScriptRehearsalService} from '../../../../services/script-rehearsal.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-rehearsal-section-create',
@@ -34,13 +21,12 @@ import { Router } from '@angular/router';
 })
 export class RehearsalSectionCreateComponent
   extends FormBase
-  implements OnInit, OnDestroy
-{
+  implements OnInit, OnDestroy {
+  @Output() private cancel = new EventEmitter<void>();
+  @HostBinding('class') private classes = 'd-flex flex-column flex-grow-1';
   markedSection: SimpleSection = null;
   isMarkingSection: IsMarkingSection = null;
   script: SimpleScript = null;
-  @Output() private cancel = new EventEmitter<void>();
-  @HostBinding('class') private classes = 'd-flex flex-column flex-grow-1';
   private $destroy = new Subject<void>();
   private user: SimpleUser = null;
   private selectedRole: Role = null;
@@ -77,14 +63,14 @@ export class RehearsalSectionCreateComponent
     this.scriptViewerService.$isMarkingSection
       .pipe(takeUntil(this.$destroy))
       .subscribe((isMarkingSection) => {
-        const { startLine, endLine } = this.markedSection;
+        const {startLine, endLine} = this.markedSection;
         if (this.isMarkingSection === 'start' && isMarkingSection === 'end') {
-          this.form.patchValue({ startLine });
+          this.form.patchValue({startLine});
         } else if (
           this.isMarkingSection === 'end' &&
           isMarkingSection === null
         ) {
-          this.form.patchValue({ endLine });
+          this.form.patchValue({endLine});
         }
         this.isMarkingSection = isMarkingSection;
       });
@@ -110,7 +96,7 @@ export class RehearsalSectionCreateComponent
   }
 
   protected processSubmit(): void {
-    const { sectionName, startLine, endLine } = this.form.value;
+    const {sectionName, startLine, endLine} = this.form.value;
     const section: CreateSection = new CreateSection(
       sectionName,
       this.user?.id,

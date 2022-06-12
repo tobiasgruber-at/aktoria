@@ -40,6 +40,15 @@ export class RehearsalSectionComponent implements OnInit, OnDestroy {
     private sessionService: SessionService
   ) {}
 
+  @HostBinding('class')
+  private get classes(): string[] {
+    const classes = ['mb-2'];
+    if (this.isActive) {
+      classes.push('is-active');
+    }
+    return classes;
+  }
+
   get startLinePercentage(): number {
     return this.script && this.section
       ? (this.section.startLine.index / this.script.getLastLineIdx()) * 100
@@ -52,13 +61,16 @@ export class RehearsalSectionComponent implements OnInit, OnDestroy {
       : 0;
   }
 
-  @HostBinding('class')
-  private get classes(): string[] {
-    const classes = ['mb-2'];
-    if (this.isActive) {
-      classes.push('is-active');
-    }
-    return classes;
+  @HostListener('click', ['$event'])
+  private selectSection(): void {
+    this.scriptViewerService.setMarkedSection(
+      this.isActive || this.isCreate
+        ? null
+        : {
+            section: this.section,
+            scrollTo: true
+          }
+    );
   }
 
   ngOnInit(): void {
@@ -98,17 +110,5 @@ export class RehearsalSectionComponent implements OnInit, OnDestroy {
         this.toastService.showError(err);
       }
     });
-  }
-
-  @HostListener('click', ['$event'])
-  private selectSection(): void {
-    this.scriptViewerService.setMarkedSection(
-      this.isActive || this.isCreate
-        ? null
-        : {
-            section: this.section,
-            scrollTo: true
-          }
-    );
   }
 }
