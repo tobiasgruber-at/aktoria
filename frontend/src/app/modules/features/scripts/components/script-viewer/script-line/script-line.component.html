@@ -31,7 +31,7 @@
     >
       {{ line?.content }}
     </p>
-    <div *ngIf="isEditingScript" class="my-1" ngbDropdownMenu>
+    <div *ngIf="isEditingScript" class="my-1 shadow" ngbDropdownMenu>
       <button (click)="toggleModal(changeLineModal)" ngbDropdownItem>
         Bearbeiten
       </button>
@@ -44,6 +44,9 @@
       </button>
       <button (click)="toggleLineActive()" ngbDropdownItem>
         {{ line.active ? 'Ausblenden' : 'Einblenden' }}
+      </button>
+      <button *ngIf="line.conflictType !== null" (click)="ignoreConflict()" ngbDropdownItem>
+        Überprüfungsanweisung ignorieren
       </button>
     </div>
     <ng-template #changeLineModal let-modal>

@@ -216,6 +216,12 @@ export class ScriptLineComponent implements OnInit, OnDestroy {
     }
   }
 
+  ignoreConflict(): void {
+    if (this.isUploading) {
+      this.line.conflictType = null;
+    }
+  }
+
   ngOnDestroy() {
     this.$destroy.next();
     this.$destroy.complete();
