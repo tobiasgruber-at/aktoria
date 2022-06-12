@@ -163,6 +163,10 @@ public class LineImpl implements Line {
     private List<String> getRolesFromDeclaration(String rolesDeclaration) {
         log.trace("getRolesFromDeclaration(rolesDeclaration = {})", rolesDeclaration);
 
+        if (rolesDeclaration.isEmpty()) {
+            return null;
+        }
+
         List<String> temp;
 
         String delimiter = getRoleDelimiter(rolesDeclaration);
@@ -257,7 +261,7 @@ public class LineImpl implements Line {
     public List<Line> getPossibleInternalLines() {
         log.trace("getPossibleInternalLines()");
 
-        Pattern pattern = Pattern.compile("\\b(?<=\\.|\\s|^)[A-Z\\s\\.]+(?=\\s|\\.|$)\\b");
+        Pattern pattern = Pattern.compile("\\b(?<!\\s[A-Za-z]\\.)(?<=\\s|^)[A-Z\\s\\.\\-]+(?=\\s|$)\\b");
         Matcher matcher = pattern.matcher(raw);
 
         List<Line> newLines = new LinkedList<>();
