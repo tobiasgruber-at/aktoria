@@ -34,7 +34,8 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
     public voiceRecordingService: VoiceRecordingService,
     private toastService: ToastService,
     public voiceSpeakingService: VoiceSpeakingService
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.scriptRehearsalService.$session
@@ -88,7 +89,7 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
   }
 
   openModal(modal: TemplateRef<any>): void {
-    this.modalService.open(modal, { centered: true });
+    this.modalService.open(modal, {centered: true});
   }
 
   stopSession(modal: NgbActiveModal): void {
@@ -134,11 +135,12 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
     this.endSessionLoading = true;
     this.sessionService.endSession(this.session.id).subscribe({
       next: () => {
-        this.router.navigateByUrl(`/scripts/${this.script.id}`);
-        this.toastService.show({
+        //this.router.navigateByUrl(`/scripts/${this.script.id}`);
+        /*this.toastService.show({
           message: 'Lerneinheit abgeschlossen.',
           theme: Theme.primary
-        });
+        });*/
+        this.router.navigateByUrl(`scripts/${this.script.id}/review/${this.session.id}`);
       },
       error: (err) => {
         this.toastService.showError(err);
