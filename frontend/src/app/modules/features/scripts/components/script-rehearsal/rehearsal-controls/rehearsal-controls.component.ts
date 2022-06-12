@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit, TemplateRef} from '@angular/core';
 import {ScriptRehearsalService} from '../../../services/script-rehearsal.service';
 import {Subject, takeUntil} from 'rxjs';
-import {SimpleSession} from '../../../../../shared/dtos/session-dtos';
+import {SimpleSession, UpdateSession} from '../../../../../shared/dtos/session-dtos';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {Router} from '@angular/router';
 import {DetailedScript} from '../../../../../shared/dtos/script-dtos';
@@ -95,12 +95,18 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
     if (this.endSessionLoading) {
       return;
     }
-    modal.dismiss();
-    this.router.navigateByUrl(`/scripts/${this.script.id}`);
-    this.toastService.show({
-      message: 'Lerneinheit beendet.',
-      theme: Theme.primary
-    });
+    this.sessionService.patchOne(this.session.id, new UpdateSession(null, null, this.session.currentLineIndex))
+      .subscribe({next: () => {
+          modal.dismiss();
+          this.router.navigateByUrl(`/scripts/${this.script.id}`);
+          this.toastService.show({
+            message: 'Lerneinheit beendet.',
+            theme: Theme.primary
+          });
+        },
+      error: (err) => {
+        this.toastService.showError(err);
+      }});
   }
 
   /** Whether the current line is spoken by the users role. */
