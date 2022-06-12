@@ -1,11 +1,11 @@
-import { Component, Input, OnInit, TemplateRef } from '@angular/core';
-import { SimpleSession } from '../../../../../shared/dtos/session-dtos';
-import { SimpleSection } from '../../../../../shared/dtos/section-dtos';
-import { SectionService } from '../../../../../core/services/section/section.service';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { SimpleScript } from '../../../../../shared/dtos/script-dtos';
-import { ScriptService } from '../../../../../core/services/script/script.service';
-import { RoleService } from '../../../../../core/services/role/role.service';
+import {Component, Input, OnInit, TemplateRef} from '@angular/core';
+import {SimpleSession} from '../../../../../shared/dtos/session-dtos';
+import {SimpleSection} from '../../../../../shared/dtos/section-dtos';
+import {SectionService} from '../../../../../core/services/section/section.service';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {SimpleScript} from '../../../../../shared/dtos/script-dtos';
+import {ScriptService} from '../../../../../core/services/script/script.service';
+import {RoleService} from '../../../../../core/services/role/role.service';
 import {Router} from '@angular/router';
 import {ToastService} from '../../../../../core/services/toast/toast.service';
 
@@ -19,6 +19,7 @@ export class SessionListItemComponent implements OnInit {
   section: SimpleSection;
   script: SimpleScript;
   startDate: string;
+  assessment: string;
 
   constructor(
     private sectionService: SectionService,
@@ -64,6 +65,18 @@ export class SessionListItemComponent implements OnInit {
       this.session.start.toString().substring(5, 7) +
       '.' +
       this.session.start.toString().substring(0, 4);
+    if (this.session.selfAssessment) {
+      const tmp = this.session.selfAssessment.toString();
+      if (tmp === 'VERY GOOD') {
+        this.assessment = 'sehr gut';
+      } else if (tmp === 'GOOD') {
+        this.assessment = 'gut';
+      } else if (tmp === 'NEEDS WORK') {
+        this.assessment = 'unsicher';
+      } else if (tmp === 'POOR') {
+        this.assessment = 'schlecht';
+      }
+    }
   }
 
   openModal(modal: TemplateRef<any>) {
