@@ -10,12 +10,14 @@ import {Theme} from '../../enums/theme.enum';
 export class ModalComponent {
   @Output() decline = new EventEmitter<void>();
   @Output() confirm = new EventEmitter<void>();
+  @Output() continue = new EventEmitter<void>();
   @Input() title: string;
   @Input() theme: Theme = Theme.primary;
   @Input() confirmBtnLabel: string;
   @Input() loading = false;
   @Input() disabled = false;
   @Input() showDecline = true;
+  @Input() showContinue = false;
 
   /** If modal is declined. */
   onDecline(): void {
@@ -31,5 +33,12 @@ export class ModalComponent {
       return;
     }
     this.confirm.emit();
+  }
+
+  onContinue(): void {
+    if (this.loading) {
+      return;
+    }
+    this.continue.emit();
   }
 }

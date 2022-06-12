@@ -21,7 +21,9 @@
     <app-modal
       (confirm)="modal.dismiss()"
       (decline)="modal.dismiss()"
+      (continue)="continueSession()"
       [showDecline]="false"
+      [showContinue]="session.end === null || session.end === undefined"
       [title]="script.name + ': ' + section.name"
       confirmBtnLabel="Schließen"
     >

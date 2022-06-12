@@ -6,6 +6,8 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SimpleScript } from '../../../../../shared/dtos/script-dtos';
 import { ScriptService } from '../../../../../core/services/script/script.service';
 import { RoleService } from '../../../../../core/services/role/role.service';
+import {Router} from '@angular/router';
+import {ToastService} from '../../../../../core/services/toast/toast.service';
 
 @Component({
   selector: 'app-session-list-item',
@@ -22,6 +24,8 @@ export class SessionListItemComponent implements OnInit {
     private sectionService: SectionService,
     private roleService: RoleService,
     private scriptService: ScriptService,
+    private router: Router,
+    private toastService: ToastService,
     private modalService: NgbModal
   ) {}
 
@@ -46,12 +50,12 @@ export class SessionListItemComponent implements OnInit {
             this.script = sc;
           },
           error: (err) => {
-            console.log(err);
+            this.toastService.showError(err);
           }
         });
       },
       error: (err) => {
-        console.log(err);
+        this.toastService.showError(err);
       }
     });
     this.startDate =
@@ -64,5 +68,10 @@ export class SessionListItemComponent implements OnInit {
 
   openModal(modal: TemplateRef<any>) {
     this.modalService.open(modal, { centered: true });
+  }
+
+  continueSession() {
+    this.modalService.dismissAll();
+    this.router.navigateByUrl(`scripts/${this.script.getId()}/rehearse/${this.session.id}`);
   }
 }
