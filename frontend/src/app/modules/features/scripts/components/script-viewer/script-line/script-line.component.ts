@@ -163,6 +163,11 @@ export class ScriptLineComponent implements OnInit, OnDestroy {
     return this.line.roles?.some((r) => r.name === selectedRole?.name);
   }
 
+  /** @return Whether this line has a conflict. */
+  isConflict(): boolean {
+    return this.line.conflictType !== null;
+  }
+
   toggleModal(modal): void {
     this.isModalOpened = true;
     const modalRef = this.modalService.open(modal, {centered: true});

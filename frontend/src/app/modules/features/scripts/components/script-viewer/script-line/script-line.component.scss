@@ -61,6 +61,12 @@ p {
   &.highlighted {
     background-color: rgba(228 206 7 / 20%);
   }
+
+  &.conflict {
+    text-decoration: underline;
+    text-decoration-color: red;
+    text-decoration-style: wavy;
+  }
 }
 
 .scroll-anchor {

@@ -24,6 +24,7 @@
       [class.highlighted]="
         isHighlighted(scriptViewerService.$selectedRole | async)
       "
+      [class.conflict]="isConflict()"
       [class.text-secondary]="isInstruction"
       class="w-100"
       ngbDropdownToggle
