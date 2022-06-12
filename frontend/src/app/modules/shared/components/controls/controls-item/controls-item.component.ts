@@ -6,4 +6,5 @@ import {Component} from '@angular/core';
   templateUrl: './controls-item.component.html',
   styleUrls: ['./controls-item.component.scss']
 })
-export class ControlsItemComponent {}
+export class ControlsItemComponent {
+}

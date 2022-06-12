@@ -14,25 +14,41 @@ import {ScriptViewerComponent} from './components/script-viewer/script-viewer.co
 import {ScriptRolesListComponent} from './components/script-roles-list/script-roles-list.component';
 import {ScriptInviteComponent} from './components/script-invite/script-invite.component';
 import {ScriptInviteAcceptComponent} from './components/script-invite-accept/script-invite-accept.component';
-import {ScriptMembersListComponent} from './components/script-overview/script-members-list/script-members-list.component';
-import {ScriptMembersItemComponent} from './components/script-overview/script-members-list/script-members-item/script-members-item.component';
+import {
+  ScriptMembersListComponent
+} from './components/script-overview/script-members-list/script-members-list.component';
+import {
+  ScriptMembersItemComponent
+} from './components/script-overview/script-members-list/script-members-item/script-members-item.component';
 import {ScriptInviteLinkComponent} from './components/script-invite/script-invite-link/script-invite-link.component';
 import {ScriptInviteEmailComponent} from './components/script-invite/script-invite-email/script-invite-email.component';
 import {ScriptEditorComponent} from './components/script-editor/script-editor.component';
 import {MergeRolesModalComponent} from './components/script-editor/merge-roles-modal/merge-roles-modal.component';
-import {ChangeLineModalComponent} from './components/script-viewer/script-line/change-line-modal/change-line-modal.component';
+import {
+  ChangeLineModalComponent
+} from './components/script-viewer/script-line/change-line-modal/change-line-modal.component';
 import {ScriptRehearsalComponent} from './components/script-rehearsal/script-rehearsal.component';
 import {RehearsalSectionComponent} from './components/rehearsal-section/rehearsal-section.component';
 import {RehearsalLineComponent} from './components/script-rehearsal/rehearsal-line/rehearsal-line.component';
-import {RehearsalControlsComponent} from './components/script-rehearsal/rehearsal-controls/rehearsal-controls.component';
-import {RehearsalSectionCreateComponent} from './components/script-rehearsal/script-rehearsal-sections/rehearsal-section-create/rehearsal-section-create.component';
-import {ScriptRehearsalSectionsComponent} from './components/script-rehearsal/script-rehearsal-sections/script-rehearsal-sections.component';
+import {
+  RehearsalControlsComponent
+} from './components/script-rehearsal/rehearsal-controls/rehearsal-controls.component';
+import {
+  RehearsalSectionCreateComponent
+} from './components/script-rehearsal/script-rehearsal-sections/rehearsal-section-create/rehearsal-section-create.component';
+import {
+  ScriptRehearsalSectionsComponent
+} from './components/script-rehearsal/script-rehearsal-sections/script-rehearsal-sections.component';
 import {ScriptRehearsalService} from './services/script-rehearsal.service';
-import {ScriptReadControlsComponent} from './components/script-read/script-read-controls/script-read-controls.component';
-import {SelectLineTextComponent} from './components/script-rehearsal/script-rehearsal-sections/rehearsal-section-create/select-line-text/select-line-text.component';
+import {
+  ScriptReadControlsComponent
+} from './components/script-read/script-read-controls/script-read-controls.component';
+import {
+  SelectLineTextComponent
+} from './components/script-rehearsal/script-rehearsal-sections/rehearsal-section-create/select-line-text/select-line-text.component';
 import {VoiceRecordingService} from './services/voice-recording.service';
 import {VoiceSpeakingService} from './services/voice-speaking.service';
-import { ScriptConflictsComponent } from './components/script-conflicts/script-conflicts.component';
+import {ScriptConflictsComponent} from './components/script-conflicts/script-conflicts.component';
 
 /** Scripts module that consists of all script related parts (script viewer, rehearsal, dashboard, scripts list, ..). */
 @NgModule({
@@ -75,4 +91,5 @@ import { ScriptConflictsComponent } from './components/script-conflicts/script-c
   ],
   imports: [SharedModule, ScriptsRoutingModule]
 })
-export class ScriptsModule {}
+export class ScriptsModule {
+}

@@ -1,24 +1,12 @@
-import {
-  Component,
-  ElementRef,
-  HostBinding,
-  HostListener,
-  Input,
-  OnDestroy,
-  OnInit,
-  ViewChild
-} from '@angular/core';
-import { Line, Role } from '../../../../../shared/dtos/script-dtos';
-import {
-  IsMarkingSection,
-  ScriptViewerService
-} from '../../../services/script-viewer.service';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Subject, takeUntil } from 'rxjs';
-import { LineService } from '../../../../../core/services/line/line.service';
-import { ToastService } from '../../../../../core/services/toast/toast.service';
-import { SimpleSection } from '../../../../../shared/dtos/section-dtos';
-import { appearAnimations } from '../../../../../shared/animations/appear-animations';
+import {Component, ElementRef, HostBinding, HostListener, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Line, Role} from '../../../../../shared/dtos/script-dtos';
+import {IsMarkingSection, ScriptViewerService} from '../../../services/script-viewer.service';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {Subject, takeUntil} from 'rxjs';
+import {LineService} from '../../../../../core/services/line/line.service';
+import {ToastService} from '../../../../../core/services/toast/toast.service';
+import {SimpleSection} from '../../../../../shared/dtos/section-dtos';
+import {appearAnimations} from '../../../../../shared/animations/appear-animations';
 
 /**
  * Line of a script within the script viewer.
@@ -50,7 +38,8 @@ export class ScriptLineComponent implements OnInit, OnDestroy {
     private modalService: NgbModal,
     private lineService: LineService,
     private toastService: ToastService
-  ) {}
+  ) {
+  }
 
   @HostBinding('class')
   get classes(): string[] {
@@ -176,7 +165,7 @@ export class ScriptLineComponent implements OnInit, OnDestroy {
 
   toggleModal(modal): void {
     this.isModalOpened = true;
-    const modalRef = this.modalService.open(modal, { centered: true });
+    const modalRef = this.modalService.open(modal, {centered: true});
     modalRef.result.finally(() => {
       this.isModalOpened = false;
     });
@@ -188,7 +177,7 @@ export class ScriptLineComponent implements OnInit, OnDestroy {
       this.line.roles = [];
     } else {
       this.scriptViewerService.setLoading(true);
-      this.lineService.patchLine({ roleIds: [] }, this.line.index).subscribe({
+      this.lineService.patchLine({roleIds: []}, this.line.index).subscribe({
         next: (line) => {
           this.scriptViewerService.setLoading(false);
           this.line.roles = [];
@@ -208,7 +197,7 @@ export class ScriptLineComponent implements OnInit, OnDestroy {
     } else {
       this.scriptViewerService.setLoading(true);
       this.lineService
-        .patchLine({ active: !this.line.active }, this.line.index)
+        .patchLine({active: !this.line.active}, this.line.index)
         .subscribe({
           next: (line) => {
             this.scriptViewerService.setLoading(false);

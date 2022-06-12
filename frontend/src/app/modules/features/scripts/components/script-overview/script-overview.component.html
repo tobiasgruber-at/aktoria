@@ -14,8 +14,8 @@
       </div>
       <div class="col-3 d-flex flex-column align-items-end">
         <div
-          class="mb-3 mt-2"
           [ngbTooltip]="!selectedRole ? 'Bitte wähle eine Rolle aus' : ''"
+          class="mb-3 mt-2"
           placement="bottom"
         >
           <button
@@ -85,7 +85,7 @@
       [closeable]="false"
       class="mb-1"
       type="danger"
-      >{{ this.deleteError }}</app-alert
+    >{{ this.deleteError }}</app-alert
     >
     Sicher, dass du
     <i>{{ script?.name }} </i>
@@ -104,7 +104,7 @@
   >
     <app-alert *ngIf="deleteError" [closeable]="false" type="danger">{{
       this.deleteError
-    }}</app-alert>
+      }}</app-alert>
     Sicher, dass du
     <i>{{ script?.name }} </i>
     verlassen möchtest?

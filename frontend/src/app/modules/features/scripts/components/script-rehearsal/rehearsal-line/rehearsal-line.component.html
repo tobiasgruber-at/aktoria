@@ -1,10 +1,10 @@
 <div #content class="content pb-5">
   <div class="role-names">
     <span
-      class="name"
       *ngFor="let role of line.roles"
       [class.is-highlighted]="role.name === session.role?.name"
-      >{{ role.name }}</span
+      class="name"
+    >{{ role.name }}</span
     >
   </div>
   <p class="mb-0">

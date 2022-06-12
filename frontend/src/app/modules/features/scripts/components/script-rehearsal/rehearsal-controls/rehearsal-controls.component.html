@@ -1,12 +1,12 @@
 <app-controls>
   <app-controls-item
+    (click)="toggleRecordingMode()"
     *ngIf="voiceRecordingService.isSupported()"
+    [class.disabled]="endSessionLoading"
     [ngbTooltip]="
       this.isRecordingMode ? 'Aufzeichnungen abbrechen' : 'Text einsprechen'
     "
-    [class.disabled]="endSessionLoading"
     class="pulsing"
-    (click)="toggleRecordingMode()"
   >
     <bi
       *ngIf="this.isRecordingMode; else notRecording"
@@ -19,8 +19,8 @@
   </app-controls-item>
   <app-controls-item
     (click)="speakingPaused ? resume() : pause()"
-    [ngbTooltip]="speakingPaused ? 'Abspielen' : 'Pause'"
     [class.disabled]="isSelectedRoleSpeaking()"
+    [ngbTooltip]="speakingPaused ? 'Abspielen' : 'Pause'"
   >
     <bi *ngIf="!speakingPaused" name="pause-fill"></bi>
     <bi *ngIf="speakingPaused" name="play-fill"></bi>
@@ -34,15 +34,15 @@
   </app-controls-item>
   <app-controls-item
     (click)="changeLine('next')"
-    ngbTooltip="Weiter"
     [class.disabled]="endSessionLoading"
+    ngbTooltip="Weiter"
   >
     <bi name="arrow-right"></bi>
   </app-controls-item>
   <app-controls-item
     (click)="openModal(stopSessionModal)"
-    ngbTooltip="Beenden"
     [class.disabled]="endSessionLoading"
+    ngbTooltip="Beenden"
   >
     <bi name="x-lg"></bi>
   </app-controls-item>
@@ -66,6 +66,6 @@
      >-->
     Sicher, dass du diese
     <strong class="text-primary"> Übungseinheit vorläufig beenden</strong>
-    möchtest?<br />
+    möchtest?<br/>
   </app-modal>
 </ng-template>

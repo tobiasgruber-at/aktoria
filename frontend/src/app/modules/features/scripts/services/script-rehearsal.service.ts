@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
-import { SimpleSession } from '../../../shared/dtos/session-dtos';
-import { DetailedScript, Line, Role } from '../../../shared/dtos/script-dtos';
-import { BehaviorSubject, map, Observable, Subscription } from 'rxjs';
-import { VoiceRecordingService } from './voice-recording.service';
+import {Injectable} from '@angular/core';
+import {SimpleSession} from '../../../shared/dtos/session-dtos';
+import {DetailedScript, Line, Role} from '../../../shared/dtos/script-dtos';
+import {BehaviorSubject, map, Observable, Subscription} from 'rxjs';
+import {VoiceRecordingService} from './voice-recording.service';
 
 export interface ScriptSelectedRoleMapping {
   [scriptId: number]: number;

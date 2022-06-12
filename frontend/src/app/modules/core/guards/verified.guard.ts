@@ -7,7 +7,8 @@ import {AuthService} from '../services/auth/auth.service';
   providedIn: 'root'
 })
 export class VerifiedGuard implements CanActivate {
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router) {
+  }
 
   canActivate(): boolean {
     if (!this.authService.isLoggedIn()) {
@@ -18,7 +19,7 @@ export class VerifiedGuard implements CanActivate {
         url = navigation.extractedUrl.toString();
       }
 
-      this.router.navigate(['/login'], { queryParams: { returnTo: url } });
+      this.router.navigate(['/login'], {queryParams: {returnTo: url}});
       return false;
     } else if (!this.authService.isVerified()) {
       this.router.navigate(['/']);

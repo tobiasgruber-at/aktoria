@@ -1,16 +1,9 @@
-import {
-  Component,
-  ElementRef,
-  HostBinding,
-  Input,
-  OnDestroy,
-  OnInit
-} from '@angular/core';
-import { Line, Page } from '../../../../../shared/dtos/script-dtos';
-import { ScriptViewerService } from '../../../services/script-viewer.service';
-import { Subject, takeUntil } from 'rxjs';
-import { SimpleSection } from '../../../../../shared/dtos/section-dtos';
-import { HelpersService } from '../../../../../core/services/helpers/helpers.service';
+import {Component, ElementRef, HostBinding, Input, OnDestroy, OnInit} from '@angular/core';
+import {Line, Page} from '../../../../../shared/dtos/script-dtos';
+import {ScriptViewerService} from '../../../services/script-viewer.service';
+import {Subject, takeUntil} from 'rxjs';
+import {SimpleSection} from '../../../../../shared/dtos/section-dtos';
+import {HelpersService} from '../../../../../core/services/helpers/helpers.service';
 
 /**
  * Page of a script within the script viewer.
@@ -34,7 +27,8 @@ export class ScriptPageComponent implements OnInit, OnDestroy {
     private ref: ElementRef,
     private scriptViewerService: ScriptViewerService,
     private helpersService: HelpersService
-  ) {}
+  ) {
+  }
 
   @HostBinding('class')
   get classes(): string[] {

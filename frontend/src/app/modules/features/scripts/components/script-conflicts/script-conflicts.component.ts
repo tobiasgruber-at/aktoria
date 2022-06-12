@@ -1,6 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { Line, SimpleScript } from '../../../../shared/dtos/script-dtos';
-import { ScriptViewerService } from '../../services/script-viewer.service';
+import {Component, Input, OnInit} from '@angular/core';
+import {Line, SimpleScript} from '../../../../shared/dtos/script-dtos';
+import {ScriptViewerService} from '../../services/script-viewer.service';
 
 @Component({
   selector: 'app-script-conflicts',
@@ -13,7 +13,8 @@ export class ScriptConflictsComponent implements OnInit {
   lines: Line[];
   clickCounter = 0;
 
-  constructor(private scriptViewerService: ScriptViewerService) {}
+  constructor(private scriptViewerService: ScriptViewerService) {
+  }
 
   ngOnInit(): void {
     this.updateCount();
@@ -44,8 +45,8 @@ export class ScriptConflictsComponent implements OnInit {
   }
 
   jump(): void {
-    const index = this.lines[this.clickCounter++ % this.lines.length]?.index;
-    debugger;
-    this.scriptViewerService.scrollToLine(index);
+    this.scriptViewerService.scrollToLine(
+      this.lines[this.clickCounter++ % this.lines.length]?.index
+    );
   }
 }

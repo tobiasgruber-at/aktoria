@@ -1,13 +1,20 @@
-import {Component, HostBinding, HostListener, Input, OnDestroy, OnInit} from '@angular/core';
-import {ScriptViewerService} from '../../services/script-viewer.service';
-import {Subject, takeUntil} from 'rxjs';
-import {Role, SimpleScript} from '../../../../shared/dtos/script-dtos';
-import {SimpleSection} from '../../../../shared/dtos/section-dtos';
-import {CreateSession} from '../../../../shared/dtos/session-dtos';
-import {ScriptRehearsalService} from '../../services/script-rehearsal.service';
-import {Router} from '@angular/router';
-import {SessionService} from '../../../../core/services/session/session.service';
-import {ToastService} from '../../../../core/services/toast/toast.service';
+import {
+  Component,
+  HostBinding,
+  HostListener,
+  Input,
+  OnDestroy,
+  OnInit
+} from '@angular/core';
+import { ScriptViewerService } from '../../services/script-viewer.service';
+import { Subject, takeUntil } from 'rxjs';
+import { Role, SimpleScript } from '../../../../shared/dtos/script-dtos';
+import { SimpleSection } from '../../../../shared/dtos/section-dtos';
+import { CreateSession } from '../../../../shared/dtos/session-dtos';
+import { ScriptRehearsalService } from '../../services/script-rehearsal.service';
+import { Router } from '@angular/router';
+import { SessionService } from '../../../../core/services/session/session.service';
+import { ToastService } from '../../../../core/services/toast/toast.service';
 
 /** Presents information of a rehearsal section. */
 @Component({
@@ -33,15 +40,6 @@ export class RehearsalSectionComponent implements OnInit, OnDestroy {
     private sessionService: SessionService
   ) {}
 
-  @HostBinding('class')
-  private get classes(): string[] {
-    const classes = ['mb-2'];
-    if (this.isActive) {
-      classes.push('is-active');
-    }
-    return classes;
-  }
-
   get startLinePercentage(): number {
     return this.script && this.section
       ? (this.section.startLine.index / this.script.getLastLineIdx()) * 100
@@ -54,16 +52,13 @@ export class RehearsalSectionComponent implements OnInit, OnDestroy {
       : 0;
   }
 
-  @HostListener('click', ['$event'])
-  private selectSection(): void {
-    this.scriptViewerService.setMarkedSection(
-      this.isActive || this.isCreate
-        ? null
-        : {
-            section: this.section,
-            scrollTo: true
-          }
-    );
+  @HostBinding('class')
+  private get classes(): string[] {
+    const classes = ['mb-2'];
+    if (this.isActive) {
+      classes.push('is-active');
+    }
+    return classes;
   }
 
   ngOnInit(): void {
@@ -103,5 +98,17 @@ export class RehearsalSectionComponent implements OnInit, OnDestroy {
         this.toastService.showError(err);
       }
     });
+  }
+
+  @HostListener('click', ['$event'])
+  private selectSection(): void {
+    this.scriptViewerService.setMarkedSection(
+      this.isActive || this.isCreate
+        ? null
+        : {
+            section: this.section,
+            scrollTo: true
+          }
+    );
   }
 }

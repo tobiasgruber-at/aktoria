@@ -1,6 +1,6 @@
-import { Line, Role, SimpleScript } from './script-dtos';
-import { SimpleSection } from './section-dtos';
-import { BehaviorSubject, Observable } from 'rxjs';
+import {Line, Role, SimpleScript} from './script-dtos';
+import {SimpleSection} from './section-dtos';
+import {BehaviorSubject, Observable} from 'rxjs';
 
 export class SimpleSession {
   private lines: Line[];
@@ -92,7 +92,8 @@ export enum AssessmentType {
 }
 
 export class CreateSession {
-  constructor(public sectionId: number, public roleId: number) {}
+  constructor(public sectionId: number, public roleId: number) {
+  }
 }
 
 export class UpdateSession {
@@ -100,5 +101,6 @@ export class UpdateSession {
     public deprecated?: boolean,
     public selfAssessment?: AssessmentType,
     public currentLineId?: number
-  ) {}
+  ) {
+  }
 }

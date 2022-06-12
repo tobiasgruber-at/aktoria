@@ -29,7 +29,7 @@ export class VoiceSpeakingService implements OnDestroy {
     private toastService: ToastService,
     private sessionService: SessionService,
     private router: Router
-              ) {
+  ) {
     this.scriptRehearsalService.$session
       .pipe(takeUntil(this.$destroy))
       .subscribe((session) => {

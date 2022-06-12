@@ -1,15 +1,11 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, map, Observable, of } from 'rxjs';
-import { Globals } from '../../global/globals';
-import {
-  DetailedScript,
-  ScriptPreview,
-  SimpleScript
-} from '../../../shared/dtos/script-dtos';
-import { tap } from 'rxjs/operators';
-import { AuthService } from '../auth/auth.service';
-import { Cache } from '../../../shared/interfaces/cache';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {BehaviorSubject, map, Observable, of} from 'rxjs';
+import {Globals} from '../../global/globals';
+import {DetailedScript, ScriptPreview, SimpleScript} from '../../../shared/dtos/script-dtos';
+import {tap} from 'rxjs/operators';
+import {AuthService} from '../auth/auth.service';
+import {Cache} from '../../../shared/interfaces/cache';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +22,8 @@ export class ScriptService {
     private http: HttpClient,
     private globals: Globals,
     private authService: AuthService
-  ) {}
+  ) {
+  }
 
   get $stagedScript(): Observable<SimpleScript> {
     const cachedScript = localStorage.getItem('stagedScript');
@@ -57,11 +54,11 @@ export class ScriptService {
     return loadedScript
       ? of(loadedScript)
       : this.http.get<DetailedScript>(`${this.baseUri}/${id}`).pipe(
-          map(this.mapScriptInterfaceToClass),
-          tap((script) => {
-            this.cachedScripts[script.id] = script;
-          })
-        );
+        map(this.mapScriptInterfaceToClass),
+        tap((script) => {
+          this.cachedScripts[script.id] = script;
+        })
+      );
   }
 
   /**
@@ -73,11 +70,11 @@ export class ScriptService {
     return this.scripts?.length > 0
       ? of(this.scripts)
       : this.http.get<ScriptPreview[]>(this.baseUri).pipe(
-          map((scripts) =>
-            scripts.map((s) => new ScriptPreview(s.id, s.name, s.owner))
-          ),
-          tap((scripts) => this.setScripts(scripts))
-        );
+        map((scripts) =>
+          scripts.map((s) => new ScriptPreview(s.id, s.name, s.owner))
+        ),
+        tap((scripts) => this.setScripts(scripts))
+      );
   }
 
   /**
@@ -182,7 +179,7 @@ export class ScriptService {
       this.baseUri + '/' + scriptId + '/inviteLink',
       null,
       // @ts-ignore
-      { responseType: 'text' }
+      {responseType: 'text'}
     );
   }
 

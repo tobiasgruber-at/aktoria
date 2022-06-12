@@ -16,7 +16,8 @@ export class RehearsalLineComponent implements OnInit, OnDestroy {
   session: SimpleSession = null;
   private $destroy = new Subject<void>();
 
-  constructor(private scriptRehearsalService: ScriptRehearsalService) {}
+  constructor(private scriptRehearsalService: ScriptRehearsalService) {
+  }
 
   @HostBinding('class')
   get classes(): string[] {

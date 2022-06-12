@@ -59,7 +59,7 @@ export class ScriptEditorComponent
   }
 
   openModal(modalRef): void {
-    this.modalService.open(modalRef, { centered: true });
+    this.modalService.open(modalRef, {centered: true});
   }
 
   cancelUpload(modal: NgbActiveModal): void {
@@ -87,7 +87,7 @@ export class ScriptEditorComponent
   }
 
   protected processSubmit(): void {
-    const { scriptName } = this.form.value;
+    const {scriptName} = this.form.value;
     const script = new SimpleScript(
       this.script.pages,
       this.script.roles,

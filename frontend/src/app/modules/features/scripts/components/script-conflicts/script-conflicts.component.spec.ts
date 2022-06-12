@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { ScriptConflictsComponent } from './script-conflicts.component';
+import {ScriptConflictsComponent} from './script-conflicts.component';
 
 describe('ScriptConflictsComponent', () => {
   let component: ScriptConflictsComponent;
@@ -8,9 +8,9 @@ describe('ScriptConflictsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ScriptConflictsComponent ]
+      declarations: [ScriptConflictsComponent]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {

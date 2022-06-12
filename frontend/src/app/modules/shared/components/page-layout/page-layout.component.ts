@@ -30,7 +30,8 @@ export class PageLayoutComponent {
     private router: Router,
     private toastService: ToastService,
     private helpersService: HelpersService
-  ) {}
+  ) {
+  }
 
   logout(): void {
     this.router.navigateByUrl('/login');

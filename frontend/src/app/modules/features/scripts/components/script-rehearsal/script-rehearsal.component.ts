@@ -32,7 +32,8 @@ export class ScriptRehearsalComponent implements OnInit, OnDestroy {
     private sessionService: SessionService,
     private router: Router,
     private voiceSpeakingService: VoiceSpeakingService
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {

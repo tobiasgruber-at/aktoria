@@ -34,12 +34,13 @@ import { Router } from '@angular/router';
 })
 export class RehearsalSectionCreateComponent
   extends FormBase
-  implements OnInit, OnDestroy {
-  @Output() private cancel = new EventEmitter<void>();
-  @HostBinding('class') private classes = 'd-flex flex-column flex-grow-1';
+  implements OnInit, OnDestroy
+{
   markedSection: SimpleSection = null;
   isMarkingSection: IsMarkingSection = null;
   script: SimpleScript = null;
+  @Output() private cancel = new EventEmitter<void>();
+  @HostBinding('class') private classes = 'd-flex flex-column flex-grow-1';
   private $destroy = new Subject<void>();
   private user: SimpleUser = null;
   private selectedRole: Role = null;

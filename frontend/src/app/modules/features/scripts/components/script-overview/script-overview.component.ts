@@ -34,7 +34,8 @@ export class ScriptOverviewComponent implements OnInit, OnDestroy {
     private modalService: NgbModal,
     private authService: AuthService,
     public scriptRehearsalService: ScriptRehearsalService
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
@@ -64,7 +65,7 @@ export class ScriptOverviewComponent implements OnInit, OnDestroy {
 
   openModal(modal: TemplateRef<any>) {
     this.deleteError = null;
-    this.modalService.open(modal, { centered: true });
+    this.modalService.open(modal, {centered: true});
   }
 
   deleteScript(modal: NgbActiveModal): void {
