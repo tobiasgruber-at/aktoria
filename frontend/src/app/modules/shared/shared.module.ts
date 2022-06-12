@@ -11,6 +11,8 @@ import {
   ArrowRight,
   CaretLeftFill,
   CaretRightFill,
+  ExclamationOctagon,
+  ExclamationTriangle,
   MicFill,
   MicMuteFill,
   PauseFill,
@@ -64,7 +66,11 @@ const icons = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   VolumeOffFill,
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  VolumeMuteFill
+  VolumeMuteFill,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  ExclamationOctagon,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  ExclamationTriangle
 };
 const sharedDeclarations = [
   PageLayoutComponent,

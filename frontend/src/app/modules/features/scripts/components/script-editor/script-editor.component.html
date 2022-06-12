@@ -27,6 +27,10 @@
         placeholder="Skriptbezeichnung"
         type="text"
       />
+      <app-script-conflicts
+        [script]="script"
+        type="error"
+      ></app-script-conflicts>
       <app-form-errors>
         <app-form-error *ngIf="fieldHasErrors('scriptName', 'required')"
           >Bitte gib eine Bezeichnung an.
@@ -36,6 +40,10 @@
         </app-form-error>
       </app-form-errors>
     </div>
+    <app-script-conflicts
+      [script]="script"
+      type="warning"
+    ></app-script-conflicts>
     <div class="form-group mb-3">
       <div class="d-flex justify-content-between align-items-center mb-3">
         <h3 class="mb-0">Rollen</h3>

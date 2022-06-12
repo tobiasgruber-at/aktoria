@@ -68,14 +68,14 @@ export class Line {
     public audio: AudioBuffer,
     public recordedBy: Role,
     public active: boolean,
-    public conflictType: Conflict,
+    public conflictType?: Conflict,
     public id?: number
   ) {}
 }
 
-enum Conflict {
-  verificationRequired,
-  assignmentRequired
+export enum Conflict {
+  verificationRequired = 'VERIFICATION_REQUIRED',
+  assignmentRequired = 'ASSIGNMENT_REQUIRED'
 }
 
 export class UpdateLine {

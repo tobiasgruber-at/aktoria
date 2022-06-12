@@ -1,9 +1,16 @@
-import {Component, ElementRef, HostBinding, Input, OnDestroy, OnInit} from '@angular/core';
-import {Line, Page} from '../../../../../shared/dtos/script-dtos';
-import {ScriptViewerService} from '../../../services/script-viewer.service';
-import {Subject, takeUntil} from 'rxjs';
-import {SimpleSection} from '../../../../../shared/dtos/section-dtos';
-import {HelpersService} from '../../../../../core/services/helpers/helpers.service';
+import {
+  Component,
+  ElementRef,
+  HostBinding,
+  Input,
+  OnDestroy,
+  OnInit
+} from '@angular/core';
+import { Line, Page } from '../../../../../shared/dtos/script-dtos';
+import { ScriptViewerService } from '../../../services/script-viewer.service';
+import { Subject, takeUntil } from 'rxjs';
+import { SimpleSection } from '../../../../../shared/dtos/section-dtos';
+import { HelpersService } from '../../../../../core/services/helpers/helpers.service';
 
 /**
  * Page of a script within the script viewer.
@@ -20,14 +27,14 @@ export class ScriptPageComponent implements OnInit, OnDestroy {
   section: SimpleSection = null;
   renderedContent = false;
   private isEditing = false;
+  private isUploading = false;
   private $destroy = new Subject<void>();
 
   constructor(
     private ref: ElementRef,
     private scriptViewerService: ScriptViewerService,
     private helpersService: HelpersService
-  ) {
-  }
+  ) {}
 
   @HostBinding('class')
   get classes(): string[] {
@@ -47,6 +54,11 @@ export class ScriptPageComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.$destroy))
       .subscribe((isEditing) => {
         this.isEditing = isEditing;
+      });
+    this.scriptViewerService.$isUploading
+      .pipe(takeUntil(this.$destroy))
+      .subscribe((isUploading) => {
+        this.isUploading = isUploading;
       });
     this.scriptViewerService.$markedSection
       .pipe(takeUntil(this.$destroy))
@@ -77,7 +89,7 @@ export class ScriptPageComponent implements OnInit, OnDestroy {
    * calculated until it's necessary.
    */
   private lazyRenderContent(): void {
-    if (!this.isEditing) {
+    if (!this.isEditing || this.isUploading) {
       this.renderedContent = true;
     } else {
       this.helpersService.$mainScrollPosY
