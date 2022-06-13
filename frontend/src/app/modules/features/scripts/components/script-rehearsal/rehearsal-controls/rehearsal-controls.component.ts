@@ -95,7 +95,7 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
     if (this.endSessionLoading) {
       return;
     }
-    this.sessionService.patchOne(this.session.id, new UpdateSession(null, null, this.session.currentLineIndex))
+    this.sessionService.patchOne(this.session.id, new UpdateSession(null, null, this.session.getCurrentLine().id))
       .subscribe({next: () => {
           modal.dismiss();
           this.router.navigateByUrl(`/scripts/${this.script.id}`);
