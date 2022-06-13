@@ -168,6 +168,16 @@ export class ScriptLineComponent implements OnInit, OnDestroy {
     return this.line.conflictType !== null;
   }
 
+  /** @return Whether this line has a error conflict. */
+  isConflictError(): boolean {
+    return this.line.conflictType === 'ASSIGNMENT_REQUIRED';
+  }
+
+  /** @return Whether this line has a warning conflict. */
+  isConflictWarning(): boolean {
+    return this.line.conflictType === 'VERIFICATION_REQUIRED';
+  }
+
   toggleModal(modal): void {
     this.isModalOpened = true;
     const modalRef = this.modalService.open(modal, {centered: true});

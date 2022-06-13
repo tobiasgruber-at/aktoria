@@ -64,8 +64,15 @@ p {
 
   &.conflict {
     text-decoration: underline;
-    text-decoration-color: red;
-    text-decoration-style: wavy;
+    text-decoration-thickness: 2px;
+
+    &.conflict-error {
+      text-decoration-color: var(--bs-danger);
+    }
+
+    &.conflict-warning {
+      text-decoration-color: var(--bs-warning);
+    }
   }
 }
 

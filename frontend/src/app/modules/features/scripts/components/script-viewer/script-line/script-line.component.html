@@ -20,11 +20,14 @@
     </div>
     <!-- TODO: remove dropdown toggle when only viewing mode, as it throws errors -->
     <p
+      [ngbTooltip]="isConflict() ? 'Bitte überprüfe diese Zeile' : null"
       [class.fst-italic]="isInstruction"
       [class.highlighted]="
         isHighlighted(scriptViewerService.$selectedRole | async)
       "
       [class.conflict]="isConflict()"
+      [class.conflict-error]="isConflictError()"
+      [class.conflict-warning]="isConflictWarning()"
       [class.text-secondary]="isInstruction"
       class="w-100"
       ngbDropdownToggle
