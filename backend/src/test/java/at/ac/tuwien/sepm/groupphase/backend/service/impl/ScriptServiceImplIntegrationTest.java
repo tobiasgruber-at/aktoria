@@ -76,7 +76,6 @@ class ScriptServiceImplIntegrationTest {
         expectedLines.add(new LineImpl("(Anna tritt auf.)", 0L));
         expectedLines.add(new LineImpl("ANNA P. (fröhlich) Halli-hallöchen!", 0L));
         expectedLines.add(new LineImpl("LADY MARI-MUSTER O man. Ich brauch‘ erst mal einen Kaffee.", 0L));
-        expectedLines.get(7).setConflictType(Line.ConflictType.VERIFICATION_REQUIRED);
         expectedLines.add(new LineImpl("ANNA P. UND BOB (gleichzeitig.) Ich auch!", 0L));
         expectedLines.add(new LineImpl("Zweiter Akt", 0L));
         expectedLines.add(new LineImpl("Vorhang", 0L));

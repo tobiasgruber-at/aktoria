@@ -21,7 +21,7 @@ public class RoleValidationImpl implements RoleValidation {
         if (name.length() > 100) {
             throw new ValidationException("Rolle ist zu lang!");
         }
-        Pattern pattern = Pattern.compile("^[A-Z\\s\\.\\-/]+$");
+        Pattern pattern = Pattern.compile("^[A-ZÖÜÄ\\s\\.\\-/]+$");
         Matcher matcher = pattern.matcher(name);
 
         if (!(matcher.matches())) {
