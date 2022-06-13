@@ -27,6 +27,8 @@ export class ScriptViewerService {
   private markedSectionSubject = new BehaviorSubject<MarkedSection>(null);
   private scriptSubject = new BehaviorSubject<SimpleScript>(null);
   private selectedRoleSubject = new BehaviorSubject<Role>(null);
+  /** Fires when the conflict of a line was resolved. */
+  private resolvedConflictSubject = new BehaviorSubject<number>(null);
   private scrollToLineSubject = new Subject<number>();
   /**
    * Indicates how many loadings are currently stacked.
@@ -76,6 +78,11 @@ export class ScriptViewerService {
     return this.loadingSubject.asObservable();
   }
 
+  /** @see resolvedConflictSubject */
+  get $resolveConflict(): Observable<number> {
+    return this.resolvedConflictSubject.asObservable();
+  }
+
   setScript(script: SimpleScript): void {
     this.scriptSubject.next(script);
   }
@@ -114,5 +121,9 @@ export class ScriptViewerService {
 
   scrollToLine(index: number): void {
     this.scrollToLineSubject.next(index);
+  }
+
+  setResolveConflict(index: number): void {
+    this.resolvedConflictSubject.next(index);
   }
 }

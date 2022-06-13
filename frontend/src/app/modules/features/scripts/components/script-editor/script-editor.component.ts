@@ -44,7 +44,8 @@ export class ScriptEditorComponent
 
   ngOnInit(): void {
     this.form = this.formBuilder.group({
-      scriptName: ['', [Validators.required, Validators.maxLength(100)]]
+      scriptName: ['', [Validators.required, Validators.maxLength(100)]],
+      errorCount: [1, [Validators.max(0)]]
     });
     this.scriptViewerService.$script
       .pipe(takeUntil(this.$destroy))

@@ -209,6 +209,9 @@ export class ScriptLineComponent implements OnInit, OnDestroy {
   toggleLineActive(): void {
     if (this.isUploading) {
       this.line.active = !this.line.active;
+      if (!this.line.active) {
+        this.scriptViewerService.setResolveConflict(this.line.index);
+      }
     } else {
       this.scriptViewerService.setLoading(true);
       this.lineService
@@ -229,6 +232,7 @@ export class ScriptLineComponent implements OnInit, OnDestroy {
   ignoreConflict(): void {
     if (this.isUploading) {
       this.line.conflictType = null;
+      this.scriptViewerService.setResolveConflict(this.line.index);
     }
   }
 

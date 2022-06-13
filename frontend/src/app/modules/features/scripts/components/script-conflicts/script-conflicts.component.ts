@@ -1,23 +1,90 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {Line, SimpleScript} from '../../../../shared/dtos/script-dtos';
 import {ScriptViewerService} from '../../services/script-viewer.service';
+import {Subject, takeUntil} from 'rxjs';
+import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
 
 @Component({
   selector: 'app-script-conflicts',
   templateUrl: './script-conflicts.component.html',
-  styleUrls: ['./script-conflicts.component.scss']
+  styleUrls: ['./script-conflicts.component.scss'],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      multi: true,
+      useExisting: ScriptConflictsComponent
+    }
+  ]
 })
-export class ScriptConflictsComponent implements OnInit {
+export class ScriptConflictsComponent implements OnInit, OnDestroy, ControlValueAccessor {
   @Input() type: 'error' | 'warning' = 'error';
-  @Input() script: SimpleScript;
+  script: SimpleScript = null;
   lines: Line[];
   clickCounter = 0;
+  touched = false;
+  isDisabled = false;
+  private $destroy = new Subject<void>();
 
   constructor(private scriptViewerService: ScriptViewerService) {
   }
 
   ngOnInit(): void {
+    this.scriptViewerService.$script
+      .pipe(takeUntil(this.$destroy))
+      .subscribe((script) => {
+        if (!this.isDisabled) {
+          this.script = script;
+          this.updateCount();
+        }
+        this.markAsTouched();
+      });
+
+    this.scriptViewerService.$resolveConflict
+      .pipe(takeUntil(this.$destroy))
+      .subscribe((index) => {
+        if (!this.isDisabled) {
+          this.lines = this.lines.filter((l) => l.index !== index);
+          this.onChange(this.lines.length);
+        }
+        this.markAsTouched();
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.$destroy.next();
+    this.$destroy.complete();
+  }
+
+  onChange = (count) => {
+  };
+
+  onTouched = () => {
+  };
+
+  registerOnChange(fn: any): void {
+    this.onChange = fn;
+  }
+
+  registerOnTouched(fn: any): void {
+    this.touched = fn;
+  }
+
+  setDisabledState(isDisabled: boolean): void {
+    this.isDisabled = isDisabled;
+    this.markAsTouched();
+  }
+
+  writeValue(lines: Line[]): void {
+    this.lines = lines;
     this.updateCount();
+    this.markAsTouched();
+  }
+
+  markAsTouched(): void {
+    if (!this.touched) {
+      this.onTouched();
+      this.touched = true;
+    }
   }
 
   updateCount(): void {
@@ -42,11 +109,13 @@ export class ScriptConflictsComponent implements OnInit {
         }
       }
     }
+    this.onChange(this.lines.length);
   }
 
   jump(): void {
     this.scriptViewerService.scrollToLine(
       this.lines[this.clickCounter++ % this.lines.length]?.index
     );
+    this.markAsTouched();
   }
 }

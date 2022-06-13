@@ -10,7 +10,7 @@
       <ng-container *ngIf="!isUploading && script">
         <span class="truncate">{{ script?.name }}</span> bearbeiten
       </ng-container>
-      <ng-container *ngIf="isUploading"> Skript hochladen</ng-container>
+      <ng-container *ngIf="isUploading">Skript hochladen</ng-container>
     </h2>
     <app-back-button
       (click)="backToOverview()"
@@ -27,24 +27,31 @@
         placeholder="Skriptbezeichnung"
         type="text"
       />
-      <app-script-conflicts
-        [ngbTooltip]="'Springe zum Problem'"
-        placement="left top bottom"
-        [script]="script"
-        type="error"
-      ></app-script-conflicts>
-      <app-script-conflicts
-        [ngbTooltip]="'Springe zum Problem'"
-        placement="left top bottom"
-        [script]="script"
-        type="warning"
-      ></app-script-conflicts>
       <app-form-errors>
         <app-form-error *ngIf="fieldHasErrors('scriptName', 'required')"
         >Bitte gib eine Bezeichnung an.
         </app-form-error>
         <app-form-error *ngIf="fieldHasErrors('scriptName', 'maxlength')"
         >Bezeichnung zu lange.
+        </app-form-error>
+      </app-form-errors>
+    </div>
+    <div *ngIf="isUploading" class="form-group mb-4">
+      <h3 class="mb-0">Überprüfungen</h3>
+      <app-script-conflicts
+        type="error"
+        [ngbTooltip]="'Springe zum Problem'"
+        placement="left top bottom"
+        formControlName="errorCount"
+      ></app-script-conflicts>
+      <app-script-conflicts
+        type="warning"
+        [ngbTooltip]="'Springe zum Problem'"
+        placement="left top bottom"
+      ></app-script-conflicts>
+      <app-form-errors>
+        <app-form-error *ngIf="fieldHasErrors('errorCount', 'max')"
+        >Notwendige Überprüfungen müsse abgearbeitet werden.
         </app-form-error>
       </app-form-errors>
     </div>
