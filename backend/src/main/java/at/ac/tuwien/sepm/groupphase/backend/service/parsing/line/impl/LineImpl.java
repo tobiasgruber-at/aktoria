@@ -102,7 +102,7 @@ public class LineImpl implements Line {
     private void decomposeLine() {
         log.trace("decomposeLine()");
 
-        Pattern pattern = Pattern.compile("^[A-Z\\s\\.\\-/]+(?=\\s[A-ZÖÜÄ\\\"„”(])");
+        Pattern pattern = Pattern.compile("^[A-Z\\s\\.\\-/]+(?=\\s[A-ZÖÜÄ0-9\\\"„”(])");
         Matcher matcher = pattern.matcher(raw);
 
         if (matcher.find()) {
