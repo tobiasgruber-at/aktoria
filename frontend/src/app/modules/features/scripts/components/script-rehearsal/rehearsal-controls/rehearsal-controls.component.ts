@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, TemplateRef} from '@angular/core';
+import {Component, EventEmitter, OnDestroy, OnInit, Output, TemplateRef} from '@angular/core';
 import {ScriptRehearsalService} from '../../../services/script-rehearsal.service';
 import {Subject, takeUntil} from 'rxjs';
 import {SimpleSession, UpdateSession} from '../../../../../shared/dtos/session-dtos';
@@ -18,6 +18,8 @@ import {VoiceSpeakingService} from '../../../services/voice-speaking.service';
   styleUrls: ['./rehearsal-controls.component.scss']
 })
 export class RehearsalControlsComponent implements OnInit, OnDestroy {
+  @Output() blurEventEmitter = new EventEmitter<boolean>();
+  isBlurred = false;
   script: DetailedScript = null;
   session: SimpleSession = null;
   interactionDisabled = false;
@@ -34,7 +36,8 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
     public voiceRecordingService: VoiceRecordingService,
     private toastService: ToastService,
     public voiceSpeakingService: VoiceSpeakingService
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.scriptRehearsalService.$session
@@ -88,7 +91,7 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
   }
 
   openModal(modal: TemplateRef<any>): void {
-    this.modalService.open(modal, { centered: true });
+    this.modalService.open(modal, {centered: true});
   }
 
   stopSession(modal: NgbActiveModal): void {
@@ -122,6 +125,12 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
 
   resume() {
     this.voiceSpeakingService.resumeSpeak();
+  }
+
+  blur() {
+    this.isBlurred = !this.isBlurred;
+    // console.log(this.isBlurred);
+    this.blurEventEmitter.emit(this.isBlurred);
   }
 
   async toggleRecordingMode(): Promise<void> {
