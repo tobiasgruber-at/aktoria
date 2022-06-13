@@ -8,7 +8,6 @@ import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleRoleDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleScriptDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.dto.SimpleUserDto;
 import at.ac.tuwien.sepm.groupphase.backend.endpoint.mapper.ScriptMapper;
-import at.ac.tuwien.sepm.groupphase.backend.service.parsing.line.Line;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -102,7 +101,7 @@ public class ScriptTestHelper {
                 List.of(expectedRolesDto.get(4)),
                 "O man. Ich brauch‘ erst mal einen Kaffee.",
                 true,
-                Line.ConflictType.VERIFICATION_REQUIRED
+                null
             ));
         simpleLinesDto.add(
             new SimpleLineDto(
