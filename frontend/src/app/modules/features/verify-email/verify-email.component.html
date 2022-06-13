@@ -3,10 +3,10 @@
   <app-card
     *ngIf="successful === false"
     title="Emailverifikation fehlgeschlagen"
-    >Der übertragene Token ist abgelaufen oder ungültig.
+  >Der übertragene Token ist abgelaufen oder ungültig.
   </app-card>
   <app-card *ngIf="successful === true" title="Emailverifikation erfolgreich"
-    >Deine Emailadresse wurde bestätigt.<br />
+  >Deine Emailadresse wurde bestätigt.<br/>
     Bitte
     <a routerLink="/login">melde dich erneut an</a>, um Aktoria zu verwenden.
   </app-card>

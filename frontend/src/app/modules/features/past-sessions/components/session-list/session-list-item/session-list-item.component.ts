@@ -1,11 +1,11 @@
-import { Component, Input, OnInit, TemplateRef } from '@angular/core';
-import { SimpleSession } from '../../../../../shared/dtos/session-dtos';
-import { SimpleSection } from '../../../../../shared/dtos/section-dtos';
-import { SectionService } from '../../../../../core/services/section/section.service';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { SimpleScript } from '../../../../../shared/dtos/script-dtos';
-import { ScriptService } from '../../../../../core/services/script/script.service';
-import { RoleService } from '../../../../../core/services/role/role.service';
+import {Component, Input, OnInit, TemplateRef} from '@angular/core';
+import {SimpleSession} from '../../../../../shared/dtos/session-dtos';
+import {SimpleSection} from '../../../../../shared/dtos/section-dtos';
+import {SectionService} from '../../../../../core/services/section/section.service';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {SimpleScript} from '../../../../../shared/dtos/script-dtos';
+import {ScriptService} from '../../../../../core/services/script/script.service';
+import {RoleService} from '../../../../../core/services/role/role.service';
 
 @Component({
   selector: 'app-session-list-item',
@@ -23,7 +23,8 @@ export class SessionListItemComponent implements OnInit {
     private roleService: RoleService,
     private scriptService: ScriptService,
     private modalService: NgbModal
-  ) {}
+  ) {
+  }
 
   get startLinePercentage(): number {
     return this.script && this.section
@@ -63,6 +64,6 @@ export class SessionListItemComponent implements OnInit {
   }
 
   openModal(modal: TemplateRef<any>) {
-    this.modalService.open(modal, { centered: true });
+    this.modalService.open(modal, {centered: true});
   }
 }

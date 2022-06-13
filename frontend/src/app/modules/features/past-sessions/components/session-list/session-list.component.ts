@@ -1,6 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { SessionService } from '../../../../core/services/session/session.service';
-import { SimpleSession } from '../../../../shared/dtos/session-dtos';
+import {Component, Input, OnInit} from '@angular/core';
+import {SessionService} from '../../../../core/services/session/session.service';
+import {SimpleSession} from '../../../../shared/dtos/session-dtos';
 
 @Component({
   selector: 'app-session-list',
@@ -11,7 +11,8 @@ export class SessionListComponent implements OnInit {
   @Input() title: string;
   sessions: SimpleSession[];
 
-  constructor(public sessionService: SessionService) {}
+  constructor(public sessionService: SessionService) {
+  }
 
   ngOnInit(): void {
     this.sessionService.getAll().subscribe({

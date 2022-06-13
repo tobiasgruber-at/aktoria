@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { PastSessionsComponent } from './past-sessions.component';
+import {PastSessionsComponent} from './past-sessions.component';
 
 describe('PastSessionsComponent', () => {
   let component: PastSessionsComponent;
