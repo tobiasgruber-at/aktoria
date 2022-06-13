@@ -143,11 +143,12 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
     this.endSessionLoading = true;
     this.sessionService.endSession(this.session.id).subscribe({
       next: () => {
-        this.router.navigateByUrl(`/scripts/${this.script.id}`);
-        this.toastService.show({
+        //this.router.navigateByUrl(`/scripts/${this.script.id}`);
+        /*this.toastService.show({
           message: 'Lerneinheit abgeschlossen.',
           theme: Theme.primary
-        });
+        });*/
+        this.router.navigateByUrl(`scripts/${this.script.id}/review/${this.session.id}`);
       },
       error: (err) => {
         this.toastService.showError(err);
