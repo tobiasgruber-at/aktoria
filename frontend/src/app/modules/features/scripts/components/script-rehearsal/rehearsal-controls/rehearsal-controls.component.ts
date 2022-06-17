@@ -10,6 +10,7 @@ import {ToastService} from '../../../../../core/services/toast/toast.service';
 import {Theme} from '../../../../../shared/enums/theme.enum';
 import {VoiceRecordingService} from '../../../services/voice-recording.service';
 import {VoiceSpeakingService} from '../../../services/voice-speaking.service';
+import {FormGroup} from '@angular/forms';
 
 /** Control panel for a script rehearsal. */
 @Component({
@@ -26,6 +27,7 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
   endSessionLoading = false;
   isRecordingMode = false;
   speakingPaused = true;
+  lang = 'de';
   private $destroy = new Subject<void>();
 
   constructor(
@@ -131,6 +133,11 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
     this.isBlurred = !this.isBlurred;
     // console.log(this.isBlurred);
     this.blurEventEmitter.emit(this.isBlurred);
+  }
+
+  updateLang() {
+    this.pause();
+    this.voiceSpeakingService.setLang(this.lang);
   }
 
   async toggleRecordingMode(): Promise<void> {

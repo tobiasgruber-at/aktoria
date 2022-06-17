@@ -56,6 +56,14 @@
           <input (click)="blur()" class="form-check-input" id="flexSwitchCheckDefault" role="switch" type="checkbox">
           <label class="form-check-label text-nowrap" for="flexSwitchCheckDefault">Text ausblenden</label>
         </div>
+        <label class="form-check-label text-nowrap" for="flexSwitchCheckDefault">Textsprache</label>
+        <select class="form-control" [(ngModel)]="lang" (click)="updateLang()">
+          <option value="de">Deutsch</option>
+          <option value="en-US">Englisch</option>
+          <option value="fr-FR">Französisch</option>
+          <option value="it-IT">Italienisch</option>
+          <option value="es-ES">Spanisch</option>
+        </select>
       </div>
     </div>
   </app-controls-item>

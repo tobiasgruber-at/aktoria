@@ -23,6 +23,7 @@ export class VoiceSpeakingService implements OnDestroy {
   private session: SimpleSession;
   private $destroy = new Subject<void>();
   private pausedSubject = new BehaviorSubject<boolean>(true);
+  private lang = 'de';
 
   constructor(
     private scriptRehearsalService: ScriptRehearsalService,
@@ -55,9 +56,8 @@ export class VoiceSpeakingService implements OnDestroy {
       const utter = this.initUtterance(currentLine.content);
       setTimeout(() => {
         this.canceledCurSynth = false;
-        this.synth.speak(utter);
-        if (this.pausedSubject.getValue()) {
-          this.synth.pause();
+        if (!this.pausedSubject.getValue()) {
+          this.synth.speak(utter);
         }
       }, 10);
     }
@@ -71,11 +71,8 @@ export class VoiceSpeakingService implements OnDestroy {
 
   /** Resumes the current synthesis. */
   resumeSpeak() {
-    if (!this.synth.pending) {
-      this.speakLine();
-    }
+    this.speakLine();
     this.pausedSubject.next(false);
-    this.synth.resume();
   }
 
   /** Stops the current synthesis. */
@@ -90,14 +87,19 @@ export class VoiceSpeakingService implements OnDestroy {
     this.stopSpeak();
   }
 
+  setLang(lang) {
+    this.lang = lang;
+    this.stopSpeak();
+  }
+
   /** Initializes a synthesis utterance. */
   private initUtterance(content: string): SpeechSynthesisUtterance {
     const utter = new SpeechSynthesisUtterance(content);
-    utter.lang = 'de';
-    const voice = this.synth.getVoices().find((v) => v.name === 'Microsoft Michael - German (Austria)');
-    if (voice) {
-      utter.voice = voice;
+    utter.lang = this.lang;
+    if (utter.lang === 'de' || utter.lang === 'de-AT' || utter.lang === 'de-DE') {
+      utter.voice = this.synth.getVoices().find((v) => v.name === 'Microsoft Michael - German (Austria)');
     }
+
     utter.addEventListener('end', () => {
       if (!this.canceledCurSynth) {
         if (this.session?.isAtEnd()) {
