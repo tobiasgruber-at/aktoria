@@ -94,7 +94,7 @@ export class VoiceSpeakingService implements OnDestroy {
   private initUtterance(content: string): SpeechSynthesisUtterance {
     const utter = new SpeechSynthesisUtterance(content);
     utter.lang = 'de';
-    const voice = this.synth.getVoices().find((v) => v.name === 'Anna');
+    const voice = this.synth.getVoices().find((v) => v.name === 'Microsoft Michael - German (Austria)');
     if (voice) {
       utter.voice = voice;
     }

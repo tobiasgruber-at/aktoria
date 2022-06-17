@@ -8,6 +8,7 @@ import {ScriptRehearsalService} from '../../services/script-rehearsal.service';
 import {Router} from '@angular/router';
 import {SessionService} from '../../../../core/services/session/session.service';
 import {ToastService} from '../../../../core/services/toast/toast.service';
+import {VoiceSpeakingService} from '../../services/voice-speaking.service';
 
 /** Presents information of a rehearsal section. */
 @Component({
@@ -30,7 +31,8 @@ export class RehearsalSectionComponent implements OnInit, OnDestroy {
     private scriptRehearsalService: ScriptRehearsalService,
     private router: Router,
     private toastService: ToastService,
-    private sessionService: SessionService
+    private sessionService: SessionService,
+    private voiceSpeakingService: VoiceSpeakingService
   ) {}
 
   @HostBinding('class')
@@ -89,6 +91,7 @@ export class RehearsalSectionComponent implements OnInit, OnDestroy {
 
   /** Starts a new rehearsal with this section. */
   startRehearsal(): void {
+    this.voiceSpeakingService.pauseSpeak();
     const session: CreateSession = {
       sectionId: this.section.id,
       roleId: this.selectedRole?.id
