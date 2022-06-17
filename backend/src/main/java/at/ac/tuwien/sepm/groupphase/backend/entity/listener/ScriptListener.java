@@ -42,19 +42,21 @@ public class ScriptListener {
             userRepository.save(user);
         }
 
-        //remove 
+        //remove
         List<Role> roles = script.getRoles().stream().toList();
-        Set<Session> sessions = roles.get(0).getSessions();
-        for (int i = 1; i < roles.size(); i++) {
-            sessions.addAll(roles.get(i).getSessions());
-        }
-        List<Session> sessionList = sessions.stream().toList();
-        List<Section> sections = new LinkedList<>();
-        for (int i = 0; i < sessionList.size(); i++) {
-            sections.add(sessionList.get(i).getSection());
-        }
+        if (roles.size() > 0) {
+            Set<Session> sessions = roles.get(0).getSessions();
+            for (int i = 1; i < roles.size(); i++) {
+                sessions.addAll(roles.get(i).getSessions());
+            }
+            List<Session> sessionList = sessions.stream().toList();
+            List<Section> sections = new LinkedList<>();
+            for (int i = 0; i < sessionList.size(); i++) {
+                sections.add(sessionList.get(i).getSection());
+            }
 
-        //then remove roles
-        roleRepository.deleteAll(roles);
+            //then remove roles
+            roleRepository.deleteAll(roles);
+        }
     }
 }
