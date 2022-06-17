@@ -17,10 +17,11 @@
           [@lineAppear]="
             line.index >= session?.currentLineIndex ? 'active' : 'hidden'
           "
+          [isBlurred]="isBlurred"
           [line]="line"
         ></app-rehearsal-line>
       </ng-container>
     </div>
   </div>
-  <app-rehearsal-controls @fixedAppear></app-rehearsal-controls>
+  <app-rehearsal-controls (blurEventEmitter)="blur($event)" @fixedAppear></app-rehearsal-controls>
 </ng-template>

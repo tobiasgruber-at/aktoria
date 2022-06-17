@@ -1,7 +1,7 @@
-import {Component, OnDestroy, OnInit, TemplateRef} from '@angular/core';
+import {Component, EventEmitter, OnDestroy, OnInit, Output, TemplateRef} from '@angular/core';
 import {ScriptRehearsalService} from '../../../services/script-rehearsal.service';
 import {Subject, takeUntil} from 'rxjs';
-import {SimpleSession} from '../../../../../shared/dtos/session-dtos';
+import {SimpleSession, UpdateSession} from '../../../../../shared/dtos/session-dtos';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {Router} from '@angular/router';
 import {DetailedScript} from '../../../../../shared/dtos/script-dtos';
@@ -18,6 +18,8 @@ import {VoiceSpeakingService} from '../../../services/voice-speaking.service';
   styleUrls: ['./rehearsal-controls.component.scss']
 })
 export class RehearsalControlsComponent implements OnInit, OnDestroy {
+  @Output() blurEventEmitter = new EventEmitter<boolean>();
+  isBlurred = false;
   script: DetailedScript = null;
   session: SimpleSession = null;
   interactionDisabled = false;
@@ -34,7 +36,8 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
     public voiceRecordingService: VoiceRecordingService,
     private toastService: ToastService,
     public voiceSpeakingService: VoiceSpeakingService
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.scriptRehearsalService.$session
@@ -88,19 +91,25 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
   }
 
   openModal(modal: TemplateRef<any>): void {
-    this.modalService.open(modal, { centered: true });
+    this.modalService.open(modal, {centered: true});
   }
 
   stopSession(modal: NgbActiveModal): void {
     if (this.endSessionLoading) {
       return;
     }
-    modal.dismiss();
-    this.router.navigateByUrl(`/scripts/${this.script.id}`);
-    this.toastService.show({
-      message: 'Lerneinheit beendet.',
-      theme: Theme.primary
-    });
+    this.sessionService.patchOne(this.session.id, new UpdateSession(null, null, this.session.getCurrentLine().id))
+      .subscribe({next: () => {
+          modal.dismiss();
+          this.router.navigateByUrl(`/scripts/${this.script.id}`);
+          this.toastService.show({
+            message: 'Lerneinheit beendet.',
+            theme: Theme.primary
+          });
+        },
+      error: (err) => {
+        this.toastService.showError(err);
+      }});
   }
 
   /** Whether the current line is spoken by the users role. */
@@ -116,6 +125,12 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
 
   resume() {
     this.voiceSpeakingService.resumeSpeak();
+  }
+
+  blur() {
+    this.isBlurred = !this.isBlurred;
+    // console.log(this.isBlurred);
+    this.blurEventEmitter.emit(this.isBlurred);
   }
 
   async toggleRecordingMode(): Promise<void> {
@@ -134,11 +149,12 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
     this.endSessionLoading = true;
     this.sessionService.endSession(this.session.id).subscribe({
       next: () => {
-        this.router.navigateByUrl(`/scripts/${this.script.id}`);
-        this.toastService.show({
+        //this.router.navigateByUrl(`/scripts/${this.script.id}`);
+        /*this.toastService.show({
           message: 'Lerneinheit abgeschlossen.',
           theme: Theme.primary
-        });
+        });*/
+        this.router.navigateByUrl(`scripts/${this.script.id}/review/${this.session.id}`);
       },
       error: (err) => {
         this.toastService.showError(err);
