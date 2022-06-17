@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnDestroy, OnInit, Output, TemplateRef} from '@angular/core';
+import {Component, EventEmitter, HostListener, OnDestroy, OnInit, Output, TemplateRef} from '@angular/core';
 import {ScriptRehearsalService} from '../../../services/script-rehearsal.service';
 import {Subject, takeUntil} from 'rxjs';
 import {SimpleSession, UpdateSession} from '../../../../../shared/dtos/session-dtos';
@@ -10,6 +10,7 @@ import {ToastService} from '../../../../../core/services/toast/toast.service';
 import {Theme} from '../../../../../shared/enums/theme.enum';
 import {VoiceRecordingService} from '../../../services/voice-recording.service';
 import {VoiceSpeakingService} from '../../../services/voice-speaking.service';
+import {FormGroup} from '@angular/forms';
 
 /** Control panel for a script rehearsal. */
 @Component({
@@ -19,6 +20,7 @@ import {VoiceSpeakingService} from '../../../services/voice-speaking.service';
 })
 export class RehearsalControlsComponent implements OnInit, OnDestroy {
   @Output() blurEventEmitter = new EventEmitter<boolean>();
+  @Output() progressEventEmitter = new EventEmitter<number>();
   isBlurred = false;
   script: DetailedScript = null;
   session: SimpleSession = null;
@@ -26,6 +28,7 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
   endSessionLoading = false;
   isRecordingMode = false;
   speakingPaused = true;
+  lang = 'de';
   private $destroy = new Subject<void>();
 
   constructor(
@@ -67,6 +70,30 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
     this.$destroy.complete();
   }
 
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  @HostListener('window:keyup', ['$event'])
+  keyEvent(event: KeyboardEvent) {
+    switch (event.key) {
+      case 'ArrowDown':
+        this.changeLine('next');
+        break;
+      case 'ArrowUp':
+        this.changeLine('prev');
+        break;
+      case 'ArrowRight':
+        this.changeLine('next');
+        break;
+      case 'ArrowLeft':
+        this.changeLine('prev');
+        break;
+      case 'Enter':
+        this.changeLine('next');
+        break;
+      default:
+        break;
+    }
+  }
+
   changeLine(line: 'next' | 'prev'): void {
     if (this.interactionDisabled || this.endSessionLoading) {
       return;
@@ -85,6 +112,11 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
 
       this.voiceSpeakingService.speakLine();
     }
+    const lines = this.session.getLines();
+    const cur = this.session.getCurrentLine().index - lines[0].index;
+    const end = lines[lines.length - 1].index - lines[0].index;
+    this.progressEventEmitter.emit(cur / end * 100);
+
     setTimeout(() => {
       this.interactionDisabled = false;
     }, 300);
@@ -131,6 +163,11 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
     this.isBlurred = !this.isBlurred;
     // console.log(this.isBlurred);
     this.blurEventEmitter.emit(this.isBlurred);
+  }
+
+  updateLang() {
+    this.pause();
+    this.voiceSpeakingService.setLang(this.lang);
   }
 
   async toggleRecordingMode(): Promise<void> {
