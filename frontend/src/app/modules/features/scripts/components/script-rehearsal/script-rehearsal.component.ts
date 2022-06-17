@@ -22,6 +22,7 @@ export class ScriptRehearsalComponent implements OnInit, OnDestroy {
   session: SimpleSession = null;
   getLoading = true;
   isBlurred = false;
+  progress = 0;
   private $destroy = new Subject<void>();
 
   constructor(
@@ -73,6 +74,10 @@ export class ScriptRehearsalComponent implements OnInit, OnDestroy {
       .subscribe((session) => {
         this.session = session;
       });
+  }
+
+  setProgress(progress) {
+    this.progress = progress;
   }
 
   ngOnDestroy() {

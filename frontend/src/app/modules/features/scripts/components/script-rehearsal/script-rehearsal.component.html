@@ -1,4 +1,15 @@
 <div
+  class="section-span w-100 position-relative"
+>
+  <div
+    [style.left.%]="0"
+    [style.right.%]="100 - progress"
+    class="indicator"
+  ></div>
+</div>
+
+<!-- style="transform: translate(-40%,0);" -->
+<div
   *ngIf="getLoading; else notLoading"
   @fixedAppear
   class="position-absolute h-100 w-100 d-flex justify-content-center align-items-center"
@@ -23,5 +34,5 @@
       </ng-container>
     </div>
   </div>
-  <app-rehearsal-controls (blurEventEmitter)="blur($event)" @fixedAppear></app-rehearsal-controls>
+  <app-rehearsal-controls (blurEventEmitter)="blur($event)" (progressEventEmitter)="setProgress($event)" @fixedAppear></app-rehearsal-controls>
 </ng-template>

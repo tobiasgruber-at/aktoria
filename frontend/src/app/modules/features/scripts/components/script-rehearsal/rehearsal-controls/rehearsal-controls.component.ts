@@ -20,6 +20,7 @@ import {FormGroup} from '@angular/forms';
 })
 export class RehearsalControlsComponent implements OnInit, OnDestroy {
   @Output() blurEventEmitter = new EventEmitter<boolean>();
+  @Output() progressEventEmitter = new EventEmitter<number>();
   isBlurred = false;
   script: DetailedScript = null;
   session: SimpleSession = null;
@@ -111,6 +112,11 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
 
       this.voiceSpeakingService.speakLine();
     }
+    const lines = this.session.getLines();
+    const cur = this.session.getCurrentLine().index - lines[0].index;
+    const end = lines[lines.length - 1].index - lines[0].index;
+    this.progressEventEmitter.emit(cur / end * 100);
+
     setTimeout(() => {
       this.interactionDisabled = false;
     }, 300);
