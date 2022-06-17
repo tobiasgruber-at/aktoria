@@ -41,7 +41,11 @@
             <button ngbDropdownItem routerLink="/scripts/{{ script?.id }}/view">
               Ansehen
             </button>
-            <button ngbDropdownItem routerLink="/scripts/{{ script?.id }}/edit">
+            <button
+              ngbDropdownItem
+              *ngIf="isOwner()"
+              routerLink="/scripts/{{ script?.id }}/edit"
+            >
               Bearbeiten
             </button>
             <button

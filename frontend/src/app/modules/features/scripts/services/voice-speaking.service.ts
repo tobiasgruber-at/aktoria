@@ -117,11 +117,7 @@ export class VoiceSpeakingService implements OnDestroy {
     this.stopSpeak();
     this.sessionService.endSession(this.session.id).subscribe({
       next: () => {
-        this.router.navigateByUrl(`/scripts/${this.session.getScriptId()}`);
-        this.toastService.show({
-          message: 'Lerneinheit abgeschlossen.',
-          theme: Theme.primary
-        });
+        this.router.navigateByUrl(`scripts/${this.session.getScriptId()}/review/${this.session.id}`);
       },
       error: (err) => {
         this.toastService.showError(err);

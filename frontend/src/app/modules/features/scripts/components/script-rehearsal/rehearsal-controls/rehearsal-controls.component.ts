@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnDestroy, OnInit, Output, TemplateRef} from '@angular/core';
+import {Component, EventEmitter, HostListener, OnDestroy, OnInit, Output, TemplateRef} from '@angular/core';
 import {ScriptRehearsalService} from '../../../services/script-rehearsal.service';
 import {Subject, takeUntil} from 'rxjs';
 import {SimpleSession, UpdateSession} from '../../../../../shared/dtos/session-dtos';
@@ -67,6 +67,30 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.$destroy.next();
     this.$destroy.complete();
+  }
+
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  @HostListener('window:keyup', ['$event'])
+  keyEvent(event: KeyboardEvent) {
+    switch (event.key) {
+      case 'ArrowDown':
+        this.changeLine('next');
+        break;
+      case 'ArrowUp':
+        this.changeLine('prev');
+        break;
+      case 'ArrowRight':
+        this.changeLine('next');
+        break;
+      case 'ArrowLeft':
+        this.changeLine('prev');
+        break;
+      case 'Enter':
+        this.changeLine('next');
+        break;
+      default:
+        break;
+    }
   }
 
   changeLine(line: 'next' | 'prev'): void {
