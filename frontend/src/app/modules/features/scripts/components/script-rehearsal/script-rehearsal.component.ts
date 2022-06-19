@@ -34,8 +34,7 @@ export class ScriptRehearsalComponent implements OnInit, OnDestroy {
     private sessionService: SessionService,
     private router: Router,
     private voiceSpeakingService: VoiceSpeakingService
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
@@ -73,6 +72,14 @@ export class ScriptRehearsalComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.$destroy))
       .subscribe((session) => {
         this.session = session;
+      });
+    this.scriptRehearsalService.$selectedRole
+      .pipe(takeUntil(this.$destroy))
+      .subscribe((role) => {
+        // in case the cache was emptied
+        if (role === undefined) {
+          this.router.navigateByUrl('scripts');
+        }
       });
   }
 

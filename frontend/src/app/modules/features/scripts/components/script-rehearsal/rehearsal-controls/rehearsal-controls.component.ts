@@ -131,30 +131,6 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
     this.modalService.open(modal, { centered: true });
   }
 
-  stopSession(modal: NgbActiveModal): void {
-    if (this.endSessionLoading) {
-      return;
-    }
-    this.sessionService
-      .patchOne(
-        this.session.id,
-        new UpdateSession(null, null, this.session.getCurrentLine().id)
-      )
-      .subscribe({
-        next: () => {
-          modal.dismiss();
-          this.router.navigateByUrl(`/scripts/${this.script.id}`);
-          this.toastService.show({
-            message: 'Lerneinheit beendet.',
-            theme: Theme.primary
-          });
-        },
-        error: (err) => {
-          this.toastService.showError(err);
-        }
-      });
-  }
-
   pauseSpeaking() {
     this.voiceSpeakingService.pauseSpeak();
   }
@@ -174,6 +150,11 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
     this.voiceSpeakingService.setLang(this.lang);
   }
 
+  /**
+   * Toggles the recording mode.
+   *
+   * @return Promise that resolves once recording started or ended (and properly cached the recording)
+   */
   async toggleRecordingMode(): Promise<void> {
     if (!this.isRecordingMode) {
       try {
@@ -186,20 +167,43 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
         this.toastService.showError(err);
       }
     } else {
-      this.scriptRehearsalService.stopRecordingMode();
+      await this.scriptRehearsalService.stopRecordingMode();
     }
   }
 
+  /** Pauses and closes the rehearsal. */
+  pauseSession(modal: NgbActiveModal): void {
+    if (this.endSessionLoading) {
+      return;
+    }
+    this.sessionService
+      .patchOne(
+        this.session.id,
+        new UpdateSession(null, null, this.session.getCurrentLine().id)
+      )
+      .subscribe({
+        next: () => {
+          modal.dismiss();
+          this.cleanUpRehearsal();
+          this.router.navigateByUrl(`/scripts/${this.script.id}`);
+          this.toastService.show({
+            message: 'Lerneinheit beendet.',
+            theme: Theme.primary
+          });
+        },
+        error: (err) => {
+          this.toastService.showError(err);
+        }
+      });
+  }
+
+  /** Ends the rehearsal and asks for a review. */
   private endSession(): void {
     this.endSessionLoading = true;
     this.sessionService.endSession(this.session.id).subscribe({
-      next: () => {
-        //this.router.navigateByUrl(`/scripts/${this.script.id}`);
-        /*this.toastService.show({
-          message: 'Lerneinheit abgeschlossen.',
-          theme: Theme.primary
-        });*/
-        this.router.navigateByUrl(
+      next: async () => {
+        await this.cleanUpRehearsal();
+        await this.router.navigateByUrl(
           `scripts/${this.script.id}/review/${this.session.id}`
         );
       },
@@ -208,5 +212,15 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
         this.endSessionLoading = false;
       }
     });
+  }
+
+  /** Cleans up the state of the rehearsal. */
+  private async cleanUpRehearsal(): Promise<void> {
+    if (!this.speakingPaused) {
+      this.pauseSpeaking();
+    }
+    if (this.isRecordingMode) {
+      await this.toggleRecordingMode();
+    }
   }
 }

@@ -55,6 +55,9 @@ export class VoiceRecordingService implements OnDestroy {
 
   /** Starts recording. */
   startRecording(): void {
+    if (this.mediaRecorder?.state === 'recording') {
+      return;
+    }
     this.mediaRecorder?.start();
   }
 

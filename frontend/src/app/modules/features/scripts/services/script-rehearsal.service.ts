@@ -45,11 +45,17 @@ export class ScriptRehearsalService {
       if (session) {
         curLineIdxSubscription = session.$currentLineIndex.subscribe(() => {
           this.curLine = session.getCurrentLine();
-          this.voiceRecordingService.stopRecording().subscribe((recording) => {
-            this.completeLineRecording(recording);
-            this.startLineRecording();
+          if (this.isRecordingModeSubject.getValue()) {
+            this.voiceRecordingService
+              .stopRecording()
+              .subscribe((recording) => {
+                this.completeLineRecording(recording);
+                this.startLineRecording();
+                this.prevLine = this.curLine;
+              });
+          } else {
             this.prevLine = this.curLine;
-          });
+          }
         });
       }
     });
@@ -108,11 +114,18 @@ export class ScriptRehearsalService {
     }
   }
 
-  /** Stops recording mode. */
-  stopRecordingMode(): void {
-    this.isRecordingModeSubject.next(false);
-    this.voiceRecordingService.stopRecording().subscribe((recording) => {
-      this.completeLineRecording(recording);
+  /**
+   * Stops recording mode.
+   *
+   * @return Promise that resolves once the recording is completed and cached.
+   */
+  stopRecordingMode(): Promise<void> {
+    return new Promise<void>((res, rej) => {
+      this.isRecordingModeSubject.next(false);
+      this.voiceRecordingService.stopRecording().subscribe((recording) => {
+        this.completeLineRecording(recording);
+        res();
+      });
     });
   }
 
@@ -137,7 +150,7 @@ export class ScriptRehearsalService {
     );
   }
 
-  /** Completes and saves the recording of a line. */
+  /** Completes and caches the recording of a line. */
   private completeLineRecording(recording) {
     if (!recording) {
       return;
