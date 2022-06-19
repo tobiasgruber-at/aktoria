@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Subject, takeUntil} from 'rxjs';
 import {ScriptService} from '../../../../core/services/script/script.service';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -36,7 +36,8 @@ export class ScriptEditorComponent
     private toastService: ToastService,
     public scriptViewerService: ScriptViewerService,
     private modalService: NgbModal,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private changeDetectorRef: ChangeDetectorRef
   ) {
     super(toastService);
     this.scriptViewerService.setIsEditingScript(true);
@@ -76,6 +77,7 @@ export class ScriptEditorComponent
 
   ngAfterViewInit() {
     if (this.isUploading) {
+      this.changeDetectorRef.detectChanges();
       this.openModal(this.tutorialModal);
     }
   }
