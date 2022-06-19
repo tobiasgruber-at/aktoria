@@ -18,11 +18,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PreRemove;
 import javax.persistence.Table;
+import java.sql.Blob;
 import java.util.Set;
 
 /**
@@ -54,8 +56,9 @@ public class Line {
     @Column(name = "content", nullable = false, length = 5000)
     private String content;
 
+    @Lob
     @Column(name = "audio")
-    private String audio;
+    private Blob audio;
 
     @Column(name = "active", nullable = false, columnDefinition = "boolean default true")
     private boolean active = true;

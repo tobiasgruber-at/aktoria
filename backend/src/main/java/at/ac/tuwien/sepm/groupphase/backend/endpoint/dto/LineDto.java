@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Blob;
 import java.util.List;
 
 /**
@@ -27,7 +28,7 @@ public class LineDto {
     private Long pageId;
     private List<RoleDto> roles;
     private String content;
-    private String audio;
+    private Blob audio;
     private SimpleUserDto recordedBy;
     private boolean active;
     private Line.ConflictType conflictType;
