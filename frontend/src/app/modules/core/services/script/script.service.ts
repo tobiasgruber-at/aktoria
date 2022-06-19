@@ -2,7 +2,8 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {BehaviorSubject, map, Observable, of} from 'rxjs';
 import {Globals} from '../../global/globals';
-import {DetailedScript, ScriptPreview, SimpleScript} from '../../../shared/dtos/script-dtos';
+import {DetailedScript,Line,
+  Page, ScriptPreview, SimpleScript} from '../../../shared/dtos/script-dtos';
 import {tap} from 'rxjs/operators';
 import {AuthService} from '../auth/auth.service';
 import {Cache} from '../../../shared/interfaces/cache';
@@ -205,7 +206,25 @@ export class ScriptService {
       script.participants.sort((a, b) =>
         a.firstName < b.firstName ? -1 : a.firstName > b.firstName ? 1 : 0
       ),
-      script.pages,
+      script.pages.map(
+        (page) =>
+          new Page(
+            page.index,
+            page.lines.map(
+              (line) =>
+                new Line(
+                  line.index,
+                  line.roles,
+                  line.content,
+                  line.audio,
+                  line.recordedBy,
+                  line.active,
+                  line.conflictType,
+                  line.id
+                )
+            )
+          )
+      ),
       script.roles.sort((a, b) =>
         a.name < b.name ? -1 : a.name > b.name ? 1 : 0
       ),

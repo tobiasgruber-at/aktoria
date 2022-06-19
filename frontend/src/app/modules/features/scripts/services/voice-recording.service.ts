@@ -1,6 +1,6 @@
 import {Injectable, OnDestroy} from '@angular/core';
 import {SimpleSession} from '../../../shared/dtos/session-dtos';
-import {Subject} from 'rxjs';
+import {Observable, of, Subject, take} from 'rxjs';
 import {AudioNotAllowedError, AudioNotSupportedError} from '../errors/audio-errors';
 
 /**
@@ -15,6 +15,7 @@ export class VoiceRecordingService implements OnDestroy {
   /** Chunks of recorded audio. */
   private chunks: Blob[] = [];
   private session: SimpleSession = null;
+  private audioOutputSubject = new Subject<Blob>();
   private $destroy = new Subject<void>();
 
   /** @return Whether voice recordings are supported by the browser. */
@@ -37,7 +38,7 @@ export class VoiceRecordingService implements OnDestroy {
       switch (err.name) {
         case 'NotAllowedError':
           throw new AudioNotAllowedError(
-            'Bitte aktiviere Berechtigungen für das Mirkofon.'
+            'Bitte erteile Zugriffsberechtigungen für dein Mikrofon.'
           );
         case 'NotFoundError':
           throw new AudioNotSupportedError(
@@ -53,13 +54,24 @@ export class VoiceRecordingService implements OnDestroy {
   }
 
   /** Starts recording. */
-  private startRecording(): void {
+  startRecording(): void {
+    if (this.mediaRecorder?.state === 'recording') {
+      return;
+    }
     this.mediaRecorder?.start();
   }
 
-  /** Stops recording. */
-  private stopRecording(): void {
+  /**
+   * Stops recording.
+   *
+   * @return Observable of the recorded audio blob.
+   */
+  stopRecording(): Observable<Blob> {
+    if (this.mediaRecorder?.state !== 'recording') {
+      return of(null);
+    }
     this.mediaRecorder?.stop();
+    return this.audioOutputSubject.asObservable().pipe(take(1));
   }
 
   /** Initializes the media recorder. */
@@ -69,22 +81,11 @@ export class VoiceRecordingService implements OnDestroy {
     }
     this.mediaRecorder = new MediaRecorder(stream);
     this.mediaRecorder.onstop = (e) => {
-      const curLine = this.session.getCurrentLine();
-      if (!curLine) {
-        // todo: handle error
-        return;
-      }
-      curLine.temporaryRecording = new Blob(this.chunks, {
-        type: 'audio/ogg; codecs=opus'
-      });
-      curLine.temporaryRecordingUrl = window.URL.createObjectURL(
-        curLine.temporaryRecording
+      this.audioOutputSubject.next(
+        new Blob(this.chunks, {
+          type: 'audio/ogg; codecs=opus'
+        })
       );
-      /*const audio = document.createElement('audio');
-      audio.setAttribute('controls', '');
-      audio.controls = true;
-      audio.src = curLine.temporaryRecordingUrl;
-      audio.play();*/
       this.chunks = [];
     };
     this.mediaRecorder.ondataavailable = (e) => {
