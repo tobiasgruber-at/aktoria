@@ -5,11 +5,10 @@
       this.isRecordingMode ? 'Aufzeichnungen abbrechen' : 'Text einsprechen'
     "
     [class.disabled]="endSessionLoading"
-    class="pulsing"
     (click)="toggleRecordingMode()"
   >
     <bi
-      *ngIf="this.isRecordingMode; else notRecording"
+      *ngIf="isRecordingMode; else notRecording"
       class="smaller"
       name="mic-fill"
     ></bi>
@@ -18,9 +17,9 @@
     </ng-template>
   </app-controls-item>
   <app-controls-item
-    (click)="speakingPaused ? resume() : pause()"
+    (click)="speakingPaused ? resumeSpeaking() : pauseSpeaking()"
     [ngbTooltip]="speakingPaused ? 'Abspielen' : 'Pause'"
-    [class.disabled]="isSelectedRoleSpeaking()"
+    [class.disabled]="isSelectedRoleSpeaking"
   >
     <bi *ngIf="!speakingPaused" name="pause-fill"></bi>
     <bi *ngIf="speakingPaused" name="play-fill"></bi>

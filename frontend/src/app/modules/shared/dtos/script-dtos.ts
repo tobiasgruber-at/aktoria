@@ -53,8 +53,7 @@ export class DetailedScript extends SimpleScript {
 }
 
 export class Page {
-  index: number;
-  lines: Line[];
+  constructor(public index: number, public lines: Line[]) {}
 }
 
 export class Line {
@@ -65,7 +64,7 @@ export class Line {
     public index: number,
     public roles: Role[],
     public content: string,
-    public audio: AudioBuffer,
+    public audio: Blob,
     public recordedBy: Role,
     public active: boolean,
     public conflictType: Conflict,

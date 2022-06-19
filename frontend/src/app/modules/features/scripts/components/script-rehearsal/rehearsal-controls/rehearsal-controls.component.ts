@@ -36,6 +36,13 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
     public voiceSpeakingService: VoiceSpeakingService
   ) {}
 
+  /** Whether the current line is spoken by the users role. */
+  get isSelectedRoleSpeaking() {
+    return this.session
+      .getCurrentLine()
+      .roles.some((r) => r.name === this.session.role?.name);
+  }
+
   ngOnInit(): void {
     this.scriptRehearsalService.$session
       .pipe(takeUntil(this.$destroy))
@@ -103,18 +110,11 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
     });
   }
 
-  /** Whether the current line is spoken by the users role. */
-  isSelectedRoleSpeaking() {
-    return this.session
-      .getCurrentLine()
-      .roles.some((r) => r.name === this.session.role?.name);
-  }
-
-  pause() {
+  pauseSpeaking() {
     this.voiceSpeakingService.pauseSpeak();
   }
 
-  resume() {
+  resumeSpeaking() {
     this.voiceSpeakingService.resumeSpeak();
   }
 
@@ -122,6 +122,10 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
     if (!this.isRecordingMode) {
       try {
         await this.scriptRehearsalService.startRecordingMode();
+        this.toastService.show({
+          message: 'Stimme wird für Texte deiner Rolle aufgezeichnet.',
+          theme: Theme.primary
+        });
       } catch (err) {
         this.toastService.showError(err);
       }
