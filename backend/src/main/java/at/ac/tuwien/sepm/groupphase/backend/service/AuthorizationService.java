@@ -3,6 +3,11 @@ package at.ac.tuwien.sepm.groupphase.backend.service;
 import at.ac.tuwien.sepm.groupphase.backend.entity.User;
 import at.ac.tuwien.sepm.groupphase.backend.exception.UnauthorizedException;
 
+/**
+ * Interface for Authorization.
+ *
+ * @author Nikolaus Peter
+ */
 public interface AuthorizationService {
     /**
      * Checks if the client is logged in as the user with the given id.
@@ -53,9 +58,28 @@ public interface AuthorizationService {
      */
     boolean isOwnerOfScript(Long scriptId);
 
+    /**
+     * Checks if the logged in User is the owner of the script or admin.
+     *
+     * @param scriptId the id of the script
+     * @return if the logged in User is a participant of the script
+     */
     boolean isParticipantOfScript(Long scriptId);
 
+    /**
+     * Checks if the logged in User is the owner of the script or admin, or has the given email.
+     *
+     * @param scriptId the id of the script
+     * @param email the email
+     * @throws UnauthorizedException if authorization fails
+     */
     void checkMemberAuthorization(Long scriptId, String email);
 
+    /**
+     * Checks if the logged in User is a member of the script or admin.
+     *
+     * @param scriptId the id of the script
+     * @throws UnauthorizedException if authorization fails
+     */
     void checkMemberAuthorization(Long scriptId);
 }
