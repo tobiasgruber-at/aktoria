@@ -111,8 +111,26 @@ bi {
     transform: scale(0.9);
   }
 
-  svg {
-    width: 1.9rem;
+  &.bi-inline {
+    display: inline;
+
+    svg {
+      transform: translateY(-1px);
+    }
+
+    &:not(.bi-inline-smaller) svg {
+      width: 1.5rem;
+    }
+
+    &.bi-inline-smaller svg {
+      width: 1.2rem;
+    }
+  }
+
+  &:not(.bi-inline) {
+    svg {
+      width: 1.9rem;
+    }
   }
 }
 

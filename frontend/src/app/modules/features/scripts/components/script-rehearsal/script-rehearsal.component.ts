@@ -1,15 +1,25 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ScriptRehearsalService} from '../../services/script-rehearsal.service';
-import {ActivatedRoute, Router} from '@angular/router';
-import {ScriptService} from '../../../../core/services/script/script.service';
-import {SimpleSession} from '../../../../shared/dtos/session-dtos';
-import {combineLatest, Subject, takeUntil} from 'rxjs';
-import {lineAppearAnimations} from '../../animations/rehearsal-line.animations';
-import {ToastService} from '../../../../core/services/toast/toast.service';
-import {SessionService} from '../../../../core/services/session/session.service';
-import {SectionService} from '../../../../core/services/section/section.service';
-import {fixedAppearAnimations} from '../../../../shared/animations/fixed-appear-animations';
-import {VoiceSpeakingService} from '../../services/voice-speaking.service';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  ViewChild
+} from '@angular/core';
+import { ScriptRehearsalService } from '../../services/script-rehearsal.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ScriptService } from '../../../../core/services/script/script.service';
+import { SimpleSession } from '../../../../shared/dtos/session-dtos';
+import { combineLatest, Subject, takeUntil } from 'rxjs';
+import { lineAppearAnimations } from '../../animations/rehearsal-line.animations';
+import { ToastService } from '../../../../core/services/toast/toast.service';
+import { SessionService } from '../../../../core/services/session/session.service';
+import { SectionService } from '../../../../core/services/section/section.service';
+import { fixedAppearAnimations } from '../../../../shared/animations/fixed-appear-animations';
+import { VoiceSpeakingService } from '../../services/voice-speaking.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+
+const hasSeenTutorialLSKey = 'hasSeenTutorial';
 
 /** Presents a script rehearsal. */
 @Component({
@@ -18,7 +28,9 @@ import {VoiceSpeakingService} from '../../services/voice-speaking.service';
   styleUrls: ['./script-rehearsal.component.scss'],
   animations: [lineAppearAnimations, fixedAppearAnimations]
 })
-export class ScriptRehearsalComponent implements OnInit, OnDestroy {
+export class ScriptRehearsalComponent
+  implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChild('tutorialModal') tutorialModal: ElementRef;
   session: SimpleSession = null;
   getLoading = true;
   isBlurred = false;
@@ -33,7 +45,8 @@ export class ScriptRehearsalComponent implements OnInit, OnDestroy {
     private toastService: ToastService,
     private sessionService: SessionService,
     private router: Router,
-    private voiceSpeakingService: VoiceSpeakingService
+    private voiceSpeakingService: VoiceSpeakingService,
+    private modalService: NgbModal
   ) {}
 
   ngOnInit(): void {
@@ -81,6 +94,15 @@ export class ScriptRehearsalComponent implements OnInit, OnDestroy {
           this.router.navigateByUrl('scripts');
         }
       });
+  }
+
+  ngAfterViewInit() {
+    const hasSeenTutorial = JSON.parse(
+      localStorage.getItem(hasSeenTutorialLSKey)
+    );
+    if (hasSeenTutorial !== true) {
+      this.modalService.open(this.tutorialModal, { centered: true });
+    }
   }
 
   setProgress(progress) {
