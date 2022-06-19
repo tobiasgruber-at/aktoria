@@ -81,6 +81,7 @@ export class UpdateLine {
   content?: string;
   active?: boolean;
   roleIds?: number[];
+  audio?: Blob;
 }
 
 export class Role {

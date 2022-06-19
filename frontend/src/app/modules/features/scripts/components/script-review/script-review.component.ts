@@ -13,6 +13,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { ToastService } from '../../../../core/services/toast/toast.service';
 import { Theme } from '../../../../shared/enums/theme.enum';
 import { Subject, takeUntil } from 'rxjs';
+import { LineService } from '../../../../core/services/line/line.service';
 
 @Component({
   selector: 'app-script-review',
@@ -39,7 +40,8 @@ export class ScriptReviewComponent
     public scriptViewerService: ScriptViewerService,
     private formBuilder: FormBuilder,
     private toastService: ToastService,
-    private router: Router
+    private router: Router,
+    private lineService: LineService
   ) {
     super(toastService);
   }
@@ -104,26 +106,41 @@ export class ScriptReviewComponent
 
   protected processSubmit(): void {
     const { assessment, shouldSaveRecordings } = this.form.value;
+    /** Assesses the session. */
+    const assessSession = () => {
+      this.sessionService
+        .patchOne(this.session.id, { selfAssessment: assessment })
+        .pipe(takeUntil(this.$destroy))
+        .subscribe({
+          next: () => {
+            this.router.navigateByUrl(`/scripts/${this.script.getId()}`);
+            this.toastService.show({
+              message: 'Lerneinheit abgeschlossen.',
+              theme: Theme.primary
+            });
+          },
+          error: this.handleError
+        });
+    };
     if (shouldSaveRecordings && this.recordedLines.length > 0) {
+      let savedLinesCounter = 0;
       this.recordedLines.forEach((l) => {
         l.audio = l.temporaryRecording;
         l.temporaryRecording = null;
         l.temporaryRecordingUrl = null;
-        // TODO: save audio via api
+        // TODO: fix audio upload by converting it in a ogg file
+        // see https://stackoverflow.com/a/64256541
+        this.lineService.patchLine({ audio: l.audio }, l.id).subscribe({
+          next: () => {
+            if (++savedLinesCounter >= this.recordedLines.length) {
+              assessSession();
+            }
+          },
+          error: this.handleError
+        });
       });
+    } else {
+      assessSession();
     }
-    this.sessionService
-      .patchOne(this.session.id, { selfAssessment: assessment })
-      .pipe(takeUntil(this.$destroy))
-      .subscribe({
-        next: () => {
-          this.router.navigateByUrl(`/scripts/${this.script.getId()}`);
-          this.toastService.show({
-            message: 'Lerneinheit abgeschlossen.',
-            theme: Theme.primary
-          });
-        },
-        error: (err) => this.handleError(err)
-      });
   }
 }
