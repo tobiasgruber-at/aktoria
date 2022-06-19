@@ -148,7 +148,7 @@ class ScriptEndpointIntegrationTest {
         assertEquals(new ScriptPreviewDto(1L, ScriptDataGenerator.TEST_SCRIPT_NAME + " 1", true), scriptPreviewDtoList.get(0));
         assertEquals(Math.floorDiv(ScriptDataGenerator.NUMBER_OF_SCRIPTS_TO_GENERATE, UserDataGenerator.NUMBER_OF_USERS_TO_GENERATE) + 1 + 1, scriptPreviewDtoList.size());
     }
-    
+
     @Test
     @DirtiesContext
     @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
