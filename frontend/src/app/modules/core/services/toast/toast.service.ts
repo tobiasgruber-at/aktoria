@@ -28,9 +28,11 @@ export class ToastService {
 
   showError(error): void {
     let errorMessage = '';
-    if (typeof error.error === 'object') {
+    if (error.error?.message) {
       errorMessage = error.error?.message;
-    } else {
+    } else if (error.message) {
+      errorMessage = error.message;
+    } else if (error.error) {
       errorMessage = error.error;
     }
     this.show({

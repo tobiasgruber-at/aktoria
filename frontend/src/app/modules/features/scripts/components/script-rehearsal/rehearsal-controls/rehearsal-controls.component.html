@@ -2,14 +2,13 @@
   <app-controls-item
     (click)="toggleRecordingMode()"
     *ngIf="voiceRecordingService.isSupported()"
-    [class.disabled]="endSessionLoading"
     [ngbTooltip]="
       this.isRecordingMode ? 'Aufzeichnungen abbrechen' : 'Text einsprechen'
     "
-    class="pulsing"
+    [class.disabled]="endSessionLoading"
   >
     <bi
-      *ngIf="this.isRecordingMode; else notRecording"
+      *ngIf="isRecordingMode; else notRecording"
       class="smaller"
       name="mic-fill"
     ></bi>
@@ -18,9 +17,9 @@
     </ng-template>
   </app-controls-item>
   <app-controls-item
-    (click)="speakingPaused ? resume() : pause()"
-    [class.disabled]="isSelectedRoleSpeaking()"
+    (click)="speakingPaused ? resumeSpeaking() : pauseSpeaking()"
     [ngbTooltip]="speakingPaused ? 'Abspielen' : 'Pause'"
+    [class.disabled]="isSelectedRoleSpeaking"
   >
     <bi *ngIf="!speakingPaused" name="pause-fill"></bi>
     <bi *ngIf="speakingPaused" name="play-fill"></bi>
@@ -46,17 +45,28 @@
   >
     <bi name="x-lg"></bi>
   </app-controls-item>
-  <app-controls-item><!--[class.disabled]="true || endSessionLoading"-->
-
-
+  <app-controls-item
+    ><!--[class.disabled]="true || endSessionLoading"-->
     <div dropdownClass="dropdown-menu-lg" ngbDropdown>
       <bi name="three-dots" ngbDropdownToggle></bi>
       <div class="blur-text-dropdown-menu" ngbDropdownMenu>
         <div class="form-check form-switch">
-          <input (click)="blur()" class="form-check-input" id="flexSwitchCheckDefault" role="switch" type="checkbox">
-          <label class="form-check-label text-nowrap" for="flexSwitchCheckDefault">Text ausblenden</label>
+          <input
+            (click)="blur()"
+            class="form-check-input"
+            id="flexSwitchCheckDefault"
+            role="switch"
+            type="checkbox"
+          />
+          <label
+            class="form-check-label text-nowrap"
+            for="flexSwitchCheckDefault"
+            >Text ausblenden</label
+          >
         </div>
-        <label class="form-check-label text-nowrap" for="flexSwitchCheckDefault">Textsprache</label>
+        <label class="form-check-label text-nowrap" for="flexSwitchCheckDefault"
+          >Textsprache</label
+        >
         <select class="form-control" [(ngModel)]="lang" (click)="updateLang()">
           <option value="de">Deutsch</option>
           <option value="en-US">Englisch</option>
@@ -70,7 +80,7 @@
 </app-controls>
 <ng-template #stopSessionModal let-modal>
   <app-modal
-    (confirm)="stopSession(modal)"
+    (confirm)="pauseSession(modal)"
     (decline)="modal.dismiss()"
     confirmBtnLabel="Beenden"
     title="Übungseinheit beenden"
@@ -84,6 +94,6 @@
      >-->
     Sicher, dass du diese
     <strong class="text-primary"> Übungseinheit vorläufig beenden</strong>
-    möchtest?<br/>
+    möchtest?<br />
   </app-modal>
 </ng-template>

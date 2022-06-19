@@ -1,3 +1,14 @@
 .assessmentButton {
   font-size: large;
 }
+
+strong {
+  font-weight: 600;
+}
+
+.toggle-save-recordings {
+  input,
+  label {
+    cursor: pointer;
+  }
+}
