@@ -1,7 +1,7 @@
-import {Component, OnDestroy, OnInit, TemplateRef} from '@angular/core';
+import {Component, EventEmitter, HostListener, OnDestroy, OnInit, Output, TemplateRef} from '@angular/core';
 import {ScriptRehearsalService} from '../../../services/script-rehearsal.service';
 import {Subject, takeUntil} from 'rxjs';
-import {SimpleSession} from '../../../../../shared/dtos/session-dtos';
+import {SimpleSession, UpdateSession} from '../../../../../shared/dtos/session-dtos';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {Router} from '@angular/router';
 import {DetailedScript} from '../../../../../shared/dtos/script-dtos';
@@ -18,12 +18,16 @@ import {VoiceSpeakingService} from '../../../services/voice-speaking.service';
   styleUrls: ['./rehearsal-controls.component.scss']
 })
 export class RehearsalControlsComponent implements OnInit, OnDestroy {
+  @Output() blurEventEmitter = new EventEmitter<boolean>();
+  @Output() progressEventEmitter = new EventEmitter<number>();
+  isBlurred = false;
   script: DetailedScript = null;
   session: SimpleSession = null;
   interactionDisabled = false;
   endSessionLoading = false;
   isRecordingMode = false;
   speakingPaused = true;
+  lang = 'de';
   private $destroy = new Subject<void>();
 
   constructor(
@@ -71,6 +75,30 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
     this.$destroy.complete();
   }
 
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  @HostListener('window:keyup', ['$event'])
+  keyEvent(event: KeyboardEvent) {
+    switch (event.key) {
+      case 'ArrowDown':
+        this.changeLine('next');
+        break;
+      case 'ArrowUp':
+        this.changeLine('prev');
+        break;
+      case 'ArrowRight':
+        this.changeLine('next');
+        break;
+      case 'ArrowLeft':
+        this.changeLine('prev');
+        break;
+      case 'Enter':
+        this.changeLine('next');
+        break;
+      default:
+        break;
+    }
+  }
+
   changeLine(line: 'next' | 'prev'): void {
     if (this.interactionDisabled || this.endSessionLoading) {
       return;
@@ -89,6 +117,11 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
 
       this.voiceSpeakingService.speakLine();
     }
+    const lines = this.session.getLines();
+    const cur = this.session.getCurrentLine().index - lines[0].index;
+    const end = lines[lines.length - 1].index - lines[0].index;
+    this.progressEventEmitter.emit((cur / end) * 100);
+
     setTimeout(() => {
       this.interactionDisabled = false;
     }, 300);
@@ -102,12 +135,24 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
     if (this.endSessionLoading) {
       return;
     }
-    modal.dismiss();
-    this.router.navigateByUrl(`/scripts/${this.script.id}`);
-    this.toastService.show({
-      message: 'Lerneinheit beendet.',
-      theme: Theme.primary
-    });
+    this.sessionService
+      .patchOne(
+        this.session.id,
+        new UpdateSession(null, null, this.session.getCurrentLine().id)
+      )
+      .subscribe({
+        next: () => {
+          modal.dismiss();
+          this.router.navigateByUrl(`/scripts/${this.script.id}`);
+          this.toastService.show({
+            message: 'Lerneinheit beendet.',
+            theme: Theme.primary
+          });
+        },
+        error: (err) => {
+          this.toastService.showError(err);
+        }
+      });
   }
 
   pauseSpeaking() {
@@ -116,6 +161,17 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
 
   resumeSpeaking() {
     this.voiceSpeakingService.resumeSpeak();
+  }
+
+  blur() {
+    this.isBlurred = !this.isBlurred;
+    // console.log(this.isBlurred);
+    this.blurEventEmitter.emit(this.isBlurred);
+  }
+
+  updateLang() {
+    this.pauseSpeaking();
+    this.voiceSpeakingService.setLang(this.lang);
   }
 
   async toggleRecordingMode(): Promise<void> {
@@ -138,11 +194,14 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
     this.endSessionLoading = true;
     this.sessionService.endSession(this.session.id).subscribe({
       next: () => {
-        this.router.navigateByUrl(`/scripts/${this.script.id}`);
-        this.toastService.show({
+        //this.router.navigateByUrl(`/scripts/${this.script.id}`);
+        /*this.toastService.show({
           message: 'Lerneinheit abgeschlossen.',
           theme: Theme.primary
-        });
+        });*/
+        this.router.navigateByUrl(
+          `scripts/${this.script.id}/review/${this.session.id}`
+        );
       },
       error: (err) => {
         this.toastService.showError(err);

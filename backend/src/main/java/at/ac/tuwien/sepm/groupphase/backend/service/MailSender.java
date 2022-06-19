@@ -2,6 +2,11 @@ package at.ac.tuwien.sepm.groupphase.backend.service;
 
 import at.ac.tuwien.sepm.groupphase.backend.exception.UnprocessableEmailException;
 
+/**
+ * Interface for sending mails.
+ *
+ * @author Nikolaus Peter
+ */
 public interface MailSender {
 
     /**

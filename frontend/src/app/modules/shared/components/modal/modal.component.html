@@ -16,6 +16,14 @@
     Abbrechen
   </button>
   <app-button
+    (click)="onContinue()"
+    *ngIf="showContinue"
+    [disabled]="disabled"
+    [label]="'Fortsetzen'"
+    [loading]="loading"
+    [theme]="theme"
+  ></app-button>
+  <app-button
     (click)="onConfirm()"
     [disabled]="disabled"
     [label]="confirmBtnLabel || 'Ok'"

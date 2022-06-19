@@ -1,11 +1,11 @@
-import { Injectable, OnDestroy } from '@angular/core';
-import { ScriptRehearsalService } from './script-rehearsal.service';
-import { SimpleSession } from '../../../shared/dtos/session-dtos';
-import { BehaviorSubject, Observable, Subject, takeUntil } from 'rxjs';
-import { Theme } from '../../../shared/enums/theme.enum';
-import { ToastService } from '../../../core/services/toast/toast.service';
-import { SessionService } from '../../../core/services/session/session.service';
-import { Router } from '@angular/router';
+import {Injectable, OnDestroy} from '@angular/core';
+import {ScriptRehearsalService} from './script-rehearsal.service';
+import {SimpleSession} from '../../../shared/dtos/session-dtos';
+import {BehaviorSubject, Observable, Subject, takeUntil} from 'rxjs';
+import {Theme} from '../../../shared/enums/theme.enum';
+import {ToastService} from '../../../core/services/toast/toast.service';
+import {SessionService} from '../../../core/services/session/session.service';
+import {Router} from '@angular/router';
 
 /**
  * Service for speaking the roles voices of script phrases.<br>
@@ -18,20 +18,19 @@ import { Router } from '@angular/router';
 export class VoiceSpeakingService implements OnDestroy {
   /** @see SpeechSynthesis */
   private synth: SpeechSynthesis = window.speechSynthesis;
-  private curAudioEl;
-  private isAutomatedVoiceSpeaking = false;
   /** Whether the currently spoken synthesis should be canceled once it's completed. */
   private canceledCurSynth: boolean;
   private session: SimpleSession;
   private $destroy = new Subject<void>();
   private pausedSubject = new BehaviorSubject<boolean>(true);
+  private lang = 'de';
 
   constructor(
     private scriptRehearsalService: ScriptRehearsalService,
     private toastService: ToastService,
     private sessionService: SessionService,
     private router: Router
-  ) {
+              ) {
     this.scriptRehearsalService.$session
       .pipe(takeUntil(this.$destroy))
       .subscribe((session) => {
@@ -54,61 +53,32 @@ export class VoiceSpeakingService implements OnDestroy {
       currentLine &&
       !currentLine.roles.some((r) => r.name === this.session.role?.name)
     ) {
-      if (currentLine.audio) {
-        this.isAutomatedVoiceSpeaking = false;
-        // todo: luke
-        // https://www.w3schools.com/tags/ref_av_dom.asp
-        const audio = window.URL.createObjectURL(currentLine.audio);
-        this.curAudioEl = document.createElement('audio');
-        this.curAudioEl.setAttribute('controls', '');
-        this.curAudioEl.controls = true;
-        this.curAudioEl.src = audio;
-        this.curAudioEl.play();
-      } else {
-        this.isAutomatedVoiceSpeaking = true;
-        const utter = this.initUtterance(currentLine.content);
-        setTimeout(() => {
-          this.canceledCurSynth = false;
+      const utter = this.initUtterance(currentLine.content);
+      setTimeout(() => {
+        this.canceledCurSynth = false;
+        if (!this.pausedSubject.getValue()) {
           this.synth.speak(utter);
-          if (this.pausedSubject.getValue()) {
-            this.synth.pause();
-          }
-        }, 10);
-      }
+        }
+      }, 10);
     }
   }
 
   /** Pauses the current synthesis. */
   pauseSpeak() {
     this.pausedSubject.next(true);
-    if (this.isAutomatedVoiceSpeaking) {
-      // todo: luke
-    } else {
-      this.synth.pause();
-    }
+    this.synth.pause();
   }
 
   /** Resumes the current synthesis. */
   resumeSpeak() {
-    if (!this.synth.pending) {
-      this.speakLine();
-    }
+    this.speakLine();
     this.pausedSubject.next(false);
-    if (this.isAutomatedVoiceSpeaking) {
-      // todo: luke
-    } else {
-      this.synth.resume();
-    }
   }
 
   /** Stops the current synthesis. */
   stopSpeak() {
     this.canceledCurSynth = true;
-    if (this.isAutomatedVoiceSpeaking) {
-      // todo: luke
-    } else {
-      this.synth.cancel();
-    }
+    this.synth.cancel();
   }
 
   ngOnDestroy() {
@@ -117,14 +87,19 @@ export class VoiceSpeakingService implements OnDestroy {
     this.stopSpeak();
   }
 
+  setLang(lang) {
+    this.lang = lang;
+    this.stopSpeak();
+  }
+
   /** Initializes a synthesis utterance. */
   private initUtterance(content: string): SpeechSynthesisUtterance {
     const utter = new SpeechSynthesisUtterance(content);
-    utter.lang = 'de';
-    const voice = this.synth.getVoices().find((v) => v.name === 'Anna');
-    if (voice) {
-      utter.voice = voice;
+    utter.lang = this.lang;
+    if (utter.lang === 'de' || utter.lang === 'de-AT' || utter.lang === 'de-DE') {
+      utter.voice = this.synth.getVoices().find((v) => v.name === 'Microsoft Michael - German (Austria)');
     }
+
     utter.addEventListener('end', () => {
       if (!this.canceledCurSynth) {
         if (this.session?.isAtEnd()) {
@@ -142,11 +117,7 @@ export class VoiceSpeakingService implements OnDestroy {
     this.stopSpeak();
     this.sessionService.endSession(this.session.id).subscribe({
       next: () => {
-        this.router.navigateByUrl(`/scripts/${this.session.getScriptId()}`);
-        this.toastService.show({
-          message: 'Lerneinheit abgeschlossen.',
-          theme: Theme.primary
-        });
+        this.router.navigateByUrl(`scripts/${this.session.getScriptId()}/review/${this.session.id}`);
       },
       error: (err) => {
         this.toastService.showError(err);

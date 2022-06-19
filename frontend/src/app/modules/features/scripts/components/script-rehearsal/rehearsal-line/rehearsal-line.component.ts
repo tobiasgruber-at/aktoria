@@ -1,8 +1,9 @@
-import {Component, ElementRef, HostBinding, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, HostBinding, Input, OnChanges, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Line} from '../../../../../shared/dtos/script-dtos';
 import {ScriptRehearsalService} from '../../../services/script-rehearsal.service';
 import {Subject, takeUntil} from 'rxjs';
 import {SimpleSession} from '../../../../../shared/dtos/session-dtos';
+import {RehearsalControlsComponent} from '../rehearsal-controls/rehearsal-controls.component';
 import {appearAnimations} from '../../../../../shared/animations/appear-animations';
 
 /** Line of a script within the script rehearsal. */
@@ -12,15 +13,19 @@ import {appearAnimations} from '../../../../../shared/animations/appear-animatio
   styleUrls: ['./rehearsal-line.component.scss'],
   animations: [appearAnimations]
 })
-export class RehearsalLineComponent implements OnInit, OnDestroy {
+export class RehearsalLineComponent implements OnInit, OnDestroy, OnChanges {
   @ViewChild('content') contentRef: ElementRef;
   @Input() line: Line = null;
+  @Input() isBlurred = false;
   session: SimpleSession = null;
+  rehearsalControls = RehearsalControlsComponent;
   isRecording = false;
   isRecordingMode = false;
   private $destroy = new Subject<void>();
 
-  constructor(public scriptRehearsalService: ScriptRehearsalService) {}
+
+  constructor(public scriptRehearsalService: ScriptRehearsalService) {
+  }
 
   @HostBinding('class')
   get classes(): string[] {
@@ -70,5 +75,9 @@ export class RehearsalLineComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.$destroy.next();
     this.$destroy.complete();
+  }
+
+  ngOnChanges(changes) {
+    this.isBlurred = changes.isBlurred.currentValue;
   }
 }

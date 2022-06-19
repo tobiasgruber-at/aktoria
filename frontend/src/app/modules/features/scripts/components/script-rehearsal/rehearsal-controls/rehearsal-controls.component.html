@@ -1,6 +1,8 @@
 <app-controls>
   <app-controls-item
+    (click)="toggleRecordingMode()"
     *ngIf="voiceRecordingService.isSupported()"
+    [class.disabled]="endSessionLoading"
     [ngbTooltip]="
       this.isRecordingMode ? 'Aufzeichnungen abbrechen' : 'Text einsprechen'
     "
@@ -33,20 +35,38 @@
   </app-controls-item>
   <app-controls-item
     (click)="changeLine('next')"
-    ngbTooltip="Weiter"
     [class.disabled]="endSessionLoading"
+    ngbTooltip="Weiter"
   >
     <bi name="arrow-right"></bi>
   </app-controls-item>
   <app-controls-item
     (click)="openModal(stopSessionModal)"
-    ngbTooltip="Beenden"
     [class.disabled]="endSessionLoading"
+    ngbTooltip="Beenden"
   >
     <bi name="x-lg"></bi>
   </app-controls-item>
-  <app-controls-item [class.disabled]="true || endSessionLoading">
-    <bi name="three-dots"></bi>
+  <app-controls-item><!--[class.disabled]="true || endSessionLoading"-->
+
+
+    <div dropdownClass="dropdown-menu-lg" ngbDropdown>
+      <bi name="three-dots" ngbDropdownToggle></bi>
+      <div class="blur-text-dropdown-menu" ngbDropdownMenu>
+        <div class="form-check form-switch">
+          <input (click)="blur()" class="form-check-input" id="flexSwitchCheckDefault" role="switch" type="checkbox">
+          <label class="form-check-label text-nowrap" for="flexSwitchCheckDefault">Text ausblenden</label>
+        </div>
+        <label class="form-check-label text-nowrap" for="flexSwitchCheckDefault">Textsprache</label>
+        <select class="form-control" [(ngModel)]="lang" (click)="updateLang()">
+          <option value="de">Deutsch</option>
+          <option value="en-US">Englisch</option>
+          <option value="fr-FR">Französisch</option>
+          <option value="it-IT">Italienisch</option>
+          <option value="es-ES">Spanisch</option>
+        </select>
+      </div>
+    </div>
   </app-controls-item>
 </app-controls>
 <ng-template #stopSessionModal let-modal>
@@ -65,6 +85,6 @@
      >-->
     Sicher, dass du diese
     <strong class="text-primary"> Übungseinheit vorläufig beenden</strong>
-    möchtest?<br />
+    möchtest?<br/>
   </app-modal>
 </ng-template>

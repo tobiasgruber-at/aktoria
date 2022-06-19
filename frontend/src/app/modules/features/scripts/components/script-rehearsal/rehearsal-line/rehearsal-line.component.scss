@@ -44,6 +44,13 @@ p {
   }
 }
 
+.is-currentText {
+  &.is-Blurred {
+    color: transparent;
+    text-shadow: 0 0 20px #000;
+  }
+}
+
 .recording-indicator {
   display: flex;
   align-items: center;

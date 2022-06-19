@@ -1,7 +1,15 @@
-<h1 class="display-3 mb-3">Vergangene Lerneinheiten</h1>
+<h1 class="display-3 mb-3">Lerneinheiten</h1>
+<h2 class="display-3 mb-3">Offen</h2>
 <div class="mb-5 d-flex flex-wrap gap-4">
   <app-session-list-item
-    *ngFor="let session of sessions"
+    *ngFor="let session of unfinishedSessions"
+    [session]="session"
+  ></app-session-list-item>
+</div>
+<h2 class="display-3 mb-3">Abgeschlossen</h2>
+<div class="mb-5 d-flex flex-wrap gap-4">
+  <app-session-list-item
+    *ngFor="let session of finishedSessions"
     [session]="session"
   ></app-session-list-item>
 </div>
