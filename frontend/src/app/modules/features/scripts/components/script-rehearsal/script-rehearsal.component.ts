@@ -21,6 +21,8 @@ import {VoiceSpeakingService} from '../../services/voice-speaking.service';
 export class ScriptRehearsalComponent implements OnInit, OnDestroy {
   session: SimpleSession = null;
   getLoading = true;
+  isBlurred = false;
+  progress = 0;
   private $destroy = new Subject<void>();
 
   constructor(
@@ -74,9 +76,17 @@ export class ScriptRehearsalComponent implements OnInit, OnDestroy {
       });
   }
 
+  setProgress(progress) {
+    this.progress = progress;
+  }
+
   ngOnDestroy() {
     this.$destroy.next();
     this.$destroy.complete();
     this.voiceSpeakingService.stopSpeak();
+  }
+
+  blur(event) {
+    this.isBlurred = event;
   }
 }

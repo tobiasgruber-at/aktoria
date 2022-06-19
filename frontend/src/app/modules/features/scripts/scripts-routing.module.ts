@@ -10,7 +10,7 @@ import {ScriptEditorComponent} from './components/script-editor/script-editor.co
 import {
   ScriptRehearsalSectionsComponent
 } from './components/script-rehearsal/script-rehearsal-sections/script-rehearsal-sections.component';
-import {ScriptRehearsalComponent} from './components/script-rehearsal/script-rehearsal.component';
+import {ScriptRehearsalComponent} from './components/script-rehearsal/script-rehearsal.component';import {ScriptReviewComponent} from './components/script-review/script-review.component';
 
 const routes: Routes = [
   {
@@ -58,6 +58,10 @@ const routes: Routes = [
   {
     path: ':id/join/:token',
     component: ScriptInviteAcceptComponent
+  },
+  {
+    path: ':scriptId/review/:rehearsalId',
+    component: ScriptReviewComponent
   }
 ];
 

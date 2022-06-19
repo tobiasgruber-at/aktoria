@@ -82,6 +82,10 @@ export class SimpleSession {
   getScriptId(): number {
     return this.script.getId();
   }
+
+  getSection(): SimpleSection {
+    return this.section;
+  }
 }
 
 export enum AssessmentType {

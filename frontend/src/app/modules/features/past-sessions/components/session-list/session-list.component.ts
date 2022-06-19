@@ -9,15 +9,26 @@ import {SimpleSession} from '../../../../shared/dtos/session-dtos';
 })
 export class SessionListComponent implements OnInit {
   @Input() title: string;
-  sessions: SimpleSession[];
+  unfinishedSessions: SimpleSession[];
+  finishedSessions: SimpleSession[];
 
   constructor(public sessionService: SessionService) {
   }
 
   ngOnInit(): void {
+    const us = [];
+    const fs = [];
     this.sessionService.getAll().subscribe({
       next: (res) => {
-        this.sessions = res;
+        res.forEach((session) => {
+          if (session.end) {
+            fs.push(session);
+          } else {
+            us.push(session);
+          }
+        });
+        this.finishedSessions = fs;
+        this.unfinishedSessions = us;
       },
       error: (err) => {
         console.log(err);

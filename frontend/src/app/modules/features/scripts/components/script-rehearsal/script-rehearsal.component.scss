@@ -6,3 +6,18 @@
     width: 80vw;
   }
 }
+
+.section-span {
+  height: 0.5rem;
+  background-color: rgb(0 0 0 / 7%);
+
+  .indicator {
+    transition: 150ms ease-in-out;
+    border-radius: 3px;
+    background-color: var(--bs-primary);
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+  }
+}
