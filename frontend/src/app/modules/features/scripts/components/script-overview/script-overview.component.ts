@@ -1,4 +1,4 @@
-import {Component, HostListener, OnDestroy, OnInit, TemplateRef} from '@angular/core';
+import {Component, OnDestroy, OnInit, TemplateRef} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ScriptService} from '../../../../core/services/script/script.service';
 import {DetailedScript, Role} from '../../../../shared/dtos/script-dtos';

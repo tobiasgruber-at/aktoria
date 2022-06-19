@@ -1,19 +1,19 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ScriptRehearsalService } from '../../services/script-rehearsal.service';
-import { Line, Role, SimpleScript } from '../../../../shared/dtos/script-dtos';
-import { SimpleSession } from '../../../../shared/dtos/session-dtos';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ScriptService } from '../../../../core/services/script/script.service';
-import { SessionService } from '../../../../core/services/session/session.service';
-import { SimpleSection } from '../../../../shared/dtos/section-dtos';
-import { SectionService } from '../../../../core/services/section/section.service';
-import { ScriptViewerService } from '../../services/script-viewer.service';
-import { FormBase } from '../../../../shared/classes/form-base';
-import { FormBuilder, Validators } from '@angular/forms';
-import { ToastService } from '../../../../core/services/toast/toast.service';
-import { Theme } from '../../../../shared/enums/theme.enum';
-import { Subject, takeUntil } from 'rxjs';
-import { LineService } from '../../../../core/services/line/line.service';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {ScriptRehearsalService} from '../../services/script-rehearsal.service';
+import {Line, Role, SimpleScript} from '../../../../shared/dtos/script-dtos';
+import {SimpleSession} from '../../../../shared/dtos/session-dtos';
+import {ActivatedRoute, Router} from '@angular/router';
+import {ScriptService} from '../../../../core/services/script/script.service';
+import {SessionService} from '../../../../core/services/session/session.service';
+import {SimpleSection} from '../../../../shared/dtos/section-dtos';
+import {SectionService} from '../../../../core/services/section/section.service';
+import {ScriptViewerService} from '../../services/script-viewer.service';
+import {FormBase} from '../../../../shared/classes/form-base';
+import {FormBuilder, Validators} from '@angular/forms';
+import {ToastService} from '../../../../core/services/toast/toast.service';
+import {Theme} from '../../../../shared/enums/theme.enum';
+import {Subject, takeUntil} from 'rxjs';
+import {LineService} from '../../../../core/services/line/line.service';
 
 @Component({
   selector: 'app-script-review',
@@ -105,11 +105,11 @@ export class ScriptReviewComponent
   }
 
   protected processSubmit(): void {
-    const { assessment, shouldSaveRecordings } = this.form.value;
+    const {assessment, shouldSaveRecordings} = this.form.value;
     /** Assesses the session. */
     const assessSession = () => {
       this.sessionService
-        .patchOne(this.session.id, { selfAssessment: assessment })
+        .patchOne(this.session.id, {selfAssessment: assessment})
         .pipe(takeUntil(this.$destroy))
         .subscribe({
           next: () => {
@@ -130,7 +130,7 @@ export class ScriptReviewComponent
         l.temporaryRecordingUrl = null;
         // TODO: fix audio upload by converting it in a ogg file
         // see https://stackoverflow.com/a/64256541
-        this.lineService.patchLine({ audio: l.audio }, l.id).subscribe({
+        this.lineService.patchLine({audio: l.audio}, l.id).subscribe({
           next: () => {
             if (++savedLinesCounter >= this.recordedLines.length) {
               assessSession();

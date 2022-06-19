@@ -55,15 +55,15 @@
       </app-form-errors>
     </div>
     <div
-      class="form-group toggle-save-recordings"
       *ngIf="recordedLines.length > 0"
+      class="form-group toggle-save-recordings"
     >
       <input
         class="form-check-input"
         formControlName="shouldSaveRecordings"
+        id="flexCheckDefault"
         type="checkbox"
         value=""
-        id="flexCheckDefault"
       />
       <label class="ms-2 form-check-label" for="flexCheckDefault">
         Eingesprochene Stimme speichern
@@ -77,9 +77,9 @@
     <div class="d-flex flex-column">
       <app-button
         [disabled]="hasError()"
+        [fullWidth]="true"
         [loading]="loading"
         label="Fertigstellen"
-        [fullWidth]="true"
         type="submit"
       ></app-button>
     </div>

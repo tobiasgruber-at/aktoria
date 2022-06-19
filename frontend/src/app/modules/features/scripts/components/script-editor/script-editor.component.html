@@ -39,17 +39,17 @@
     <div *ngIf="isUploading" class="form-group mb-4">
       <h3 *ngIf="isDisplayingConflictHeader" class="mb-0">Überprüfungen</h3>
       <app-script-conflicts
-        type="error"
-        [ngbTooltip]="'Springe zum Problem'"
         (countChange)="counts[0] = $event; updateShouldDisplayConflictHeader();"
-        placement="left top bottom"
+        [ngbTooltip]="'Springe zum Problem'"
         formControlName="errorCount"
+        placement="left top bottom"
+        type="error"
       ></app-script-conflicts>
       <app-script-conflicts
-        type="warning"
-        [ngbTooltip]="'Springe zum Problem'"
         (countChange)="counts[1] = $event; updateShouldDisplayConflictHeader();"
+        [ngbTooltip]="'Springe zum Problem'"
         placement="left top bottom"
+        type="warning"
       ></app-script-conflicts>
       <app-form-errors>
         <app-form-error *ngIf="fieldHasErrors('errorCount', 'max')"

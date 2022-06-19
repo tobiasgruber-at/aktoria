@@ -56,7 +56,8 @@ export class DetailedScript extends SimpleScript {
 }
 
 export class Page {
-  constructor(public index: number, public lines: Line[]) {}
+  constructor(public index: number, public lines: Line[]) {
+  }
 }
 
 export class Line {

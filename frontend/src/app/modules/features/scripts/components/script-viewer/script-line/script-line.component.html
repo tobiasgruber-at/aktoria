@@ -20,15 +20,15 @@
     </div>
     <!-- TODO: remove dropdown toggle when only viewing mode, as it throws errors -->
     <p
-      [ngbTooltip]="isConflict() ? 'Bitte überprüfe diese Zeile' : null"
+      [class.conflict-error]="isConflictError()"
+      [class.conflict-warning]="isConflictWarning()"
+      [class.conflict]="isConflict()"
       [class.fst-italic]="isInstruction"
       [class.highlighted]="
         isHighlighted(scriptViewerService.$selectedRole | async)
       "
-      [class.conflict]="isConflict()"
-      [class.conflict-error]="isConflictError()"
-      [class.conflict-warning]="isConflictWarning()"
       [class.text-secondary]="isInstruction"
+      [ngbTooltip]="isConflict() ? 'Bitte überprüfe diese Zeile' : null"
       class="w-100"
       ngbDropdownToggle
     >
@@ -48,7 +48,7 @@
       <button (click)="toggleLineActive()" ngbDropdownItem>
         {{ line.active ? 'Ausblenden' : 'Einblenden' }}
       </button>
-      <button *ngIf="line.conflictType !== null" (click)="ignoreConflict()" ngbDropdownItem>
+      <button (click)="ignoreConflict()" *ngIf="line.conflictType !== null" ngbDropdownItem>
         Überprüfungsanweisung ignorieren
       </button>
     </div>

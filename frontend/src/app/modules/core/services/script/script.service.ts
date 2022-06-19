@@ -2,8 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {BehaviorSubject, map, Observable, of} from 'rxjs';
 import {Globals} from '../../global/globals';
-import {DetailedScript,Line,
-  Page, ScriptPreview, SimpleScript} from '../../../shared/dtos/script-dtos';
+import {DetailedScript, Line, Page, ScriptPreview, SimpleScript} from '../../../shared/dtos/script-dtos';
 import {tap} from 'rxjs/operators';
 import {AuthService} from '../auth/auth.service';
 import {Cache} from '../../../shared/interfaces/cache';
