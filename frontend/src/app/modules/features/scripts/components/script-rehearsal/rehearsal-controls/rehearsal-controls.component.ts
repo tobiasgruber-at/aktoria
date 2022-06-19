@@ -10,7 +10,6 @@ import {ToastService} from '../../../../../core/services/toast/toast.service';
 import {Theme} from '../../../../../shared/enums/theme.enum';
 import {VoiceRecordingService} from '../../../services/voice-recording.service';
 import {VoiceSpeakingService} from '../../../services/voice-speaking.service';
-import {FormGroup} from '@angular/forms';
 
 /** Control panel for a script rehearsal. */
 @Component({
@@ -39,7 +38,13 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
     public voiceRecordingService: VoiceRecordingService,
     private toastService: ToastService,
     public voiceSpeakingService: VoiceSpeakingService
-  ) {
+  ) {}
+
+  /** Whether the current line is spoken by the users role. */
+  get isSelectedRoleSpeaking() {
+    return this.session
+      .getCurrentLine()
+      .roles.some((r) => r.name === this.session.role?.name);
   }
 
   ngOnInit(): void {
@@ -115,7 +120,7 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
     const lines = this.session.getLines();
     const cur = this.session.getCurrentLine().index - lines[0].index;
     const end = lines[lines.length - 1].index - lines[0].index;
-    this.progressEventEmitter.emit(cur / end * 100);
+    this.progressEventEmitter.emit((cur / end) * 100);
 
     setTimeout(() => {
       this.interactionDisabled = false;
@@ -123,39 +128,14 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
   }
 
   openModal(modal: TemplateRef<any>): void {
-    this.modalService.open(modal, {centered: true});
+    this.modalService.open(modal, { centered: true });
   }
 
-  stopSession(modal: NgbActiveModal): void {
-    if (this.endSessionLoading) {
-      return;
-    }
-    this.sessionService.patchOne(this.session.id, new UpdateSession(null, null, this.session.getCurrentLine().id))
-      .subscribe({next: () => {
-          modal.dismiss();
-          this.router.navigateByUrl(`/scripts/${this.script.id}`);
-          this.toastService.show({
-            message: 'Lerneinheit beendet.',
-            theme: Theme.primary
-          });
-        },
-      error: (err) => {
-        this.toastService.showError(err);
-      }});
-  }
-
-  /** Whether the current line is spoken by the users role. */
-  isSelectedRoleSpeaking() {
-    return this.session
-      .getCurrentLine()
-      .roles.some((r) => r.name === this.session.role?.name);
-  }
-
-  pause() {
+  pauseSpeaking() {
     this.voiceSpeakingService.pauseSpeak();
   }
 
-  resume() {
+  resumeSpeaking() {
     this.voiceSpeakingService.resumeSpeak();
   }
 
@@ -166,37 +146,81 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
   }
 
   updateLang() {
-    this.pause();
+    this.pauseSpeaking();
     this.voiceSpeakingService.setLang(this.lang);
   }
 
+  /**
+   * Toggles the recording mode.
+   *
+   * @return Promise that resolves once recording started or ended (and properly cached the recording)
+   */
   async toggleRecordingMode(): Promise<void> {
     if (!this.isRecordingMode) {
       try {
         await this.scriptRehearsalService.startRecordingMode();
+        this.toastService.show({
+          message: 'Stimme wird für Texte deiner Rolle aufgezeichnet.',
+          theme: Theme.primary
+        });
       } catch (err) {
         this.toastService.showError(err);
       }
     } else {
-      this.scriptRehearsalService.stopRecordingMode();
+      await this.scriptRehearsalService.stopRecordingMode();
     }
   }
 
+  /** Pauses and closes the rehearsal. */
+  pauseSession(modal: NgbActiveModal): void {
+    if (this.endSessionLoading) {
+      return;
+    }
+    this.sessionService
+      .patchOne(
+        this.session.id,
+        new UpdateSession(null, null, this.session.getCurrentLine().id)
+      )
+      .subscribe({
+        next: () => {
+          modal.dismiss();
+          this.cleanUpRehearsal();
+          this.router.navigateByUrl(`/scripts/${this.script.id}`);
+          this.toastService.show({
+            message: 'Lerneinheit beendet.',
+            theme: Theme.primary
+          });
+        },
+        error: (err) => {
+          this.toastService.showError(err);
+        }
+      });
+  }
+
+  /** Ends the rehearsal and asks for a review. */
   private endSession(): void {
     this.endSessionLoading = true;
     this.sessionService.endSession(this.session.id).subscribe({
-      next: () => {
-        //this.router.navigateByUrl(`/scripts/${this.script.id}`);
-        /*this.toastService.show({
-          message: 'Lerneinheit abgeschlossen.',
-          theme: Theme.primary
-        });*/
-        this.router.navigateByUrl(`scripts/${this.script.id}/review/${this.session.id}`);
+      next: async () => {
+        await this.cleanUpRehearsal();
+        await this.router.navigateByUrl(
+          `scripts/${this.script.id}/review/${this.session.id}`
+        );
       },
       error: (err) => {
         this.toastService.showError(err);
         this.endSessionLoading = false;
       }
     });
+  }
+
+  /** Cleans up the state of the rehearsal. */
+  private async cleanUpRehearsal(): Promise<void> {
+    if (!this.speakingPaused) {
+      this.pauseSpeaking();
+    }
+    if (this.isRecordingMode) {
+      await this.toggleRecordingMode();
+    }
   }
 }

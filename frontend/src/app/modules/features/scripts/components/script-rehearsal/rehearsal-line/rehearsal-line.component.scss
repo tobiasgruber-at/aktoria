@@ -8,7 +8,8 @@
 
   &:not(.is-active) {
     .role-names,
-    p {
+    p,
+    .recording-indicator {
       opacity: 25%;
     }
   }
@@ -19,8 +20,13 @@
 }
 
 .role-names,
-p {
+p,
+.recording-indicator {
   transition: opacity 200ms ease-in-out;
+}
+
+.role-names,
+p {
   font-size: 1.8rem;
 }
 
@@ -42,5 +48,17 @@ p {
   &.is-Blurred {
     color: transparent;
     text-shadow: 0 0 20px #000;
+  }
+}
+
+.recording-indicator {
+  display: flex;
+  align-items: center;
+  transform-origin: left;
+
+  bi {
+    height: 1.1rem;
+    width: 1.1rem;
+    margin-right: 0.2rem;
   }
 }
