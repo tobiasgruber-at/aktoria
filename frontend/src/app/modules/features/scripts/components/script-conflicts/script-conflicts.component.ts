@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {Line, SimpleScript} from '../../../../shared/dtos/script-dtos';
 import {ScriptViewerService} from '../../services/script-viewer.service';
 import {Subject, takeUntil} from 'rxjs';
@@ -18,6 +18,7 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
 })
 export class ScriptConflictsComponent implements OnInit, OnDestroy, ControlValueAccessor {
   @Input() type: 'error' | 'warning' = 'error';
+  @Output() countChange = new EventEmitter<number>();
   script: SimpleScript = null;
   lines: Line[];
   clickCounter = 0;
@@ -45,6 +46,7 @@ export class ScriptConflictsComponent implements OnInit, OnDestroy, ControlValue
         if (!this.isDisabled) {
           this.lines = this.lines.filter((l) => l.index !== index);
           this.onChange(this.lines.length);
+          this.countChange.emit(this.lines.length);
         }
         this.markAsTouched();
       });
@@ -110,6 +112,7 @@ export class ScriptConflictsComponent implements OnInit, OnDestroy, ControlValue
       }
     }
     this.onChange(this.lines.length);
+    this.countChange.emit(this.lines.length);
   }
 
   jump(): void {

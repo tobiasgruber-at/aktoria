@@ -25,6 +25,8 @@ export class ScriptEditorComponent
   script: SimpleScript = null;
   /** Whether the user is currently uploading a script. */
   isUploading = false;
+  isDisplayingConflictHeader = false;
+  counts: number[] = [];
   private $destroy = new Subject<void>();
 
   constructor(
@@ -85,6 +87,10 @@ export class ScriptEditorComponent
 
   backToOverview(): void {
     this.router.navigateByUrl(`/scripts/${this.script?.getId()}`);
+  }
+
+  updateShouldDisplayConflictHeader(): void {
+    this.isDisplayingConflictHeader = this.counts.reduce((a, b) => a + b, 0) > 0;
   }
 
   protected processSubmit(): void {
