@@ -36,7 +36,6 @@ export class VoiceSpeakingService implements OnDestroy {
       .pipe(takeUntil(this.$destroy))
       .subscribe((session) => {
         this.session = session;
-        console.log(1, this.session);
       });
   }
 
@@ -75,8 +74,9 @@ export class VoiceSpeakingService implements OnDestroy {
           this.canceledCurSynth = false;
           if (!this.pausedSubject.getValue()) {
             this.synth.speak(utter);
+            this.synth.resume();
           }
-        }, 10);
+        }, 300);
       }
     }
   }
