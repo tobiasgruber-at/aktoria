@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Blob;
 import java.util.List;
 
 @Data
@@ -13,4 +14,5 @@ public class UpdateLineDto {
     private String content;
     private Boolean active;
     private List<Long> roleIds;
+    private Blob audio;
 }
