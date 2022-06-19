@@ -47,19 +47,24 @@ export class VoiceSpeakingService implements OnDestroy {
    * Stops already ongoing voices and only speaks, if the line is not spoken by the user.
    * */
   speakLine() {
+    console.log('speak!');
     this.stopSpeak();
     const currentLine = this.session.getCurrentLine();
     if (
       currentLine &&
       !currentLine.roles.some((r) => r.name === this.session.role?.name)
     ) {
+      console.log('not me!');
       const utter = this.initUtterance(currentLine.content);
       setTimeout(() => {
         this.canceledCurSynth = false;
         if (!this.pausedSubject.getValue()) {
+          console.log('send to api!');
+          console.log(utter);
           this.synth.speak(utter);
+          this.synth.resume();
         }
-      }, 10);
+      }, 300);
     }
   }
 
@@ -109,7 +114,7 @@ export class VoiceSpeakingService implements OnDestroy {
           this.speakLine();
         }
       }
-    });
+    }, true);
     return utter;
   }
 
