@@ -1,12 +1,9 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Globals } from '../../global/globals';
-import { map, Observable, of } from 'rxjs';
-import {
-  CreateSection,
-  SimpleSection
-} from '../../../shared/dtos/section-dtos';
-import { randomDelay } from '../../../shared/functions/random-delay';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {Globals} from '../../global/globals';
+import {map, Observable, of} from 'rxjs';
+import {CreateSection, SimpleSection} from '../../../shared/dtos/section-dtos';
+import {randomDelay} from '../../../shared/functions/random-delay';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +11,8 @@ import { randomDelay } from '../../../shared/functions/random-delay';
 export class SectionService {
   private baseUri: string = this.globals.backendUri + '/sections';
 
-  constructor(private http: HttpClient, private globals: Globals) {}
+  constructor(private http: HttpClient, private globals: Globals) {
+  }
 
   /**
    * Gets one section.
@@ -45,7 +43,7 @@ export class SectionService {
    */
   getAll(scriptId: number): Observable<SimpleSection[]> {
     return this.http
-      .get<SimpleSection[]>(this.baseUri, { params: { scriptId } })
+      .get<SimpleSection[]>(this.baseUri, {params: {scriptId}})
       .pipe(
         map((sections) =>
           sections.map(

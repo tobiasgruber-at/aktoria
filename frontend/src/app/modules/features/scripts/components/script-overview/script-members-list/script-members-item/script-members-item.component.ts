@@ -1,10 +1,10 @@
-import { Component, Input, OnInit, TemplateRef } from '@angular/core';
-import { SimpleUser } from '../../../../../../shared/dtos/user-dtos';
-import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Theme } from '../../../../../../shared/enums/theme.enum';
-import { AuthService } from '../../../../../../core/services/auth/auth.service';
-import { ActivatedRoute } from '@angular/router';
-import { ScriptService } from '../../../../../../core/services/script/script.service';
+import {Component, Input, OnInit, TemplateRef} from '@angular/core';
+import {SimpleUser} from '../../../../../../shared/dtos/user-dtos';
+import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {Theme} from '../../../../../../shared/enums/theme.enum';
+import {AuthService} from '../../../../../../core/services/auth/auth.service';
+import {ActivatedRoute} from '@angular/router';
+import {ScriptService} from '../../../../../../core/services/script/script.service';
 
 @Component({
   selector: 'app-script-members-item',
@@ -26,7 +26,8 @@ export class ScriptMembersItemComponent implements OnInit {
     private authService: AuthService,
     private route: ActivatedRoute,
     private scriptService: ScriptService
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.scriptId = this.route.snapshot.paramMap.get('id');
@@ -34,7 +35,7 @@ export class ScriptMembersItemComponent implements OnInit {
 
   openModal(modal: TemplateRef<any>) {
     if (this.isOwner && !this.isMe()) {
-      this.modalService.open(modal, { centered: true });
+      this.modalService.open(modal, {centered: true});
     }
   }
 

@@ -23,7 +23,8 @@ export class AuthService {
     private httpClient: HttpClient,
     private globals: Globals,
     private userService: UserService
-  ) {}
+  ) {
+  }
 
   /** @return Observable that notifies on login-state changes. */
   get $loginChanges(): Observable<boolean> {
@@ -37,7 +38,7 @@ export class AuthService {
    */
   loginUser(authRequest: AuthRequest): Observable<string> {
     return this.httpClient
-      .post(this.authBaseUri, authRequest, { responseType: 'text' })
+      .post(this.authBaseUri, authRequest, {responseType: 'text'})
       .pipe(
         tap((authResponse: string) => {
           this.updateLoginState(authResponse);
@@ -55,7 +56,7 @@ export class AuthService {
     return (
       !!this.getToken() &&
       this.getTokenExpirationDate(this.getToken()).valueOf() >
-        new Date().valueOf()
+      new Date().valueOf()
     );
   }
 

@@ -8,4 +8,5 @@ import {VerifyEmailRoutingModule} from './verify-email-routing.module';
   declarations: [VerifyEmailComponent],
   imports: [SharedModule, VerifyEmailRoutingModule]
 })
-export class VerifyEmailModule {}
+export class VerifyEmailModule {
+}

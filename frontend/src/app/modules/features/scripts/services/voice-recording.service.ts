@@ -32,7 +32,7 @@ export class VoiceRecordingService implements OnDestroy {
    */
   async requestPermissions(): Promise<void> {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const stream = await navigator.mediaDevices.getUserMedia({audio: true});
       this.initMediaRecorder(stream);
     } catch (err: any) {
       switch (err.name) {

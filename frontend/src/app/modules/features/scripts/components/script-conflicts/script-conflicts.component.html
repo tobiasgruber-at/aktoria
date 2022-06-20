@@ -1,0 +1,27 @@
+<ng-container *ngIf="lines?.length > 0">
+  <button
+    (click)="jump()"
+    class="bg-white border border-{{
+      type === 'error' ? 'danger' : 'warning'
+    }} rounded mt-1 mb-1 p-2 d-block w-100"
+    type="button"
+  >
+    <div class="d-flex">
+      <span class="d-flex align-items-center me-2">
+        <bi
+          class="text-{{ type === 'error' ? 'danger' : 'warning' }}"
+          name="exclamation-{{ type === 'error' ? 'octagon' : 'triangle' }}"
+          style="height: 1.25rem"
+        >
+        </bi>
+      </span>
+      <span class="text-truncate">
+        <strong class="text-{{ type === 'error' ? 'danger' : 'warning' }}">
+          {{ lines?.length }}
+        </strong>
+        {{ lines?.length > 1 ? 'Überprüfungen' : 'Überprüfung' }}
+        {{ type === 'error' ? 'notwendig' : 'sinnvoll' }}</span
+      >
+    </div>
+  </button>
+</ng-container>

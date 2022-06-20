@@ -9,4 +9,5 @@ import {EmailVerificationComponent} from './components/email-verification/email-
   declarations: [LandingComponent, EmailVerificationComponent],
   imports: [SharedModule, LandingRoutingModule]
 })
-export class LandingModule {}
+export class LandingModule {
+}

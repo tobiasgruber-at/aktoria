@@ -71,6 +71,8 @@ export class ChangeLineModalComponent
     if (this.isUploading) {
       this.line.roles = roles;
       this.line.content = content;
+      this.line.conflictType = null;
+      this.scriptViewerService.setResolveConflict(this.line.index);
       this.modal.dismiss();
     } else {
       this.lineService
@@ -79,7 +81,7 @@ export class ChangeLineModalComponent
             content,
             roleIds: roles?.map((r) => r.id) || []
           },
-          this.line.id
+          this.line.index
         )
         .subscribe({
           next: (updatedLine) => {

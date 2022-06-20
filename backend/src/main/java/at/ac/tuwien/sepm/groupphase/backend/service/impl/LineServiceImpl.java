@@ -112,7 +112,7 @@ public class LineServiceImpl implements LineService {
                 line.setSpokenBy(new HashSet<>(Set.copyOf(roles)));
             }
         }
-        
+
         if (updateLineDto.getAudio() != null) {
             line.setAudio(updateLineDto.getAudio());
         }

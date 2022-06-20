@@ -38,7 +38,8 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
     public voiceRecordingService: VoiceRecordingService,
     private toastService: ToastService,
     public voiceSpeakingService: VoiceSpeakingService
-  ) {}
+  ) {
+  }
 
   /** Whether the current line is spoken by the users role. */
   get isSelectedRoleSpeaking() {
@@ -128,7 +129,7 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
   }
 
   openModal(modal: TemplateRef<any>): void {
-    this.modalService.open(modal, { centered: true });
+    this.modalService.open(modal, {centered: true});
   }
 
   pauseSpeaking() {
