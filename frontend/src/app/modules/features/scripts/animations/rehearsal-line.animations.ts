@@ -1,12 +1,5 @@
-import {
-  animate,
-  AnimationTriggerMetadata,
-  state,
-  style,
-  transition,
-  trigger
-} from '@angular/animations';
-import { voidStyles } from '../../../shared/animations/fixed-appear-animations';
+import {animate, AnimationTriggerMetadata, state, style, transition, trigger} from '@angular/animations';
+import {voidStyles} from '../../../shared/animations/fixed-appear-animations';
 
 const hiddenStyles: { [property: string]: string | number } = {
   opacity: 0,

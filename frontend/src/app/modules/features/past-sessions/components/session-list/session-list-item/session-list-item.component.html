@@ -26,34 +26,31 @@
   <ng-template #content let-modal>
     <app-modal
       (confirm)="modal.dismiss()"
-      (decline)="modal.dismiss()"
       (continue)="continueSession()"
-      [showDecline]="false"
+      (decline)="modal.dismiss()"
       [showContinue]="session.end === null || session.end === undefined"
-      [title]="script.name + ': ' + section.name"
+      [showDecline]="false"
+      [title]="script.name + ', ' + section.name"
       confirmBtnLabel="Schließen"
     >
+      <h5>Informationen</h5>
       <p>
         Du hast diesen Abschnitt am <strong>{{ startDate }}</strong> erstellt.
       </p>
-      <div *ngIf="session.role">
-        <p>
-          Du hast die Rolle <strong>{{ session.role.name }}</strong> geübt.
-        </p>
-      </div>
-      <div *ngIf="session.coverage">
-        <p>
-          <strong>{{ session.coverage * 100 }}%</strong> des gesprochenen Textes
-          wurden erkannt.
-        </p>
-      </div>
+      <p *ngIf="session.role">
+        Du hast die Rolle <strong>{{ session.role.name }}</strong> geübt.
+      </p>
+      <p *ngIf="session.coverage">
+        <strong>{{ session.coverage * 100 }}&nbsp;</strong> des gesprochenen Textes
+        wurden erkannt.
+      </p>
       <div *ngIf="session.selfAssessment">
         <p>
           So hast du dich dabei gefühlt:
           <strong>{{ assessment }}</strong>
         </p>
       </div>
-      <p>Position im Skript:</p>
+      <h5>Position im Skript</h5>
       <div class="section-span w-100 position-relative">
         <div
           [style.left.%]="startLinePercentage"

@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { SessionListComponent } from './session-list.component';
+import {SessionListComponent} from './session-list.component';
 
 describe('SessionListComponent', () => {
   let component: SessionListComponent;
@@ -8,9 +8,8 @@ describe('SessionListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SessionListComponent ]
-    })
-    .compileComponents();
+      declarations: [SessionListComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

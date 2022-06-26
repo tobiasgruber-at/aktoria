@@ -1,4 +1,4 @@
-import {Line, SimpleScript } from './script-dtos';
+import {Line, SimpleScript} from './script-dtos';
 
 export class SimpleSection {
   private startPage: number = null;
@@ -38,5 +38,6 @@ export class CreateSection {
     public startLineId: number,
     public endLineId: number,
     public sessionIds: number[]
-  ) {}
+  ) {
+  }
 }

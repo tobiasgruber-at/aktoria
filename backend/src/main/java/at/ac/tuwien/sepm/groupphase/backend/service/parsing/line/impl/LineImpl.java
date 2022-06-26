@@ -23,7 +23,7 @@ public class LineImpl implements Line {
     public static final String[] SPECIAL_SENTENCE_STARTERS = { "(", "\"", "(", "„" };
     public static final String[] SPECIAL_SENTENCES_PATTERNS = { "^.* Akt$", "^Vorhang$", "^Ende$" };
     private static final String[] MULTI_ROLES_DELIMITERS = { " UND ", "/", " / " };
-    private static final String[] ALL_ROLES_IDENTIFIERS = { "ALLE" };
+    private static final String[] ALL_ROLES_IDENTIFIERS = { "ALLE", "BEIDE", "GEMEINSAM" };
     private Line.ConflictType conflictType;
     private boolean isDecomposed;
     private String raw;
@@ -102,7 +102,7 @@ public class LineImpl implements Line {
     private void decomposeLine() {
         log.trace("decomposeLine()");
 
-        Pattern pattern = Pattern.compile("^[A-Z\\s\\.\\-/]+(?=\\s)");
+        Pattern pattern = Pattern.compile("^[A-ZÖÜÄ\\s\\.\\-/]+(?=\\s[A-ZÖÜÄ0-9\\\"„”(])");
         Matcher matcher = pattern.matcher(raw);
 
         if (matcher.find()) {
@@ -162,6 +162,10 @@ public class LineImpl implements Line {
 
     private List<String> getRolesFromDeclaration(String rolesDeclaration) {
         log.trace("getRolesFromDeclaration(rolesDeclaration = {})", rolesDeclaration);
+
+        if (rolesDeclaration.isEmpty()) {
+            return null;
+        }
 
         List<String> temp;
 
@@ -257,7 +261,7 @@ public class LineImpl implements Line {
     public List<Line> getPossibleInternalLines() {
         log.trace("getPossibleInternalLines()");
 
-        Pattern pattern = Pattern.compile("\\b(?<=\\.|\\s|^)[A-Z\\s\\.]+(?=\\s|\\.|$)\\b");
+        Pattern pattern = Pattern.compile("\\b(?<!\\s[A-ZÖÜÄa-zöüä]\\.)(?<=\\s|^)[A-ZÖÜÄ\\s\\.\\-]+(?=\\s|$)\\b");
         Matcher matcher = pattern.matcher(raw);
 
         List<Line> newLines = new LinkedList<>();

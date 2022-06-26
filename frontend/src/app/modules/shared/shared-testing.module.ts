@@ -1,8 +1,8 @@
-import { NgModule } from '@angular/core';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-import { ReactiveFormsModule } from '@angular/forms';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {NgModule} from '@angular/core';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {RouterTestingModule} from '@angular/router/testing';
+import {ReactiveFormsModule} from '@angular/forms';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 const sharedImports = [
   HttpClientTestingModule,
@@ -16,4 +16,5 @@ const sharedImports = [
   imports: [...sharedImports],
   exports: [...sharedImports]
 })
-export class SharedTestingModule {}
+export class SharedTestingModule {
+}

@@ -16,7 +16,8 @@ export class AuthInterceptor implements HttpInterceptor {
     private authService: AuthService,
     private userService: UserService,
     private globals: Globals
-  ) {}
+  ) {
+  }
 
   /** Intercepts outgoing http requests and adds authorizations headers if necessary. */
   intercept(

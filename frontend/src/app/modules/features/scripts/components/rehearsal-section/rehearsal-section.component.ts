@@ -33,7 +33,8 @@ export class RehearsalSectionComponent implements OnInit, OnDestroy {
     private toastService: ToastService,
     private sessionService: SessionService,
     private voiceSpeakingService: VoiceSpeakingService
-  ) {}
+  ) {
+  }
 
   @HostBinding('class')
   private get classes(): string[] {
@@ -62,9 +63,9 @@ export class RehearsalSectionComponent implements OnInit, OnDestroy {
       this.isActive || this.isCreate
         ? null
         : {
-            section: this.section,
-            scrollTo: true
-          }
+          section: this.section,
+          scrollTo: true
+        }
     );
   }
 

@@ -26,7 +26,8 @@ export class ScriptMembersItemComponent implements OnInit {
     private authService: AuthService,
     private route: ActivatedRoute,
     private scriptService: ScriptService
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.scriptId = this.route.snapshot.paramMap.get('id');
@@ -34,7 +35,7 @@ export class ScriptMembersItemComponent implements OnInit {
 
   openModal(modal: TemplateRef<any>) {
     if (this.isOwner && !this.isMe()) {
-      this.modalService.open(modal, { centered: true });
+      this.modalService.open(modal, {centered: true});
     }
   }
 

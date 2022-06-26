@@ -24,6 +24,7 @@
     .roles span,
     p {
       text-decoration: line-through;
+      text-decoration-color: inherit !important;
     }
   }
 
@@ -60,6 +61,19 @@ p {
 
   &.highlighted {
     background-color: rgba(228 206 7 / 20%);
+  }
+
+  &.conflict {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+
+    &.conflict-error {
+      text-decoration-color: var(--bs-danger);
+    }
+
+    &.conflict-warning {
+      text-decoration-color: var(--bs-warning);
+    }
   }
 }
 

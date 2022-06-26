@@ -1,14 +1,14 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Line, SimpleScript } from '../../../../../shared/dtos/script-dtos';
-import { ScriptViewerService } from '../../../services/script-viewer.service';
-import { ScriptService } from '../../../../../core/services/script/script.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { SimpleSection } from '../../../../../shared/dtos/section-dtos';
-import { ToastService } from '../../../../../core/services/toast/toast.service';
-import { Subject, takeUntil } from 'rxjs';
-import { SectionService } from '../../../../../core/services/section/section.service';
-import { ScriptRehearsalService } from '../../../services/script-rehearsal.service';
-import { Theme } from '../../../../../shared/enums/theme.enum';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Line, SimpleScript} from '../../../../../shared/dtos/script-dtos';
+import {ScriptViewerService} from '../../../services/script-viewer.service';
+import {ScriptService} from '../../../../../core/services/script/script.service';
+import {ActivatedRoute, Router} from '@angular/router';
+import {SimpleSection} from '../../../../../shared/dtos/section-dtos';
+import {ToastService} from '../../../../../core/services/toast/toast.service';
+import {Subject, takeUntil} from 'rxjs';
+import {SectionService} from '../../../../../core/services/section/section.service';
+import {ScriptRehearsalService} from '../../../services/script-rehearsal.service';
+import {Theme} from '../../../../../shared/enums/theme.enum';
 
 enum Step {
   selectSection,
@@ -37,7 +37,8 @@ export class ScriptRehearsalSectionsComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private toastService: ToastService
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {

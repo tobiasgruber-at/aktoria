@@ -8,5 +8,6 @@ import {ScriptViewerService} from '../../services/script-viewer.service';
   styleUrls: ['./script-viewer.component.scss']
 })
 export class ScriptViewerComponent {
-  constructor(public scriptViewerService: ScriptViewerService) {}
+  constructor(public scriptViewerService: ScriptViewerService) {
+  }
 }

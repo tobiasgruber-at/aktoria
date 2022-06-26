@@ -1,23 +1,16 @@
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  OnDestroy,
-  OnInit,
-  ViewChild
-} from '@angular/core';
-import { ScriptRehearsalService } from '../../services/script-rehearsal.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ScriptService } from '../../../../core/services/script/script.service';
-import { SimpleSession } from '../../../../shared/dtos/session-dtos';
-import { combineLatest, Subject, takeUntil } from 'rxjs';
-import { lineAppearAnimations } from '../../animations/rehearsal-line.animations';
-import { ToastService } from '../../../../core/services/toast/toast.service';
-import { SessionService } from '../../../../core/services/session/session.service';
-import { SectionService } from '../../../../core/services/section/section.service';
-import { fixedAppearAnimations } from '../../../../shared/animations/fixed-appear-animations';
-import { VoiceSpeakingService } from '../../services/voice-speaking.service';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {ScriptRehearsalService} from '../../services/script-rehearsal.service';
+import {ActivatedRoute, Router} from '@angular/router';
+import {ScriptService} from '../../../../core/services/script/script.service';
+import {SimpleSession} from '../../../../shared/dtos/session-dtos';
+import {combineLatest, Subject, takeUntil} from 'rxjs';
+import {lineAppearAnimations} from '../../animations/rehearsal-line.animations';
+import {ToastService} from '../../../../core/services/toast/toast.service';
+import {SessionService} from '../../../../core/services/session/session.service';
+import {SectionService} from '../../../../core/services/section/section.service';
+import {fixedAppearAnimations} from '../../../../shared/animations/fixed-appear-animations';
+import {VoiceSpeakingService} from '../../services/voice-speaking.service';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
 const hasSeenTutorialLSKey = 'hasSeenTutorial';
 
@@ -47,7 +40,8 @@ export class ScriptRehearsalComponent
     private router: Router,
     private voiceSpeakingService: VoiceSpeakingService,
     private modalService: NgbModal
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
@@ -101,7 +95,7 @@ export class ScriptRehearsalComponent
       localStorage.getItem(hasSeenTutorialLSKey)
     );
     if (hasSeenTutorial !== true) {
-      this.modalService.open(this.tutorialModal, { centered: true });
+      this.modalService.open(this.tutorialModal, {centered: true});
     }
   }
 

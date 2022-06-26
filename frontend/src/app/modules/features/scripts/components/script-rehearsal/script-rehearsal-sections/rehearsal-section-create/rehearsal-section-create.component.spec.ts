@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { RehearsalSectionCreateComponent } from './rehearsal-section-create.component';
+import {RehearsalSectionCreateComponent} from './rehearsal-section-create.component';
 
 describe('RehearsalSectionCreateComponent', () => {
   let component: RehearsalSectionCreateComponent;
@@ -8,9 +8,9 @@ describe('RehearsalSectionCreateComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ RehearsalSectionCreateComponent ]
+      declarations: [RehearsalSectionCreateComponent]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {

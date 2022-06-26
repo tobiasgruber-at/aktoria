@@ -39,12 +39,12 @@ export class RegistrationComponent extends FormBase implements OnInit {
         password: ['', [Validators.required, Validators.minLength(8)]],
         passwordConfirm: ['', [Validators.required]]
       },
-      { validators: [matchingPasswordsValidator()] }
+      {validators: [matchingPasswordsValidator()]}
     );
   }
 
   protected processSubmit() {
-    const { firstName, lastName, email, password } = this.form.value;
+    const {firstName, lastName, email, password} = this.form.value;
     this.userService
       .register(new UserRegistration(firstName, lastName, email, password))
       .subscribe({

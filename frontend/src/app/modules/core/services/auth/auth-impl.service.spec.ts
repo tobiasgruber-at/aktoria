@@ -1,7 +1,7 @@
-import { TestBed } from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 
-import { AuthService } from './auth.service';
-import { SharedTestingModule } from '../../../shared/shared-testing.module';
+import {AuthService} from './auth.service';
+import {SharedTestingModule} from '../../../shared/shared-testing.module';
 
 describe('AuthImplService', () => {
   beforeEach(() =>

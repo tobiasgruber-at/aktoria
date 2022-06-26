@@ -28,7 +28,8 @@ export class SessionListItemComponent implements OnInit {
     private router: Router,
     private toastService: ToastService,
     private modalService: NgbModal
-  ) {}
+  ) {
+  }
 
   get startLinePercentage(): number {
     return this.script && this.section
@@ -80,7 +81,7 @@ export class SessionListItemComponent implements OnInit {
   }
 
   openModal(modal: TemplateRef<any>) {
-    this.modalService.open(modal, { centered: true });
+    this.modalService.open(modal, {centered: true});
   }
 
   continueSession() {

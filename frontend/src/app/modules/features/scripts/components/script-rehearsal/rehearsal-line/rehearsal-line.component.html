@@ -8,10 +8,10 @@
     >
   </div>
   <div
-    class="recording-indicator"
-    [class.pulsing]="this.isRecordingLine"
     *ngIf="isOwnLine && (line.temporaryRecording || this.isRecordingLine)"
     @appear
+    [class.pulsing]="this.isRecordingLine"
+    class="recording-indicator"
   >
     <bi name="mic-fill"></bi>
     <span>

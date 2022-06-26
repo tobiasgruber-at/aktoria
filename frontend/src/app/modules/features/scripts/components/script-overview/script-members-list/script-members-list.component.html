@@ -2,8 +2,8 @@
 <div class="mb-5 d-flex flex-wrap gap-4">
   <app-script-members-item
     *ngFor="let member of members"
-    [member]="member"
     [isOwner]="isOwner"
+    [member]="member"
     [owner]="members[0]"
     (removedEmitter)="remove($event)"
   ></app-script-members-item>

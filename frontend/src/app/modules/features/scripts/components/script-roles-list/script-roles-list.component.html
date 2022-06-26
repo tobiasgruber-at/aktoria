@@ -1,12 +1,12 @@
 <div
   (click)="onRoleClicked(role)"
   *ngFor="let role of roles"
-  [ngbTooltip]="role !== selectedRole && showTooltips ? 'Rolle auswählen' : ''"
-  placement="bottom"
   [class.selected]="isRoleSelected(role)"
+  [ngbTooltip]="role !== selectedRole && showTooltips ? 'Rolle auswählen' : ''"
   class="badge badge-{{ theme }} badge-{{ size }} btn mb-{{
     size === 'lg' ? 2 : 3
   }} me-{{ size === 'lg' ? 2 : 3 }}"
+  placement="bottom"
   type="button"
 >
   {{ role.name }}

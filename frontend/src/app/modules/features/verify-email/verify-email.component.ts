@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { UserService } from '../../core/services/user/user.service';
-import { AuthService } from '../../core/services/auth/auth.service';
+import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
+import {UserService} from '../../core/services/user/user.service';
+import {AuthService} from '../../core/services/auth/auth.service';
 
 @Component({
   selector: 'app-verify-email',
@@ -17,7 +17,8 @@ export class VerifyEmailComponent implements OnInit {
     private router: Router,
     private userService: UserService,
     private authService: AuthService
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.token = this.route.snapshot.paramMap.get('token');

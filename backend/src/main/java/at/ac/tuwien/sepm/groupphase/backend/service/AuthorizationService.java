@@ -70,7 +70,7 @@ public interface AuthorizationService {
      * Checks if the logged in User is the owner of the script or admin, or has the given email.
      *
      * @param scriptId the id of the script
-     * @param email the email
+     * @param email    the email
      * @throws UnauthorizedException if authorization fails
      */
     void checkMemberAuthorization(Long scriptId, String email);

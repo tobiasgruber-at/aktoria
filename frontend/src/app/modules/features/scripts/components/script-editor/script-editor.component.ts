@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Subject, takeUntil} from 'rxjs';
 import {ScriptService} from '../../../../core/services/script/script.service';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -25,6 +25,8 @@ export class ScriptEditorComponent
   script: SimpleScript = null;
   /** Whether the user is currently uploading a script. */
   isUploading = false;
+  isDisplayingConflictHeader = false;
+  counts: number[] = [];
   private $destroy = new Subject<void>();
 
   constructor(
@@ -34,7 +36,8 @@ export class ScriptEditorComponent
     private toastService: ToastService,
     public scriptViewerService: ScriptViewerService,
     private modalService: NgbModal,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private changeDetectorRef: ChangeDetectorRef
   ) {
     super(toastService);
     this.scriptViewerService.setIsEditingScript(true);
@@ -44,7 +47,8 @@ export class ScriptEditorComponent
 
   ngOnInit(): void {
     this.form = this.formBuilder.group({
-      scriptName: ['', [Validators.required, Validators.maxLength(100)]]
+      scriptName: ['', [Validators.required, Validators.maxLength(100)]],
+      errorCount: [1, [Validators.max(0)]]
     });
     this.scriptViewerService.$script
       .pipe(takeUntil(this.$destroy))
@@ -59,7 +63,7 @@ export class ScriptEditorComponent
   }
 
   openModal(modalRef): void {
-    this.modalService.open(modalRef, { centered: true });
+    this.modalService.open(modalRef, {centered: true});
   }
 
   cancelUpload(modal: NgbActiveModal): void {
@@ -73,6 +77,7 @@ export class ScriptEditorComponent
 
   ngAfterViewInit() {
     if (this.isUploading) {
+      this.changeDetectorRef.detectChanges();
       this.openModal(this.tutorialModal);
     }
   }
@@ -86,8 +91,12 @@ export class ScriptEditorComponent
     this.router.navigateByUrl(`/scripts/${this.script?.getId()}`);
   }
 
+  updateShouldDisplayConflictHeader(): void {
+    this.isDisplayingConflictHeader = this.counts.reduce((a, b) => a + b, 0) > 0;
+  }
+
   protected processSubmit(): void {
-    const { scriptName } = this.form.value;
+    const {scriptName} = this.form.value;
     const script = new SimpleScript(
       this.script.pages,
       this.script.roles,
