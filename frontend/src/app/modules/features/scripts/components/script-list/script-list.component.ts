@@ -13,7 +13,8 @@ export class ScriptListComponent implements OnInit {
   @Input() hasUploadButton = false;
   scriptPreviews: ScriptPreview[];
 
-  constructor(public scriptService: ScriptService) {}
+  constructor(public scriptService: ScriptService) {
+  }
 
   ngOnInit(): void {
     this.scriptService.getAll().subscribe({

@@ -2,7 +2,6 @@ import {Injectable, OnDestroy} from '@angular/core';
 import {ScriptRehearsalService} from './script-rehearsal.service';
 import {SimpleSession} from '../../../shared/dtos/session-dtos';
 import {BehaviorSubject, Observable, Subject, takeUntil} from 'rxjs';
-import {Theme} from '../../../shared/enums/theme.enum';
 import {ToastService} from '../../../core/services/toast/toast.service';
 import {SessionService} from '../../../core/services/session/session.service';
 import {Router} from '@angular/router';
@@ -62,6 +61,7 @@ export class VoiceSpeakingService implements OnDestroy {
         this.curAudioEl.setAttribute('controls', '');
         this.curAudioEl.controls = true;
         this.curAudioEl.src = audio;
+        this.curAudioEl.onended = this.onSpeakingEnd.bind(this);
         if (this.curAudioEl.canPlayType(audio) === 'probably' || 'maybe') {
           this.curAudioEl.play();
         }
@@ -74,8 +74,9 @@ export class VoiceSpeakingService implements OnDestroy {
           this.canceledCurSynth = false;
           if (!this.pausedSubject.getValue()) {
             this.synth.speak(utter);
+            this.synth.resume();
           }
-        }, 10);
+        }, 300);
       }
     }
   }
@@ -92,9 +93,9 @@ export class VoiceSpeakingService implements OnDestroy {
 
   /** Resumes the current synthesis or audio. */
   resumeSpeak() {
+    this.pausedSubject.next(false);
     if (this.isAutomatedVoiceSpeaking) {
       this.speakLine();
-      this.pausedSubject.next(false);
     } else {
       this.curAudioEl.play();
     }
@@ -125,28 +126,39 @@ export class VoiceSpeakingService implements OnDestroy {
   private initUtterance(content: string): SpeechSynthesisUtterance {
     const utter = new SpeechSynthesisUtterance(content);
     utter.lang = this.lang;
-    if (utter.lang === 'de' || utter.lang === 'de-AT' || utter.lang === 'de-DE') {
-      utter.voice = this.synth.getVoices().find((v) => v.name === 'Microsoft Michael - German (Austria)');
+    if (
+      utter.lang === 'de' ||
+      utter.lang === 'de-AT' ||
+      utter.lang === 'de-DE'
+    ) {
+      utter.voice = this.synth
+        .getVoices()
+        .find((v) => v.name === 'Microsoft Michael - German (Austria)');
     }
 
-    utter.addEventListener('end', () => {
-      if (!this.canceledCurSynth) {
-        if (this.session?.isAtEnd()) {
-          this.endSession();
-        } else {
-          this.session.currentLineIndex++;
-          this.speakLine();
-        }
-      }
-    });
+    utter.addEventListener('end', this.onSpeakingEnd.bind(this));
     return utter;
+  }
+
+  /** Handles whether next line should be spoken when speaking ended. */
+  private onSpeakingEnd(): void {
+    if (!this.canceledCurSynth) {
+      if (this.session?.isAtEnd()) {
+        this.endSession();
+      } else {
+        this.session.currentLineIndex++;
+        this.speakLine();
+      }
+    }
   }
 
   private endSession(): void {
     this.stopSpeak();
     this.sessionService.endSession(this.session.id).subscribe({
       next: () => {
-        this.router.navigateByUrl(`scripts/${this.session.getScriptId()}/review/${this.session.id}`);
+        this.router.navigateByUrl(
+          `scripts/${this.session.getScriptId()}/review/${this.session.id}`
+        );
       },
       error: (err) => {
         this.toastService.showError(err);

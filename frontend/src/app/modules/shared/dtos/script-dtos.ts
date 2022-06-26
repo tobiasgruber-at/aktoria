@@ -1,7 +1,8 @@
-import { SimpleUser } from './user-dtos';
+import {SimpleUser} from './user-dtos';
 
 export class UploadScript {
-  constructor(public readonly file: File) {}
+  constructor(public readonly file: File) {
+  }
 }
 
 export class SimpleScript {
@@ -11,7 +12,8 @@ export class SimpleScript {
     public pages: Page[],
     public roles: Role[],
     public name: string
-  ) {}
+  ) {
+  }
 
   getId(): number {
     return null;
@@ -32,7 +34,8 @@ export class ScriptPreview {
     public readonly id: number,
     public readonly name: string,
     public readonly owner: boolean
-  ) {}
+  ) {
+  }
 }
 
 export class DetailedScript extends SimpleScript {
@@ -53,8 +56,8 @@ export class DetailedScript extends SimpleScript {
 }
 
 export class Page {
-  index: number;
-  lines: Line[];
+  constructor(public index: number, public lines: Line[]) {
+  }
 }
 
 export class Line {
@@ -68,24 +71,27 @@ export class Line {
     public audio: Blob,
     public recordedBy: Role,
     public active: boolean,
-    public conflictType: Conflict,
+    public conflictType?: Conflict,
     public id?: number
-  ) {}
+  ) {
+  }
 }
 
-enum Conflict {
-  verificationRequired,
-  assignmentRequired
+export enum Conflict {
+  verificationRequired = 'VERIFICATION_REQUIRED',
+  assignmentRequired = 'ASSIGNMENT_REQUIRED'
 }
 
 export class UpdateLine {
   content?: string;
   active?: boolean;
   roleIds?: number[];
+  audio?: Blob;
 }
 
 export class Role {
-  constructor(public id: number, public name: string, public color: string) {}
+  constructor(public id: number, public name: string, public color: string) {
+  }
 }
 
 export class MergeRoles {

@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { ScriptReviewComponent } from './script-review.component';
+import {ScriptReviewComponent} from './script-review.component';
 
 describe('ScriptReviewComponent', () => {
   let component: ScriptReviewComponent;
@@ -8,9 +8,9 @@ describe('ScriptReviewComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ScriptReviewComponent ]
+      declarations: [ScriptReviewComponent]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {

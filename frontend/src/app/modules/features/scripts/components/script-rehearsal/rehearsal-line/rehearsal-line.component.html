@@ -7,6 +7,22 @@
     >{{ role.name }}</span
     >
   </div>
+  <div
+    *ngIf="isOwnLine && (line.temporaryRecording || this.isRecordingLine)"
+    @appear
+    [class.pulsing]="this.isRecordingLine"
+    class="recording-indicator"
+  >
+    <bi name="mic-fill"></bi>
+    <span>
+      <ng-container *ngIf="this.isRecordingLine; else recordedIndicator">
+        Wird
+        <ng-container *ngIf="line.temporaryRecording">erneut</ng-container>
+        eingesprochen…
+      </ng-container>
+      <ng-template #recordedIndicator>Eingesprochen</ng-template>
+    </span>
+  </div>
   <p
     *ngFor="let role of line.roles"
     [class.is-Blurred]="isBlurred"

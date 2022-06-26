@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
-import { SimpleSession } from '../../../shared/dtos/session-dtos';
-import { DetailedScript, Line, Role } from '../../../shared/dtos/script-dtos';
-import { BehaviorSubject, map, Observable, Subscription } from 'rxjs';
-import { VoiceRecordingService } from './voice-recording.service';
+import {Injectable} from '@angular/core';
+import {SimpleSession} from '../../../shared/dtos/session-dtos';
+import {DetailedScript, Line, Role} from '../../../shared/dtos/script-dtos';
+import {BehaviorSubject, map, Observable, Subscription} from 'rxjs';
+import {VoiceRecordingService} from './voice-recording.service';
 
 export interface ScriptSelectedRoleMapping {
   [scriptId: number]: number;
@@ -28,21 +28,34 @@ export class ScriptRehearsalService {
   private isRecordingModeSubject = new BehaviorSubject<boolean>(false);
   /** Whether a line is currently recorded. */
   private isRecordingSubject = new BehaviorSubject<boolean>(false);
+  /** Previous active line. **Could also be the line with the next index.**  */
+  private prevLine: Line = null;
+  /** The current line. */
+  private curLine: Line = null;
+  /** Currently selected role. */
+  private selectedRole: Role = null;
 
   constructor(private voiceRecordingService: VoiceRecordingService) {
+    this.$selectedRole.subscribe((role) => {
+      this.selectedRole = role;
+    });
     let curLineIdxSubscription: Subscription;
     this.sessionSubject.subscribe((session) => {
       curLineIdxSubscription?.unsubscribe();
       if (session) {
         curLineIdxSubscription = session.$currentLineIndex.subscribe(() => {
-          const curLine: Line = session.getCurrentLine();
-          /*if (
-            curLine.roles?.some(
-              (r) =>
-                r.name === this.selectedRoleSubject.getValue()?.name
-            )
-          ) {
-          }*/
+          this.curLine = session.getCurrentLine();
+          if (this.isRecordingModeSubject.getValue()) {
+            this.voiceRecordingService
+              .stopRecording()
+              .subscribe((recording) => {
+                this.completeLineRecording(recording);
+                this.startLineRecording();
+                this.prevLine = this.curLine;
+              });
+          } else {
+            this.prevLine = this.curLine;
+          }
         });
       }
     });
@@ -92,11 +105,28 @@ export class ScriptRehearsalService {
     }
     await this.voiceRecordingService.requestPermissions();
     this.isRecordingModeSubject.next(true);
+    const isOwnLine = this.curLine.roles.some(
+      (r) => r.name === this.selectedRole.name
+    );
+    if (isOwnLine) {
+      this.voiceRecordingService.startRecording();
+      this.isRecordingSubject.next(true);
+    }
   }
 
-  /** Stops recording mode. */
-  stopRecordingMode(): void {
-    this.isRecordingModeSubject.next(false);
+  /**
+   * Stops recording mode.
+   *
+   * @return Promise that resolves once the recording is completed and cached.
+   */
+  stopRecordingMode(): Promise<void> {
+    return new Promise<void>((res, rej) => {
+      this.isRecordingModeSubject.next(false);
+      this.voiceRecordingService.stopRecording().subscribe((recording) => {
+        this.completeLineRecording(recording);
+        res();
+      });
+    });
   }
 
   setScript(script: DetailedScript): void {
@@ -118,5 +148,28 @@ export class ScriptRehearsalService {
       scriptSelectedRoleMappingLSKey,
       JSON.stringify(selectedRoles)
     );
+  }
+
+  /** Completes and caches the recording of a line. */
+  private completeLineRecording(recording) {
+    if (!recording) {
+      return;
+    }
+    this.isRecordingSubject.next(false);
+    this.prevLine.temporaryRecording = recording;
+    this.prevLine.temporaryRecordingUrl = window.URL.createObjectURL(
+      this.prevLine.temporaryRecording
+    );
+  }
+
+  /** Starts the recording of a line. */
+  private startLineRecording() {
+    const isOwnLine = this.curLine.roles.some(
+      (r) => r.name === this.selectedRole.name
+    );
+    if (isOwnLine) {
+      this.voiceRecordingService.startRecording();
+      this.isRecordingSubject.next(true);
+    }
   }
 }

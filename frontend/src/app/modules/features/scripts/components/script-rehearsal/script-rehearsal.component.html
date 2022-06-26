@@ -1,6 +1,4 @@
-<div
-  class="section-span w-100 position-relative"
->
+<div class="section-span w-100 position-relative">
   <div
     [style.left.%]="0"
     [style.right.%]="100 - progress"
@@ -34,5 +32,65 @@
       </ng-container>
     </div>
   </div>
-  <app-rehearsal-controls (blurEventEmitter)="blur($event)" (progressEventEmitter)="setProgress($event)" @fixedAppear></app-rehearsal-controls>
+  <app-rehearsal-controls
+    (blurEventEmitter)="blur($event)"
+    (progressEventEmitter)="setProgress($event)"
+    @fixedAppear
+  ></app-rehearsal-controls>
+</ng-template>
+<ng-template #tutorialModal let-modal>
+  <app-modal
+    (confirm)="modal.dismiss()"
+    (decline)="modal.dismiss()"
+    [showDecline]="false"
+    class="tutorial-modal"
+    confirmBtnLabel="Weiter"
+    title="Übungsmodus"
+  >
+    <p>Steuere deine Lerneinheit über die untere Bedienungsleiste.</p>
+    <p>
+      Du kannst zwischen den Zeilen zur
+      <strong class="text-primary">
+        weiterspringen (
+        <bi class="bi-inline text-primary" name="arrow-right"></bi>
+        )
+      </strong>
+      und
+      <strong class="text-primary">
+        zurückspringen (
+        <bi class="bi-inline text-primary" name="arrow-left"></bi>
+        )</strong
+      >.
+    </p>
+    <p>
+      Du kannst dir auch Texte anderer Rollen
+      <strong class="text-primary">
+        vorlesen lassen (
+        <bi class="bi-inline text-primary" name="play-fill"></bi>
+        ) </strong
+      >. Solange andere Rollen nicht eingesprochen sind, wird eine automatische
+      Stimme verwendet.
+    </p>
+    <p>
+      Ebenso kannst du deine eigene
+      <strong class="text-primary">
+        Rolle einsprechen (
+        <bi
+          class="bi-inline text-primary bi-inline-smaller"
+          name="mic-fill"
+        ></bi>
+        ) </strong
+      >. Aufzeichnungen werden nur gepeichert, wenn du am Ende damit
+      einverstanden bist.
+    </p>
+    <p>
+      Du kannst auch die Lerneinheit vorerst
+      <strong class="text-primary">
+        pausieren (
+        <bi class="bi-inline text-primary bi-inline-smaller" name="x-lg"></bi>
+        )
+      </strong>
+      und zu einem späteren Zeitpunkt fortsetzen.
+    </p>
+  </app-modal>
 </ng-template>

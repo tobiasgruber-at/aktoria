@@ -1,6 +1,6 @@
-import { Role, SimpleScript } from '../../../shared/dtos/script-dtos';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { SimpleSection } from '../../../shared/dtos/section-dtos';
+import {Role, SimpleScript} from '../../../shared/dtos/script-dtos';
+import {BehaviorSubject, Observable, Subject} from 'rxjs';
+import {SimpleSection} from '../../../shared/dtos/section-dtos';
 
 export interface MarkedSection {
   section: SimpleSection;
@@ -27,6 +27,9 @@ export class ScriptViewerService {
   private markedSectionSubject = new BehaviorSubject<MarkedSection>(null);
   private scriptSubject = new BehaviorSubject<SimpleScript>(null);
   private selectedRoleSubject = new BehaviorSubject<Role>(null);
+  /** Fires when the conflict of a line was resolved. */
+  private resolvedConflictSubject = new BehaviorSubject<number>(null);
+  private scrollToLineSubject = new Subject<number>();
   /**
    * Indicates how many loadings are currently stacked.
    *
@@ -46,6 +49,10 @@ export class ScriptViewerService {
 
   get $selectedRole(): Observable<Role> {
     return this.selectedRoleSubject.asObservable();
+  }
+
+  get $scrollToLine(): Observable<number> {
+    return this.scrollToLineSubject.asObservable();
   }
 
   /** @see isEditingScript */
@@ -69,6 +76,11 @@ export class ScriptViewerService {
   /** @see loadingSubject */
   get $loading(): Observable<boolean> {
     return this.loadingSubject.asObservable();
+  }
+
+  /** @see resolvedConflictSubject */
+  get $resolveConflict(): Observable<number> {
+    return this.resolvedConflictSubject.asObservable();
   }
 
   setScript(script: SimpleScript): void {
@@ -105,5 +117,13 @@ export class ScriptViewerService {
       this.loadingCounter--;
     }
     this.loadingSubject.next(this.loadingCounter > 0);
+  }
+
+  scrollToLine(index: number): void {
+    this.scrollToLineSubject.next(index);
+  }
+
+  setResolveConflict(index: number): void {
+    this.resolvedConflictSubject.next(index);
   }
 }

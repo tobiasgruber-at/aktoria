@@ -38,7 +38,8 @@ export class ScriptLineComponent implements OnInit, OnDestroy {
     private modalService: NgbModal,
     private lineService: LineService,
     private toastService: ToastService
-  ) {}
+  ) {
+  }
 
   @HostBinding('class')
   get classes(): string[] {
@@ -145,6 +146,16 @@ export class ScriptLineComponent implements OnInit, OnDestroy {
           });
         }
       });
+    this.scriptViewerService.$scrollToLine
+      .pipe(takeUntil(this.$destroy))
+      .subscribe((index) => {
+        if (index && this.line.index === index) {
+          this.scrollAnchorRef.nativeElement.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
   }
 
   /** @return Whether a line is highlighted. */
@@ -152,9 +163,24 @@ export class ScriptLineComponent implements OnInit, OnDestroy {
     return this.line.roles?.some((r) => r.name === selectedRole?.name);
   }
 
+  /** @return Whether this line has a conflict. */
+  isConflict(): boolean {
+    return this.line.conflictType !== null;
+  }
+
+  /** @return Whether this line has a error conflict. */
+  isConflictError(): boolean {
+    return this.line.conflictType === 'ASSIGNMENT_REQUIRED';
+  }
+
+  /** @return Whether this line has a warning conflict. */
+  isConflictWarning(): boolean {
+    return this.line.conflictType === 'VERIFICATION_REQUIRED';
+  }
+
   toggleModal(modal): void {
     this.isModalOpened = true;
-    const modalRef = this.modalService.open(modal, { centered: true });
+    const modalRef = this.modalService.open(modal, {centered: true});
     modalRef.result.finally(() => {
       this.isModalOpened = false;
     });
@@ -166,7 +192,7 @@ export class ScriptLineComponent implements OnInit, OnDestroy {
       this.line.roles = [];
     } else {
       this.scriptViewerService.setLoading(true);
-      this.lineService.patchLine({ roleIds: [] }, this.line.id).subscribe({
+      this.lineService.patchLine({roleIds: []}, this.line.index).subscribe({
         next: (line) => {
           this.scriptViewerService.setLoading(false);
           this.line.roles = [];
@@ -183,10 +209,13 @@ export class ScriptLineComponent implements OnInit, OnDestroy {
   toggleLineActive(): void {
     if (this.isUploading) {
       this.line.active = !this.line.active;
+      if (!this.line.active) {
+        this.scriptViewerService.setResolveConflict(this.line.index);
+      }
     } else {
       this.scriptViewerService.setLoading(true);
       this.lineService
-        .patchLine({ active: !this.line.active }, this.line.id)
+        .patchLine({active: !this.line.active}, this.line.index)
         .subscribe({
           next: (line) => {
             this.scriptViewerService.setLoading(false);
@@ -197,6 +226,13 @@ export class ScriptLineComponent implements OnInit, OnDestroy {
             this.toastService.showError(err);
           }
         });
+    }
+  }
+
+  ignoreConflict(): void {
+    if (this.isUploading) {
+      this.line.conflictType = null;
+      this.scriptViewerService.setResolveConflict(this.line.index);
     }
   }
 

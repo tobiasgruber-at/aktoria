@@ -20,6 +20,7 @@ export class ScriptPageComponent implements OnInit, OnDestroy {
   section: SimpleSection = null;
   renderedContent = false;
   private isEditing = false;
+  private isUploading = false;
   private $destroy = new Subject<void>();
 
   constructor(
@@ -47,6 +48,11 @@ export class ScriptPageComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.$destroy))
       .subscribe((isEditing) => {
         this.isEditing = isEditing;
+      });
+    this.scriptViewerService.$isUploading
+      .pipe(takeUntil(this.$destroy))
+      .subscribe((isUploading) => {
+        this.isUploading = isUploading;
       });
     this.scriptViewerService.$markedSection
       .pipe(takeUntil(this.$destroy))
@@ -77,7 +83,7 @@ export class ScriptPageComponent implements OnInit, OnDestroy {
    * calculated until it's necessary.
    */
   private lazyRenderContent(): void {
-    if (!this.isEditing) {
+    if (!this.isEditing || this.isUploading) {
       this.renderedContent = true;
     } else {
       this.helpersService.$mainScrollPosY

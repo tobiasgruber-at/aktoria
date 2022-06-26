@@ -19,7 +19,8 @@ export class ScriptReadComponent implements OnInit {
     private router: Router,
     private scriptService: ScriptService,
     private scriptViewerService: ScriptViewerService
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {

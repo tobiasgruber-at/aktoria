@@ -1,25 +1,51 @@
 <app-page-layout [showSidebar]="true" [theme]="'dark'">
   <app-script-viewer></app-script-viewer>
-  <form (ngSubmit)="submit()"
-        [formGroup]="form"
-        class="form d-flex flex-column flex-grow-1 justify-content-between"
-        role="sidebar">
-    <div class="d-flex flex-column">
-      <h2>Bewerte wie du dich bei diesem Abschnitt gefühlt hast:</h2>
-      <input autocomplete="off" class="btn-check" formControlName="assessment" id="very-good"
-             type="radio" value="VERY_GOOD">
+  <form
+    (ngSubmit)="submit()"
+    [formGroup]="form"
+    class="form d-flex flex-column flex-grow-1 justify-content-between"
+    role="sidebar"
+  >
+    <h2>Bewerte wie du dich bei diesem Abschnitt gefühlt hast:</h2>
+    <div class="form-group mb-3 d-flex flex-column">
+      <input
+        autocomplete="off"
+        class="btn-check"
+        formControlName="assessment"
+        id="very-good"
+        type="radio"
+        value="VERY_GOOD"
+      />
       <label class="btn btn-outline-primary" for="very-good">Sehr Gut</label>
 
-      <input autocomplete="off" class="btn-check" formControlName="assessment" id="good"
-             type="radio" value="GOOD">
+      <input
+        autocomplete="off"
+        class="btn-check"
+        formControlName="assessment"
+        id="good"
+        type="radio"
+        value="GOOD"
+      />
       <label class="btn btn-outline-primary" for="good">Gut</label>
 
-      <input autocomplete="off" class="btn-check" formControlName="assessment" id="needs-work"
-             type="radio" value="NEEDS_WORK">
+      <input
+        autocomplete="off"
+        class="btn-check"
+        formControlName="assessment"
+        id="needs-work"
+        type="radio"
+        value="NEEDS_WORK"
+      />
       <label class="btn btn-outline-primary" for="needs-work">Unsicher</label>
 
-      <input autocomplete="off" class="btn-check" formControlName="assessment" id="poor"
-             type="radio" value="POOR">
+      <input
+        autocomplete="off"
+        class="btn-check"
+        formControlName="assessment"
+        id="poor"
+        type="radio"
+        value="POOR"
+      />
       <label class="btn btn-outline-primary" for="poor">Schlecht</label>
 
       <app-form-errors>
@@ -28,8 +54,34 @@
         </app-form-error>
       </app-form-errors>
     </div>
+    <div
+      *ngIf="recordedLines.length > 0"
+      class="form-group toggle-save-recordings"
+    >
+      <input
+        class="form-check-input"
+        formControlName="shouldSaveRecordings"
+        id="flexCheckDefault"
+        type="checkbox"
+        value=""
+      />
+      <label class="ms-2 form-check-label" for="flexCheckDefault">
+        Eingesprochene Stimme speichern
+      </label>
+      <i class="text-secondary">
+        Durch das <strong>Speichern</strong> werden Kolleg*innen von
+        <strong>deiner Stimme gegengesprochen</strong>.
+      </i>
+    </div>
+    <div class="flex-grow-1"></div>
     <div class="d-flex flex-column">
-      <button class="btn btn-lg btn-primary btn-block w-100 h5 text-uppercase" type="submit">Fertigstellen</button>
+      <app-button
+        [disabled]="hasError()"
+        [fullWidth]="true"
+        [loading]="loading"
+        label="Fertigstellen"
+        type="submit"
+      ></app-button>
     </div>
   </form>
 </app-page-layout>

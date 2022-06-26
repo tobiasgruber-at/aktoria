@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { ScriptInviteAcceptComponent } from './script-invite-accept.component';
+import {ScriptInviteAcceptComponent} from './script-invite-accept.component';
 
 describe('ScriptInviteAcceptComponent', () => {
   let component: ScriptInviteAcceptComponent;

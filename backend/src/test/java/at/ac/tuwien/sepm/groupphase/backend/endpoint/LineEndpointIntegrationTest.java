@@ -59,7 +59,7 @@ class LineEndpointIntegrationTest {
 
         private static Stream<UpdateLineDto> updateLineDtoValidProvider() {
             final List<UpdateLineDto> lineDtoList = new ArrayList<>();
-            lineDtoList.add(new UpdateLineDto(null, null, null,null));
+            lineDtoList.add(new UpdateLineDto(null, null, null, null));
             lineDtoList.add(new UpdateLineDto("New Content 1.", null, null, null));
             lineDtoList.add(new UpdateLineDto("New Content 2.", true, null, null));
             lineDtoList.add(new UpdateLineDto("New Content 3.", true, new LinkedList<>(List.of(1L, 2L, 3L)), null));
@@ -69,12 +69,12 @@ class LineEndpointIntegrationTest {
 
         private static Stream<UpdateLineDto> updateLineDtoInvalidProvider() {
             final List<UpdateLineDto> lineDtoList = new ArrayList<>();
-            lineDtoList.add(new UpdateLineDto("new Content 1.", null, null ,null));
-            lineDtoList.add(new UpdateLineDto("New Content 2", null, null ,null));
-            lineDtoList.add(new UpdateLineDto("New \n Content 3.", null, null ,null));
-            lineDtoList.add(new UpdateLineDto("New \r Content 4.", null, null ,null));
-            lineDtoList.add(new UpdateLineDto("New \t Content 5.", null, new LinkedList<>(List.of(-16L, 1L, -16L)) ,null));
-            lineDtoList.add(new UpdateLineDto("New \f Content 6.", null, null ,null));
+            lineDtoList.add(new UpdateLineDto("new Content 1.", null, null, null));
+            lineDtoList.add(new UpdateLineDto("New Content 2", null, null, null));
+            lineDtoList.add(new UpdateLineDto("New \n Content 3.", null, null, null));
+            lineDtoList.add(new UpdateLineDto("New \r Content 4.", null, null, null));
+            lineDtoList.add(new UpdateLineDto("New \t Content 5.", null, new LinkedList<>(List.of(-16L, 1L, -16L)), null));
+            lineDtoList.add(new UpdateLineDto("New \f Content 6.", null, null, null));
             return lineDtoList.stream();
         }
 
@@ -134,7 +134,7 @@ class LineEndpointIntegrationTest {
                 .perform(MockMvcRequestBuilders
                     .patch("/api/v1/lines/1")
                     .accept(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsBytes(new UpdateLineDto(null, null, null ,null)))
+                    .content(objectMapper.writeValueAsBytes(new UpdateLineDto(null, null, null, null)))
                     .contentType(MediaType.APPLICATION_JSON)
                 ).andExpect(status().isForbidden());
         }

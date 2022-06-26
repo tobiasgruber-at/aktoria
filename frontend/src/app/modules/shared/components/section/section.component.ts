@@ -1,5 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { SimpleScript } from '../../dtos/script-dtos';
+import {Component, Input, OnInit} from '@angular/core';
+import {SimpleScript} from '../../dtos/script-dtos';
 
 @Component({
   selector: 'app-section',
@@ -14,7 +14,9 @@ export class SectionComponent implements OnInit {
 
   script: SimpleScript = null;
 
-  constructor() {}
+  constructor() {
+  }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+  }
 }

@@ -6,10 +6,9 @@
     [ngbTooltip]="
       this.isRecordingMode ? 'Aufzeichnungen abbrechen' : 'Text einsprechen'
     "
-    class="pulsing"
   >
     <bi
-      *ngIf="this.isRecordingMode; else notRecording"
+      *ngIf="isRecordingMode; else notRecording"
       class="smaller"
       name="mic-fill"
     ></bi>
@@ -18,8 +17,8 @@
     </ng-template>
   </app-controls-item>
   <app-controls-item
-    (click)="speakingPaused ? resume() : pause()"
-    [class.disabled]="isSelectedRoleSpeaking()"
+    (click)="speakingPaused ? resumeSpeaking() : pauseSpeaking()"
+    [class.disabled]="isSelectedRoleSpeaking"
     [ngbTooltip]="speakingPaused ? 'Abspielen' : 'Pause'"
   >
     <bi *ngIf="!speakingPaused" name="pause-fill"></bi>
@@ -46,18 +45,29 @@
   >
     <bi name="x-lg"></bi>
   </app-controls-item>
-  <app-controls-item><!--[class.disabled]="true || endSessionLoading"-->
-
-
+  <app-controls-item
+  ><!--[class.disabled]="true || endSessionLoading"-->
     <div dropdownClass="dropdown-menu-lg" ngbDropdown>
       <bi name="three-dots" ngbDropdownToggle></bi>
       <div class="blur-text-dropdown-menu" ngbDropdownMenu>
         <div class="form-check form-switch">
-          <input (click)="blur()" class="form-check-input" id="flexSwitchCheckDefault" role="switch" type="checkbox">
-          <label class="form-check-label text-nowrap" for="flexSwitchCheckDefault">Text ausblenden</label>
+          <input
+            (click)="blur()"
+            class="form-check-input"
+            id="flexSwitchCheckDefault"
+            role="switch"
+            type="checkbox"
+          />
+          <label
+            class="form-check-label text-nowrap"
+            for="flexSwitchCheckDefault"
+          >Text ausblenden</label
+          >
         </div>
-        <label class="form-check-label text-nowrap" for="flexSwitchCheckDefault">Textsprache</label>
-        <select class="form-control" [(ngModel)]="lang" (click)="updateLang()">
+        <label class="form-check-label text-nowrap" for="flexSwitchCheckDefault"
+        >Textsprache</label
+        >
+        <select (click)="updateLang()" [(ngModel)]="lang" class="form-control">
           <option value="de">Deutsch</option>
           <option value="en-US">Englisch</option>
           <option value="fr-FR">Französisch</option>
@@ -70,7 +80,7 @@
 </app-controls>
 <ng-template #stopSessionModal let-modal>
   <app-modal
-    (confirm)="stopSession(modal)"
+    (confirm)="pauseSession(modal)"
     (decline)="modal.dismiss()"
     confirmBtnLabel="Beenden"
     title="Übungseinheit beenden"

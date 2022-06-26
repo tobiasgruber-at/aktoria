@@ -14,23 +14,27 @@
         <span
           *ngFor="let role of line?.roles; let i = index"
           class="d-inline-block"
-          >{{ role.name }}{{ i < line?.roles.length - 1 ? ', ' : '' }}</span
+        >{{ role.name }}{{ i < line?.roles.length - 1 ? ', ' : '' }}</span
         >
       </ng-container>
     </div>
     <!-- TODO: remove dropdown toggle when only viewing mode, as it throws errors -->
     <p
+      [class.conflict-error]="isConflictError()"
+      [class.conflict-warning]="isConflictWarning()"
+      [class.conflict]="isConflict()"
       [class.fst-italic]="isInstruction"
       [class.highlighted]="
         isHighlighted(scriptViewerService.$selectedRole | async)
       "
       [class.text-secondary]="isInstruction"
+      [ngbTooltip]="isConflict() ? 'Bitte überprüfe diese Zeile' : null"
       class="w-100"
       ngbDropdownToggle
     >
       {{ line?.content }}
     </p>
-    <div *ngIf="isEditingScript" class="my-1" ngbDropdownMenu>
+    <div *ngIf="isEditingScript" class="my-1 shadow" ngbDropdownMenu>
       <button (click)="toggleModal(changeLineModal)" ngbDropdownItem>
         Bearbeiten
       </button>
@@ -43,6 +47,9 @@
       </button>
       <button (click)="toggleLineActive()" ngbDropdownItem>
         {{ line.active ? 'Ausblenden' : 'Einblenden' }}
+      </button>
+      <button (click)="ignoreConflict()" *ngIf="line.conflictType !== null" ngbDropdownItem>
+        Überprüfungsanweisung ignorieren
       </button>
     </div>
     <ng-template #changeLineModal let-modal>

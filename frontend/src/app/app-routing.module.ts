@@ -1,9 +1,9 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { LoggedInGuard } from './modules/core/guards/logged-in-guard.service';
-import { LoggedOutGuard } from './modules/core/guards/logged-out-guard.service';
-import { VerifiedGuard } from './modules/core/guards/verified.guard';
-import { NotVerifiedGuard } from './modules/core/guards/not-verified.guard';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
+import {LoggedInGuard} from './modules/core/guards/logged-in-guard.service';
+import {LoggedOutGuard} from './modules/core/guards/logged-out-guard.service';
+import {VerifiedGuard} from './modules/core/guards/verified.guard';
+import {NotVerifiedGuard} from './modules/core/guards/not-verified.guard';
 
 const routes: Routes = [
   {
@@ -56,14 +56,14 @@ const routes: Routes = [
     loadChildren: () =>
       import(
         './modules/features/password/reset-password/reset-password.module'
-      ).then((m) => m.ResetPasswordModule)
+        ).then((m) => m.ResetPasswordModule)
   },
   {
     path: 'password/restore/:token',
     loadChildren: () =>
       import(
         './modules/features/password/restore-password/restore-password.module'
-      ).then((m) => m.RestorePasswordModule)
+        ).then((m) => m.RestorePasswordModule)
   },
   {
     path: 'sessions',
@@ -73,11 +73,12 @@ const routes: Routes = [
         (m) => m.PastSessionsModule
       )
   },
-  { path: '**', redirectTo: '' }
+  {path: '**', redirectTo: ''}
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { useHash: true })],
+  imports: [RouterModule.forRoot(routes, {useHash: true})],
   exports: [RouterModule]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule {
+}

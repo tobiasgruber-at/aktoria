@@ -1,6 +1,6 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
-import { AppComponent } from './app.component';
-import { SharedTestingModule } from './modules/shared/shared-testing.module';
+import {TestBed, waitForAsync} from '@angular/core/testing';
+import {AppComponent} from './app.component';
+import {SharedTestingModule} from './modules/shared/shared-testing.module';
 
 describe('AppComponent', () => {
   beforeEach(waitForAsync(() => {

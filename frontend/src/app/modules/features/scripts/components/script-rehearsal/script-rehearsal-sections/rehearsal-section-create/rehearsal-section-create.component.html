@@ -16,10 +16,10 @@
     />
     <app-form-errors>
       <app-form-error *ngIf="fieldHasErrors('sectionName', 'required')"
-        >Bitte gib eine Bezeichnung an.
+      >Bitte gib eine Bezeichnung an.
       </app-form-error>
       <app-form-error *ngIf="fieldHasErrors('sectionName', 'maxlength')"
-        >Bezeichnung zu lange.
+      >Bezeichnung zu lange.
       </app-form-error>
     </app-form-errors>
   </div>
@@ -28,8 +28,8 @@
     <p class="mb-0">
       <app-select-line-text
         *ngIf="isMarkingSection === 'start'; else markingStartCompleted"
-        subject="Startzeile"
         [hasErrors]="fieldHasErrors('startLine', 'required')"
+        subject="Startzeile"
       ></app-select-line-text>
       <ng-template #markingStartCompleted>
         Seite
@@ -46,9 +46,9 @@
     <p class="mb-0">
       <app-select-line-text
         *ngIf="isMarkingSection; else markingEndCompleted"
-        subject="Endzeile"
         [disabled]="isMarkingSection !== 'end'"
         [hasErrors]="fieldHasErrors('endLine', 'required')"
+        subject="Endzeile"
       ></app-select-line-text>
       <ng-template #markingEndCompleted>
         Seite

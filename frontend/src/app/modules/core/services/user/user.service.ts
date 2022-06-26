@@ -1,13 +1,9 @@
-import { Globals } from '../../global/globals';
-import { BehaviorSubject, Observable } from 'rxjs';
-import {
-  SimpleUser,
-  UpdateUser,
-  UserRegistration
-} from '../../../shared/dtos/user-dtos';
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { ChangePassword } from 'src/app/modules/shared/dtos/password-change-dto';
+import {Globals} from '../../global/globals';
+import {BehaviorSubject, Observable} from 'rxjs';
+import {SimpleUser, UpdateUser, UserRegistration} from '../../../shared/dtos/user-dtos';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {ChangePassword} from 'src/app/modules/shared/dtos/password-change-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +12,8 @@ export class UserService {
   private baseUri: string = this.globals.backendUri + '/users';
   private ownUserSubject = new BehaviorSubject<SimpleUser>(null);
 
-  constructor(private globals: Globals, private http: HttpClient) {}
+  constructor(private globals: Globals, private http: HttpClient) {
+  }
 
   /** @return Observable of the own user. */
   get $ownUser(): Observable<SimpleUser> {
@@ -35,7 +32,7 @@ export class UserService {
 
   /** Gets the own user. */
   getOne(email): Observable<SimpleUser> {
-    return this.http.get<SimpleUser>(this.baseUri, { params: { email } });
+    return this.http.get<SimpleUser>(this.baseUri, {params: {email}});
   }
 
   /**

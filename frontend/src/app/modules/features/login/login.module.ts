@@ -8,4 +8,5 @@ import {LoginRoutingModule} from './login-routing.module';
   declarations: [LoginComponent],
   imports: [SharedModule, LoginRoutingModule]
 })
-export class LoginModule {}
+export class LoginModule {
+}

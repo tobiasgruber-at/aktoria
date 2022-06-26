@@ -17,7 +17,8 @@ export class ScriptReadControlsComponent implements OnInit, OnDestroy {
   constructor(
     public scriptViewerService: ScriptViewerService,
     private router: Router
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.scriptViewerService.$script

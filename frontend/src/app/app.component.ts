@@ -1,10 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { AuthService } from './modules/core/services/auth/auth.service';
-import { UserService } from './modules/core/services/user/user.service';
-import { Subject, takeUntil } from 'rxjs';
-import { ToastService } from './modules/core/services/toast/toast.service';
-import { Theme } from './modules/shared/enums/theme.enum';
-import { ScriptService } from './modules/core/services/script/script.service';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {AuthService} from './modules/core/services/auth/auth.service';
+import {UserService} from './modules/core/services/user/user.service';
+import {Subject, takeUntil} from 'rxjs';
+import {ToastService} from './modules/core/services/toast/toast.service';
+import {Theme} from './modules/shared/enums/theme.enum';
+import {ScriptService} from './modules/core/services/script/script.service';
 
 @Component({
   selector: 'app-root',
@@ -19,7 +19,8 @@ export class AppComponent implements OnInit, OnDestroy {
     private userService: UserService,
     private scriptService: ScriptService,
     private toastService: ToastService
-  ) {}
+  ) {
+  }
 
   ngOnInit() {
     this.handleLoginChanges();
