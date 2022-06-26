@@ -35,6 +35,7 @@ public class LineEndpoint {
     @Secured(Permission.verified)
     public LineDto updateLine(@RequestBody UpdateLineDto updateLineDto, @PathVariable Long id) {
         log.info("PATCH {}/{}", path, id);
+        System.out.println(updateLineDto.getAudio());
         return lineService.update(updateLineDto, id);
     }
 }

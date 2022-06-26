@@ -28,7 +28,7 @@ public class LineDto {
     private Long pageId;
     private List<RoleDto> roles;
     private String content;
-    private Blob audio;
+    private String audio;
     private SimpleUserDto recordedBy;
     private boolean active;
     private Line.ConflictType conflictType;
