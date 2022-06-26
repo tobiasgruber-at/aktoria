@@ -14,6 +14,7 @@ import {ToastService} from '../../../../core/services/toast/toast.service';
 import {Theme} from '../../../../shared/enums/theme.enum';
 import {Subject, takeUntil} from 'rxjs';
 import {LineService} from '../../../../core/services/line/line.service';
+import {VoiceSpeakingService} from '../../services/voice-speaking.service';
 
 @Component({
   selector: 'app-script-review',
@@ -41,7 +42,8 @@ export class ScriptReviewComponent
     private formBuilder: FormBuilder,
     private toastService: ToastService,
     private router: Router,
-    private lineService: LineService
+    private lineService: LineService,
+    private voiceSpeakingService: VoiceSpeakingService
   ) {
     super(toastService);
   }
@@ -102,6 +104,14 @@ export class ScriptReviewComponent
   ngOnDestroy() {
     this.$destroy.next();
     this.$destroy.complete();
+  }
+
+  async playRecording() {
+    //TODO: scroll after voice finishes speaking and actually play the recording
+    for (const line of this.recordedLines) {
+      this.scriptViewerService.scrollToLine(line.index);
+      await this.voiceSpeakingService.speakCustomLine(line);
+    }
   }
 
   protected processSubmit(): void {
