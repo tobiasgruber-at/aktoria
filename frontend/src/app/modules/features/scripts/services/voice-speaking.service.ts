@@ -18,9 +18,8 @@ export class VoiceSpeakingService implements OnDestroy {
   /** @see SpeechSynthesis */
   private synth: SpeechSynthesis = window.speechSynthesis;
   private curAudioEl;
-  private isAutomatedVoiceSpeaking = true;
   /** Whether the currently spoken synthesis should be canceled once it's completed. */
-  private canceledCurSynth: boolean;
+  private canceledCurSpeak: boolean;
   private session: SimpleSession;
   private $destroy = new Subject<void>();
   private pausedSubject = new BehaviorSubject<boolean>(true);
@@ -55,23 +54,27 @@ export class VoiceSpeakingService implements OnDestroy {
       !currentLine.roles.some((r) => r.name === this.session.role?.name)
     ) {
       if (currentLine.audio) {
-        this.isAutomatedVoiceSpeaking = false;
         const audio = window.URL.createObjectURL(currentLine.audio);
         this.curAudioEl = document.createElement('audio');
         this.curAudioEl.setAttribute('controls', '');
         this.curAudioEl.controls = true;
         this.curAudioEl.src = audio;
         this.curAudioEl.onended = this.onSpeakingEnd.bind(this);
-        if (this.curAudioEl.canPlayType(audio) === 'probably' || 'maybe') {
-          this.curAudioEl.play();
-        }
-        if (this.pausedSubject.getValue()) {
-          this.curAudioEl.pause();
-        }
+
+        setTimeout(() => {
+          this.canceledCurSpeak = false;
+          if (!this.pausedSubject.getValue()) {
+            if (this.curAudioEl.canPlayType(audio) === 'probably' || 'maybe') {
+              this.curAudioEl.play();
+            }
+          }
+        }, 300);
+
       } else {
         const utter = this.initUtterance(currentLine.content);
+
         setTimeout(() => {
-          this.canceledCurSynth = false;
+          this.canceledCurSpeak = false;
           if (!this.pausedSubject.getValue()) {
             this.synth.speak(utter);
             this.synth.resume();
@@ -84,29 +87,25 @@ export class VoiceSpeakingService implements OnDestroy {
   /** Pauses the current synthesis or audio. */
   pauseSpeak() {
     this.pausedSubject.next(true);
-    if (this.isAutomatedVoiceSpeaking) {
-      this.synth.pause();
-    } else {
-      this.curAudioEl.pause();
+    if (this.hasRecordedAudio()) {
+      if (this.curAudioEl) {
+        this.curAudioEl.pause();
+      }
     }
+    this.synth.pause();
   }
 
   /** Resumes the current synthesis or audio. */
   resumeSpeak() {
     this.pausedSubject.next(false);
-    if (this.isAutomatedVoiceSpeaking) {
-      this.speakLine();
-    } else {
-      this.curAudioEl.play();
-    }
+    this.speakLine();
   }
 
   /** Stops the current synthesis or audio. */
   stopSpeak() {
-    this.canceledCurSynth = true;
-    if (this.isAutomatedVoiceSpeaking) {
-      this.synth.cancel();
-    } else {
+    this.canceledCurSpeak = true;
+    this.synth.cancel();
+    if (this.curAudioEl) {
       this.curAudioEl.pause();
     }
   }
@@ -120,6 +119,14 @@ export class VoiceSpeakingService implements OnDestroy {
   setLang(lang) {
     this.lang = lang;
     this.stopSpeak();
+  }
+
+  private hasRecordedAudio() {
+    if (!this.session) {
+      return false;
+    }
+    const currentLine = this.session.getCurrentLine();
+    return currentLine.audio != null;
   }
 
   /** Initializes a synthesis utterance. */
@@ -142,7 +149,7 @@ export class VoiceSpeakingService implements OnDestroy {
 
   /** Handles whether next line should be spoken when speaking ended. */
   private onSpeakingEnd(): void {
-    if (!this.canceledCurSynth) {
+    if (!this.canceledCurSpeak) {
       if (this.session?.isAtEnd()) {
         this.endSession();
       } else {
