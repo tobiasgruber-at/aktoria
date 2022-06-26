@@ -1,6 +1,5 @@
 <div
   (click)="openModal(removeMemberModal)"
-  *ngIf="!removed"
   role="button"
 >
   <ng-template #removeMemberModal let-modal>
@@ -19,20 +18,6 @@
     </app-modal>
   </ng-template>
 
-  <ng-template #exitScriptModal let-modal>
-    <app-modal
-      (confirm)="removeMember(modal)"
-      (decline)="modal.dismiss()"
-      [loading]="deleteLoading"
-      [theme]="theme.danger"
-      confirmBtnLabel="Austreten"
-      title="Aus Skript austreten"
-    >
-      Sicher, dass du
-      aus diesem Skript entfernen
-      möchtest?
-    </app-modal>
-  </ng-template>
   <div class="card">
     <div class="d-flex align-items-center justify-content-center h-100 p-3">
       <img
