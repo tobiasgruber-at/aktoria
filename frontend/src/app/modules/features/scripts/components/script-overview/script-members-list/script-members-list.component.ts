@@ -16,4 +16,9 @@ export class ScriptMembersListComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  remove(member: SimpleUser) {
+    const isMember = (element) => element.id === member.id;
+    this.members.splice(this.members.findIndex(isMember), 1);
+  }
+
 }

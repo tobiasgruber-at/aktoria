@@ -5,5 +5,6 @@
     [isOwner]="isOwner"
     [member]="member"
     [owner]="members[0]"
+    (removedEmitter)="remove($event)"
   ></app-script-members-item>
 </div>

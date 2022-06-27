@@ -1,10 +1,10 @@
-import {Component, Input, OnInit, TemplateRef} from '@angular/core';
-import {SimpleUser} from '../../../../../../shared/dtos/user-dtos';
-import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {Theme} from '../../../../../../shared/enums/theme.enum';
-import {AuthService} from '../../../../../../core/services/auth/auth.service';
-import {ActivatedRoute} from '@angular/router';
-import {ScriptService} from '../../../../../../core/services/script/script.service';
+import {Component, EventEmitter, Input, OnInit, Output, TemplateRef} from '@angular/core';
+import { SimpleUser } from '../../../../../../shared/dtos/user-dtos';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Theme } from '../../../../../../shared/enums/theme.enum';
+import { AuthService } from '../../../../../../core/services/auth/auth.service';
+import { ActivatedRoute } from '@angular/router';
+import { ScriptService } from '../../../../../../core/services/script/script.service';
 
 @Component({
   selector: 'app-script-members-item',
@@ -15,8 +15,8 @@ export class ScriptMembersItemComponent implements OnInit {
   @Input() member: SimpleUser;
   @Input() isOwner: boolean;
   @Input() owner: SimpleUser;
+  @Output() removedEmitter = new EventEmitter<SimpleUser>();
   scriptId;
-  removed = false;
 
   readonly theme = Theme;
   deleteLoading = false;
@@ -44,7 +44,7 @@ export class ScriptMembersItemComponent implements OnInit {
       .removeParticipant(this.scriptId, this.member.email)
       .subscribe({
         next: () => {
-          this.removed = true;
+          this.removedEmitter.emit(this.member);
           modal.dismiss();
         },
         error: (err) => {

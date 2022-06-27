@@ -148,16 +148,20 @@ export class ScriptReviewComponent
         l.audio = l.temporaryRecording;
         l.temporaryRecording = null;
         l.temporaryRecordingUrl = null;
-        // TODO: fix audio upload by converting it in a ogg file
-        // see https://stackoverflow.com/a/64256541
-        this.lineService.patchLine({audio: l.audio}, l.id).subscribe({
-          next: () => {
-            if (++savedLinesCounter >= this.recordedLines.length) {
-              assessSession();
-            }
-          },
-          error: this.handleError
-        });
+
+        const reader = new FileReader();
+        reader.readAsDataURL(l.audio);
+        reader.onload = () => {
+          const audioBase64 = reader.result;
+          this.lineService.patchLine({audio: audioBase64}, l.id).subscribe({
+            next: () => {
+              if (++savedLinesCounter >= this.recordedLines.length) {
+                assessSession();
+              }
+            },
+            error: this.handleError
+          });
+        };
       });
     } else {
       assessSession();
