@@ -2,10 +2,51 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {BehaviorSubject, map, Observable, of} from 'rxjs';
 import {Globals} from '../../global/globals';
-import {DetailedScript, Line, Page, ScriptPreview, SimpleScript} from '../../../shared/dtos/script-dtos';
+import {
+  DetailedScript,
+  Line,
+  Page,
+  RawDetailedScript, RawLine, RawPage,
+  RawSimpleScript,
+  ScriptPreview,
+  SimpleScript
+} from '../../../shared/dtos/script-dtos';
 import {tap} from 'rxjs/operators';
 import {AuthService} from '../auth/auth.service';
 import {Cache} from '../../../shared/interfaces/cache';
+
+// eslint-disable-next-line prefer-arrow/prefer-arrow-functions
+function convertToBlob(audio: string) {
+
+  if (audio === null || audio === undefined) {
+    return null;
+  }
+
+  const data = audio.split('base64,');
+
+  const b64toBlob = (b64Data, contentType = '', sliceSize=512) => {
+    const byteCharacters = atob(b64Data);
+    const byteArrays = [];
+
+    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+      const slice = byteCharacters.slice(offset, offset + sliceSize);
+
+      const byteNumbers = new Array(slice.length);
+      for (let i = 0; i < slice.length; i++) {
+        byteNumbers[i] = slice.charCodeAt(i);
+      }
+
+      const byteArray = new Uint8Array(byteNumbers);
+
+      byteArrays.push(byteArray);
+    }
+
+    const blob = new Blob(byteArrays, {type: contentType});
+    return blob;
+  };
+
+  return b64toBlob(data[1]);
+}
 
 @Injectable({
   providedIn: 'root'
@@ -53,7 +94,7 @@ export class ScriptService {
     const loadedScript = this.cachedScripts[id];
     return loadedScript
       ? of(loadedScript)
-      : this.http.get<DetailedScript>(`${this.baseUri}/${id}`).pipe(
+      : this.http.get<RawDetailedScript>(`${this.baseUri}/${id}`).pipe(
         map(this.mapScriptInterfaceToClass),
         tap((script) => {
           this.cachedScripts[script.id] = script;
@@ -85,7 +126,7 @@ export class ScriptService {
    */
   getScriptBySession(id): Observable<DetailedScript> {
     return this.http
-      .get<DetailedScript>(this.baseUri + '/session?id=' + id)
+      .get<RawDetailedScript>(this.baseUri + '/session?id=' + id)
       .pipe(map(this.mapScriptInterfaceToClass));
   }
 
@@ -100,10 +141,11 @@ export class ScriptService {
     formData.append('file', file);
     formData.append('startPage', '' + startPage);
     return this.http
-      .post<SimpleScript>(this.baseUri + '/new', formData)
+      .post<RawSimpleScript>(this.baseUri + '/new', formData)
       .pipe(
         map(
-          (script) => new SimpleScript(script.pages, script.roles, script.name)
+          (script) => new SimpleScript(this.convertAudioOfPages(script.pages),
+            script.roles, script.name)
         )
       );
   }
@@ -198,7 +240,7 @@ export class ScriptService {
   }
 
   /** Maps a fetched script to a class. */
-  private mapScriptInterfaceToClass(script: DetailedScript): DetailedScript {
+  private mapScriptInterfaceToClass(script: RawDetailedScript): DetailedScript {
     return new DetailedScript(
       script.id,
       script.owner,
@@ -215,7 +257,7 @@ export class ScriptService {
                   line.index,
                   line.roles,
                   line.content,
-                  line.audio,
+                  convertToBlob(line.audio),
                   line.recordedBy,
                   line.active,
                   line.conflictType,
@@ -229,5 +271,24 @@ export class ScriptService {
       ),
       script.name
     );
+  }
+
+  private convertAudioOfPages(rawPages: RawPage[]): Page[] {
+    const pages: Page[] = [];
+    for (const rawPage of rawPages) {
+      const page = new Page(rawPage.index, this.convertAudioOfLines(rawPage.lines));
+      pages.push(page);
+    }
+    return pages;
+  }
+
+  private convertAudioOfLines(rawLines: RawLine[]): Line[] {
+    const lines: Line[] = [];
+    for (const rawLine of rawLines) {
+      const line = new Line(rawLine.index, rawLine.roles, rawLine.content, convertToBlob(rawLine.audio),
+        rawLine.recordedBy, rawLine.active, rawLine.conflictType, rawLine.id);
+      lines.push(line);
+    }
+    return lines;
   }
 }

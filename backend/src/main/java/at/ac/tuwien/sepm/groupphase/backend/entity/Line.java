@@ -58,7 +58,7 @@ public class Line {
 
     @Lob
     @Column(name = "audio")
-    private Blob audio;
+    private String audio;
 
     @Column(name = "active", nullable = false, columnDefinition = "boolean default true")
     private boolean active = true;

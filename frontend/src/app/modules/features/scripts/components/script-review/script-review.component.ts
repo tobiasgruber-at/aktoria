@@ -14,6 +14,7 @@ import {ToastService} from '../../../../core/services/toast/toast.service';
 import {Theme} from '../../../../shared/enums/theme.enum';
 import {Subject, takeUntil} from 'rxjs';
 import {LineService} from '../../../../core/services/line/line.service';
+import {VoiceSpeakingService} from '../../services/voice-speaking.service';
 
 @Component({
   selector: 'app-script-review',
@@ -27,6 +28,7 @@ export class ScriptReviewComponent
   script: SimpleScript;
   session: SimpleSession;
   section: SimpleSection;
+  isPlayingLines = false;
   recordedLines: Line[] = [];
   private selectedRole: Role = null;
   private $destroy = new Subject<void>();
@@ -41,7 +43,8 @@ export class ScriptReviewComponent
     private formBuilder: FormBuilder,
     private toastService: ToastService,
     private router: Router,
-    private lineService: LineService
+    private lineService: LineService,
+    private voiceSpeakingService: VoiceSpeakingService
   ) {
     super(toastService);
   }
@@ -95,6 +98,9 @@ export class ScriptReviewComponent
       .pipe(takeUntil(this.$destroy))
       .subscribe((role) => {
         this.selectedRole = role;
+        if (role) {
+          this.scriptViewerService.setSelectedRole(role);
+        }
         getRecordedLines();
       });
   }
@@ -102,6 +108,20 @@ export class ScriptReviewComponent
   ngOnDestroy() {
     this.$destroy.next();
     this.$destroy.complete();
+  }
+
+  async playRecording() {
+    //TODO: scroll after voice finishes speaking and actually play the recording
+    if (this.isPlayingLines) {
+      return;
+    }
+    this.isPlayingLines = true;
+    for (const line of this.recordedLines) {
+
+      this.scriptViewerService.scrollToLine(line.index);
+      await this.voiceSpeakingService.speakCustomLine(line);
+    }
+    this.isPlayingLines = false;
   }
 
   protected processSubmit(): void {
@@ -128,16 +148,20 @@ export class ScriptReviewComponent
         l.audio = l.temporaryRecording;
         l.temporaryRecording = null;
         l.temporaryRecordingUrl = null;
-        // TODO: fix audio upload by converting it in a ogg file
-        // see https://stackoverflow.com/a/64256541
-        this.lineService.patchLine({audio: l.audio}, l.id).subscribe({
-          next: () => {
-            if (++savedLinesCounter >= this.recordedLines.length) {
-              assessSession();
-            }
-          },
-          error: this.handleError
-        });
+
+        const reader = new FileReader();
+        reader.readAsDataURL(l.audio);
+        reader.onload = () => {
+          const audioBase64 = reader.result;
+          this.lineService.patchLine({audio: audioBase64}, l.id).subscribe({
+            next: () => {
+              if (++savedLinesCounter >= this.recordedLines.length) {
+                assessSession();
+              }
+            },
+            error: this.handleError
+          });
+        };
       });
     } else {
       assessSession();
