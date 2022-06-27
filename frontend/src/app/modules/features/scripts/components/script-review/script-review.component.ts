@@ -28,6 +28,7 @@ export class ScriptReviewComponent
   script: SimpleScript;
   session: SimpleSession;
   section: SimpleSection;
+  isPlayingLines = false;
   recordedLines: Line[] = [];
   private selectedRole: Role = null;
   private $destroy = new Subject<void>();
@@ -97,6 +98,9 @@ export class ScriptReviewComponent
       .pipe(takeUntil(this.$destroy))
       .subscribe((role) => {
         this.selectedRole = role;
+        if (role) {
+          this.scriptViewerService.setSelectedRole(role);
+        }
         getRecordedLines();
       });
   }
@@ -108,10 +112,16 @@ export class ScriptReviewComponent
 
   async playRecording() {
     //TODO: scroll after voice finishes speaking and actually play the recording
+    if (this.isPlayingLines) {
+      return;
+    }
+    this.isPlayingLines = true;
     for (const line of this.recordedLines) {
+
       this.scriptViewerService.scrollToLine(line.index);
       await this.voiceSpeakingService.speakCustomLine(line);
     }
+    this.isPlayingLines = false;
   }
 
   protected processSubmit(): void {

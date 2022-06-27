@@ -112,34 +112,17 @@ export class VoiceSpeakingService implements OnDestroy {
   }
 
   speakCustomLine(line) {
-    this.stopSpeak();
-    const currentLine = line;
-    if (currentLine) {
-      if (currentLine.audio) {
-        this.isAutomatedVoiceSpeaking = false;
-        const audio = window.URL.createObjectURL(currentLine.audio);
-        this.curAudioEl = document.createElement('audio');
-        this.curAudioEl.setAttribute('controls', '');
-        this.curAudioEl.controls = true;
-        this.curAudioEl.src = audio;
-        this.curAudioEl.onended = this.onSpeakingEnd.bind(this);
-        if (this.curAudioEl.canPlayType(audio) === 'probably' || 'maybe') {
-          this.curAudioEl.play();
-        }
-        if (this.pausedSubject.getValue()) {
-          this.curAudioEl.pause();
-        }
-      } else {
-        const utter = this.initUtterance(currentLine.content);
-        setTimeout(() => {
-          this.canceledCurSynth = false;
-          if (!this.pausedSubject.getValue()) {
-            this.synth.speak(utter);
-            this.synth.resume();
-          }
-        }, 300);
+    return new Promise((resolve, reject) => {
+      this.isAutomatedVoiceSpeaking = false;
+      this.curAudioEl = document.createElement('audio');
+      this.curAudioEl.setAttribute('controls', '');
+      this.curAudioEl.controls = true;
+      this.curAudioEl.src = line.temporaryRecordingUrl;
+      this.curAudioEl.onended = resolve;
+      if (this.curAudioEl.canPlayType(line.temporaryRecordingUrl) === 'probably' || 'maybe') {
+        this.curAudioEl.play();
       }
-    }
+    });
   }
 
 
