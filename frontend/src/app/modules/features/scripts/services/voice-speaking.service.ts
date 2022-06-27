@@ -110,6 +110,21 @@ export class VoiceSpeakingService implements OnDestroy {
     }
   }
 
+  speakCustomLine(line) {
+    return new Promise((resolve, reject) => {
+      this.isAutomatedVoiceSpeaking = false;
+      this.curAudioEl = document.createElement('audio');
+      this.curAudioEl.setAttribute('controls', '');
+      this.curAudioEl.controls = true;
+      this.curAudioEl.src = line.temporaryRecordingUrl;
+      this.curAudioEl.onended = resolve;
+      if (this.curAudioEl.canPlayType(line.temporaryRecordingUrl) === 'probably' || 'maybe') {
+        this.curAudioEl.play();
+      }
+    });
+  }
+
+
   ngOnDestroy() {
     this.$destroy.next();
     this.$destroy.complete();

@@ -12,3 +12,7 @@ strong {
     cursor: pointer;
   }
 }
+
+button.disabledButton {
+  opacity: 0.5;
+}
