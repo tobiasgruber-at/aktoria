@@ -30,6 +30,27 @@ p {
   font-size: 1.8rem;
 }
 
+@media screen and (max-width: 992px) {
+  .role-names,
+  p {
+    font-size: 1.5rem;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .role-names,
+  p {
+    font-size: 1.2rem;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .role-names,
+  p {
+    font-size: 1rem;
+  }
+}
+
 .role-names {
   font-weight: 600;
 
