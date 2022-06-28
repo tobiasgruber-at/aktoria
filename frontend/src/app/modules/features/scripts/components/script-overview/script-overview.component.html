@@ -1,7 +1,7 @@
 <app-page-layout [loading]="getLoading">
   <div class="d-flex flex-column align-items-start flex-grow-1">
-    <div class="row w-100">
-      <div class="col-9 d-flex flex-column">
+    <div class="row w-100 options">
+      <div class="roles d-flex flex-column">
         <h1 class="display-3 mb-3 text-truncate">{{ script?.name }}</h1>
         <app-script-roles-list
           (roleClicked)="selectRole($event)"
@@ -12,7 +12,7 @@
           theme="primary"
         ></app-script-roles-list>
       </div>
-      <div class="col-3 d-flex flex-column align-items-end">
+      <div class="buttons d-flex flex-column align-items-end">
         <div
           [ngbTooltip]="!selectedRole ? 'Bitte wähle eine Rolle aus' : ''"
           class="mb-3 mt-2"
@@ -27,12 +27,6 @@
             <bi name="play-fill"></bi>
           </button>
         </div>
-        <!--<button
-          class="btn btn-outline-primary btn-lg mb-3"
-          routerLink="/scripts/{{ script?.id }}/view"
-        >
-          Skript ansehen
-        </button>-->
         <div dropdownClass="dropdown-menu-lg" ngbDropdown>
           <button class="btn btn-outline-secondary btn-lg" ngbDropdownToggle>
             Weitere Aktionen

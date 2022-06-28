@@ -18,3 +18,49 @@
     border-color: var(--bs-dark);
   }
 }
+
+.buttons {
+  flex: 0 0 auto;
+  width: 25%;
+}
+
+.roles {
+  flex: 0 0 auto;
+  width: 75%;
+}
+
+
+@media screen and (max-width: 1055px) {
+  .buttons {
+    width: 35%;
+  }
+
+  .roles {
+    width: 65%;
+  }
+}
+
+@media screen and (max-width: 755px) {
+  .options {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .buttons {
+    width: 100%;
+  }
+
+  .roles {
+    width: 100%;
+  }
+
+  .btn.btn-lg {
+    width: calc(100vw - 10rem);
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .btn.btn-lg {
+    width: calc(100vw - 6rem);
+  }
+}
