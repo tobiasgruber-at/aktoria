@@ -1,4 +1,5 @@
-<app-page-layout [loading]="getLoading" [showSidebar]="true" theme="dark">
+<app-page-layout [loading]="getLoading" [showSidebar]="showSidebar" theme="dark">
+  <app-script-editor-controls (showSidebarEventEmitter)="showSidebar=true" *ngIf="!showSidebar"></app-script-editor-controls>
   <app-script-viewer></app-script-viewer>
   <form
     (ngSubmit)="submit()"
@@ -74,6 +75,14 @@
         [roles]="script?.roles"
         [selectedRole]="scriptViewerService.$selectedRole | async"
       ></app-script-roles-list>
+      <button
+        (click)="showSidebar = false"
+        *ngIf="script?.roles.length > 1"
+        class="btn btn-sm btn-primary showScript"
+        type="button"
+      >
+        Skript anzeigen
+      </button>
       <ng-template #mergeRolesModal let-modal>
         <app-merge-roles-modal [modal]="modal"></app-merge-roles-modal>
       </ng-template>

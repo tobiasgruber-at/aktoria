@@ -1,0 +1,10 @@
+:host {
+  z-index: 5; // above script lines
+}
+
+span.script-name {
+  font-size: 1.3rem;
+  font-weight: 400;
+  letter-spacing: 0.03rem;
+  max-width: 11rem;
+}

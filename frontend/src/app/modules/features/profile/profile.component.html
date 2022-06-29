@@ -1,8 +1,8 @@
 <app-page-layout [loading]="!user">
   <ng-container *ngIf="user">
-    <div class="d-flex justify-content-between align-items-center">
+    <div class="d-flex justify-content-between align-items-center options">
       <h1 class="display-1">Profil</h1>
-      <div>
+      <div class="d-flex btns">
         <button (click)="openDeleteModal(deleteModal)" class="btn btn-danger">
           Konto Löschen
         </button>
@@ -37,7 +37,7 @@
       </div>
     </div>
 
-    <div class="mb-5 mt-4 d-flex gap-5">
+    <div class="profileData mb-5 mt-4 d-flex">
       <div class="d-flex flex-column">
         <h3 class="text-truncate">Vorname</h3>
         <span class="text-secondary value text-truncate">{{

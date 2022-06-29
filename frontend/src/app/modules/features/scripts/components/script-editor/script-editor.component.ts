@@ -27,6 +27,7 @@ export class ScriptEditorComponent
   isUploading = false;
   isDisplayingConflictHeader = false;
   counts: number[] = [];
+  showSidebar = true;
   private $destroy = new Subject<void>();
 
   constructor(

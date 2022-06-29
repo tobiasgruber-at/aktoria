@@ -1,0 +1,8 @@
+<app-controls>
+  <span [ngbTooltip]="script?.name" class="script-name me-3 ps-2 text-truncate">
+    {{ script?.name }}
+  </span>
+  <app-controls-item (click)="close()" ngbTooltip="Schließen">
+    <bi name="x-lg"></bi>
+  </app-controls-item>
+</app-controls>
