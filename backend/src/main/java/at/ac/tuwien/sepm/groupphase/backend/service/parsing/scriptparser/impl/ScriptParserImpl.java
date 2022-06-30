@@ -54,7 +54,7 @@ public class ScriptParserImpl implements ScriptParser {
     }
 
     private List<Line> handleSplitRoles(List<Line> stagedLines) {
-        log.trace("processLines(stagedLines = {})", stagedLines);
+        log.trace("handleSplitRoles(stagedLines = {})", stagedLines);
 
         List<Line> handledLines = new LinkedList<>();
 
