@@ -8,7 +8,6 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.Page;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Role;
 import at.ac.tuwien.sepm.groupphase.backend.entity.Script;
 import at.ac.tuwien.sepm.groupphase.backend.entity.User;
-import at.ac.tuwien.sepm.groupphase.backend.exception.IllegalFileFormatException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.NotFoundException;
 import at.ac.tuwien.sepm.groupphase.backend.exception.UnauthorizedException;
 import at.ac.tuwien.sepm.groupphase.backend.repository.LineRepository;
@@ -20,12 +19,9 @@ import at.ac.tuwien.sepm.groupphase.backend.service.LineService;
 import at.ac.tuwien.sepm.groupphase.backend.service.SessionService;
 import at.ac.tuwien.sepm.groupphase.backend.validation.LineValidation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.crypto.codec.Base64;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.sql.rowset.serial.SerialBlob;
-import java.sql.Blob;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -72,6 +68,9 @@ public class LineServiceImpl implements LineService {
         }
         if (updateLineDto.getRoleIds() != null) {
             lineValidation.validateRoleIdsInput(updateLineDto.getRoleIds());
+        }
+        if (updateLineDto.getAudio() != null) {
+            lineValidation.validateAudio(updateLineDto.getAudio());
         }
         User user = authorizationService.getLoggedInUser();
         if (user == null) {

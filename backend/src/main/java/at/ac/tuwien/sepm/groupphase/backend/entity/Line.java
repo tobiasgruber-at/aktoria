@@ -24,7 +24,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PreRemove;
 import javax.persistence.Table;
-import java.sql.Blob;
 import java.util.Set;
 
 /**

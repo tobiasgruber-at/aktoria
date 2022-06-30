@@ -24,4 +24,11 @@ public interface LineValidation {
      * @param ids list of role ids.
      */
     void validateRoleIdsInput(List<Long> ids);
+
+    /**
+     * Validates the audio for a line.
+     *
+     * @param audio the audio of a line.
+     */
+    void validateAudio(String audio);
 }

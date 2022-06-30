@@ -64,6 +64,7 @@ class LineEndpointIntegrationTest {
             lineDtoList.add(new UpdateLineDto("New Content 2.", true, null, null));
             lineDtoList.add(new UpdateLineDto("New Content 3.", true, new LinkedList<>(List.of(1L, 2L, 3L)), null));
             lineDtoList.add(new UpdateLineDto("New Content 4.", true, new LinkedList<>(), null));
+            lineDtoList.add(new UpdateLineDto("New Content 4.", true, new LinkedList<>(), "a".repeat(10485760)));
             return lineDtoList.stream();
         }
 
@@ -137,6 +138,20 @@ class LineEndpointIntegrationTest {
                     .content(objectMapper.writeValueAsBytes(new UpdateLineDto(null, null, null, null)))
                     .contentType(MediaType.APPLICATION_JSON)
                 ).andExpect(status().isForbidden());
+        }
+
+        @Test
+        @DirtiesContext
+        @DisplayName("returns PayloadTooLarge")
+        @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
+        void updateLineThrowsPayloadTooLarge() throws Exception {
+            mockMvc
+                .perform(MockMvcRequestBuilders
+                    .patch("/api/v1/lines/1")
+                    .accept(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsBytes(new UpdateLineDto("Test content.", true, null, "a".repeat(10485761))))
+                    .contentType(MediaType.APPLICATION_JSON)
+                ).andExpect(status().isPayloadTooLarge());
         }
     }
 }
