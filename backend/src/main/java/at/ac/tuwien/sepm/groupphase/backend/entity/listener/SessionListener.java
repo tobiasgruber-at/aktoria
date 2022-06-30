@@ -24,6 +24,5 @@ public class SessionListener {
     @PreRemove
     private void beforeRemove(Session session) {
         log.info("handle remove for session: " + session.getId());
-        // session.getSection().getSessions().remove(session);
     }
 }

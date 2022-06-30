@@ -70,9 +70,5 @@ export class SectionService {
    */
   delete(id: number): Observable<void> {
     return of().pipe(randomDelay());
-    /*return this.http.delete<void>(`${this.baseUri}/${id}`);*/
-    /*.pipe(
-      tap(() => this.setScripts(this.scripts.filter((s) => s.id !== id)))
-    );*/
   }
 }

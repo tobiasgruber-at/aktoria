@@ -111,7 +111,6 @@ export class ScriptReviewComponent
   }
 
   async playRecording() {
-    //TODO: scroll after voice finishes speaking and actually play the recording
     if (this.isPlayingLines) {
       return;
     }

@@ -68,11 +68,6 @@ export class MergeRolesModalComponent
   ngOnDestroy() {
   }
 
-  /*checkDuplicatedRole(fieldName: string): boolean {
-    const field = this.form.get(fieldName);
-    return this.script.roles.some((r) => r.name === field.value);
-  }*/
-
   protected processSubmit(): void {
     let {roleName} = this.form.value;
     const {selectedRoles} = this.form.value;

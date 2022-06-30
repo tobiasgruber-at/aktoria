@@ -47,7 +47,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author Julia Bernold
  */
 @SpringBootTest
-@ActiveProfiles({ "test", "datagen" })
+@ActiveProfiles({"test", "datagen"})
 @EnableWebMvc
 @WebAppConfiguration
 class SectionEndpointIntegrationTest {
@@ -120,7 +120,6 @@ class SectionEndpointIntegrationTest {
         @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = Role.verified)
         @DisplayName("Get all Sections")
         void getSectionById() throws Exception {
-            //List<SectionDto> expected = sectionMapper.sectionListToSectionDtoList(sectionRepository.findAll());
             byte[] body = mockMvc
                 .perform(MockMvcRequestBuilders
                     .get("/api/v1/sections?scriptId=1")

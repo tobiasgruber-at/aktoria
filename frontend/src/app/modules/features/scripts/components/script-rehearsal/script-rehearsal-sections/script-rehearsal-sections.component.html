@@ -1,7 +1,6 @@
 <app-page-layout [loading]="getLoading" [showSidebar]="true" theme="dark">
   <div class="d-flex flex-column flex-grow-1" role="sidebar">
     <h2 class="mb-0 d-flex">
-      <!-- todo -->
       <div class="role-name text-truncate">
         {{ (scriptRehearsalService.$selectedRole | async)?.name }}
       </div>
