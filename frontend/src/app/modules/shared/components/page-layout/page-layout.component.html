@@ -3,7 +3,7 @@
   class="wrapper bg-{{ theme === 'light' ? 'light' : 'lighter-dark' }}
   "
 >
-  <header *ngIf="showHeader" class="fixed-top">
+  <header *ngIf="showHeader" class="fixed-top normal">
     <nav class="px-5 navbar navbar-expand navbar-dark bg-dark shadow">
       <a class="navbar-brand" routerLink="">Aktoria</a>
       <ul class="navbar-nav me-auto mb-lg-0">
@@ -14,7 +14,7 @@
             class="nav-link"
             routerLink="/scripts"
             routerLinkActive="active"
-          >Deine Skripte
+          >Skripte
           </a>
         </li>
         <li class="nav-item">
@@ -85,6 +85,89 @@
       </div>
     </nav>
   </header>
+
+  <header *ngIf="showHeader" class="fixed-top compact">
+    <nav class="px-5 navbar navbar-expand navbar-dark bg-dark shadow">
+      <a class="navbar-brand" routerLink="">Aktoria</a>
+      <ul class="navbar-nav me-auto mb-lg-0">
+
+      </ul>
+      <div>
+        <ng-container *ngIf="!authService.isLoggedIn(); else loggedIn">
+          <div class="navbar-nav me-auto mb-lg-0">
+            <a class="nav-link" routerLink="/login" routerLinkActive="active"
+            >Login</a
+            >
+            <a
+              class="nav-link"
+              role="button"
+              routerLink="/register"
+              routerLinkActive="active"
+            >Registrieren</a
+            >
+          </div>
+        </ng-container>
+        <ng-template #loggedIn>
+          <div class="d-inline-block" display="dynamic" ngbDropdown>
+            <button
+              class="btn btn-primary p-0 bg-transparent border-0 shadow-none d-inline-flex align-items-center"
+              id="dropdown"
+              ngbDropdownToggle
+              type="button"
+            >
+              <span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
+                  <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+                </svg>
+              </span>
+            </button>
+            <div
+              @appear
+              aria-labelledby="dropdown"
+              class="dropdown-menu dropdown-menu-dark bg-dark shadow-lg"
+              ngbDropdownMenu
+            >
+
+              <a
+                *ngIf="authService.isLoggedIn() && authService.isVerified()"
+                class="dropdown-item nav-link"
+                routerLink="/scripts"
+                routerLinkActive="active"
+              >Skripte
+              </a>
+              <hr class="dropdown-divider"/>
+              <a
+                *ngIf="authService.isLoggedIn() && authService.isVerified()"
+                class="dropdown-item nav-link"
+                routerLink="/sessions"
+                routerLinkActive="active"
+              >Lernsessions
+              </a>
+              <hr class="dropdown-divider"/>
+              <a
+                class="dropdown-item nav-link"
+                ngbDropdownItem
+                routerLink="/profile"
+                type="button"
+              >
+                Profil
+              </a>
+              <hr class="dropdown-divider"/>
+              <a
+                (click)="logout()"
+                class="dropdown-item nav-link"
+                ngbDropdownItem
+                routerLink="/"
+                type="button"
+              >
+                Logout
+              </a>
+            </div>
+          </div>
+        </ng-template>
+      </div>
+    </nav>
+  </header>
   <!--
     Main has 'overflow: scroll', so that opening modal don't always collapse the ui (since they apply
     'overflow: hidden' on the root element).
@@ -92,7 +175,7 @@
   <main
     (scroll)="onScrollMain($event)"
     [class.is-dark-theme]="theme === 'dark'"
-    class="w-100 p-5 d-flex flex-column"
+    class="w-100 p5 d-flex flex-column"
   >
     <!--
       Additonal wrapper, as 'max-width' cannot be applied on 'main'.

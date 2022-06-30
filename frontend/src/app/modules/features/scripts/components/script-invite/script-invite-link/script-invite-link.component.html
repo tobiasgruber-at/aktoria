@@ -2,11 +2,17 @@
   <form (ngSubmit)="submit()" [formGroup]="form" class="form">
     Erstelle einen Einladungslink und lasse ihn deiner Kollegin/deinen Kollegen zukommen
     <br/><br/>
-    <div class="form-group mb-3">
-      <div class="link">
-        {{form.value.link}}
-      </div>
-    </div>
+    <input
+      class="form-control"
+      formControlName="link"
+      id="link"
+      name="link"
+      placeholder="Einladungslink"
+      type="text"
+      [value]=form.value.link
+      READONLY
+      style="margin-bottom: 1rem"
+    />
     <app-button
       [disabled]="hasError()"
       [loading]="loading"

@@ -50,6 +50,7 @@ import {VoiceRecordingService} from './services/voice-recording.service';
 import {VoiceSpeakingService} from './services/voice-speaking.service';
 import {ScriptReviewComponent} from './components/script-review/script-review.component';
 import {ScriptConflictsComponent} from './components/script-conflicts/script-conflicts.component';
+import { ScriptEditorControlsComponent } from './components/script-editor/script-editor-controls/script-editor-controls.component';
 
 /** Scripts module that consists of all script related parts (script viewer, rehearsal, dashboard, scripts list, ..). */
 @NgModule({
@@ -84,7 +85,8 @@ import {ScriptConflictsComponent} from './components/script-conflicts/script-con
     ScriptReadControlsComponent,
     SelectLineTextComponent,
     ScriptReviewComponent,
-    ScriptConflictsComponent
+    ScriptConflictsComponent,
+    ScriptEditorControlsComponent
   ],
   providers: [
     ScriptRehearsalService,

@@ -1,5 +1,4 @@
 <app-page-layout [loading]="getLoading" [showSidebar]="true" theme="dark">
-  <app-script-viewer></app-script-viewer>
   <div class="d-flex flex-column flex-grow-1" role="sidebar">
     <h2 class="mb-0 d-flex">
       <!-- todo -->
@@ -14,9 +13,11 @@
     ></app-back-button>
     <ng-container *ngIf="curStep === steps.selectSection">
       <h3 class="mb-3">Wähle einen Lernabschnitt:</h3>
+      <p class="infotext">Lerneinheiten können in der mobilen Ansicht leider nicht erstellt werden</p>
       <app-rehearsal-section
         (click)="changeStep(steps.createSection)"
         [isCreate]="true"
+        class="create"
       ></app-rehearsal-section>
       <app-rehearsal-section
         *ngFor="let section of sections"
@@ -28,4 +29,5 @@
       *ngIf="curStep === steps.createSection"
     ></app-rehearsal-section-create>
   </div>
+  <app-script-viewer></app-script-viewer>
 </app-page-layout>

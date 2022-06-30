@@ -8,3 +8,22 @@
     width: 1.3rem;
   }
 }
+
+.showScript {
+  display: none;
+}
+
+.hide {
+  display: none;
+}
+
+@media screen and (max-width: 858px) {
+  .showScript {
+    display: block;
+    width: 100%;
+  }
+
+  .hide {
+    display: block;
+  }
+}

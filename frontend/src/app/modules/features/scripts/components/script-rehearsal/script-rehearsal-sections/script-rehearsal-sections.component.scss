@@ -5,3 +5,17 @@
     white-space: break-spaces;
   }
 }
+
+.infotext {
+  display: none;
+}
+
+@media screen and (max-width: 858px) {
+  .create {
+    display: none;
+  }
+
+  .infotext {
+    display: block;
+  }
+}
