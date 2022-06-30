@@ -19,7 +19,6 @@ import com.icegreen.greenmail.configuration.GreenMailConfiguration;
 import com.icegreen.greenmail.junit5.GreenMailExtension;
 import com.icegreen.greenmail.util.ServerSetupTest;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -381,29 +380,25 @@ class UserEndpointIntegrationTest {
         }
     }
 
-
-    //TESTING DELETE
     @Nested
     @DisplayName("deleteUser()")
     @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user, Role.verified, Role.admin })
     class DeleteUser {
 
-        @Disabled
         @Test
         @DirtiesContext
         @DisplayName("deletes a user correctly")
         void deleteUserSuccessful() throws Exception {
-            User u = userList.get(0);
             mockMvc
                 .perform(MockMvcRequestBuilders
-                    .delete("/api/v1/users/" + u.getId())
+                    .delete("/api/v1/users/1")
                     .accept(MediaType.APPLICATION_JSON)
                     .contentType(MediaType.APPLICATION_JSON)
                 ).andExpect(status().isNoContent());
 
             mockMvc
                 .perform(MockMvcRequestBuilders
-                    .delete("/api/v1/users/" + u.getId())
+                    .delete("/api/v1/users/1")
                     .accept(MediaType.APPLICATION_JSON)
                     .contentType(MediaType.APPLICATION_JSON)
                 ).andExpect(status().isNotFound());
