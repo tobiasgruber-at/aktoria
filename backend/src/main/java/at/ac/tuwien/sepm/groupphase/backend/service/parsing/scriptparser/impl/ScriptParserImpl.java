@@ -26,8 +26,22 @@ public class ScriptParserImpl implements ScriptParser {
         this.curPageIndex = 0L;
     }
 
-    private void processLines(Line line, Stack<Line> stagedLines) {
-        log.trace("processLines(line = {}, stagedLines = {})", line, stagedLines);
+    /**
+     * Processes all staged lines.
+     * <br>
+     * Processes all previously extracted lines, aggregates found roles, and merges
+     * adjacent lines, that do not end correctly.
+     * <br>
+     * For example, having two
+     * lines with the content being "This is" and "my line." it is pretty clear,
+     * that this line was wrongly split into two. Since the first line is not properly
+     * endet, these will be merged into a new line.
+     *
+     * @param line        the line to be processed with all other currently staged lines
+     * @param stagedLines all currently staged lines
+     */
+    private void processLine(Line line, Stack<Line> stagedLines) {
+        log.trace("processLine(line = {}, stagedLines = {})", line, stagedLines);
 
         if (line.hasRoles()) {
             for (String c : line.getRoles()) {
@@ -53,6 +67,15 @@ public class ScriptParserImpl implements ScriptParser {
         }
     }
 
+    /**
+     * Handles split up roles.
+     * <br>
+     * Handles all lines where roles where split up in the parsing process. This can happen
+     * when the role definition is long enough to get wrapped into more lines.
+     *
+     * @param stagedLines all staged lines
+     * @return a list of all handled lines
+     */
     private List<Line> handleSplitRoles(List<Line> stagedLines) {
         log.trace("handleSplitRoles(stagedLines = {})", stagedLines);
 
@@ -137,7 +160,7 @@ public class ScriptParserImpl implements ScriptParser {
 
             List<Line> possibleInternalLines = curLine.getPossibleInternalLines();
             for (Line p : possibleInternalLines) {
-                processLines(p, stagedLines);
+                processLine(p, stagedLines);
             }
         }
 
