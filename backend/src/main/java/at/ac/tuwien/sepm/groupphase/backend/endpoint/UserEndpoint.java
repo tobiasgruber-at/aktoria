@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.security.PermitAll;
+
 /**
  * Endpoint for user related requests.
  *
@@ -47,6 +49,7 @@ public class UserEndpoint {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PermitAll
     public SimpleUserDto postUser(@RequestBody UserRegistrationDto userRegistrationDto) {
         log.info("POST {}", path);
         return userService.create(userRegistrationDto);
@@ -70,6 +73,7 @@ public class UserEndpoint {
 
     @PostMapping(path = "/forgot-password")
     @ResponseStatus(HttpStatus.ACCEPTED)
+    @PermitAll
     public void forgottenPassword(@RequestBody String email) {
         log.info("POST {}/forgot-password", path);
         userService.forgotPassword(email);
@@ -77,6 +81,7 @@ public class UserEndpoint {
 
     @PutMapping(path = "/reset-password")
     @ResponseStatus(HttpStatus.ACCEPTED)
+    @PermitAll
     public void changePassword(@RequestBody PasswordChangeDto passwordChange) {
         log.info("PUT {}/reset-password", path);
         userService.changePassword(passwordChange, null);
@@ -84,6 +89,7 @@ public class UserEndpoint {
 
     @PostMapping(path = "/verification")
     @ResponseStatus(HttpStatus.OK)
+    @PermitAll
     public void verifyEmailToken(@RequestBody String token) {
         log.info("POST {}/verification", path);
         userService.verifyEmail(token);
