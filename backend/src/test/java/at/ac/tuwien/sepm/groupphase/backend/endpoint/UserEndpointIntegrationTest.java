@@ -49,7 +49,16 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ActiveProfiles({ "test", "datagen" })
+/**
+ * Class for testing user-endpoints.
+ *
+ * @author Julia Bernold
+ * @author Simon Josef Kreuzpointner
+ * @author Marvin Flandorfer
+ * @author Nikolaus Peter
+ */
+
+@ActiveProfiles({"test", "datagen"})
 @SpringBootTest
 @EnableWebMvc
 @WebAppConfiguration
@@ -217,7 +226,7 @@ class UserEndpointIntegrationTest {
     //TESTING GET
     @Nested
     @DisplayName("getUser()")
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user, Role.user, Role.verified, Role.admin })
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {Role.user, Role.user, Role.verified, Role.admin})
     class GetUser {
         @Test
         @DirtiesContext
@@ -254,7 +263,7 @@ class UserEndpointIntegrationTest {
     //TESTING PATCH
     @Nested
     @DisplayName("patchUser()")
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user, Role.verified, Role.admin })
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {Role.user, Role.verified, Role.admin})
     class PatchUser {
         private static Stream<UpdateUserDto> invalidUpdateUserDtoProvider() {
             final List<UpdateUserDto> temp = new LinkedList<>();
@@ -385,7 +394,7 @@ class UserEndpointIntegrationTest {
     //TESTING DELETE
     @Nested
     @DisplayName("deleteUser()")
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user, Role.verified, Role.admin })
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {Role.user, Role.verified, Role.admin})
     class DeleteUser {
 
         @Disabled
@@ -425,7 +434,7 @@ class UserEndpointIntegrationTest {
     //TESTING FORGOTTEN PASSWORD
     @Nested
     @DisplayName("forgottenPassword()")
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user })
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {Role.user})
     class ForgottenPassword {
         private static Stream<PasswordChangeDto> forgottenPasswordInvalidProvider() {
             final List<PasswordChangeDto> temp = new LinkedList<>();

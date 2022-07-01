@@ -4,6 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * User Data Transfer Object.
+ * <br>
+ * This represents a user for registration.
+ *
+ * @author Tobias Gruber
+ */
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

@@ -50,6 +50,12 @@ public class SectionValidationImpl implements SectionValidation {
         }
     }
 
+    /**
+     * Helper methd for validation names.
+     *
+     * @param name name to validate
+     * @throws ValidationException is thrown if something of the name is not valid
+     */
     private void validateName(String name) throws ValidationException {
         if (name.length() == 0) {
             throw new ValidationException("Name muss mehr als 0 Zeichen haben");
@@ -80,6 +86,13 @@ public class SectionValidationImpl implements SectionValidation {
 
     }
 
+    /**
+     * Helper method for validating lines of a script.
+     *
+     * @param startId the starting line
+     * @param endId   the end line
+     * @throws ValidationException is thrown if something is not valid
+     */
     private void validateLines(Long startId, Long endId) throws ValidationException {
         if (startId == null) {
             throw new ValidationException("Lernabschnitt hat keinen Anfang");
@@ -105,6 +118,7 @@ public class SectionValidationImpl implements SectionValidation {
         }
     }
 
+    @Override
     public void ownerLoggedIn(Long ownerId) throws UnauthorizedException {
         User loggedIn = authorizationService.getLoggedInUser();
         if (!Objects.equals(ownerId, loggedIn.getId())) {

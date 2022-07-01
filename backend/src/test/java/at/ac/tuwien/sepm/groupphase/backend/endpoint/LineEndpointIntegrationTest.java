@@ -36,6 +36,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * Class for Line-endpoint-tests.
+ *
+ * @author Simon Josef Kreuzpointner 
+ */
 @ActiveProfiles({ "test", "datagen" })
 @SpringBootTest
 @EnableWebMvc

@@ -3,6 +3,12 @@ package at.ac.tuwien.sepm.groupphase.backend.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+/**
+ * Exception for unauthorized uses.
+ *
+ * @author Nikolaus Peter
+ */
+
 @ResponseStatus(HttpStatus.UNAUTHORIZED)
 public class UnauthorizedException extends RuntimeException {
 

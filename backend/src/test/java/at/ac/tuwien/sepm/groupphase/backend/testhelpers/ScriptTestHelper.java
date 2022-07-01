@@ -16,6 +16,13 @@ import java.awt.Color;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Helper-Class for tests.
+ *
+ * @author Tobias Gruber
+ * @author Simon Josef Kreuzpointner
+ */
+
 @Component
 @Getter
 public class ScriptTestHelper {

@@ -18,8 +18,14 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * Class for testing session-repository.
+ *
+ * @author Marvin Flandorfer
+ */
+
 @DataJpaTest
-@ActiveProfiles({ "test", "datagen" })
+@ActiveProfiles({"test", "datagen"})
 public class SessionRepositoryUnitTest {
 
     @Autowired

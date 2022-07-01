@@ -1,7 +1,7 @@
 package at.ac.tuwien.sepm.groupphase.backend.exception;
 
 /**
- * An extension to RuntimeException.
+ * Exception for illegal file formats.
  *
  * @author Simon Josef Kreuzpointner
  */

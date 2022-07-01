@@ -19,22 +19,28 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * Class for testing operations with lines.
+ *
+ * @author Simon Josef Kreuzpointner
+ */
+
 @ActiveProfiles("test")
 @SpringBootTest
 class LineImplUnitTest {
 
     private static Stream<ParameterizedTupleGetRoles> parameterizedTupleGetRolesProvider() {
         final List<ParameterizedTupleGetRoles> temp = new LinkedList<>();
-        temp.add(new ParameterizedTupleGetRoles(List.of(new String[] { "ROLE" }), "ROLE This is my text."));
-        temp.add(new ParameterizedTupleGetRoles(List.of(new String[] { "NAME SURNAME" }), "NAME SURNAME This is my text."));
-        temp.add(new ParameterizedTupleGetRoles(List.of(new String[] { "ROLEA", "ROLEB" }), "ROLEA UND ROLEB This is my text."));
-        temp.add(new ParameterizedTupleGetRoles(List.of(new String[] { "ROLEA", "ROLEB" }), "ROLEA / ROLEB This is my text."));
-        temp.add(new ParameterizedTupleGetRoles(List.of(new String[] { "ROLEA", "ROLEB" }), "ROLEA/ROLEB This is my text."));
-        temp.add(new ParameterizedTupleGetRoles(List.of(new String[] { "MR. NAME" }), "MR. NAME This is my text."));
-        temp.add(new ParameterizedTupleGetRoles(List.of(new String[] { "DR. MR. NAME" }), "DR. MR. NAME This is my text."));
-        temp.add(new ParameterizedTupleGetRoles(List.of(new String[] { "NAME-SURNAME" }), "NAME-SURNAME This is my text."));
-        temp.add(new ParameterizedTupleGetRoles(List.of(new String[] { "PETER P." }), "PETER P. This is my text."));
-        temp.add(new ParameterizedTupleGetRoles(List.of(new String[] { "MS. NAME-SURNAME" }), "MS. NAME-SURNAME This is my text."));
+        temp.add(new ParameterizedTupleGetRoles(List.of(new String[] {"ROLE"}), "ROLE This is my text."));
+        temp.add(new ParameterizedTupleGetRoles(List.of(new String[] {"NAME SURNAME"}), "NAME SURNAME This is my text."));
+        temp.add(new ParameterizedTupleGetRoles(List.of(new String[] {"ROLEA", "ROLEB"}), "ROLEA UND ROLEB This is my text."));
+        temp.add(new ParameterizedTupleGetRoles(List.of(new String[] {"ROLEA", "ROLEB"}), "ROLEA / ROLEB This is my text."));
+        temp.add(new ParameterizedTupleGetRoles(List.of(new String[] {"ROLEA", "ROLEB"}), "ROLEA/ROLEB This is my text."));
+        temp.add(new ParameterizedTupleGetRoles(List.of(new String[] {"MR. NAME"}), "MR. NAME This is my text."));
+        temp.add(new ParameterizedTupleGetRoles(List.of(new String[] {"DR. MR. NAME"}), "DR. MR. NAME This is my text."));
+        temp.add(new ParameterizedTupleGetRoles(List.of(new String[] {"NAME-SURNAME"}), "NAME-SURNAME This is my text."));
+        temp.add(new ParameterizedTupleGetRoles(List.of(new String[] {"PETER P."}), "PETER P. This is my text."));
+        temp.add(new ParameterizedTupleGetRoles(List.of(new String[] {"MS. NAME-SURNAME"}), "MS. NAME-SURNAME This is my text."));
 
         return temp.stream();
     }

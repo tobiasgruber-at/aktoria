@@ -85,6 +85,12 @@ public class UserValidationImpl implements UserValidation {
     }
 
 
+    /**
+     * Helper method for validating a password.
+     *
+     * @param password the password to validate
+     * @throws ValidationException is thrown if something of the password is not valid
+     */
     private void validatePassword(String password) throws ValidationException {
         try {
             validateNotNull(password);
@@ -99,6 +105,7 @@ public class UserValidationImpl implements UserValidation {
         }
     }
 
+    @Override
     public void validateEmail(String email) throws ValidationException {
         if (email != null) {
             if (email.trim().length() <= 0) {
@@ -122,6 +129,13 @@ public class UserValidationImpl implements UserValidation {
         }
     }
 
+    /**
+     * Helper method for validating the name of a user.
+     *
+     * @param firstName the firstname of a user
+     * @param lastName  the lastname of a user
+     * @throws ValidationException is thrown if something of the name is not valid
+     */
     private void validateNames(String firstName, String lastName) throws ValidationException {
         if (firstName != null) {
             if (!firstName.trim().equals(firstName)) {
@@ -158,12 +172,24 @@ public class UserValidationImpl implements UserValidation {
         }
     }
 
+    /**
+     * Checks if the email does already exist.
+     *
+     * @param email the email to check
+     * @throws ConflictException is thrown if this email is already in use
+     */
     private void checkForEmailConflict(String email) throws ConflictException {
         if ((userRepository.findByEmail(email)).isPresent()) {
             throw new ConflictException("Email wird bereits verwendet");
         }
     }
 
+    /**
+     * Checks if the input is != null.
+     *
+     * @param o input to validate
+     * @throws ValidationException is thrown if something of the input is null
+     */
     private void validateNotNull(Object o) throws ValidationException {
         if (o == null) {
             throw new ValidationException("Nicht alle erforderlichen Felder ausgefüllt");

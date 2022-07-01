@@ -39,9 +39,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * Class for testing section services.
  *
  * @author Julia Bernold
+ * @author Simon Josef Kreuzpointner
  */
 
-@ActiveProfiles({ "test", "datagen" })
+@ActiveProfiles({"test", "datagen"})
 @SpringBootTest
 class SectionServiceUnitTest {
 
@@ -68,7 +69,7 @@ class SectionServiceUnitTest {
 
     @Nested
     @DisplayName("getSection()")
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user, Role.verified, Role.admin })
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {Role.user, Role.verified, Role.admin})
     class GetSectionTest {
         @Test
         @DirtiesContext
@@ -89,7 +90,7 @@ class SectionServiceUnitTest {
 
     @Nested
     @DisplayName("createSection()")
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user, Role.verified, Role.admin })
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {Role.user, Role.verified, Role.admin})
     class CreateSectionTest {
         @Test
         @DirtiesContext
@@ -157,7 +158,7 @@ class SectionServiceUnitTest {
 
     @Nested
     @DisplayName("deleteSection()")
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user, Role.verified, Role.admin })
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {Role.user, Role.verified, Role.admin})
     class DeleteSectionTest {
         @Test
         @DirtiesContext
@@ -181,7 +182,7 @@ class SectionServiceUnitTest {
     @Nested
     @DisplayName("getAllSections()")
     @SpringBootTest
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user, Role.verified, Role.admin })
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {Role.user, Role.verified, Role.admin})
     class AllSectionsTest {
         @Test
         @DirtiesContext
