@@ -2,6 +2,8 @@ package at.ac.tuwien.sepm.groupphase.backend.enums;
 
 /**
  * Permissions, that are granted by specific roles.
+ *
+ * @author Tobias Gruber
  */
 public interface Permission {
     String user = "ROLE_USER";

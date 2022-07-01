@@ -6,6 +6,14 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+/**
+ * Line Data Transfer Object.
+ * <br>
+ * This represents a line for updating it.
+ *
+ * @author Simon Josef Kreuzpointner
+ */
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

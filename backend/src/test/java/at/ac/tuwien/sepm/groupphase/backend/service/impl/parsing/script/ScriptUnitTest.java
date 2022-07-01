@@ -17,6 +17,12 @@ import java.nio.file.Path;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+/**
+ * Class for testing operations on scripts.
+ *
+ * @author Simon Josef Kreuzpointner
+ */
+
 @ActiveProfiles("test")
 @SpringBootTest
 class ScriptUnitTest {

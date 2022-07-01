@@ -10,6 +10,12 @@ import org.mapstruct.Mapping;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Describes a role mapper.
+ *
+ * @author Simon Josef Kreuzpointner
+ */
+
 @Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR, uses = ColorMapper.class)
 public interface RoleMapper {
     @Mapping(target = "name", source = "roleName")

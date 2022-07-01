@@ -23,7 +23,13 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@ActiveProfiles({ "test", "datagen" })
+/**
+ * Class for testing session-services.
+ *
+ * @author Simon Josef Kreuzpointner
+ */
+
+@ActiveProfiles({"test", "datagen"})
 @SpringBootTest
 class SessionServiceImplIntegrationTest {
 
@@ -43,7 +49,7 @@ class SessionServiceImplIntegrationTest {
             @Test
             @Transactional
             @DisplayName("for owner")
-            @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
+            @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {Role.verified})
             void deprecateAffectedWorksForOwner() {
                 final Long scriptId = 1L;
                 final Long userId = 1L;
@@ -69,7 +75,7 @@ class SessionServiceImplIntegrationTest {
             @Test
             @Transactional
             @DisplayName("for participant")
-            @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "2" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "2", roles = { Role.verified })
+            @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "2" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "2", roles = {Role.verified})
             void deprecateAffectedWorksForParticipant() {
                 final Long scriptId = 1L;
                 final Long userId = 2L;
@@ -100,7 +106,7 @@ class SessionServiceImplIntegrationTest {
             @Test
             @Transactional
             @DisplayName("UnauthorizedException")
-            @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
+            @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {Role.verified})
             void deprecateAffectedUnauthorized() {
                 assertThrows(UnauthorizedException.class, () -> sessionService.deprecateAffected(2L));
             }

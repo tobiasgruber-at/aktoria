@@ -4,6 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
+/**
+ * User Data Transfer Object.
+ * <br>
+ * This represents a user to update.
+ *
+ * @author Luke Nemeskeri
+ */
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

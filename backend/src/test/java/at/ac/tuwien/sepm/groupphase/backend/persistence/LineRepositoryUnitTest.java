@@ -19,9 +19,15 @@ import java.util.Set;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+/**
+ * Class for testing line-repository.
+ *
+ * @author Marvin Flandorfer
+ */
+
 @DataJpaTest
 @Disabled
-@ActiveProfiles({ "test", "datagen" })
+@ActiveProfiles({"test", "datagen"})
 public class LineRepositoryUnitTest {
 
     @Autowired

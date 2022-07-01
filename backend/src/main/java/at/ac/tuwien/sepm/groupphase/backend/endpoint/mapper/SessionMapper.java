@@ -10,6 +10,12 @@ import org.mapstruct.Mappings;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Describes a session mapper.
+ *
+ * @author Marvin Flandorfer
+ */
+
 @Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR, uses = RoleMapper.class)
 public interface SessionMapper {
 

@@ -4,6 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Role Data Transfer Object.
+ * <br>
+ * This represents a role with its simplest data.
+ *
+ * @author Simon Josef Kreuzpointner
+ */
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
