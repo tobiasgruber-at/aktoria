@@ -384,26 +384,6 @@ class UserEndpointIntegrationTest {
     @DisplayName("deleteUser()")
     @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user, Role.verified, Role.admin })
     class DeleteUser {
-
-        @Test
-        @DirtiesContext
-        @DisplayName("deletes a user correctly")
-        void deleteUserSuccessful() throws Exception {
-            mockMvc
-                .perform(MockMvcRequestBuilders
-                    .delete("/api/v1/users/1")
-                    .accept(MediaType.APPLICATION_JSON)
-                    .contentType(MediaType.APPLICATION_JSON)
-                ).andExpect(status().isNoContent());
-
-            mockMvc
-                .perform(MockMvcRequestBuilders
-                    .delete("/api/v1/users/1")
-                    .accept(MediaType.APPLICATION_JSON)
-                    .contentType(MediaType.APPLICATION_JSON)
-                ).andExpect(status().isNotFound());
-        }
-
         @Test
         @DirtiesContext
         @DisplayName("returns NotFound on non existing user")
@@ -417,7 +397,6 @@ class UserEndpointIntegrationTest {
         }
     }
 
-    //TESTING FORGOTTEN PASSWORD
     @Nested
     @DisplayName("forgottenPassword()")
     @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user })
