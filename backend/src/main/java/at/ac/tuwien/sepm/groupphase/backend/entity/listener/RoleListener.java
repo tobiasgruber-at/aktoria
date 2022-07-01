@@ -27,13 +27,6 @@ public class RoleListener {
     private void beforeRemove(Role role) {
         log.info("handle Sessions of role: " + role.getId());
         List<Session> sessions = role.getSessions().stream().toList();
-        /* for (int i = 0; i < sessions.size(); i++) {
-            sessions.get(i).setCurrentLine(null);
-        }
-        role.setSessions(null);
-        for (int i = 0; i < sessions.size(); i++) {
-            sessions.get(i).setRole(null);
-        }*/
         sessionRepository.deleteAll(sessions);
     }
 }
