@@ -60,6 +60,11 @@ public class ParsedScript {
         return pages;
     }
 
+    /**
+     * Indexes the pages and lines.
+     * <br>
+     * Assigns each page and each line the correct index.
+     */
     private void indexComponents() {
         log.trace("indexComponents()");
 

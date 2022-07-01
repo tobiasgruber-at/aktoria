@@ -60,6 +60,13 @@ public class LineImpl implements Line {
         return new LineImpl(String.join(" ", a.getRaw(), b.getRaw()), a.getPage());
     }
 
+    /**
+     * cleans this line.
+     * <br>
+     * Replaces all new lines with whitespaces, collapses
+     * multiple whitespaces into a single one.
+     * Ignores page feed characters.
+     */
     private void clean() {
         log.trace("clean()");
 
@@ -71,6 +78,13 @@ public class LineImpl implements Line {
         }
     }
 
+    /**
+     * Removes a possible page number.
+     * <br>
+     * Removes a possible page number from this line's content.
+     * The page number will be searched for either at the beginning of the content,
+     * or as the whole content.
+     */
     private void removePageNumber() {
         log.trace("removePageNumber()");
 
@@ -92,6 +106,11 @@ public class LineImpl implements Line {
         }
     }
 
+    /**
+     * Collapses all whitespaces in this line.
+     * <br>
+     * Collapses all whitespaces and tab-stops in this line into a single one.
+     */
     private void collapseWhitespaces() {
         log.trace("collapseWhitespaces()");
 
@@ -99,6 +118,11 @@ public class LineImpl implements Line {
         raw = raw.replaceAll(" +", " ");
     }
 
+    /**
+     * Decomposes the line into its elements.
+     * <br>
+     * Decomposes the line into its role declaration and content part.
+     */
     private void decomposeLine() {
         log.trace("decomposeLine()");
 
@@ -130,6 +154,17 @@ public class LineImpl implements Line {
         isDecomposed = true;
     }
 
+    /**
+     * Checks a line content for an oversupplied role.
+     * <br>
+     * A role is considered oversupplied, when it has characters that do not belong to
+     * the role. This can happen if the first character of a sentence is a capital letter
+     * followed by a whitespace. Then, this letter will be swallowed by the role declaration
+     * matcher. This function returns true if the content is not starting with a capital letter.
+     *
+     * @param content the content of the line to check
+     * @return true if the content does not start with a capital letter
+     */
     private boolean checkForOversuppliedRole(String content) {
         log.trace("checkForOversuppliedRole()");
 
@@ -143,6 +178,13 @@ public class LineImpl implements Line {
         return Character.isLowerCase(firstChar);
     }
 
+    /**
+     * Compiles this line.
+     * <br>
+     * Compiles this line into a readable string version.
+     *
+     * @return a string version of this line
+     */
     private String compileLine() {
         log.trace("compileLine()");
 
@@ -160,6 +202,14 @@ public class LineImpl implements Line {
         }
     }
 
+    /**
+     * Gets the roles from this line's declaration.
+     * <br>
+     * Returns a list of all role names from this line's role declaration.
+     *
+     * @param rolesDeclaration this line's role declaration
+     * @return a list of all role names
+     */
     private List<String> getRolesFromDeclaration(String rolesDeclaration) {
         log.trace("getRolesFromDeclaration(rolesDeclaration = {})", rolesDeclaration);
 
@@ -193,6 +243,15 @@ public class LineImpl implements Line {
         return temp;
     }
 
+    /**
+     * Gets the role delimiter.
+     * <br>
+     * Returns the role delimiter used for this role declaration. If no
+     * delimiter could be found, null is returned.
+     *
+     * @param rolesDeclaration this line's role declaration
+     * @return the used role delimiter
+     */
     private String getRoleDelimiter(String rolesDeclaration) {
         log.trace("getRoleDelimiter(rolesDeclaration = {})", rolesDeclaration);
 
@@ -205,6 +264,16 @@ public class LineImpl implements Line {
         return null;
     }
 
+    /**
+     * Gets multiple roles.
+     * <br>
+     * Gets all roles from a role declaration, where the role declaration has multiple
+     * roles declared, seperated by the delimiter string.
+     *
+     * @param delimiter        the delimiter for the role declarations
+     * @param rolesDeclaration this line's role declaration
+     * @return a list of all declared role names
+     */
     private List<String> getMultipleRoles(String delimiter, String rolesDeclaration) {
         log.trace("getMultipleRoles(delimiter = {}, rolesDeclaration = {})", delimiter, rolesDeclaration);
 
