@@ -49,7 +49,7 @@ export class ScriptEditorComponent
   ngOnInit(): void {
     this.form = this.formBuilder.group({
       scriptName: ['', [Validators.required, Validators.maxLength(100)]],
-      errorCount: [1, [Validators.max(0)]]
+      errorCount: [0, [Validators.max(0)]]
     });
     this.scriptViewerService.$script
       .pipe(takeUntil(this.$destroy))
@@ -64,7 +64,7 @@ export class ScriptEditorComponent
   }
 
   openModal(modalRef): void {
-    this.modalService.open(modalRef, {centered: true});
+    this.modalService.open(modalRef, { centered: true });
   }
 
   cancelUpload(modal: NgbActiveModal): void {
@@ -93,11 +93,12 @@ export class ScriptEditorComponent
   }
 
   updateShouldDisplayConflictHeader(): void {
-    this.isDisplayingConflictHeader = this.counts.reduce((a, b) => a + b, 0) > 0;
+    this.isDisplayingConflictHeader =
+      this.counts.reduce((a, b) => a + b, 0) > 0;
   }
 
   protected processSubmit(): void {
-    const {scriptName} = this.form.value;
+    const { scriptName } = this.form.value;
     const script = new SimpleScript(
       this.script.pages,
       this.script.roles,
