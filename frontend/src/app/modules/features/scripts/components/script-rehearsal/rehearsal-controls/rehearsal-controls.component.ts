@@ -142,7 +142,6 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
 
   blur() {
     this.isBlurred = !this.isBlurred;
-    // console.log(this.isBlurred);
     this.blurEventEmitter.emit(this.isBlurred);
   }
 
