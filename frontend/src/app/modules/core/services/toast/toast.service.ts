@@ -28,12 +28,12 @@ export class ToastService {
 
   showError(error): void {
     let errorMessage = '';
-    if (error.error?.message) {
+    if (error.error && typeof error.error !== 'object') {
+      errorMessage = error.error;
+    } else if (error.error?.message) {
       errorMessage = error.error?.message;
     } else if (error.message) {
       errorMessage = error.message;
-    } else if (error.error) {
-      errorMessage = error.error;
     }
     this.show({
       message: errorMessage || 'Ein Fehler ist aufgetreten!',
