@@ -4,6 +4,7 @@ import at.ac.tuwien.sepm.groupphase.backend.exception.ValidationException;
 import at.ac.tuwien.sepm.groupphase.backend.service.parsing.line.impl.LineImpl;
 import at.ac.tuwien.sepm.groupphase.backend.validation.LineValidation;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -84,6 +85,13 @@ public class LineValidationImpl implements LineValidation {
             if (id == null) {
                 throw new ValidationException("Id muss angegeben werden.");
             }
+        }
+    }
+
+    @Override
+    public void validateAudio(String audio) {
+        if (audio.length() > 10485760) {
+            throw new MaxUploadSizeExceededException(10485760);
         }
     }
 }

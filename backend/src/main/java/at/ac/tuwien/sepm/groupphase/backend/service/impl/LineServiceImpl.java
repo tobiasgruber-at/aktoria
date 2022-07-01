@@ -69,6 +69,9 @@ public class LineServiceImpl implements LineService {
         if (updateLineDto.getRoleIds() != null) {
             lineValidation.validateRoleIdsInput(updateLineDto.getRoleIds());
         }
+        if (updateLineDto.getAudio() != null) {
+            lineValidation.validateAudio(updateLineDto.getAudio());
+        }
         User user = authorizationService.getLoggedInUser();
         if (user == null) {
             throw new UnauthorizedException();
