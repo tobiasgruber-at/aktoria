@@ -8,15 +8,33 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * Persistence repository for line entities
+ *
+ * @author Marvin Flandorfer
+ */
 @Repository
 public interface LineRepository extends JpaRepository<Line, Long> {
 
+    /**
+     * Finds all lines belonging to a certain script.
+     *
+     * @param scriptId id of the script
+     * @return List of lines
+     */
     @Query("select l "
         + "from Line l join Page p on l.page.id = p.id join Script s on p.script.id = s.id "
         + "where s.id = ?1 "
         + "order by p.id asc, l.id asc")
     List<Line> findByScriptId(Long scriptId);
 
+    /**
+     * Finds all lines between a start and an end line within the same script.
+     *
+     * @param startLine Start line
+     * @param endLine End line
+     * @return List of lines
+     */
     @Query("select l "
         + "from Line l join Page p on l.page.id = p.id join Script s on p.script.id = s.id "
         + "where s.id = :#{#startLine.page.script.id} "
