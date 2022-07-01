@@ -65,11 +65,16 @@ p {
   }
 }
 
-.is-currentText {
-  &.is-Blurred {
-    color: transparent;
-    text-shadow: 0 0 20px #000;
-  }
+p.is-highlighted {
+  background-color: hsl(55deg 94% 46% / 18%);
+  border-radius: 6px;
+  box-shadow: 0 0 7px rgb(0 0 0 / 1%);
+  padding: 4px 13px;
+}
+
+.is-Blurred {
+  color: transparent;
+  text-shadow: 0 0 15px #000;
 }
 
 .recording-indicator {
