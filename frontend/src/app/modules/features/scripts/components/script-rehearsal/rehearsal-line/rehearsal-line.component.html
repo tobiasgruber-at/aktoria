@@ -4,11 +4,14 @@
       *ngFor="let role of line.roles"
       [class.is-highlighted]="role.name === session.role?.name"
       class="name"
-    >{{ role.name }}</span
+      >{{ role.name }}</span
     >
   </div>
   <div
-    *ngIf="isOwnLine && (line.temporaryRecording || this.isRecordingLine)"
+    *ngIf="
+      isOwnLine &&
+      (line.audio || line.temporaryRecording || this.isRecordingLine)
+    "
     @appear
     [class.pulsing]="this.isRecordingLine"
     class="recording-indicator"
@@ -24,9 +27,8 @@
     </span>
   </div>
   <p
-    *ngFor="let role of line.roles"
-    [class.is-Blurred]="isBlurred"
-    [class.is-currentText]="role.name === session.role?.name"
+    [class.is-Blurred]="isBlurred && isOwnLine"
+    [class.is-highlighted]="isOwnLine"
     class="mb-0"
   >
     {{ line.content }}

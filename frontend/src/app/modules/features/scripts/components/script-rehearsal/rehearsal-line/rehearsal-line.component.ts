@@ -23,9 +23,7 @@ export class RehearsalLineComponent implements OnInit, OnDestroy, OnChanges {
   isRecordingMode = false;
   private $destroy = new Subject<void>();
 
-
-  constructor(public scriptRehearsalService: ScriptRehearsalService) {
-  }
+  constructor(public scriptRehearsalService: ScriptRehearsalService) {}
 
   @HostBinding('class')
   get classes(): string[] {
