@@ -111,7 +111,6 @@ export class ScriptReviewComponent
   }
 
   async playRecording() {
-    //TODO: scroll after voice finishes speaking and actually play the recording
     if (this.isPlayingLines) {
       return;
     }
@@ -133,10 +132,15 @@ export class ScriptReviewComponent
         .pipe(takeUntil(this.$destroy))
         .subscribe({
           next: () => {
-            this.router.navigateByUrl(`/scripts/${this.script.getId()}`);
-            this.toastService.show({
-              message: 'Lerneinheit abgeschlossen.',
-              theme: Theme.primary
+            this.sessionService.endSession(this.session.id).subscribe({
+              next: () => {
+                this.router.navigateByUrl(`/scripts/${this.script.getId()}`);
+                this.toastService.show({
+                  message: 'Lerneinheit abgeschlossen.',
+                  theme: Theme.primary
+                });
+              },
+              error: this.handleError
             });
           },
           error: this.handleError
