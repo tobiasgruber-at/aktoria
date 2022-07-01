@@ -46,7 +46,10 @@ export class LoginComponent extends FormBase implements OnInit {
         console.log('Successfully logged in user: ' + email);
         this.router.navigateByUrl(this.returnTo);
       },
-      error: (err) => this.handleError(err)
+      error: (err) => {
+        err.message = 'Email oder Passwort ist nicht korrekt!';
+        this.handleError(err);
+      }
     });
   }
 }
