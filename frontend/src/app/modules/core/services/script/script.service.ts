@@ -6,7 +6,9 @@ import {
   DetailedScript,
   Line,
   Page,
-  RawDetailedScript, RawLine, RawPage,
+  RawDetailedScript,
+  RawLine,
+  RawPage,
   RawSimpleScript,
   ScriptPreview,
   SimpleScript
@@ -24,7 +26,7 @@ function convertToBlob(audio: string) {
 
   const data = audio.split('base64,');
 
-  const b64toBlob = (b64Data, contentType = '', sliceSize=512) => {
+  const b64toBlob = (b64Data, contentType = '', sliceSize = 512) => {
     const byteCharacters = atob(b64Data);
     const byteArrays = [];
 
@@ -218,7 +220,7 @@ export class ScriptService {
 
   inviteLink(scriptId): Observable<ArrayBuffer> {
     return this.http.post<ArrayBuffer>(
-      this.baseUri + '/' + scriptId + '/inviteLink',
+      this.baseUri + '/' + scriptId + '/invite-link',
       null,
       // @ts-ignore
       {responseType: 'text'}
