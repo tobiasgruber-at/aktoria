@@ -98,11 +98,11 @@ public class ScriptEndpoint {
         scriptService.invite(id, email);
     }
 
-    @PostMapping(path = "/{id}/inviteLink")
+    @PostMapping(path = "/{id}/invite-link")
     @ResponseStatus(HttpStatus.OK)
     @Secured(Permission.verified)
     public String inviteLink(@PathVariable Long id) {
-        log.info("POST /{}/inviteLink", id);
+        log.info("POST /{}/invite-link", id);
         return scriptService.inviteLink(id);
     }
 
