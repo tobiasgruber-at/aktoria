@@ -72,9 +72,12 @@ p.is-highlighted {
   padding: 4px 13px;
 }
 
+p {
+  transition: filter 150ms ease-in-out;
+}
+
 .is-Blurred {
-  color: transparent;
-  text-shadow: 0 0 15px #000;
+  filter: blur(8px);
 }
 
 .recording-indicator {
