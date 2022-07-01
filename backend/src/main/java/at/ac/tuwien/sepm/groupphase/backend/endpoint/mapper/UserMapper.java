@@ -8,6 +8,12 @@ import at.ac.tuwien.sepm.groupphase.backend.entity.User;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 
+/**
+ * Describes a user mapper.
+ *
+ * @author Luke Nemeskeri
+ */
+
 @Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface UserMapper {
     User userRegistrationDtoToUser(UserRegistrationDto userRegistrationDto, Boolean verified, String passwordHash);

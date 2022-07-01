@@ -11,7 +11,13 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 
-@Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR, uses = { RoleMapper.class, PageMapper.class })
+/**
+ * Describes a script mapper.
+ *
+ * @author Simon Josef Kreuzpointner
+ */
+
+@Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR, uses = {RoleMapper.class, PageMapper.class})
 public interface ScriptMapper {
     SimpleScriptDto parsedScriptToSimpleScriptDto(ParsedScript parsedScript, String name);
 

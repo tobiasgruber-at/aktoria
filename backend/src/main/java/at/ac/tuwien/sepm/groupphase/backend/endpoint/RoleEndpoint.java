@@ -31,7 +31,8 @@ public class RoleEndpoint {
         this.roleService = roleService;
     }
 
-    @PatchMapping()
+    @PatchMapping
+    @ResponseStatus(HttpStatus.OK)
     @Secured(Permission.verified)
     public RoleDto mergeRoles(@RequestBody MergeRolesDto mergeRolesDto, @PathVariable Long sid) {
         log.info("PATCH {}", path);

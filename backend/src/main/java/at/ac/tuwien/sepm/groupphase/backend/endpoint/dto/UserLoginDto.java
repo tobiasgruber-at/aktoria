@@ -7,6 +7,14 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
+/**
+ * User-Login Data Transfer Object.
+ * <br>
+ * This represents a user for login.
+ *
+ * @author Nikolaus Peter
+ */
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

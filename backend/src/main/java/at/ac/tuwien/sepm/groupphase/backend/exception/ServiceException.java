@@ -1,5 +1,11 @@
 package at.ac.tuwien.sepm.groupphase.backend.exception;
 
+/**
+ * Exception for service exceptions.
+ *
+ * @author Luke Nemeskeri
+ */
+
 public class ServiceException extends RuntimeException {
     public ServiceException() {
         super();

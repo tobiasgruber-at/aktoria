@@ -23,6 +23,12 @@ import javax.persistence.PreRemove;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
 
+/**
+ * Entity class for sessions.
+ *
+ * @author Marvin Flandorfer
+ */
+
 @Entity
 @Table(name = "session")
 @Getter

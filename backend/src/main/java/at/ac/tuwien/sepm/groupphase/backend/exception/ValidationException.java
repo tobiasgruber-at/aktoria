@@ -3,6 +3,12 @@ package at.ac.tuwien.sepm.groupphase.backend.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+/**
+ * Exception for validation faults.
+ *
+ * @author Luke Nemeskeri
+ */
+
 @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
 public class ValidationException extends RuntimeException {
     public ValidationException() {

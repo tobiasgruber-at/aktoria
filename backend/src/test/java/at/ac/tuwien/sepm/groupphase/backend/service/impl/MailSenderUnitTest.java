@@ -17,6 +17,12 @@ import javax.mail.internet.MimeMessage;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * Class for testing operations with mail-sending.
+ *
+ * @author Nikolaus Peter
+ */
+
 @SpringBootTest
 @ActiveProfiles("test")
 class MailSenderUnitTest {

@@ -5,6 +5,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Session Data Transfer Object.
+ * <br>
+ * This represents a session to update.
+ *
+ * @author Marvin Flandorfer
+ */
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

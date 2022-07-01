@@ -17,6 +17,12 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * Class for testing script-parsing.
+ *
+ * @author Simon Josef Kreuzpointner
+ */
+
 @ActiveProfiles("test")
 @SpringBootTest
 class ScriptParserImplUnitTest {

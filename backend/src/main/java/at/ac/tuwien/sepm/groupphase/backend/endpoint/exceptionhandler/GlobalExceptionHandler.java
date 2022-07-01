@@ -18,6 +18,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.LinkedHashMap;
@@ -51,6 +52,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleUnprocessable(RuntimeException e, WebRequest request) {
         log.error(e.getMessage(), e);
         return handleExceptionInternal(e, e.getMessage(), new HttpHeaders(), HttpStatus.UNPROCESSABLE_ENTITY, request);
+    }
+
+    @ExceptionHandler(value = { MaxUploadSizeExceededException.class })
+    protected ResponseEntity<Object> handleMaxUploadSizeExceeded(RuntimeException e, WebRequest request) {
+        log.error(e.getMessage(), e);
+        return handleExceptionInternal(e, "Maximale Uploadgröße überschritten.", new HttpHeaders(), HttpStatus.PAYLOAD_TOO_LARGE, request);
     }
 
     @ExceptionHandler(value = { UnauthorizedException.class })

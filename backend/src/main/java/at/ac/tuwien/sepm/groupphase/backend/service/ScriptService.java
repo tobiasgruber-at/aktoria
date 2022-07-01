@@ -108,5 +108,12 @@ public interface ScriptService {
      */
     ScriptDto getBySessionId(Long id);
 
+    /**
+     * Deletes a participant from a script.
+     *
+     * @param scriptId script to delete participant from
+     * @param email    email of the user who wants edit this script
+     */
+
     void deleteParticipant(Long scriptId, String email);
 }

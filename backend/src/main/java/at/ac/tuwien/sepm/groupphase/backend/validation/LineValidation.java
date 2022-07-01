@@ -24,4 +24,15 @@ public interface LineValidation {
      * @param ids list of role ids.
      */
     void validateRoleIdsInput(List<Long> ids);
+
+    /**
+     * Validates the audio for a line.
+     * <br>
+     * The audio string for a line is considered valid if it has
+     * a length of less or equal to 10485760, making the line
+     * less or equal to 10MB when using ASCII characters.
+     *
+     * @param audio the audio of a line.
+     */
+    void validateAudio(String audio);
 }
