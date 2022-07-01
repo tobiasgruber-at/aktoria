@@ -51,7 +51,7 @@ public class SectionValidationImpl implements SectionValidation {
     }
 
     /**
-     * Helper methd for validation names.
+     * Helper method for validation names.
      *
      * @param name name to validate
      * @throws ValidationException is thrown if something of the name is not valid

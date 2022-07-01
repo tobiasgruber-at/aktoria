@@ -72,6 +72,7 @@ public class LineServiceImpl implements LineService {
         if (updateLineDto.getAudio() != null) {
             lineValidation.validateAudio(updateLineDto.getAudio());
         }
+
         User user = authorizationService.getLoggedInUser();
         if (user == null) {
             throw new UnauthorizedException();
@@ -97,29 +98,43 @@ public class LineServiceImpl implements LineService {
         } else {
             throw new NotFoundException("Skript existiert nicht");
         }
-        if (!scriptOptional.get().getOwner().getId().equals(user.getId())) {
-            throw new UnauthorizedException("Unberechtigte Überarbeitung");
-        }
+
+        authorizationService.checkMemberAuthorization(script.getId());
+
         if (updateLineDto.getContent() != null) {
-            line.setContent(updateLineDto.getContent());
+            if (authorizationService.isOwnerOfScript(script.getId())) {
+                line.setContent(updateLineDto.getContent());
+            } else {
+                throw new UnauthorizedException("Fehlende Berechtigung");
+            }
         }
         if (updateLineDto.getActive() != null) {
-            line.setActive(updateLineDto.getActive());
+            if (authorizationService.isOwnerOfScript(script.getId())) {
+                line.setActive(updateLineDto.getActive());
+            } else {
+                throw new UnauthorizedException("Fehlende Berechtigung");
+            }
         }
         if (updateLineDto.getRoleIds() != null) {
-            final List<Long> ids = updateLineDto.getRoleIds();
-            if (ids.size() <= 0) {
-                line.setSpokenBy(null);
+            if (authorizationService.isOwnerOfScript(script.getId())) {
+                final List<Long> ids = updateLineDto.getRoleIds();
+                if (ids.size() <= 0) {
+                    line.setSpokenBy(null);
+                } else {
+                    List<Role> roles = roleRepository.findAllById(ids);
+                    line.setSpokenBy(new HashSet<>(Set.copyOf(roles)));
+                }
             } else {
-                List<Role> roles = roleRepository.findAllById(ids);
-                line.setSpokenBy(new HashSet<>(Set.copyOf(roles)));
+                throw new UnauthorizedException("Fehlende Berechtigung");
             }
         }
 
         if (updateLineDto.getAudio() != null) {
             line.setAudio(updateLineDto.getAudio());
         }
-        sessionService.deprecateAffected(script.getId());
+        if (updateLineDto.getContent() != null || updateLineDto.getActive() != null || updateLineDto.getRoleIds() != null) {
+            sessionService.deprecateAffected(script.getId());
+        }
         return lineMapper.lineToLineDto(lineRepository.save(line));
     }
 }
