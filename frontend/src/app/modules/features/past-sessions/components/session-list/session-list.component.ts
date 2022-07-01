@@ -21,7 +21,7 @@ export class SessionListComponent implements OnInit {
     this.sessionService.getAll().subscribe({
       next: (res) => {
         res.forEach((session) => {
-          if (session.end) {
+          if (session.end || session.selfAssessment) {
             fs.push(session);
           } else {
             us.push(session);

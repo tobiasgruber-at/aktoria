@@ -1,4 +1,4 @@
-import {Component, EventEmitter, HostListener, OnDestroy, OnInit, Output, TemplateRef} from '@angular/core';
+import {Component, EventEmitter, HostListener, OnDestroy, OnInit, Output, TemplateRef, ViewChild} from '@angular/core';
 import {ScriptRehearsalService} from '../../../services/script-rehearsal.service';
 import {Subject, takeUntil} from 'rxjs';
 import {SimpleSession, UpdateSession} from '../../../../../shared/dtos/session-dtos';
@@ -20,6 +20,7 @@ import {VoiceSpeakingService} from '../../../services/voice-speaking.service';
 export class RehearsalControlsComponent implements OnInit, OnDestroy {
   @Output() blurEventEmitter = new EventEmitter<boolean>();
   @Output() progressEventEmitter = new EventEmitter<number>();
+  @ViewChild('stopSessionModal') stopSessionModal;
   isBlurred = false;
   script: DetailedScript = null;
   session: SimpleSession = null;
@@ -94,6 +95,16 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
         break;
       case 'Enter':
         this.changeLine('next');
+        break;
+      case ' ':
+        if (this.speakingPaused) {
+          this.resumeSpeaking();
+        } else {
+          this.pauseSpeaking();
+        }
+        break;
+      case 'Escape':
+        this.openModal(this.stopSessionModal);
         break;
       default:
         break;
