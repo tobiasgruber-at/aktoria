@@ -27,6 +27,10 @@ public interface LineValidation {
 
     /**
      * Validates the audio for a line.
+     * <br>
+     * The audio string for a line is considered valid if it has
+     * a length of less or equal to 10485760, making the line
+     * less or equal to 10MB when using ASCII characters.
      *
      * @param audio the audio of a line.
      */
