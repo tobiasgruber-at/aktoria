@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * Persistence repository for line entities
+ * Persistence repository for line entities.
  *
  * @author Marvin Flandorfer
  */

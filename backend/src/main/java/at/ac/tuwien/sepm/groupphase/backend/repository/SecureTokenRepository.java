@@ -18,6 +18,7 @@ public interface SecureTokenRepository extends JpaRepository<SecureToken, Long> 
 
     /**
      * Find secure token by string token.
+     *
      * @param token String of the token
      * @return Optional secure token (may be empty)
      */

@@ -29,7 +29,7 @@ public interface SessionRepository extends JpaRepository<Session, Long> {
     List<Session> findAllByUser(@Param("user") User user);
 
     /**
-     * Finds sessions for a user either deprecated or not
+     * Finds sessions for a user either deprecated or not.
      *
      * @param deprecated Boolean showing if deprecated sessions should be returned or not
      * @param user User that the sessions belong to
