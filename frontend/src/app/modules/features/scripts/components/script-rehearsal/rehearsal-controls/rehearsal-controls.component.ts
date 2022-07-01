@@ -96,8 +96,12 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
       case 'Enter':
         this.changeLine('next');
         break;
-      case 'Space':
-        this.pauseUnpause();
+      case ' ':
+        if (this.speakingPaused) {
+          this.resumeSpeaking();
+        } else {
+          this.pauseSpeaking();
+        }
         break;
       case 'Escape':
         this.openModal(this.stopSessionModal);
@@ -137,14 +141,6 @@ export class RehearsalControlsComponent implements OnInit, OnDestroy {
 
   openModal(modal: TemplateRef<any>): void {
     this.modalService.open(modal, {centered: true});
-  }
-
-  pauseUnpause() {
-    if (this.speakingPaused) {
-      this.resumeSpeaking();
-    } else {
-      this.pauseSpeaking();
-    }
   }
 
   pauseSpeaking() {
