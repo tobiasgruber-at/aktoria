@@ -40,10 +40,6 @@
       <p *ngIf="session.role">
         Du hast die Rolle <strong>{{ session.role.name }}</strong> geübt.
       </p>
-      <p *ngIf="session.coverage">
-        <strong>{{ session.coverage * 100 }}&nbsp;</strong> des gesprochenen Textes
-        wurden erkannt.
-      </p>
       <div *ngIf="session.selfAssessment">
         <p>
           So hast du dich dabei gefühlt:
