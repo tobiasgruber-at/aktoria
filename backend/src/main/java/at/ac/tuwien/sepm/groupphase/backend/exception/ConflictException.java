@@ -6,6 +6,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(HttpStatus.CONFLICT)
 public class ConflictException extends RuntimeException {
 
+    public ConflictException() {
+        super();
+    }
+
     public ConflictException(String message) {
         super(message);
     }
@@ -14,4 +18,7 @@ public class ConflictException extends RuntimeException {
         super(message, cause);
     }
 
+    public ConflictException(Exception e) {
+        super(e);
+    }
 }
