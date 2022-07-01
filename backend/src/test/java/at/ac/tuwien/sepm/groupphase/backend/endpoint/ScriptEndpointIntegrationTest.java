@@ -50,8 +50,15 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * Class for testing script-endpoints.
+ *
+ * @author Simon Josef Kreuzpointner
+ * @author Tobias Gruber
+ */
+
 @SpringBootTest
-@ActiveProfiles({ "test", "datagen" })
+@ActiveProfiles({"test", "datagen"})
 @EnableWebMvc
 @WebAppConfiguration
 class ScriptEndpointIntegrationTest {
@@ -77,7 +84,7 @@ class ScriptEndpointIntegrationTest {
     @Test
     @DirtiesContext
     @DisplayName("saveScript() saves the script correctly")
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {Role.verified})
     void saveScript() {
         SimpleRoleDto simpleRoleDto = new SimpleRoleDto();
         simpleRoleDto.setName("ROLEA");
@@ -142,7 +149,7 @@ class ScriptEndpointIntegrationTest {
     @Test
     @DirtiesContext
     @DisplayName("getScriptPreviews() gets the correct previews")
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {Role.verified})
     void getScriptPreviews() {
         List<ScriptPreviewDto> scriptPreviewDtoList = scriptService.findAllPreviews().toList();
         assertEquals(new ScriptPreviewDto(1L, ScriptDataGenerator.TEST_SCRIPT_NAME + " 1", true), scriptPreviewDtoList.get(0));
@@ -151,7 +158,7 @@ class ScriptEndpointIntegrationTest {
 
     @Test
     @DirtiesContext
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {Role.verified})
     @DisplayName("getScriptById() gets the correct script")
     void getScriptById() {
         ScriptDto scriptDto = scriptService.findById(1L);
@@ -160,7 +167,7 @@ class ScriptEndpointIntegrationTest {
 
     @Test
     @DirtiesContext
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {Role.verified})
     @DisplayName("getScriptById() throws UnauthorizedException")
     void getScriptByIdThrowsException() {
         assertThrows(UnauthorizedException.class, () -> scriptService.findById(2L));
@@ -172,7 +179,7 @@ class ScriptEndpointIntegrationTest {
         @Test
         @DirtiesContext
         @DisplayName("returns the saved script")
-        @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
+        @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {Role.verified})
         void saveScriptReturnsCorrectly() throws Exception {
             byte[] body = mockMvc
                 .perform(MockMvcRequestBuilders
@@ -190,7 +197,7 @@ class ScriptEndpointIntegrationTest {
         @Test
         @DirtiesContext
         @DisplayName("returns correct status code for invalid body")
-        @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.user })
+        @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {Role.user})
         void saveScriptReturnsCorrectStatusCodeForInvalidInputs() throws Exception {
             mockMvc
                 .perform(MockMvcRequestBuilders
@@ -212,7 +219,7 @@ class ScriptEndpointIntegrationTest {
         @Test
         @DirtiesContext
         @DisplayName("returns the correctly parsed script")
-        @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
+        @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {Role.verified})
         void uploadScriptReturnsCorrectly() throws Exception {
             final SimpleScriptDto expected = scriptTestHelper.dummySimpleScriptDtoWithoutColors();
 
@@ -237,7 +244,7 @@ class ScriptEndpointIntegrationTest {
         @Test
         @DirtiesContext
         @DisplayName("returns correct status code for corrupted files")
-        @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
+        @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {Role.verified})
         void uploadScriptReturnsCorrectStatusCodeForCorruptedFiles() throws Exception {
             final File pdf = new File("./src/test/resources/service/parsing/script/Skript_NF_CORRUPTED.pdf");
             final MockMultipartFile multipartFile = new MockMultipartFile("file", pdf.getName(), MediaType.APPLICATION_PDF_VALUE, new FileInputStream(pdf));
@@ -257,7 +264,7 @@ class ScriptEndpointIntegrationTest {
         @Test
         @DirtiesContext
         @DisplayName("works correctly")
-        @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
+        @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {Role.verified})
         void patchScriptWorks() throws Exception {
             final UpdateScriptDto input = new UpdateScriptDto("new script name");
             byte[] body = mockMvc
@@ -276,7 +283,7 @@ class ScriptEndpointIntegrationTest {
         @Test
         @DirtiesContext
         @DisplayName("empty dto does not change anything")
-        @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
+        @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {Role.verified})
         void patchScriptDoesNotChangeAnything() throws Exception {
             final UpdateScriptDto input = new UpdateScriptDto(null);
             byte[] body = mockMvc
@@ -295,7 +302,7 @@ class ScriptEndpointIntegrationTest {
         @ParameterizedTest
         @DirtiesContext
         @DisplayName("returns BadRequest")
-        @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
+        @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {Role.verified})
         @ValueSource(strings = {
             "      ",
             "\t\t",
@@ -321,7 +328,7 @@ class ScriptEndpointIntegrationTest {
         @Test
         @DirtiesContext
         @DisplayName("returns Unauthorized")
-        @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "2" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "2", roles = { Role.verified })
+        @WithMockUser(username = UserDataGenerator.TEST_USER_EMAIL_LOCAL + "2" + UserDataGenerator.TEST_USER_EMAIL_DOMAIN, password = UserDataGenerator.TEST_USER_PASSWORD + "2", roles = {Role.verified})
         void patchScriptReturnsUnauthorized() throws Exception {
             final UpdateScriptDto input = new UpdateScriptDto("new script name");
             mockMvc

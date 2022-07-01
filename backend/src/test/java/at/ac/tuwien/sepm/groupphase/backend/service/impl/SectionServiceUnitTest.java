@@ -39,6 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * Class for testing section services.
  *
  * @author Julia Bernold
+ * @author Simon Josef Kreuzpointner
  */
 
 @ActiveProfiles({"test", "datagen"})

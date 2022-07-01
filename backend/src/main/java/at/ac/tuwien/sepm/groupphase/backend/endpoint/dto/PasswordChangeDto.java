@@ -4,6 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Password Data Transfer Object.
+ * <br>
+ * This is used for changing the password of a user.
+ *
+ * @author Tobias Gruber
+ */
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

@@ -6,6 +6,12 @@ import org.mapstruct.Mapper;
 
 import java.awt.Color;
 
+/**
+ * Describes a mapper for role-colors.
+ *
+ * @author Simon Josef Kreuzpointner
+ */
+
 @Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface ColorMapper {
 

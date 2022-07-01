@@ -19,6 +19,12 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.Set;
 
+/**
+ * Entity class for sections.
+ *
+ * @author Marvin Flandorfer
+ */
+
 @Entity
 @Table(name = "section")
 @Getter

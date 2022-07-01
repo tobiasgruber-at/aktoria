@@ -25,8 +25,14 @@ import java.util.Optional;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * Class for testing session-services.
+ *
+ * @author Marvin Flandorfer
+ */
+
 @SpringBootTest
-@ActiveProfiles({ "datagen", "test" })
+@ActiveProfiles({"datagen", "test"})
 public class SessionServiceUnitTest {
 
     @Autowired
@@ -39,7 +45,7 @@ public class SessionServiceUnitTest {
     @Test
     @DirtiesContext
     @DisplayName("saveSession() saves the session correctly")
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {Role.verified})
     public void saveSession() {
         SimpleSessionDto simpleSessionDto = new SimpleSessionDto();
         simpleSessionDto.setSectionId(1L);
@@ -60,7 +66,7 @@ public class SessionServiceUnitTest {
     @Test
     @DirtiesContext
     @DisplayName("updateSession() updates session correctly")
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {Role.verified})
     public void updateSession() {
         Optional<Session> sessionOpt = sessionRepository.findById(1L);
         assertTrue(sessionOpt.isPresent());
@@ -83,7 +89,7 @@ public class SessionServiceUnitTest {
     @Test
     @DirtiesContext
     @DisplayName("finishSession() ends session correctly")
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {Role.verified})
     public void finishSession() {
         SessionDto result = sessionService.finish(1L);
         assertThat(result.getEnd()).isNotNull();
@@ -92,7 +98,7 @@ public class SessionServiceUnitTest {
     @Test
     @DirtiesContext
     @DisplayName("findSessionById() finds session correctly")
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {Role.verified})
     public void findSessionById() {
         SessionDto session = sessionService.findById(1L);
         assertThat(session).isNotNull();
@@ -102,7 +108,7 @@ public class SessionServiceUnitTest {
     @Test
     @DirtiesContext
     @DisplayName("findPastSessions() finds all past user sessions correctly")
-    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = { Role.verified })
+    @WithMockUser(username = UserTestHelper.dummyUserEmail, password = UserTestHelper.dummyUserPassword, roles = {Role.verified})
     public void findPastSessions() {
         List<SessionDto> sessions = sessionService.findQuerySessions(null, 1L, null).toList();
         assertThat(sessions).isNotNull();
