@@ -1,5 +1,6 @@
 <app-page-layout [loading]="getLoading" [showSidebar]="showSidebar" theme="dark">
-  <app-script-editor-controls (showSidebarEventEmitter)="showSidebar=true" *ngIf="!showSidebar"></app-script-editor-controls>
+  <app-script-editor-controls (showSidebarEventEmitter)="showSidebar=true"
+                              *ngIf="!showSidebar"></app-script-editor-controls>
   <app-script-viewer></app-script-viewer>
   <form
     (ngSubmit)="submit()"
@@ -9,7 +10,8 @@
   >
     <h2 [class]="isUploading ? 'mb-4' : 'mb-0'">
       <ng-container *ngIf="!isUploading && script">
-        <span class="truncate">{{ script?.name }}</span> bearbeiten
+        <span class="d-block text-truncate mw-100">{{ script?.name }}</span>
+        bearbeiten
       </ng-container>
       <ng-container *ngIf="isUploading">Skript hochladen</ng-container>
     </h2>

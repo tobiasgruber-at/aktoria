@@ -13,7 +13,7 @@
       <ng-container *ngIf="!sameRolesAsPrevLine">
         <span
           *ngFor="let role of line?.roles; let i = index"
-          class="d-inline-block"
+          class="d-inline-block text-break"
         >{{ role.name }}{{ i < line?.roles.length - 1 ? ', ' : '' }}</span
         >
       </ng-container>
@@ -28,7 +28,7 @@
       "
       [class.text-secondary]="isInstruction"
       [ngbTooltip]="isConflict() ? 'Bitte überprüfe diese Zeile' : null"
-      class="w-100"
+      class="w-100 text-break"
       ngbDropdownToggle
     >
       {{ line?.content }}
